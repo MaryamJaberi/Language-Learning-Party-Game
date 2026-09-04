@@ -12,7 +12,12 @@ export const NATIVE_LANGUAGE_NAMES: Record<Language, string> = {
   ar: "العربية",
   tr: "Türkçe",
   pl: "Polski",
-  uk: "Українська"
+  uk: "Українська",
+  zh: "中文",
+  ja: "日本語",
+  ko: "한국어",
+  hi: "हिन्दी",
+  pt: "Português"
 };
 
 export const TRANSLATIONS: Record<Language, any> = ({

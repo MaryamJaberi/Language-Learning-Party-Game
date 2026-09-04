@@ -702,7 +702,12 @@ class SoundManager {
         'ar': 'ar-SA',
         'tr': 'tr-TR',
         'pl': 'pl-PL',
-        'uk': 'uk-UA'
+        'uk': 'uk-UA',
+        'zh': 'zh-CN',
+        'ja': 'ja-JP',
+        'ko': 'ko-KR',
+        'hi': 'hi-IN',
+        'pt': 'pt-PT'
       };
 
       const targetBCP = bcpMap[lang] || lang || 'en-US';
