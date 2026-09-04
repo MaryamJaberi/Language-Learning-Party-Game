@@ -333,8 +333,32 @@ const EndGameScreen: React.FC<Props> = ({
                           <div className="flex items-center gap-1.5">
                             <span className="text-xs">{langInfo?.flag}</span>
                             <span className="font-black text-xs text-[#1a0833]">{record.card.targetText}</span>
+                            <button
+                              type="button"
+                              title="تلفظ زبان هدف"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                sound.speak(record.card.targetText, record.card.targetLanguage, { force: true });
+                              }}
+                              className="p-1 rounded-full bg-slate-100 border border-slate-300 text-slate-700"
+                            >
+                              <Volume2 size={12} />
+                            </button>
                           </div>
-                          <span className="text-[10px] text-slate-600 font-bold block">{record.card.translation}</span>
+                          <div className="flex items-center gap-1">
+                            <span className="text-[10px] text-slate-600 font-bold">{record.card.translation}</span>
+                            <button
+                              type="button"
+                              title="تلفظ زبان من"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                sound.speak(record.card.translation, record.card.nativeLanguage || language, { force: true });
+                              }}
+                              className="p-0.5 rounded-full text-slate-500"
+                            >
+                              <Volume2 size={11} />
+                            </button>
+                          </div>
                         </div>
                       </div>
 

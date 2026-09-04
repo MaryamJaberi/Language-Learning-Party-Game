@@ -594,9 +594,22 @@ const GameplayScreen: React.FC<Props> = ({
                   <span className="text-[10px] text-[#FFE600] font-black block mb-0.5">
                     این عبارت را به زبان هدف ادا کن:
                   </span>
-                  <p className="text-sm sm:text-base font-black text-white font-display leading-snug">
-                    «{currentCard.translation}»
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm sm:text-base font-black text-white font-display leading-snug flex-1">
+                      «{currentCard.translation}»
+                    </p>
+                    <button
+                      type="button"
+                      title="تلفظ زبان من"
+                      onClick={() => {
+                        sound.playClick();
+                        sound.speak(currentCard.translation, currentCard.nativeLanguage || 'fa', { force: true });
+                      }}
+                      className="p-1.5 bg-[#FFE600] hover:bg-yellow-300 text-[#1a0833] rounded-xl border-2 border-[#241442] shadow-[1.5px_1.5px_0px_0px_#241442] transition-transform active:scale-90 shrink-0"
+                    >
+                      <Volume2 size={16} />
+                    </button>
+                  </div>
                 </div>
 
                 {/* Target Foreign Answer (Hero text with LTR) */}
@@ -614,7 +627,7 @@ const GameplayScreen: React.FC<Props> = ({
                     title="پخش تلفظ صوتی"
                     onClick={() => {
                       sound.playClick();
-                      sound.speakTargetPhrase(currentCard.targetText, currentCard.targetLanguage);
+                      sound.speak(currentCard.targetText, currentCard.targetLanguage, { force: true });
                     }}
                     className="p-1.5 bg-[#39FF14] hover:bg-green-400 text-[#1a0833] rounded-xl border-2 border-[#241442] shadow-[1.5px_1.5px_0px_0px_#241442] transition-transform active:scale-90"
                   >
@@ -641,7 +654,7 @@ const GameplayScreen: React.FC<Props> = ({
                       title="پخش تلفظ صوتی"
                       onClick={() => {
                         sound.playClick();
-                        sound.speakTargetPhrase(currentCard.targetText, currentCard.targetLanguage);
+                        sound.speak(currentCard.targetText, currentCard.targetLanguage, { force: true });
                       }}
                       className="p-1.5 bg-[#39FF14] hover:bg-green-400 text-[#1a0833] rounded-xl border-2 border-[#241442] shadow-[1.5px_1.5px_0px_0px_#241442] transition-transform active:scale-90"
                     >
@@ -652,9 +665,22 @@ const GameplayScreen: React.FC<Props> = ({
 
                 {/* Meaning / Translation */}
                 {currentCard?.translation && (
-                  <p className="text-sm sm:text-base font-black text-[#FF007F]">
-                    {currentCard.translation}
-                  </p>
+                  <div className="flex items-center justify-center gap-1.5">
+                    <p className="text-sm sm:text-base font-black text-[#FF007F]">
+                      {currentCard.translation}
+                    </p>
+                    <button
+                      type="button"
+                      title="تلفظ زبان من"
+                      onClick={() => {
+                        sound.playClick();
+                        sound.speak(currentCard.translation, currentCard.nativeLanguage || 'fa', { force: true });
+                      }}
+                      className="p-1 bg-[#F8EFFF] hover:bg-[#F0D9FF] text-[#FF007F] rounded-lg border-2 border-[#241442] transition-transform active:scale-90"
+                    >
+                      <Volume2 size={14} />
+                    </button>
+                  </div>
                 )}
 
                 {/* Short Situational Clue (if helpful & not repetitive) */}

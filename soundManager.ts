@@ -17,6 +17,7 @@ class SoundManager {
 
   constructor() {
     this.initAutoUnlock();
+    this.primeVoices();
   }
 
   private initAutoUnlock() {
@@ -56,6 +57,7 @@ class SoundManager {
   public setMuted(muted: boolean) {
     this.isMuted = muted;
     if (muted) {
+      this.stopSpeech();
       this.stopBGM();
     } else {
       if (this.currentBgmMode === 'menu') {
@@ -679,61 +681,225 @@ class SoundManager {
     }
   }
 
+  private ttsAudio: HTMLAudioElement | null = null;
+  private ttsToken = 0;
+  private voicesPrimed = false;
+
+  private primeVoices() {
+    if (this.voicesPrimed || typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    this.voicesPrimed = true;
+    try {
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.addEventListener('voiceschanged', () => {
+        window.speechSynthesis.getVoices();
+      });
+    } catch {
+      // ignore
+    }
+  }
+
+  private stopSpeech() {
+    this.ttsToken += 1;
+    try {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    } catch {
+      // ignore
+    }
+    if (this.ttsAudio) {
+      const audio = this.ttsAudio;
+      this.ttsAudio = null;
+      try {
+        audio.onended = null;
+        audio.onerror = null;
+        audio.pause();
+        audio.removeAttribute('src');
+        audio.load();
+      } catch {
+        // ignore
+      }
+    }
+  }
+
+  private bcp47(lang: string): string {
+    const map: Record<string, string> = {
+      'en-US': 'en-US',
+      en: 'en-GB',
+      nl: 'nl-NL',
+      de: 'de-DE',
+      fr: 'fr-FR',
+      es: 'es-ES',
+      it: 'it-IT',
+      fa: 'fa-IR',
+      ar: 'ar-SA',
+      tr: 'tr-TR',
+      pl: 'pl-PL',
+      uk: 'uk-UA',
+      zh: 'zh-CN',
+      ja: 'ja-JP',
+      ko: 'ko-KR',
+      hi: 'hi-IN',
+      pt: 'pt-PT',
+    };
+    if (map[lang]) return map[lang];
+    if (lang.includes('-')) return lang;
+    return lang || 'en-US';
+  }
+
+  private googleTl(lang: string): string {
+    const map: Record<string, string> = {
+      'en-US': 'en-US',
+      en: 'en-GB',
+      nl: 'nl',
+      de: 'de',
+      fr: 'fr',
+      es: 'es',
+      it: 'it',
+      fa: 'fa',
+      ar: 'ar',
+      tr: 'tr',
+      pl: 'pl',
+      uk: 'uk',
+      zh: 'zh-CN',
+      ja: 'ja',
+      ko: 'ko',
+      hi: 'hi',
+      pt: 'pt',
+    };
+    if (map[lang]) return map[lang];
+    return this.bcp47(lang).split('-')[0] || 'en';
+  }
+
+  private isOnline(): boolean {
+    if (typeof navigator === 'undefined') return true;
+    return navigator.onLine !== false;
+  }
+
+  private pickVoice(bcp: string): SpeechSynthesisVoice | null {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return null;
+    const voices = window.speechSynthesis.getVoices();
+    if (!voices || voices.length === 0) return null;
+    const lower = bcp.toLowerCase();
+    const prefix = lower.split('-')[0];
+    return (
+      voices.find((v) => v.lang.toLowerCase() === lower) ||
+      voices.find((v) => v.lang.toLowerCase().replace('_', '-').startsWith(prefix + '-')) ||
+      voices.find((v) => v.lang.toLowerCase().startsWith(prefix)) ||
+      null
+    );
+  }
+
+  private chunkText(text: string, max = 180): string[] {
+    const clean = text.trim();
+    if (clean.length <= max) return [clean];
+    const parts: string[] = [];
+    let rest = clean;
+    while (rest.length > max) {
+      let cut = Math.max(rest.lastIndexOf(' ', max), rest.lastIndexOf('،', max), rest.lastIndexOf('。', max));
+      if (cut < 24) cut = max;
+      parts.push(rest.slice(0, cut).trim());
+      rest = rest.slice(cut).trim();
+    }
+    if (rest) parts.push(rest);
+    return parts.filter(Boolean);
+  }
+
+  private googleTtsUrl(text: string, tl: string, alt = false): string {
+    const q = encodeURIComponent(text);
+    const lang = encodeURIComponent(tl);
+    if (alt) {
+      return `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${lang}&q=${q}`;
+    }
+    return `https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=${lang}&q=${q}`;
+  }
+
+  private playOnlineChunks(chunks: string[], tl: string, index: number, token: number) {
+    if (token !== this.ttsToken) return;
+    if (index >= chunks.length) return;
+    const audio = new Audio();
+    audio.preload = 'auto';
+    audio.src = this.googleTtsUrl(chunks[index], tl, false);
+    this.ttsAudio = audio;
+
+    const playNext = () => {
+      if (token !== this.ttsToken) return;
+      this.playOnlineChunks(chunks, tl, index + 1, token);
+    };
+
+    audio.onended = playNext;
+    audio.onerror = () => {
+      if (token !== this.ttsToken) return;
+      if (audio.dataset.altTried === '1') {
+        playNext();
+        return;
+      }
+      audio.dataset.altTried = '1';
+      audio.src = this.googleTtsUrl(chunks[index], tl, true);
+      audio.play().catch(() => playNext());
+    };
+    audio.play().catch(() => {
+      if (token !== this.ttsToken) return;
+      audio.src = this.googleTtsUrl(chunks[index], tl, true);
+      audio.play().catch(() => playNext());
+    });
+  }
+
+  private speakOnline(text: string, lang: string): boolean {
+    if (!this.isOnline()) return false;
+    const chunks = this.chunkText(text);
+    if (chunks.length === 0) return false;
+    const token = this.ttsToken;
+    this.playOnlineChunks(chunks, this.googleTl(lang), 0, token);
+    return true;
+  }
+
   /**
-   * High-clarity native speech pronunciation using Web Speech Synthesis API
+   * Pronounce any phrase in any supported language.
+   * Local voice when present; online TTS fallback so fa/ar/hi/uk/zh/ja/ko still work.
    */
-  public speak(text: string, lang: string = 'en-US'): void {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-    if (!text || text.trim() === '') return;
+  public speak(text: string, lang: string = 'en-US', opts?: { force?: boolean }): void {
+    if (typeof window === 'undefined') return;
+    const cleanText = (text || '').replace(/[()[\]"«»]/g, '').trim();
+    if (!cleanText) return;
+    if (this.isMuted && !opts?.force) return;
+
+    this.primeVoices();
+    this.stopSpeech();
+
+    const bcp = this.bcp47(lang);
+    const voice = this.pickVoice(bcp);
+    const online = this.isOnline();
+
+    if (!voice && online) {
+      this.speakOnline(cleanText, lang);
+      return;
+    }
+
+    if (!('speechSynthesis' in window)) {
+      if (online) this.speakOnline(cleanText, lang);
+      return;
+    }
 
     try {
-      // Cancel previous speech to prevent backlog
-      window.speechSynthesis.cancel();
-
-      const bcpMap: Record<string, string> = {
-        'en-US': 'en-US',
-        'en': 'en-GB',
-        'nl': 'nl-NL',
-        'de': 'de-DE',
-        'fr': 'fr-FR',
-        'es': 'es-ES',
-        'it': 'it-IT',
-        'fa': 'fa-IR',
-        'ar': 'ar-SA',
-        'tr': 'tr-TR',
-        'pl': 'pl-PL',
-        'uk': 'uk-UA',
-        'zh': 'zh-CN',
-        'ja': 'ja-JP',
-        'ko': 'ko-KR',
-        'hi': 'hi-IN',
-        'pt': 'pt-PT'
-      };
-
-      const targetBCP = bcpMap[lang] || lang || 'en-US';
-      const cleanText = text.replace(/[\(\)\[\]"']/g, '').trim();
-
       const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.lang = targetBCP;
-      utterance.rate = 0.92; // Slightly slower for optimal learner articulation
+      utterance.lang = bcp;
+      utterance.rate = 0.92;
       utterance.pitch = 1.0;
-      utterance.volume = this.isMuted ? 0 : 1.0;
-
-      // Select high-quality matching voice if available
-      const voices = window.speechSynthesis.getVoices();
-      if (voices && voices.length > 0) {
-        const matchingVoice = voices.find(v => 
-          v.lang.toLowerCase() === targetBCP.toLowerCase() || 
-          v.lang.toLowerCase().startsWith(targetBCP.split('-')[0].toLowerCase())
-        );
-        if (matchingVoice) {
-          utterance.voice = matchingVoice;
+      utterance.volume = 1.0;
+      if (voice) utterance.voice = voice;
+      utterance.onerror = () => {
+        if (online) this.speakOnline(cleanText, lang);
+      };
+      window.setTimeout(() => {
+        try {
+          window.speechSynthesis.speak(utterance);
+        } catch {
+          if (online) this.speakOnline(cleanText, lang);
         }
-      }
-
-      window.speechSynthesis.speak(utterance);
-    } catch (e) {
-      // Safe fallback on restricted webviews
+      }, 40);
+    } catch {
+      if (online) this.speakOnline(cleanText, lang);
     }
   }
 

@@ -163,11 +163,7 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
 
   // Pronounce word
   const handlePronounce = (text: string, lang: string) => {
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = lang === 'fa' ? 'fa-IR' : lang === 'nl' ? 'nl-NL' : 'en-US';
-      window.speechSynthesis.speak(utterance);
-    }
+    sound.speak(text, lang, { force: true });
   };
 
   const currentCard = room.currentCard;
@@ -379,8 +375,18 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
                   </div>
 
                   {/* Native Translation */}
-                  <div className="inline-block px-3 py-1 bg-[#F8EFFF] rounded-xl border border-[#241442] text-xs font-black text-[#FF007F]">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F8EFFF] rounded-xl border border-[#241442] text-xs font-black text-[#FF007F]">
                     {currentCard?.translation}
+                    {currentCard?.translation && (
+                      <button
+                        type="button"
+                        onClick={() => handlePronounce(currentCard.translation, currentCard.nativeLanguage || 'fa')}
+                        className="p-0.5 rounded-full text-[#FF007F]"
+                        title="تلفظ زبان من"
+                      >
+                        <Volume2 size={13} />
+                      </button>
+                    )}
                   </div>
                 </div>
 

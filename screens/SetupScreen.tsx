@@ -52,12 +52,23 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
 
   // Quick speech test samples
   const speechSamples = [
-    { text: 'Hello, welcome to DOUR!', lang: 'en', label: 'انگلیسی 🇬🇧' },
-    { text: 'Hallo, welkom bij het spel!', lang: 'nl', label: 'هلندی 🇳🇱' },
-    { text: 'Guten Tag, wie geht es dir?', lang: 'de', label: 'آلمانی 🇩🇪' },
-    { text: 'Bonjour, enchanté!', lang: 'fr', label: 'فرانسوی 🇫🇷' },
-    { text: '¡Hola, qué tal!', lang: 'es', label: 'اسپانیایی 🇪🇸' },
-    { text: 'سلام، به بازی دور خوش آمدید!', lang: 'fa', label: 'فارسی 🇮🇷' }
+    { text: 'سلام، حالت چطوره؟', lang: 'fa', label: 'فارسی' },
+    { text: 'Hello, how are you today?', lang: 'en', label: 'انگلیسی' },
+    { text: 'Hi, how are you doing?', lang: 'en-US', label: 'آمریکایی' },
+    { text: 'Hallo, hoe gaat het?', lang: 'nl', label: 'هلندی' },
+    { text: 'Hallo, wie geht es dir?', lang: 'de', label: 'آلمانی' },
+    { text: 'Bonjour, comment ça va ?', lang: 'fr', label: 'فرانسوی' },
+    { text: 'Hola, ¿qué tal?', lang: 'es', label: 'اسپانیایی' },
+    { text: 'Ciao, come stai?', lang: 'it', label: 'ایتالیایی' },
+    { text: 'Olá, tudo bem?', lang: 'pt', label: 'پرتغالی' },
+    { text: 'مرحبا، كيف حالك؟', lang: 'ar', label: 'عربی' },
+    { text: 'Merhaba, nasılsın?', lang: 'tr', label: 'ترکی' },
+    { text: 'Cześć, jak się masz?', lang: 'pl', label: 'لهستانی' },
+    { text: 'Привіт, як справи?', lang: 'uk', label: 'اوکراینی' },
+    { text: '你好，你好吗？', lang: 'zh', label: 'چینی' },
+    { text: 'こんにちは、元気ですか？', lang: 'ja', label: 'ژاپنی' },
+    { text: '안녕하세요, 잘 지내세요?', lang: 'ko', label: 'کره‌ای' },
+    { text: 'नमस्ते, आप कैसे हैं?', lang: 'hi', label: 'هندی' },
   ];
 
   return (
@@ -191,7 +202,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
               {/* Feature 2: Interactive Live Voice Test */}
               <div className="pt-2 border-t border-dashed border-[#241442]/20">
                 <span className="text-[11px] font-black text-[#1a0833] block mb-1.5">
-                  ۲. تست زنده تلفظ کلمات (لمس برای شنیدن):
+                  ۲. تست زنده تلفظ همهٔ زبان‌ها (آنلاین، لمس برای شنیدن):
                 </span>
                 <div className="grid grid-cols-3 gap-1.5">
                   {speechSamples.map(sample => (
@@ -200,7 +211,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                       type="button"
                       onClick={() => {
                         sound.playClick();
-                        sound.speak(sample.text, sample.lang);
+                        sound.speak(sample.text, sample.lang, { force: true });
                       }}
                       className="p-1.5 bg-[#FFF9E6] hover:bg-[#FFE600] active:scale-95 text-[#1a0833] border-2 border-[#241442] rounded-xl text-[10px] font-black shadow-[1.5px_1.5px_0px_0px_#241442] flex items-center justify-center gap-1 transition-all"
                     >
