@@ -126,8 +126,8 @@ const HistoryScreen: React.FC<Props> = ({ language, history, onBack }) => {
             </div>
           </div>
         ) : (
-          /* High scores list */
           displayedHistory.map(entry => {
+            /* High scores list */
             const hasColorMatch = entry.winnerColor !== 'TIE';
             const winnerBg = hasColorMatch ? COLORS_MAP[entry.winnerColor as TeamColor]?.bg : 'bg-slate-400';
             const winnerHex = hasColorMatch ? COLORS_MAP[entry.winnerColor as TeamColor]?.hex : '#94a3b8';

@@ -285,8 +285,8 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
           </div>
         </div>
       ) : (
-        /* ACTIVE TURN GAMEPLAY */
         <div className="flex-1 min-h-0 flex flex-col justify-between my-auto space-y-2">
+          {/* ACTIVE TURN GAMEPLAY */}
           
           {/* Active Player & Turn Notification */}
           <div 
@@ -340,8 +340,8 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
                 </div>
               </div>
             ) : (
-              /* 2. SCENARIO B: DESCRIBER / SPECTATORS SEE THE CARD TO EXPLAIN */
               <div className="bg-white p-4 rounded-3xl border-[3.5px] border-[#241442] shadow-[5px_5px_0px_0px_#241442] text-start space-y-2.5 relative">
+                {/* 2. SCENARIO B: DESCRIBER / SPECTATORS SEE THE CARD TO EXPLAIN */}
                 
                 {/* Header Tag */}
                 <div className="flex items-center justify-between border-b pb-1.5 border-slate-200">

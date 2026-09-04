@@ -623,8 +623,8 @@ const GameplayScreen: React.FC<Props> = ({
                 </div>
               </div>
             ) : (
-              /* SCENARIO 2: REGULAR EXPLAIN / SPEAK MODE */
               <div className="w-full flex flex-col items-center space-y-1.5">
+                {/* SCENARIO 2: REGULAR EXPLAIN / SPEAK MODE */}
                 
                 {/* Hero Target Word / Phrase */}
                 <div className="flex items-center justify-center gap-2">
@@ -730,8 +730,6 @@ const GameplayScreen: React.FC<Props> = ({
           </div>
 
         </div>
-
-      </div>
 
       </div>
 
