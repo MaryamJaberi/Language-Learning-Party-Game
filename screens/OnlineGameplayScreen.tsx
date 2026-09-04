@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { OnlineRoomState, OnlinePlayer, Language, TeamColor, LanguageCard, PlayedCardRecord } from '../types';
 import { COLORS_MAP, SUPPORTED_LANGUAGES } from '../constants';
-import { TRANSLATIONS } from '../translations';
+import { tUI, isRtlLang } from '../ui';
 import { TeamMascot } from '../components/Mascots';
 import { sound } from '../soundManager';
 import { 
@@ -44,8 +44,8 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
   language,
   onExit
 }) => {
-  const t = TRANSLATIONS[language] || TRANSLATIONS.fa;
-  const isRTL = language === 'fa' || language === 'ar';
+  const t = tUI(language);
+  const isRTL = isRtlLang(language);
   const myDeviceId = getDeviceId();
 
   const [room, setRoom] = useState<OnlineRoomState>(initialRoom);

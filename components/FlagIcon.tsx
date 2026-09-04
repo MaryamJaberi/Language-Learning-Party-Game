@@ -157,8 +157,29 @@ export const FlagIcon: React.FC<FlagIconProps> = ({
     return <span className={`text-base leading-none ${className}`}>🇺🇦</span>;
   }
 
+  // Portuguese
+  if (code === 'pt') {
+    return <span className={`leading-none ${className}`} style={{ fontSize: typeof size === 'number' ? size : 16 }}>🇵🇹</span>;
+  }
+  // Chinese
+  if (code === 'zh') {
+    return <span className={`leading-none ${className}`} style={{ fontSize: typeof size === 'number' ? size : 16 }}>🇨🇳</span>;
+  }
+  // Japanese
+  if (code === 'ja') {
+    return <span className={`leading-none ${className}`} style={{ fontSize: typeof size === 'number' ? size : 16 }}>🇯🇵</span>;
+  }
+  // Korean
+  if (code === 'ko') {
+    return <span className={`leading-none ${className}`} style={{ fontSize: typeof size === 'number' ? size : 16 }}>🇰🇷</span>;
+  }
+  // Hindi / India
+  if (code === 'hi') {
+    return <span className={`leading-none ${className}`} style={{ fontSize: typeof size === 'number' ? size : 16 }}>🇮🇳</span>;
+  }
+
   // Fallback Globe or emoji
-  return <span className={`text-base leading-none ${className}`}>🌐</span>;
+  return <span className={`leading-none ${className}`} style={{ fontSize: typeof size === 'number' ? size : 16 }}>🌐</span>;
 };
 
 export default FlagIcon;

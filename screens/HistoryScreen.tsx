@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { GameHistoryEntry, TeamColor, Language } from '../types';
 import { COLORS_MAP } from '../constants';
-import { TRANSLATIONS } from '../translations';
+import { tUI, isRtlLang } from '../ui';
 import { TeamMascot } from '../components/Mascots';
 import { sound } from '../soundManager';
 import { auth, fetchUserMatchHistory } from '../firebase';
@@ -17,8 +17,8 @@ interface Props {
 }
 
 const HistoryScreen: React.FC<Props> = ({ language, history, onBack }) => {
-  const t = TRANSLATIONS[language];
-  const isRTL = language === 'fa' || language === 'ar';
+  const t = tUI(language);
+  const isRTL = isRtlLang(language);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [cloudHistory, setCloudHistory] = useState<GameHistoryEntry[]>([]);
   const [activeTab, setActiveTab] = useState<'local' | 'cloud'>('local');

@@ -316,7 +316,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <main className="w-full h-full max-w-md mx-auto flex flex-col justify-between overflow-hidden shadow-2xl relative bg-[#170B2C]">
+    <main className="w-full h-full min-h-0 max-w-md mx-auto flex flex-col overflow-hidden shadow-2xl relative bg-[#170B2C]">
       
       {/* Offline PWA Connectivity Indicator */}
       <OfflineIndicator language={settings.language} />
@@ -325,7 +325,7 @@ const App: React.FC = () => {
       {currentScreen === 'INTRO' && (
         <IntroScreen
           language={settings.language}
-          onLanguageChange={(l) => saveSettings({ ...settings, language: l, nativeLanguage: l })}
+          onLanguageChange={(l) => saveSettings({ ...settings, language: l })}
           onNext={() => setCurrentScreen('LANGUAGE_SELECT')}
           onOpenOnline={() => setCurrentScreen('ONLINE_LOBBY')}
           onOpenHistory={() => setCurrentScreen('HISTORY')}

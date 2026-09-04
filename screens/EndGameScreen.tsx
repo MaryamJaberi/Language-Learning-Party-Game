@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Team, Player, TeamColor, Language, PlayedCardRecord } from '../types';
 import { COLORS_MAP, SUPPORTED_LANGUAGES } from '../constants';
-import { TRANSLATIONS } from '../translations';
+import { tUI, isRtlLang } from '../ui';
 import { TeamMascot } from '../components/Mascots';
 import { sound } from '../soundManager';
 import { 
@@ -39,11 +39,11 @@ const EndGameScreen: React.FC<Props> = ({
   language, 
   isPoolExhausted 
 }) => {
-  const t = TRANSLATIONS[language] || TRANSLATIONS.fa;
+  const t = tUI(language);
+  const isRTL = isRtlLang(language);
   const isTie = winners.length > 1;
   const winnerColor = winners[0]?.color || TeamColor.Blue;
   const config = COLORS_MAP[winnerColor] || { bg: 'bg-[#00F0FF]', text: 'text-[#1a0833]', hex: '#00F0FF' };
-  const isRTL = language === 'fa' || language === 'ar';
 
   const [activeTab, setActiveTab] = useState<'podium' | 'learning' | 'cards'>('podium');
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);

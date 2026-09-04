@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { GameSettings, GameStatus, Team, Player, GameHistoryEntry, TeamColor, LanguageCard, PlayedCardRecord } from '../types';
 import { COLORS_MAP, SUPPORTED_LANGUAGES } from '../constants';
-import { TRANSLATIONS } from '../translations';
+import { tUI, isRtlLang } from '../ui';
 import PlayerCircle from '../components/PlayerCircle';
 import TimerDisplay from '../components/TimerDisplay';
 import Modal from '../components/Modal';
@@ -93,8 +93,8 @@ const GameplayScreen: React.FC<Props> = ({
   setPlayedCards
 }) => {
   const language = settings.language;
-  const t = TRANSLATIONS[language] || TRANSLATIONS.fa;
-  const isRTL = language === 'fa' || language === 'ar';
+  const t = tUI(language);
+  const isRTL = isRtlLang(language);
 
   // Floating Undo state
   const [undoSnapshot, setUndoSnapshot] = useState<UndoSnapshot | null>(null);

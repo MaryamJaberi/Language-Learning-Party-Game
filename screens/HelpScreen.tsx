@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Language } from '../types';
-import { TRANSLATIONS } from '../translations';
+import { tUI, isRtlLang } from '../ui';
 import { TeamMascot } from '../components/Mascots';
 import { sound } from '../soundManager';
 import { BookOpen, HelpCircle, Sparkles, Zap, ArrowRight, ArrowLeft, ChevronUp } from 'lucide-react';
@@ -56,10 +56,10 @@ const DEFAULT_HELP: Record<string, { title: string; sections: Array<{ id: string
 };
 
 const HelpScreen: React.FC<Props> = ({ language, onClose, initialSection }) => {
-  const t = TRANSLATIONS[language] || TRANSLATIONS.fa;
+  const t = tUI(language);
+  const isRTL = isRtlLang(language);
   const help = t?.helpContent || DEFAULT_HELP[language] || DEFAULT_HELP.fa;
   const sections = help.sections || DEFAULT_HELP.fa.sections;
-  const isRTL = language === 'fa' || language === 'ar';
   const { isBarsVisible, scrollContainerRef, handleScroll, showBars } = useGoogleScrollBars();
 
   useEffect(() => {

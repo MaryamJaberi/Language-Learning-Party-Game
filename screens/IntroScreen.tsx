@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Language } from '../types';
-import { TRANSLATIONS, NATIVE_LANGUAGE_NAMES } from '../translations';
+import { NATIVE_LANGUAGE_NAMES } from '../translations';
+import { tUI, tf, isRtlLang } from '../ui';
+import { SUPPORTED_LANGUAGES } from '../constants';
+import { FlagIcon } from '../components/FlagIcon';
 import { TeamMascot } from '../components/Mascots';
 import { sound } from '../soundManager';
 import { auth, signInWithGoogle, logOut } from '../firebase';
@@ -38,8 +41,8 @@ const IntroScreen: React.FC<Props> = ({
   onOpenHistory, 
   onOpenHelp 
 }) => {
-  const t = TRANSLATIONS[language];
-  const languages: Language[] = ['fa', 'en', 'nl', 'de', 'fr', 'ar', 'tr', 'pl', 'uk'];
+  const t = tUI(language);
+  const isRTL = isRtlLang(language);
   const [mascotBounce, setMascotBounce] = useState(false);
   const [partyEmote, setPartyEmote] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
@@ -84,8 +87,6 @@ const IntroScreen: React.FC<Props> = ({
     };
   }, []);
 
-  const isRTL = language === 'fa' || language === 'ar';
-
   const handleMascotClick = () => {
     sound.playCorrect();
     setMascotBounce(true);
@@ -117,7 +118,7 @@ const IntroScreen: React.FC<Props> = ({
   };
 
   return (
-    <div className="h-full min-h-0 flex-1 flex flex-col items-center justify-between p-3.5 sm:p-4 text-center select-none overflow-y-auto overscroll-contain" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="h-full min-h-0 flex-1 flex flex-col p-3 text-center select-none overflow-hidden" dir={isRTL ? 'rtl' : 'ltr'}>
       
       {/* Top Bar with Google Sign-In & Brand Badge */}
       <div className="w-full max-w-sm flex items-center justify-between px-1 mb-1 shrink-0">
@@ -160,8 +161,10 @@ const IntroScreen: React.FC<Props> = ({
         </button>
       </div>
 
+      {/* Brand + mascot (scrolls if needed) */}
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain w-full max-w-sm mx-auto">
       {/* Brand Title Area - Party & Co SHOCK YOU! Style */}
-      <div className="w-full max-w-sm mt-0.5 shrink-0">
+      <div className="w-full mt-0.5">
         <div className="pixel-card-shock bg-gradient-to-br from-[#2f1857] via-[#43167a] to-[#6b1cb0] text-white p-3.5 sm:p-4 mx-0.5 relative overflow-hidden border-[3.5px] border-[#241442]">
           <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#FFE600_1px,transparent_1px)] [background-size:12px_12px]" />
           
@@ -197,7 +200,7 @@ const IntroScreen: React.FC<Props> = ({
         <div className="relative">
           <div className="absolute inset-0 bg-[#FF007F]/20 rounded-full blur-xl transform scale-125 pointer-events-none" />
           <div className={`transition-transform duration-200 ${mascotBounce ? 'scale-110 rotate-6' : 'hover:scale-105 active:scale-95'}`}>
-            <TeamMascot color="PARTY" size={120} className="drop-shadow-[0_0_15px_rgba(255,0,127,0.8)]" />
+            <TeamMascot color="PARTY" size={84} className="drop-shadow-[0_0_15px_rgba(255,0,127,0.8)]" />
           </div>
         </div>
 
@@ -205,41 +208,48 @@ const IntroScreen: React.FC<Props> = ({
           className="mt-1.5 px-3 py-0.5 border-2 border-[#241442] bg-[#FFE600] rounded-full text-[11px] font-black text-[#1a0833] shadow-[2px_2px_0px_0px_#241442] flex items-center gap-1.5"
         >
           <Sparkles size={13} color="#1a0833" />
-          <span>{language === 'fa' ? 'بزن رو من شاد شی!' : 'Ready to Party! Tap Me!'}</span>
+          <span>{t.tapMascot}</span>
         </div>
+      </div>
       </div>
 
       {/* Interactive Controls & Language Selection Area */}
-      <div className="w-full max-w-sm space-y-2.5 shrink-0">
+      <div className="w-full max-w-sm mx-auto space-y-2 shrink-0">
         
         {/* Language Selector Card */}
-        <div className="bg-white p-2.5 sm:p-3 rounded-2xl border-[3.5px] border-[#241442] shadow-[4px_4px_0px_0px_#241442]">
-          <div className="flex items-center justify-center gap-1.5 text-[11px] uppercase tracking-wider text-[#1a0833] font-black mb-1.5">
+        <div className="bg-white p-2.5 rounded-2xl border-[3.5px] border-[#241442] shadow-[4px_4px_0px_0px_#241442]">
+          <div className="flex items-center justify-center gap-1.5 text-[11px] uppercase tracking-wider text-[#1a0833] font-black mb-1">
             <Globe size={14} color="#FF007F" />
-            <span>{language === 'fa' ? 'انتخاب زبان بازی' : 'SELECT LANGUAGE'}</span>
+            <span>{t.uiLanguageLabel}</span>
           </div>
+          <p className="text-[10px] text-slate-500 font-bold mb-1.5 leading-snug">{t.uiLanguageHint}</p>
           
-          <div className="grid grid-cols-3 gap-1.5" dir="ltr">
-            {languages.map(l => {
-              const isSelected = language === l;
+          <div className="grid grid-cols-5 gap-1.5" dir="ltr">
+            {SUPPORTED_LANGUAGES.map(l => {
+              const isSelected = language === l.code;
               return (
                 <button 
-                  key={l}
+                  key={l.code}
+                  type="button"
                   onClick={() => {
                     sound.playToggle();
-                    onLanguageChange(l);
+                    onLanguageChange(l.code);
                   }}
-                  className={`py-1.5 px-1 rounded-xl font-black text-[11px] transition-all border-2 border-[#241442] text-center ${
+                  className={`h-9 rounded-xl font-black text-[10px] border-2 border-[#241442] flex items-center justify-center gap-0.5 ${
                     isSelected 
-                    ? 'bg-gradient-to-r from-[#FF007F] to-[#FF2E93] text-white shadow-[2px_2px_0px_0px_#241442] -translate-x-[1px] -translate-y-[1px]' 
-                    : 'bg-[#F4E8FF]/60 text-[#1a0833] hover:bg-[#EBD2FF]'
+                    ? 'bg-gradient-to-r from-[#FF007F] to-[#FF2E93] text-white shadow-[1.5px_1.5px_0px_0px_#241442]' 
+                    : 'bg-[#F4E8FF]/60 text-[#1a0833]'
                   }`}
+                  title={l.nativeName}
                 >
-                  {NATIVE_LANGUAGE_NAMES[l]}
+                  <FlagIcon language={l.code} size={14} />
                 </button>
               );
             })}
           </div>
+          <p className="mt-1.5 text-[11px] font-black text-[#FF007F]">
+            {NATIVE_LANGUAGE_NAMES[language]}
+          </p>
         </div>
 
         {/* Primary Action Buttons */}
@@ -266,7 +276,7 @@ const IntroScreen: React.FC<Props> = ({
             className="pixel-btn pixel-btn-cyan w-full py-2.5 text-xs sm:text-sm font-black flex items-center justify-center gap-2 text-[#1a0833] shadow-[3px_3px_0px_0px_#241442]"
           >
             <Globe size={18} className="text-[#FF007F]" />
-            <span>{language === 'fa' ? '🌐 بازی آنلاین راه دور (دیسکورد / گوگل میت)' : '🌐 Online Multiplayer (Discord / Meet)'}</span>
+            <span>{t.onlineMultiplayer}</span>
             <Sparkles size={16} className="text-[#FF007F]" />
           </button>
           
@@ -304,10 +314,10 @@ const IntroScreen: React.FC<Props> = ({
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-[11px] font-black text-[#FFE600] leading-tight truncate">
-                    {language === 'fa' ? '📲 نصب روی موبایل (Android & iOS)' : '📲 Mobile App & PWA'}
+                    {t.installApp}
                   </div>
                   <div className="text-[9.5px] text-slate-300 truncate">
-                    {language === 'fa' ? 'افزودن به صفحه اصلی • اجرای آفلاین' : 'Add to Home Screen • Fast & Offline'}
+                    {t.installSub}
                   </div>
                 </div>
               </div>
@@ -317,7 +327,7 @@ const IntroScreen: React.FC<Props> = ({
                 className="px-3 py-1.5 bg-[#39FF14] hover:bg-[#32e012] text-[#1a0833] font-black text-xs rounded-xl border-2 border-[#241442] shadow-[2px_2px_0px_0px_#241442] active:translate-y-0.5 shrink-0 flex items-center gap-1"
               >
                 <Download size={13} />
-                <span>{language === 'fa' ? 'نصب / افزودن' : 'Install / Add'}</span>
+                <span>{t.addToHome}</span>
               </button>
             </div>
 
@@ -325,9 +335,7 @@ const IntroScreen: React.FC<Props> = ({
             <div className="text-[9px] text-[#00F0FF] bg-[#241442]/90 px-2 py-0.5 rounded-lg border border-[#00F0FF]/30 flex items-center justify-center gap-1 font-bold">
               <Zap size={10} color="#00F0FF" fill="#00F0FF" />
               <span>
-                {language === 'fa' 
-                  ? 'نسخه اندروید و iOS به‌زودی در استورها (هم‌اکنون قابل افزودن به صفحه اصلی)' 
-                  : 'Android & iOS native apps coming soon (Add to Home Screen ready!)'}
+                {t.comingSoonStores}
               </span>
             </div>
           </div>

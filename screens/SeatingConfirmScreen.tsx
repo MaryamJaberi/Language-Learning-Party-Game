@@ -2,6 +2,7 @@ import React from 'react';
 import { GameSettings, Team, Player, TeamColor } from '../types';
 import { COLORS_MAP } from '../constants';
 import { TRANSLATIONS } from '../translations';
+import { tUI, isRtlLang } from '../ui';
 import { TeamMascot } from '../components/Mascots';
 import { sound } from '../soundManager';
 import { HelpCircle, ArrowRight, ArrowLeft, Users, Zap, Sparkles } from 'lucide-react';
@@ -23,8 +24,8 @@ const SeatingConfirmScreen: React.FC<Props> = ({
   onBack,
   onOpenHelp
 }) => {
-  const t = TRANSLATIONS[settings.language];
-  const isRTL = settings.language === 'fa' || settings.language === 'ar';
+  const t = tUI(settings.language);
+  const isRTL = isRtlLang(settings.language);
   const radius = 100;
   const centerX = 135;
   const centerY = 135;

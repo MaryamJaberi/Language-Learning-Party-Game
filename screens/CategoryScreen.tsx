@@ -2,6 +2,7 @@ import React from 'react';
 import { GameSettings } from '../types';
 import { CATEGORIES } from '../constants';
 import { TRANSLATIONS } from '../translations';
+import { tUI, tf, isRtlLang } from '../ui';
 import { TeamMascot } from '../components/Mascots';
 import { NeonCategoryIcon } from '../components/NeonIcons';
 import { sound } from '../soundManager';
@@ -16,8 +17,8 @@ interface Props {
 }
 
 const CategoryScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpenHelp }) => {
-  const t = TRANSLATIONS[settings.language] || TRANSLATIONS.fa;
-  const isRTL = settings.language === 'fa' || settings.language === 'ar';
+  const t = tUI(settings.language);
+  const isRTL = isRtlLang(settings.language);
   
   const allCategoryKeys = Object.keys(CATEGORIES);
 
@@ -68,7 +69,7 @@ const CategoryScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onO
                 {t.categories_title || 'موضوعات و دسته‌بندی‌ها'}
               </h2>
               <span className="text-[10px] text-[#f59e0b] font-black block">
-                مرحله ۲ از ۴: موقعیت‌های مکالمه و واژگان
+                {tf(settings.language, 'stepOf', { n: 2, total: 4 })} · {t.stepTopics}
               </span>
             </div>
           </div>
@@ -102,7 +103,7 @@ const CategoryScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onO
             className="flex-1 py-1.5 px-2 bg-[#f1f5f9] hover:bg-slate-200 text-[#0f172a] border-2 border-[#0f172a] rounded-xl text-[11px] sm:text-xs font-black shadow-[2px_2px_0px_0px_#0f172a] flex items-center justify-center gap-1 active:translate-y-0.5"
           >
             <Sparkles size={13} className="text-[#f43f5e]" />
-            <span>موضوعات ضروری</span>
+            <span>{t.essentialsTopics || 'موضوعات ضروری'}</span>
           </button>
         </div>
       </header>
@@ -182,7 +183,7 @@ const CategoryScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onO
             }} 
             className="pixel-btn pixel-btn-pink flex-[2] py-2.5 text-sm sm:text-base font-black uppercase tracking-wider flex items-center justify-center gap-2 active:scale-95"
           >
-            <span>{t.next} (تنظیمات)</span>
+            <span>{t.nextSetup || t.next}</span>
             {isRTL ? <ArrowLeft size={16} /> : <ArrowRight size={16} />}
           </button>
         </div>

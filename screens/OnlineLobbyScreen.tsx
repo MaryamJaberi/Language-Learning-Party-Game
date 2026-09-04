@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { OnlineRoomState, OnlinePlayer, GameSettings, Language, TeamColor } from '../types';
 import { COLORS_MAP, SUPPORTED_LANGUAGES } from '../constants';
 import { TRANSLATIONS, NATIVE_LANGUAGE_NAMES } from '../translations';
+import { tUI, isRtlLang } from '../ui';
 import { TeamMascot } from '../components/Mascots';
 import { sound } from '../soundManager';
 import { 
@@ -46,8 +47,8 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
   onStartGame,
   onBack
 }) => {
-  const t = TRANSLATIONS[language] || TRANSLATIONS.fa;
-  const isRTL = language === 'fa' || language === 'ar';
+  const t = tUI(language);
+  const isRTL = isRtlLang(language);
   const myDeviceId = getDeviceId();
 
   // Mode: 'select' | 'create' | 'join' | 'in_lobby'

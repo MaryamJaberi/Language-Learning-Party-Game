@@ -1,6 +1,7 @@
 import { describe, test, expect } from 'vitest';
 import { WORD_BANK, WordData } from '../words';
 import { TRANSLATIONS } from '../translations';
+import '../translations.more';
 import { TeamColor, Language, GameSettings, Team, Player, GameStatus, GameHistoryEntry } from '../types';
 import { SUPPORTED_LANGUAGES } from '../constants';
 import { buildSessionCardPool } from '../cardsData';
@@ -44,7 +45,7 @@ describe('Game Words and Translation Bank Tests', () => {
   });
 
   test('TRANSLATIONS dictionary contains expected languages and all critical keys', () => {
-    const supportedLanguages: Language[] = ['en', 'fa', 'nl', 'de', 'fr', 'ar', 'tr', 'pl', 'uk'];
+    const supportedLanguages: Language[] = ['en', 'fa', 'nl', 'de', 'fr', 'ar', 'tr', 'pl', 'uk', 'es', 'it', 'pt', 'zh', 'ja', 'ko', 'hi', 'en-US'];
     
     supportedLanguages.forEach((lang) => {
       const trans = TRANSLATIONS[lang];

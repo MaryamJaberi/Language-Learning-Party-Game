@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { GameSettings, Language } from '../types';
 import { TRANSLATIONS } from '../translations';
+import { tUI, tf, isRtlLang } from '../ui';
 import { TeamMascot } from '../components/Mascots';
 import { 
   NeonLightning, 
@@ -35,8 +36,8 @@ interface Props {
 }
 
 const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpenHelp }) => {
-  const t = TRANSLATIONS[settings.language] || TRANSLATIONS.fa;
-  const isRTL = settings.language === 'fa' || settings.language === 'ar';
+  const t = tUI(settings.language);
+  const isRTL = isRtlLang(settings.language);
   
   // Accordion state - all sections collapsed by default as requested
   const [openSection, setOpenSection] = useState<string | null>(null);
@@ -86,7 +87,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                 {t.setup}
               </h1>
               <span className="text-[10px] text-[#f59e0b] font-black block">
-                مرحله ۳ از ۴: شخصی‌سازی و قوانین مسابقه
+                {tf(settings.language, 'stepOf', { n: 3, total: 4 })} · {t.stepSetup}
               </span>
             </div>
           </div>
@@ -670,7 +671,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
             }} 
             className="pixel-btn pixel-btn-pink flex-[2] py-2.5 text-sm sm:text-base font-black uppercase tracking-wider flex items-center justify-center gap-2 active:scale-95"
           >
-            <span>{t.next} (اسامی بازیکنان)</span>
+            <span>{t.nextPlayers || t.next}</span>
             {isRTL ? <ArrowLeft size={16} /> : <ArrowRight size={16} />}
           </button>
         </div>
