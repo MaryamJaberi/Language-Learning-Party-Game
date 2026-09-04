@@ -5,7 +5,7 @@ export enum TeamColor {
   Yellow = 'YELLOW'
 }
 
-export type Language = 'fa' | 'en' | 'nl' | 'de' | 'fr' | 'ar' | 'tr' | 'pl' | 'uk';
+export type Language = 'fa' | 'en' | 'en-US' | 'nl' | 'de' | 'fr' | 'ar' | 'tr' | 'pl' | 'uk' | 'es' | 'it';
 
 export type CEFRLevel = 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2' | 'all';
 
@@ -26,6 +26,8 @@ export type LearningMode =
   | 'Situation' 
   | 'Reverse';
 
+export type CardGameMode = 'mixed' | 'reverse' | 'standard';
+
 export type PowerCardType = 'time_boost' | 'hint_clue' | 'mirror_challenge';
 
 export interface LanguageCard {
@@ -45,6 +47,7 @@ export interface LanguageCard {
   difficulty: 'easy' | 'medium' | 'hard';
   points: number; // 1, 2, 3, or 4
   isGolden?: boolean; // Golden card (2x points bonus!)
+  isReverse?: boolean; // Reverse translation flag
 }
 
 export interface Player {
@@ -77,8 +80,10 @@ export interface GameSettings {
   playerNames: string[];
   language: Language; // App UI language / Native reference language
   nativeLanguage?: Language; // Native / support language
-  targetLanguages: Language[]; // Array of selected target languages (e.g. ['nl', 'en', 'de'])
+  targetLanguages: Language[]; // Array of selected target languages (e.g. ['nl', 'en-US', 'de'])
   soundEnabled?: boolean;
+  autoPronounceOnCorrect?: boolean; // Hear native speech pronunciation when answered correctly
+  cardGameMode?: CardGameMode; // 'mixed' | 'reverse' | 'standard'
   passPhoneScreenEnabled?: boolean;
   powerCardsEnabled?: boolean;
   coachModeEnabled?: boolean;
@@ -141,4 +146,47 @@ export enum GameStatus {
   RoundFinished = 'ROUND_ENDED',
   GameOver = 'WINNER_SCREEN',
   Help = 'PAUSED'
+}
+
+export interface OnlinePlayer {
+  id: number;
+  name: string;
+  teamId: number;
+  teamColor: TeamColor;
+  isHost: boolean;
+  isReady: boolean;
+  deviceId: string;
+  avatar?: string;
+  joinedAt?: number;
+}
+
+export interface RoomReaction {
+  id: string;
+  sender: string;
+  emoji: string;
+  timestamp: number;
+}
+
+export interface OnlineRoomState {
+  id: string;
+  code: string;
+  hostId: string;
+  hostName: string;
+  status: 'lobby' | 'seating' | 'playing' | 'round_ended' | 'game_over';
+  currentRound: number;
+  activePlayerIndex: number;
+  settings: GameSettings;
+  teams: Team[];
+  players: OnlinePlayer[];
+  currentCard: LanguageCard | null;
+  cardPool?: LanguageCard[];
+  cardPoolIndex?: number;
+  roundTimer: number;
+  isTimerRunning: boolean;
+  playedCards: PlayedCardRecord[];
+  voiceProvider?: 'meet' | 'discord' | 'jitsi' | 'custom';
+  voiceLink?: string;
+  reactions?: RoomReaction[];
+  createdAt?: string;
+  updatedAt?: string;
 }

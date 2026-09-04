@@ -81,16 +81,21 @@ const TimerDisplay: React.FC<Props> = ({
             return (
               <div 
                 key={t.id}
-                className={`px-2 py-1 rounded-xl border-2 border-[#241442] flex items-center justify-between text-[11px] font-black transition-all ${
-                  t.isEliminated || t.timeRemaining <= 0
+                className={`px-2 py-1 rounded-xl border-2 border-[#0f172a] flex items-center justify-between text-[11px] font-black transition-all ${
+                  t.isEliminated
                     ? 'bg-slate-200 opacity-60 line-through text-slate-500'
                     : isActiveTeam 
-                      ? 'bg-white shadow-[2px_2px_0px_0px_#241442] -translate-y-0.5 ring-2 ring-[#FFE600]' 
-                      : 'bg-white/90 text-[#1a0833]'
+                      ? 'bg-white shadow-[2px_2px_0px_0px_#0f172a] -translate-y-0.5 ring-2 ring-[#f59e0b]' 
+                      : 'bg-white/90 text-[#0f172a]'
                 }`}
                 style={{ borderLeftWidth: '5px', borderLeftColor: config.hex }}
               >
-                <span className="truncate max-w-[55px]">{t.color}</span>
+                <div className="truncate flex items-center gap-1">
+                  <span>{t.color}</span>
+                  <span className="px-1 py-0.2 bg-[#f59e0b] text-[#0f172a] rounded text-[9.5px] font-black">
+                    {t.score || 0}★
+                  </span>
+                </div>
                 <span className="font-mono text-[10px]" dir="ltr">
                   {tMin}:{tRemSec.toString().padStart(2, '0')}
                 </span>

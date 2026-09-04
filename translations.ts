@@ -2,17 +2,20 @@ import { Language } from './types';
 
 export const NATIVE_LANGUAGE_NAMES: Record<Language, string> = {
   fa: "فارسی",
-  en: "English",
+  'en-US': "English (US)",
+  en: "English (UK)",
   nl: "Nederlands",
   de: "Deutsch",
   fr: "Français",
+  es: "Español",
+  it: "Italiano",
   ar: "العربية",
   tr: "Türkçe",
   pl: "Polski",
   uk: "Українська"
 };
 
-export const TRANSLATIONS: Record<Language, any> = {
+export const TRANSLATIONS: Record<Language, any> = ({
   fa: {
     title: "دور",
     subtitle: "بازی گروهی یادگیری زبان با دوستان",
@@ -960,4 +963,8 @@ export const TRANSLATIONS: Record<Language, any> = {
     missedCardsTitle: "Картки для повторення",
     playAgain: "Зіграти знову з цими налаштуваннями"
   }
-};
+} as any) as Record<Language, any>;
+
+TRANSLATIONS['en-US'] = TRANSLATIONS.en;
+TRANSLATIONS['es'] = TRANSLATIONS.en;
+TRANSLATIONS['it'] = TRANSLATIONS.en;

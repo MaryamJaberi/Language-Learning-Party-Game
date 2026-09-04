@@ -418,9 +418,9 @@ describe('10-Round Complete Multi-User Simulation & English Language Integration
   test('English is included in supported languages with proper flag and name', () => {
     const english = SUPPORTED_LANGUAGES.find((l: any) => l.code === 'en');
     expect(english).toBeDefined();
-    expect(english.name).toBe('English');
+    expect(english.name).toContain('English');
     expect(english.flag).toBe('🇬🇧');
-    expect(english.persianName).toBe('انگلیسی');
+    expect(english.persianName).toContain('انگلیسی');
   });
 
   test('buildSessionCardPool generates extensive English cards when "en" is selected', () => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { GameSettings, GameStatus, GameHistoryEntry, Team, Player, TeamColor, LanguageCard, PlayedCardRecord } from './types';
+import { GameSettings, GameStatus, GameHistoryEntry, Team, Player, TeamColor, LanguageCard, PlayedCardRecord, OnlineRoomState } from './types';
 import { buildSessionCardPool } from './cardsData';
 import IntroScreen from './screens/IntroScreen';
 import LanguageSelectScreen from './screens/LanguageSelectScreen';
@@ -10,19 +10,24 @@ import SeatingConfirmScreen from './screens/SeatingConfirmScreen';
 import GameplayScreen from './screens/GameplayScreen';
 import HistoryScreen from './screens/HistoryScreen';
 import HelpScreen from './screens/HelpScreen';
+import OnlineLobbyScreen from './screens/OnlineLobbyScreen';
+import OnlineGameplayScreen from './screens/OnlineGameplayScreen';
 import OfflineIndicator from './components/OfflineIndicator';
 import { sound } from './soundManager';
 import { auth, saveMatchToCloud, syncSettingsToCloud } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import { getRandomCharacters } from './characters';
 
 const DEFAULT_SETTINGS: GameSettings = {
   playerCount: 4,
   roundsCount: 3,
-  roundDuration: 90,
+  roundDuration: 60,
   difficulty: 'easy',
   cefrLevel: 'all',
   nativeLanguage: 'fa',
-  targetLanguages: ['nl', 'en'],
+  targetLanguages: ['en-US', 'nl'],
+  cardGameMode: 'mixed',
+  autoPronounceOnCorrect: true,
   selectedCategories: [
     "CAT_EVERYDAY",
     "CAT_RESTAURANT",
@@ -32,14 +37,14 @@ const DEFAULT_SETTINGS: GameSettings = {
     "CAT_WORK",
     "CAT_SMALLTALK"
   ],
-  playerNames: Array(8).fill(''),
+  playerNames: getRandomCharacters('fa', 8),
   language: 'fa',
   passPhoneScreenEnabled: false,
   soundEnabled: true,
   powerCardsEnabled: true
 };
 
-type ScreenType = 'INTRO' | 'LANGUAGE_SELECT' | 'CATEGORIES' | 'SETUP' | 'PLAYERS' | 'SEATING_CONFIRM' | 'GAME' | 'HISTORY' | 'HELP';
+type ScreenType = 'INTRO' | 'LANGUAGE_SELECT' | 'CATEGORIES' | 'SETUP' | 'PLAYERS' | 'SEATING_CONFIRM' | 'GAME' | 'HISTORY' | 'HELP' | 'ONLINE_LOBBY' | 'ONLINE_GAME';
 
 const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('INTRO');
@@ -47,6 +52,23 @@ const App: React.FC = () => {
   const [activeHelpSection, setActiveHelpSection] = useState<string>('intro');
   const [settings, setSettings] = useState<GameSettings>(DEFAULT_SETTINGS);
   const [history, setHistory] = useState<GameHistoryEntry[]>([]);
+
+  // Online Multiplayer Room State
+  const [onlineRoom, setOnlineRoom] = useState<OnlineRoomState | null>(null);
+  const [onlinePlayerId, setOnlinePlayerId] = useState<number>(0);
+  const [initialRoomCode, setInitialRoomCode] = useState<string>('');
+
+  // Check URL query parameters for ?room=CODE
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const roomParam = params.get('room');
+      if (roomParam) {
+        setInitialRoomCode(roomParam.trim().toUpperCase());
+        setCurrentScreen('ONLINE_LOBBY');
+      }
+    }
+  }, []);
 
   // Gameplay State
   const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.Setup);
@@ -152,26 +174,27 @@ const App: React.FC = () => {
   const prepareGameSeating = () => {
     const teamColors = [TeamColor.Blue, TeamColor.Red, TeamColor.Green, TeamColor.Yellow];
     const teamCount = settings.playerCount / 2;
-    const totalGameTime = settings.roundsCount * settings.roundDuration * 1000;
-    const timePerTeam = totalGameTime / teamCount;
+    const initialRoundMs = settings.roundDuration * 1000;
 
     // Team 1: (P1, P_opposite), Team 2: (P2, P_opposite), etc.
     const initialTeams: Team[] = Array.from({ length: teamCount }).map((_, i) => ({
       id: i,
       color: teamColors[i],
-      timeRemaining: timePerTeam,
+      timeRemaining: initialRoundMs,
       isEliminated: false,
       playerIds: [i, i + teamCount],
       score: 0,
       comboStreak: 0
     }));
 
+    const randomCartoonDefaults = getRandomCharacters(settings.nativeLanguage || settings.language || 'fa', settings.playerCount);
     const initialPlayers: Player[] = Array.from({ length: settings.playerCount }).map((_, i) => {
       const teamId = i % teamCount;
-      const defaultName = settings.language === 'fa' ? `بازیکن ${i + 1}` : `Player ${i + 1}`;
+      const customName = settings.playerNames[i]?.trim();
+      const defaultName = customName || randomCartoonDefaults[i] || (settings.language === 'fa' ? `بازیکن ${i + 1}` : `Player ${i + 1}`);
       return {
         id: i,
-        name: settings.playerNames[i]?.trim() || defaultName,
+        name: defaultName,
         teamId: teamId,
         teamColor: teamColors[teamId]
       };
@@ -179,10 +202,11 @@ const App: React.FC = () => {
 
     // Build the Multi-Language balanced card pool from user selections
     const pool = buildSessionCardPool(
-      settings.targetLanguages || ['nl', 'en'],
+      settings.targetLanguages || ['en-US', 'nl'],
       settings.selectedCategories,
       settings.cefrLevel || 'all',
-      settings.nativeLanguage || settings.language || 'fa'
+      settings.nativeLanguage || settings.language || 'fa',
+      settings.cardGameMode || 'mixed'
     );
     setSessionCardPool(pool);
     setPoolPointer(0);
@@ -231,31 +255,37 @@ const App: React.FC = () => {
     }
   };
 
-  // Millisecond Timer loop for ACTIVE_TURN
+  // Rock-solid delta timer loop for ACTIVE_TURN (50ms interval, no drift)
+  const lastTickRef = useRef<number>(Date.now());
   useEffect(() => {
     if (gameStatus === GameStatus.ActiveTurn) {
+      lastTickRef.current = Date.now();
       timerRef.current = window.setInterval(() => {
+        const now = Date.now();
+        const delta = Math.min(500, Math.max(10, now - lastTickRef.current));
+        lastTickRef.current = now;
+
         setRoundTimer(prev => {
-          if (prev <= 10) {
+          if (prev <= delta) {
             setGameStatus(GameStatus.RoundEnded);
             return 0;
           }
-          return prev - 10;
+          return prev - delta;
         });
 
         const activePlayer = players[activePlayerIndex];
         if (activePlayer) {
           setTeams(prev => prev.map(t => {
             if (t.id === activePlayer.teamId && !t.isEliminated) {
-              const newTime = t.timeRemaining - 10;
-              return { ...t, timeRemaining: Math.max(0, newTime) };
+              const newTime = Math.max(0, t.timeRemaining - delta);
+              return { ...t, timeRemaining: newTime };
             }
             return t;
           }));
         }
 
-        setSwapCooldown(prev => Math.max(0, prev - 10));
-      }, 10);
+        setSwapCooldown(prev => Math.max(0, prev - delta));
+      }, 50);
     } else {
       if (timerRef.current) clearInterval(timerRef.current);
     }
@@ -297,8 +327,37 @@ const App: React.FC = () => {
           language={settings.language}
           onLanguageChange={(l) => saveSettings({ ...settings, language: l, nativeLanguage: l })}
           onNext={() => setCurrentScreen('LANGUAGE_SELECT')}
+          onOpenOnline={() => setCurrentScreen('ONLINE_LOBBY')}
           onOpenHistory={() => setCurrentScreen('HISTORY')}
           onOpenHelp={() => openHelp('intro')}
+        />
+      )}
+
+      {/* 1.5 ONLINE MULTIPLAYER LOBBY */}
+      {currentScreen === 'ONLINE_LOBBY' && (
+        <OnlineLobbyScreen
+          language={settings.language}
+          initialSettings={settings}
+          initialRoomCode={initialRoomCode}
+          onStartGame={(room, myPlayerId) => {
+            setOnlineRoom(room);
+            setOnlinePlayerId(myPlayerId);
+            setCurrentScreen('ONLINE_GAME');
+          }}
+          onBack={() => setCurrentScreen('INTRO')}
+        />
+      )}
+
+      {/* 1.6 ONLINE GAMEPLAY SCREEN */}
+      {currentScreen === 'ONLINE_GAME' && onlineRoom && (
+        <OnlineGameplayScreen
+          initialRoom={onlineRoom}
+          myPlayerId={onlinePlayerId}
+          language={settings.language}
+          onExit={() => {
+            setOnlineRoom(null);
+            setCurrentScreen('INTRO');
+          }}
         />
       )}
 

@@ -17,8 +17,10 @@ import {
   Award,
   ChevronDown,
   ChevronUp,
-  Volume2
+  Volume2,
+  Share2
 } from 'lucide-react';
+import ShareScorecardModal from '../components/ShareScorecardModal';
 
 interface Props {
   winners: Team[];
@@ -45,6 +47,7 @@ const EndGameScreen: React.FC<Props> = ({
 
   const [activeTab, setActiveTab] = useState<'podium' | 'learning' | 'cards'>('podium');
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   useEffect(() => {
     sound.playWinner();
@@ -373,19 +376,44 @@ const EndGameScreen: React.FC<Props> = ({
 
       </div>
 
-      {/* Play Again button */}
-      <button 
-        type="button"
-        onClick={() => {
-          sound.playClick();
-          onRestart();
-        }}
-        className="pixel-btn pixel-btn-pink w-full py-3 text-base font-black uppercase tracking-wider text-white flex items-center justify-center gap-2 shrink-0 shadow-[4px_4px_0px_0px_#241442]"
-      >
-        <RotateCcw size={18} />
-        <span>{t.playAgain || t.returnMenu}</span>
-        <Zap size={18} color="#FFE600" fill="#FFE600" />
-      </button>
+      {/* Action Buttons Row: Share Scorecard + Play Again */}
+      <div className="w-full flex flex-col gap-2 shrink-0">
+        <button
+          type="button"
+          onClick={() => {
+            sound.playClick();
+            setIsShareModalOpen(true);
+          }}
+          className="pixel-btn pixel-btn-yellow w-full py-2.5 text-sm font-black uppercase tracking-wider text-[#1a0833] flex items-center justify-center gap-2 shadow-[3px_3px_0px_0px_#241442]"
+        >
+          <Share2 size={16} />
+          <span>{language === 'fa' ? 'اشتراک‌گذاری کارنامه مسابقه 📤' : 'Share Match Scorecard 📤'}</span>
+        </button>
+
+        {/* Play Again button */}
+        <button 
+          type="button"
+          onClick={() => {
+            sound.playClick();
+            onRestart();
+          }}
+          className="pixel-btn pixel-btn-pink w-full py-3 text-base font-black uppercase tracking-wider text-white flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_#241442]"
+        >
+          <RotateCcw size={18} />
+          <span>{t.playAgain || t.returnMenu}</span>
+          <Zap size={18} color="#FFE600" fill="#FFE600" />
+        </button>
+      </div>
+
+      {/* Share Scorecard Modal */}
+      <ShareScorecardModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        winners={winners}
+        players={players}
+        playedCards={playedCards}
+        language={language}
+      />
 
     </div>
   );

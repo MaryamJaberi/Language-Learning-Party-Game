@@ -204,37 +204,24 @@ const GameplayScreen: React.FC<Props> = ({
     }
   }, [roundTimer, gameStatus]);
 
-  // Monitor Team Elimination
+  // Monitor Round Expiry
   useEffect(() => {
-    if (gameStatus !== GameStatus.ActiveTurn && gameStatus !== GameStatus.PassPhone) return;
-
-    teams.forEach(t => {
-      if (t.timeRemaining <= 0 && !t.isEliminated) {
-        sound.playBuzzer();
-        vibrate([150, 80, 150]);
-        setEliminatedTeamName(t.color);
-        setTeams(prev => prev.map(item => item.id === t.id ? { ...item, isEliminated: true } : item));
-        setGameStatus(GameStatus.TeamEliminated);
-      }
-    });
-
-    const activeTeams = teams.filter(t => !t.isEliminated && t.timeRemaining > 0);
-    if (activeTeams.length === 1 && !hasFinishedGameRef.current) {
-      hasFinishedGameRef.current = true;
-      setGameStatus(GameStatus.GameEnded);
+    if (roundTimer <= 0 && gameStatus === GameStatus.ActiveTurn) {
+      sound.playBuzzer();
+      vibrate([200, 100, 200]);
+      setGameStatus(GameStatus.RoundEnded);
     }
-  }, [teams, gameStatus, setGameStatus, setTeams]);
+  }, [roundTimer, gameStatus, setGameStatus]);
 
   // End Game Trigger
   useEffect(() => {
     if (gameStatus === GameStatus.GameEnded && !hasFinishedGameRef.current) {
       hasFinishedGameRef.current = true;
-      const activeTeams = teams.filter(t => !t.isEliminated);
       let winners: Team[] = [];
 
-      if (activeTeams.length > 0) {
-        const maxTime = Math.max(...activeTeams.map(t => t.timeRemaining));
-        winners = activeTeams.filter(t => t.timeRemaining === maxTime);
+      const maxScore = Math.max(...teams.map(t => t.score || 0));
+      if (maxScore > 0) {
+        winners = teams.filter(t => (t.score || 0) === maxScore);
       } else {
         const maxTime = Math.max(...teams.map(t => t.timeRemaining));
         winners = teams.filter(t => t.timeRemaining === maxTime);
@@ -284,6 +271,11 @@ const GameplayScreen: React.FC<Props> = ({
   const handleCorrect = (wasAlmost: boolean = false) => {
     sound.playCorrect();
     vibrate(60);
+
+    // Auto Pronounce target phrase in native target accent if setting is active
+    if (settings.autoPronounceOnCorrect !== false && currentCard?.targetText) {
+      sound.speakTargetPhrase(currentCard.targetText, currentCard.targetLanguage);
+    }
 
     const activePlayer = players[activePlayerIndex];
     const snapshot: UndoSnapshot = {
@@ -429,12 +421,11 @@ const GameplayScreen: React.FC<Props> = ({
 
   // WINNER SCREEN VIEW
   if (gameStatus === GameStatus.WinnerScreen) {
-    const activeTeams = teams.filter(t => !t.isEliminated);
     let winners: Team[] = [];
+    const maxScore = Math.max(...teams.map(t => t.score || 0));
 
-    if (activeTeams.length > 0) {
-      const maxTime = Math.max(...activeTeams.map(t => t.timeRemaining));
-      winners = activeTeams.filter(t => t.timeRemaining === maxTime);
+    if (maxScore > 0) {
+      winners = teams.filter(t => (t.score || 0) === maxScore);
     } else {
       const maxTime = Math.max(...teams.map(t => t.timeRemaining));
       winners = teams.filter(t => t.timeRemaining === maxTime);
@@ -547,120 +538,200 @@ const GameplayScreen: React.FC<Props> = ({
       <div className="w-full flex-1 min-h-0 flex flex-col justify-between my-1">
         
         <div 
-          className={`w-full h-full p-3.5 sm:p-4 rounded-3xl border-[3.5px] border-[#241442] shadow-[5px_5px_0px_0px_#241442] flex flex-col justify-between relative overflow-hidden transition-all ${
+          className={`w-full h-full p-3 sm:p-4 rounded-3xl border-[3.5px] border-[#241442] shadow-[4px_4px_0px_0px_#241442] flex flex-col justify-between relative overflow-hidden transition-all ${
             currentCard?.isGolden 
-              ? 'bg-gradient-to-br from-[#FFF9D2] via-[#FFE600] to-[#FFBF00] border-[#FFD700] ring-4 ring-[#FFE600]/60' 
+              ? 'bg-gradient-to-br from-[#FFFDE7] via-[#FFF59D] to-[#FFE082] ring-2 ring-[#FFE600]' 
               : 'bg-white'
           }`}
         >
-          {/* Top Card Badges (Active Player & Learning Mode) */}
-          <div className="flex items-center justify-between gap-1 shrink-0">
+          {/* Top Card Bar: Active Player & Mode Badge */}
+          <div className="flex items-center justify-between gap-1.5 shrink-0">
             
             {/* Active Player Pill */}
             <div 
-              className={`px-3 py-1 rounded-xl border-2 border-[#241442] font-black text-xs shadow-[2px_2px_0px_0px_#241442] flex items-center gap-1.5`}
+              className="px-2.5 py-1 rounded-xl border-2 border-[#241442] font-black text-xs shadow-[1.5px_1.5px_0px_0px_#241442] flex items-center gap-1.5"
               style={{ backgroundColor: activeConfig.hex, color: '#1a0833' }}
             >
-              <Zap size={14} fill="#1a0833" />
+              <Zap size={13} fill="#1a0833" />
               <span>{activePlayer?.name || 'Player'}</span>
-              <span className="text-[10px] opacity-80">({t.teamNames[activeColor]})</span>
+              <span className="text-[10px] opacity-75">({t.teamNames[activeColor]})</span>
             </div>
 
             {/* Streak Counter 🔥 */}
             {streakCount > 1 && (
-              <div className="flex items-center gap-1 bg-[#241442] text-[#FFE600] px-2.5 py-1 rounded-xl border border-[#FFE600] text-xs font-black animate-pulse">
-                <Flame size={14} color="#FF007F" fill="#FF007F" />
+              <div className="flex items-center gap-1 bg-[#241442] text-[#FFE600] px-2 py-0.5 rounded-lg border border-[#FFE600] text-[11px] font-black animate-pulse">
+                <Flame size={13} color="#FF007F" fill="#FF007F" />
                 <span>کمبو x{streakCount}!</span>
               </div>
             )}
 
-            {/* Learning Mode Badge */}
-            <div className="bg-[#241442] text-[#00F0FF] px-2.5 py-1 rounded-xl border border-[#00F0FF]/50 font-black text-[10.5px]">
-              {currentCard?.contentType || 'Phrase'} • {currentCard?.learningMode || 'Explain'}
+            {/* Clean Learning Mode Badge */}
+            <div className={`px-2.5 py-1 rounded-xl border-2 border-[#241442] font-black text-[11px] flex items-center gap-1 ${
+              currentCard?.isReverse || currentCard?.learningMode === 'Reverse'
+                ? 'bg-[#FFE600] text-[#1a0833]'
+                : 'bg-[#F2E8FF] text-[#7B2CBF]'
+            }`}>
+              {currentCard?.isReverse || currentCard?.learningMode === 'Reverse' ? (
+                <>
+                  <RotateCcw size={12} className="text-[#FF007F]" />
+                  <span>ترجمه معکوس</span>
+                </>
+              ) : (
+                <span>{currentCard?.cefrLevel ? `سطح ${currentCard.cefrLevel}` : 'گفتار'}</span>
+              )}
             </div>
 
           </div>
 
-          {/* Center Card Content Area */}
-          <div className="flex-1 flex flex-col items-center justify-center my-2 text-center">
+          {/* Center Card Content Area - Clean, Focused, High Legibility */}
+          <div className="flex-1 flex flex-col items-center justify-center py-1 text-center">
             
-            {/* Native Support Prompt / Instruction */}
-            <p className="text-[11.5px] font-black text-slate-700 mb-1 max-w-[280px] bg-[#F8EFFF] px-3 py-1 rounded-xl border border-[#241442]">
-              {currentCard?.prompt || 'کلمه یا مفهوم را برای یارتان توضیح دهید'}
-            </p>
+            {/* SCENARIO 1: REVERSE TRANSLATION MODE */}
+            {currentCard?.isReverse ? (
+              <div className="w-full flex flex-col items-center space-y-2">
+                {/* Clean Prompt Bubble in Persian */}
+                <div className="w-full max-w-sm bg-[#241442] text-white p-2.5 sm:p-3 rounded-2xl border-2 border-[#FFE600] shadow-[2px_2px_0px_0px_#241442]">
+                  <span className="text-[10px] text-[#FFE600] font-black block mb-0.5">
+                    این عبارت را به زبان هدف ادا کن:
+                  </span>
+                  <p className="text-sm sm:text-base font-black text-white font-display leading-snug">
+                    «{currentCard.translation}»
+                  </p>
+                </div>
 
-            {/* Target Language Card Word / Phrase Display */}
-            <div className="my-1.5">
-              <h2 className="text-2xl sm:text-3xl font-black font-display tracking-tight text-[#1a0833] drop-shadow-[1px_1px_0px_#00F0FF]">
-                {currentCard?.targetText || '---'}
-              </h2>
+                {/* Target Foreign Answer (Hero text with LTR) */}
+                <div className="flex items-center justify-center gap-2 pt-0.5">
+                  <h2 
+                    dir="ltr" 
+                    className="text-xl sm:text-2xl font-black font-display tracking-tight text-[#1a0833]"
+                  >
+                    {currentCard.targetText}
+                  </h2>
+                  
+                  {/* Pronounce Button */}
+                  <button
+                    type="button"
+                    title="پخش تلفظ صوتی"
+                    onClick={() => {
+                      sound.playClick();
+                      sound.speakTargetPhrase(currentCard.targetText, currentCard.targetLanguage);
+                    }}
+                    className="p-1.5 bg-[#39FF14] hover:bg-green-400 text-[#1a0833] rounded-xl border-2 border-[#241442] shadow-[1.5px_1.5px_0px_0px_#241442] transition-transform active:scale-90"
+                  >
+                    <Volume2 size={16} />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* SCENARIO 2: REGULAR EXPLAIN / SPEAK MODE */
+              <div className="w-full flex flex-col items-center space-y-1.5">
+                
+                {/* Hero Target Word / Phrase */}
+                <div className="flex items-center justify-center gap-2">
+                  <h2 
+                    dir="ltr" 
+                    className="text-2xl sm:text-3xl font-black font-display tracking-tight text-[#1a0833]"
+                  >
+                    {currentCard?.targetText || '---'}
+                  </h2>
+                  
+                  {currentCard?.targetText && (
+                    <button
+                      type="button"
+                      title="پخش تلفظ صوتی"
+                      onClick={() => {
+                        sound.playClick();
+                        sound.speakTargetPhrase(currentCard.targetText, currentCard.targetLanguage);
+                      }}
+                      className="p-1.5 bg-[#39FF14] hover:bg-green-400 text-[#1a0833] rounded-xl border-2 border-[#241442] shadow-[1.5px_1.5px_0px_0px_#241442] transition-transform active:scale-90"
+                    >
+                      <Volume2 size={16} />
+                    </button>
+                  )}
+                </div>
 
-              {/* Translation (Native Reference) */}
-              <p className="text-sm font-black text-[#FF007F] mt-0.5">
-                {currentCard?.translation || ''}
-              </p>
-            </div>
+                {/* Meaning / Translation */}
+                {currentCard?.translation && (
+                  <p className="text-sm sm:text-base font-black text-[#FF007F]">
+                    {currentCard.translation}
+                  </p>
+                )}
 
-            {/* Pronunciation & Grammar Hints */}
-            <div className="flex flex-wrap items-center justify-center gap-1.5 mt-1">
+                {/* Short Situational Clue (if helpful & not repetitive) */}
+                {currentCard?.prompt && !currentCard.prompt.includes('🔄') && !currentCard.prompt.includes('ترجمه به') && (
+                  <p className="text-[11px] text-slate-600 font-bold max-w-xs leading-tight">
+                    {currentCard.prompt}
+                  </p>
+                )}
+
+              </div>
+            )}
+
+            {/* Smart Micro-Hints Toolbar (Compact & Lightweight) */}
+            <div className="flex flex-wrap items-center justify-center gap-1.5 mt-2">
               
               {currentCard?.pronunciation && (
-                <div className="text-[10px] bg-[#241442] text-[#39FF14] px-2.5 py-0.5 rounded-lg font-mono font-bold">
+                <span className="text-[10px] bg-[#241442] text-[#39FF14] px-2 py-0.5 rounded-lg font-mono font-bold">
                   🗣️ {currentCard.pronunciation}
-                </div>
+                </span>
               )}
 
               {currentCard?.grammarPoint && (
                 <button
                   type="button"
                   onClick={() => setShowGrammar(!showGrammar)}
-                  className="text-[10px] bg-[#00F0FF] text-[#1a0833] px-2 py-0.5 rounded-lg border border-[#241442] font-black flex items-center gap-1"
+                  className={`text-[10px] px-2 py-0.5 rounded-lg border border-[#241442] font-black flex items-center gap-1 transition-all ${
+                    showGrammar ? 'bg-[#00F0FF] text-[#1a0833]' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                  }`}
                 >
-                  <Sparkles size={11} />
-                  <span>الگوی گرامر</span>
+                  <Sparkles size={11} className={showGrammar ? 'text-[#1a0833]' : 'text-[#7B2CBF]'} />
+                  <span>گرامر</span>
                 </button>
               )}
 
-              {currentCard?.hint && !showHint && (
+              {currentCard?.hint && (
                 <button
                   type="button"
-                  onClick={() => setShowHint(true)}
-                  className="text-[10px] bg-[#FFE600] text-[#1a0833] px-2 py-0.5 rounded-lg border border-[#241442] font-black flex items-center gap-1"
+                  onClick={() => setShowHint(!showHint)}
+                  className={`text-[10px] px-2 py-0.5 rounded-lg border border-[#241442] font-black flex items-center gap-1 transition-all ${
+                    showHint ? 'bg-[#FFE600] text-[#1a0833]' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                  }`}
                 >
-                  <Lightbulb size={11} />
-                  <span>سرنخ / راهنما</span>
+                  <Lightbulb size={11} className={showHint ? 'text-[#1a0833]' : 'text-[#FF007F]'} />
+                  <span>راهنما</span>
                 </button>
               )}
 
             </div>
 
-            {/* Revealed Grammar Rule */}
+            {/* Smooth Expandable Grammar / Hint Drawers */}
             {showGrammar && currentCard?.grammarPoint && (
-              <div className="mt-1.5 p-1.5 bg-[#241442] text-[#FFE600] rounded-xl text-[10px] font-bold border border-[#FFE600]/40 max-w-[260px] animate-fadeIn">
-                {currentCard.grammarPoint}
+              <div className="mt-1.5 p-2 bg-[#241442] text-[#00F0FF] rounded-xl text-[10.5px] font-bold border border-[#00F0FF]/40 max-w-xs animate-fadeIn">
+                ✨ {currentCard.grammarPoint}
               </div>
             )}
 
-            {/* Revealed Clue */}
             {showHint && currentCard?.hint && (
-              <div className="mt-1.5 p-1.5 bg-[#FFF033] text-[#1a0833] rounded-xl text-[10px] font-black border border-[#241442] max-w-[260px] animate-fadeIn">
-                💡 راهنما: {currentCard.hint}
+              <div className="mt-1.5 p-2 bg-[#FFE600] text-[#1a0833] rounded-xl text-[10.5px] font-black border border-[#241442] max-w-xs animate-fadeIn">
+                💡 {currentCard.hint}
               </div>
             )}
 
           </div>
 
-          {/* Partner & Points Status Footer */}
-          <div className="flex items-center justify-between text-[11px] font-black border-t-2 border-slate-200 pt-2 shrink-0">
+          {/* Clean Card Footer */}
+          <div className="flex items-center justify-between text-[11px] font-black border-t border-slate-200/80 pt-1.5 shrink-0">
             <span className="text-slate-600">
               یار پاسخ‌دهنده: <strong className="text-[#1a0833]">{partnerPlayer?.name || 'هم‌تیمی'}</strong>
             </span>
-            <span className="bg-[#FFE600] text-[#1a0833] px-2 py-0.5 rounded-lg border border-[#241442]">
-              +{currentCard?.isGolden ? (currentCard.points * 2) : (currentCard?.points || 1)} امتیاز
+            <span className="bg-[#FFE600] text-[#1a0833] px-2 py-0.5 rounded-lg border border-[#241442] text-[10.5px]">
+              +{currentCard?.isGolden ? (currentCard.points * 2) : (currentCard?.points || 1)} امتیاز ⭐
             </span>
           </div>
 
         </div>
+
+      </div>
 
       </div>
 
@@ -898,6 +969,8 @@ const GameplayScreen: React.FC<Props> = ({
                 if (currentRound < settings.roundsCount) {
                   setCurrentRound(prev => prev + 1);
                   setRoundTimer(settings.roundDuration * 1000);
+                  setTeams(prev => prev.map(t => ({ ...t, timeRemaining: settings.roundDuration * 1000, isEliminated: false })));
+                  onGetNextWord();
                   setGameStatus(GameStatus.ActiveTurn);
                 } else {
                   setGameStatus(GameStatus.GameEnded);

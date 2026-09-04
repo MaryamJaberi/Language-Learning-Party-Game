@@ -1,8 +1,205 @@
-import { Language, CEFRLevel, LanguageCard, ContentType, LearningMode } from './types';
+import { Language, CEFRLevel, LanguageCard, ContentType, LearningMode, CardGameMode } from './types';
 import { WORD_BANK } from './words';
 
 // Rich Curated Language Cards Database
 export const CURATED_LANGUAGE_CARDS: LanguageCard[] = [
+  // ==========================================
+  // AMERICAN ENGLISH (en-US) - A1 to C1
+  // ==========================================
+  {
+    id: 'EN_US_A1_REST_01',
+    targetLanguage: 'en-US',
+    cefrLevel: 'A1',
+    topic: 'CAT_RESTAURANT',
+    contentType: 'Phrase',
+    learningMode: 'Explain',
+    prompt: 'در رستوران یا دایز آمریکایی می‌خواهی صورتحساب را بخواهی',
+    targetText: 'Check, please!',
+    translation: 'صورتحساب، لطفاً!',
+    hint: 'در انگلیسی آمریکایی به جای bill می‌گویند check',
+    grammarPoint: 'American Restaurant Phrasing: Check, please',
+    pronunciation: 'چِک، پلیز!',
+    difficulty: 'easy',
+    points: 1
+  },
+  {
+    id: 'EN_US_A1_REST_02',
+    targetLanguage: 'en-US',
+    cefrLevel: 'A1',
+    topic: 'CAT_RESTAURANT',
+    contentType: 'Sentence',
+    learningMode: 'Speak',
+    prompt: 'سفارش غذای بیرون‌بر در فست‌فود آمریکایی',
+    targetText: 'Can I get this to-go, please?',
+    translation: 'می‌تونم این رو بیرون‌بر داشته باشم، لطفاً؟',
+    hint: 'عبارت to-go برای غذای بیرون‌بر',
+    grammarPoint: 'Modal request: Can I get ... to-go?',
+    pronunciation: 'کَن آی گِت دیس تو-گو، پلیز؟',
+    difficulty: 'easy',
+    points: 1
+  },
+  {
+    id: 'EN_US_A1_EVERYDAY_01',
+    targetLanguage: 'en-US',
+    cefrLevel: 'A1',
+    topic: 'CAT_EVERYDAY',
+    contentType: 'Sentence',
+    learningMode: 'Speak',
+    prompt: 'احوالپرسی روزمره و خودمانی به سبک آمریکایی',
+    targetText: "How's it going, buddy?",
+    translation: 'اوضاع چطوره رفیق؟',
+    hint: "How's it going...",
+    grammarPoint: 'Informal greeting contraction',
+    pronunciation: 'هاوز ایت گوئینگ، بادی؟',
+    difficulty: 'easy',
+    points: 1
+  },
+  {
+    id: 'EN_US_A1_TRANSPORT_01',
+    targetLanguage: 'en-US',
+    cefrLevel: 'A1',
+    topic: 'CAT_TRANSPORT',
+    contentType: 'Sentence',
+    learningMode: 'Explain',
+    prompt: 'پرسیدن آدرس نزدیک‌ترین ایستگاه مترو در نیویورک',
+    targetText: 'Where is the nearest subway station?',
+    translation: 'نزدیک‌ترین ایستگاه مترو کجاست؟',
+    hint: 'در آمریکا به مترو Subway می‌گویند',
+    grammarPoint: 'Superlative: nearest subway station',
+    pronunciation: 'وِر ایز دِ نیرِست ساب‌وی استِیشِن؟',
+    difficulty: 'easy',
+    points: 1
+  },
+  {
+    id: 'EN_US_A2_SHOPPING_01',
+    targetLanguage: 'en-US',
+    cefrLevel: 'A2',
+    topic: 'CAT_SHOPPING',
+    contentType: 'Sentence',
+    learningMode: 'Translate',
+    prompt: 'خرد کردن یک اسکناس بیست دلاری در فروشگاه',
+    targetText: 'Could you break a twenty-dollar bill for me?',
+    translation: 'می‌تونید یه اسکناس بیست دلاری برام خرد کنید؟',
+    hint: 'break a twenty-dollar bill',
+    grammarPoint: 'Collocation: break a bill (اسکناس خرد کردن)',
+    pronunciation: 'کود یو برِیک اِ توئنتی دالِر بیل فور می؟',
+    difficulty: 'medium',
+    points: 2
+  },
+  {
+    id: 'EN_US_A2_EVERYDAY_02',
+    targetLanguage: 'en-US',
+    cefrLevel: 'A2',
+    topic: 'CAT_EVERYDAY',
+    contentType: 'Phrase',
+    learningMode: 'Explain',
+    prompt: 'اعلام اینکه چند دقیقه دیر می‌رسید',
+    targetText: "I'm running a few minutes late.",
+    translation: 'چند دقیقه دیر می‌رسم.',
+    hint: 'running late',
+    grammarPoint: 'Continuous idiom: running late',
+    pronunciation: 'آیم رانینگ اِ فیو مینیتس لِیت',
+    difficulty: 'medium',
+    points: 2
+  },
+  {
+    id: 'EN_US_B1_SMALLTALK_01',
+    targetLanguage: 'en-US',
+    cefrLevel: 'B1',
+    topic: 'CAT_SMALLTALK',
+    contentType: 'Phrase',
+    learningMode: 'Explain',
+    prompt: 'موکول کردن یک قرار یا دورهمی شام به زمانی دیگر (اصطلاح آمریکایی)',
+    targetText: "Let's take a rain check on dinner.",
+    translation: 'بیا شام رو بندازیم برای یه فرصت دیگه (موکول کردن)',
+    hint: 'rain check اصطلاح معروف آمریکایی',
+    grammarPoint: 'American Idiom: take a rain check',
+    pronunciation: 'لِتس تِیک اِ رِین چِک آن دینِر',
+    difficulty: 'medium',
+    points: 2,
+    isGolden: true
+  },
+  {
+    id: 'EN_US_B1_TRAVEL_01',
+    targetLanguage: 'en-US',
+    cefrLevel: 'B1',
+    topic: 'CAT_TRAVEL',
+    contentType: 'Sentence',
+    learningMode: 'Situation',
+    prompt: 'درخواست پیاده شدن جلوی ترمینال فرودگاه از راننده',
+    targetText: 'Can you drop me off at terminal two, please?',
+    translation: 'میشه من رو دم ترمینال شماره دو پیاده کنید؟',
+    hint: 'drop someone off یعنی پیاده کردن',
+    grammarPoint: 'Phrasal verb: drop off',
+    pronunciation: 'کَن یو دراپ می آف اَت تِرمینال تو، پلیز؟',
+    difficulty: 'medium',
+    points: 2
+  },
+  {
+    id: 'EN_US_B2_WORK_01',
+    targetLanguage: 'en-US',
+    cefrLevel: 'B2',
+    topic: 'CAT_WORK',
+    contentType: 'Phrase',
+    learningMode: 'Explain',
+    prompt: 'با تمام قوا و بدون اتلاف وقت کاری را پرانرژی شروع کردن',
+    targetText: 'Hit the ground running',
+    translation: 'کار را با انرژی و قدرت تمام از همان اول شروع کردن',
+    hint: 'اصطلاح کاری پرکاربرد آمریکایی',
+    grammarPoint: 'Business Idiom: Hit the ground running',
+    pronunciation: 'هیت دِ گراوند رانینگ',
+    difficulty: 'hard',
+    points: 3
+  },
+  {
+    id: 'EN_US_B2_HEALTH_01',
+    targetLanguage: 'en-US',
+    cefrLevel: 'B2',
+    topic: 'CAT_HEALTH',
+    contentType: 'Phrase',
+    learningMode: 'Explain',
+    prompt: 'احساس کسالت یا سرماخوردگی خفیف داشتن',
+    targetText: 'Under the weather',
+    translation: 'کمی ناخوش‌احوال و کسل بودن',
+    hint: 'under the weather',
+    grammarPoint: 'Health idiom: Feeling under the weather',
+    pronunciation: 'آندِر دِ وِدِر',
+    difficulty: 'hard',
+    points: 3
+  },
+  {
+    id: 'EN_US_C1_SMALLTALK_01',
+    targetLanguage: 'en-US',
+    cefrLevel: 'C1',
+    topic: 'CAT_SMALLTALK',
+    contentType: 'Phrase',
+    learningMode: 'Explain',
+    prompt: 'گپ و گفت خودمانی و دوستانه زدن و وقت گذراندن',
+    targetText: 'Shoot the breeze',
+    translation: 'گپ زدن و وقت گذراندن با دوستان',
+    hint: 'shoot the breeze اصطلاح خودمانی آمریکایی',
+    grammarPoint: 'Conversational Slang: Shoot the breeze',
+    pronunciation: 'شوت دِ breeze (بریز)',
+    difficulty: 'hard',
+    points: 3,
+    isGolden: true
+  },
+  {
+    id: 'EN_US_C1_WORK_02',
+    targetLanguage: 'en-US',
+    cefrLevel: 'C1',
+    topic: 'CAT_WORK',
+    contentType: 'Phrase',
+    learningMode: 'Explain',
+    prompt: 'برای سنجش تمام جوانب، موقتاً نقش مخالف را بازی کردن',
+    targetText: "Play devil's advocate",
+    translation: 'نقش وکیل مدافع شیطان را بازی کردن (دیدگاه مخالف برای ارزیابی)',
+    hint: "devil's advocate",
+    grammarPoint: 'Idiomatic expression for critical analysis',
+    pronunciation: 'پلِی دِویلز اَدووکِیت',
+    difficulty: 'hard',
+    points: 3
+  },
   // ==========================================
   // DUTCH (Nederlands) - A1 / A2 / B1 / B2 / C1
   // ==========================================
@@ -699,20 +896,21 @@ export const CURATED_LANGUAGE_CARDS: LanguageCard[] = [
 
 /**
  * Automatically synthesizes comprehensive Language Cards from the 290+ items in WORD_BANK
- * for any given target language and CEFR level so that thousands of cards are available across all 9 languages!
+ * for any given target language and CEFR level so that thousands of cards are available across all languages!
  */
 export function generateSyntheticCardsForLanguage(
   targetLanguage: Language,
   nativeLanguage: Language = 'fa'
 ): LanguageCard[] {
   return WORD_BANK.map((w, index) => {
-    const targetWord = w.words[targetLanguage] || w.words['en'] || 'Word';
+    const targetWord = w.words[targetLanguage] || (targetLanguage === 'en-US' ? w.words['en'] : undefined) || w.words['en'] || 'Word';
     const nativeTranslation = w.words[nativeLanguage] || w.words['fa'] || targetWord;
     
-    // Map Word difficulty to CEFR level
+    // Map Word difficulty to CEFR level across A1, A2, B1, and B2
     const cefr: 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2' = 
-      w.difficulty === 'easy' ? 'A1' :
-      w.difficulty === 'medium' ? 'A2' : 'B1';
+      w.difficulty === 'easy' ? (index % 2 === 0 ? 'A1' : 'A2') :
+      w.difficulty === 'medium' ? (index % 2 === 0 ? 'A2' : 'B1') :
+      (index % 2 === 0 ? 'B1' : 'B2');
     
     const isGold = index % 12 === 0;
 
@@ -730,7 +928,7 @@ export function generateSyntheticCardsForLanguage(
       targetText: targetWord,
       translation: nativeTranslation,
       hint: `دسته‌بندی: ${w.category.replace('CAT_', '')}`,
-      grammarPoint: targetLanguage === 'nl' ? 'De / Het Woord' : 'Vocabulary Focus',
+      grammarPoint: targetLanguage === 'nl' ? 'De / Het Woord' : targetLanguage === 'en-US' ? 'US English Usage' : 'Vocabulary Focus',
       difficulty: w.difficulty,
       points: w.difficulty === 'easy' ? 1 : w.difficulty === 'medium' ? 2 : 3,
       isGolden: isGold
@@ -740,23 +938,41 @@ export function generateSyntheticCardsForLanguage(
 
 /**
  * Assembles and randomly shuffles a session pool of Language Cards based on:
- * - Selected Target Languages (can be 1, 2, 3, 4+)
+ * - Selected Target Languages (can be 1, 2, 3, 4, 5, 6, 8, all!)
  * - Selected Categories / Topics
  * - Selected CEFR Level or Mixed
  * - Native Reference Language
+ * - Card Game Mode: 'mixed' | 'reverse' | 'standard'
  */
 export function buildSessionCardPool(
   targetLanguages?: Language[],
   selectedCategories?: string[],
   cefrLevel: CEFRLevel = 'all',
-  nativeLanguage: Language = 'fa'
+  nativeLanguage: Language = 'fa',
+  cardGameMode: CardGameMode = 'mixed'
 ): LanguageCard[] {
   const activeTargets = Array.isArray(targetLanguages) && targetLanguages.length > 0 
     ? targetLanguages 
-    : (['nl', 'en'] as Language[]);
+    : (['en-US', 'nl'] as Language[]);
   const activeCats = Array.isArray(selectedCategories) ? selectedCategories : [];
   
   let pool: LanguageCard[] = [];
+
+  // Target language names for reverse prompt
+  const langDisplayNames: Record<string, string> = {
+    'en-US': 'انگلیسی آمریکایی 🇺🇸',
+    'en': 'انگلیسی بریتانیایی 🇬🇧',
+    'nl': 'هلندی 🇳🇱',
+    'de': 'آلمانی 🇩🇪',
+    'fr': 'فرانسوی 🇫🇷',
+    'es': 'اسپانیایی 🇪🇸',
+    'it': 'ایتالیایی 🇮🇹',
+    'fa': 'فارسی 🇮🇷',
+    'ar': 'عربی 🇸🇦',
+    'tr': 'ترکی 🇹🇷',
+    'pl': 'لهستانی 🇵🇱',
+    'uk': 'اوکراینی 🇺🇦'
+  };
 
   // 1. Gather curated cards matching selected target languages
   CURATED_LANGUAGE_CARDS.forEach(card => {
@@ -784,14 +1000,40 @@ export function buildSessionCardPool(
     });
   });
 
-  // Fallback if pool is empty
-  if (pool.length === 0) {
+  // Fallback if pool is small (< 15 cards) so gameplay never starves
+  if (pool.length < 15) {
     activeTargets.forEach(targetLang => {
       const synthCards = generateSyntheticCardsForLanguage(targetLang, nativeLanguage);
-      pool.push(...synthCards);
+      synthCards.forEach(c => {
+        if (pool.length < 30 && !pool.some(existing => existing.id === c.id)) {
+          pool.push(c);
+        }
+      });
     });
   }
 
-  // 3. Shuffle pool randomly to interleave languages and topics seamlessly!
-  return [...pool].sort(() => Math.random() - 0.5);
+  // 3. Apply Reverse Translation Transformation
+  // In 'reverse' mode: ALL cards become reverse translation
+  // In 'mixed' mode: ~40% of cards become reverse translation
+  // In 'standard' mode: keep traditional explanation/speaking mode
+  const transformedPool = pool.map((card, idx) => {
+    const shouldBeReverse = cardGameMode === 'reverse' || (cardGameMode === 'mixed' && idx % 3 === 0);
+    if (!shouldBeReverse) {
+      return card;
+    }
+
+    const targetLangName = langDisplayNames[card.targetLanguage] || card.targetLanguage;
+    return {
+      ...card,
+      isReverse: true,
+      learningMode: 'Reverse' as LearningMode,
+      prompt: nativeLanguage === 'fa'
+        ? `🔄 ترجمه به ${targetLangName}: این عبارت را به زبان هدف ادا کن!`
+        : `🔄 Reverse Translate into ${targetLangName}: Speak the translation!`,
+      // In reverse mode, prompt the player with native text, and teammate says targetText
+    };
+  });
+
+  // 4. Shuffle pool randomly to interleave languages, levels, and reverse modes seamlessly!
+  return [...transformedPool].sort(() => Math.random() - 0.5);
 }

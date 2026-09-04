@@ -25,11 +25,19 @@ interface Props {
   language: Language;
   onLanguageChange: (l: Language) => void;
   onNext: () => void;
+  onOpenOnline: () => void;
   onOpenHistory: () => void;
   onOpenHelp: () => void;
 }
 
-const IntroScreen: React.FC<Props> = ({ language, onLanguageChange, onNext, onOpenHistory, onOpenHelp }) => {
+const IntroScreen: React.FC<Props> = ({ 
+  language, 
+  onLanguageChange, 
+  onNext, 
+  onOpenOnline,
+  onOpenHistory, 
+  onOpenHelp 
+}) => {
   const t = TRANSLATIONS[language];
   const languages: Language[] = ['fa', 'en', 'nl', 'de', 'fr', 'ar', 'tr', 'pl', 'uk'];
   const [mascotBounce, setMascotBounce] = useState(false);
@@ -236,17 +244,30 @@ const IntroScreen: React.FC<Props> = ({ language, onLanguageChange, onNext, onOp
 
         {/* Primary Action Buttons */}
         <div className="flex flex-col gap-2">
-          {/* High Voltage Start Button */}
+          {/* High Voltage Start Button (Pass-the-phone / Local) */}
           <button 
             onClick={() => {
               sound.playStartGame();
               onNext();
             }}
-            className="pixel-btn pixel-btn-pink w-full py-3.5 text-lg sm:text-xl font-display uppercase tracking-wider flex items-center justify-center gap-2"
+            className="pixel-btn pixel-btn-pink w-full py-3 text-base sm:text-lg font-display uppercase tracking-wider flex items-center justify-center gap-2"
           >
-            <Gamepad2 size={24} color="#FFFFFF" />
+            <Gamepad2 size={22} color="#FFFFFF" />
             <span>{t.newGame}</span>
-            <Zap size={20} color="#FFE600" fill="#FFE600" />
+            <Zap size={18} color="#FFE600" fill="#FFE600" />
+          </button>
+
+          {/* Remote / Online Multiplayer Button */}
+          <button
+            onClick={() => {
+              sound.playClick();
+              onOpenOnline();
+            }}
+            className="pixel-btn pixel-btn-cyan w-full py-2.5 text-xs sm:text-sm font-black flex items-center justify-center gap-2 text-[#1a0833] shadow-[3px_3px_0px_0px_#241442]"
+          >
+            <Globe size={18} className="text-[#FF007F]" />
+            <span>{language === 'fa' ? '🌐 بازی آنلاین راه دور (دیسکورد / گوگل میت)' : '🌐 Online Multiplayer (Discord / Meet)'}</span>
+            <Sparkles size={16} className="text-[#FF007F]" />
           </button>
           
           {/* Secondary Actions */}

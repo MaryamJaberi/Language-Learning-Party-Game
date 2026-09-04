@@ -3,7 +3,7 @@ import { Language, DifficultyLevel } from './types';
 export interface WordData {
   category: string;
   difficulty: 'easy' | 'medium' | 'hard';
-  words: Record<Language, string>;
+  words: Partial<Record<Language, string>> & { fa: string; en: string; [key: string]: string | undefined };
 }
 
 export const WORD_BANK: WordData[] = [

@@ -6,8 +6,9 @@ import { TeamMascot } from '../components/Mascots';
 import { sound } from '../soundManager';
 import { auth, fetchUserMatchHistory } from '../firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { Trophy, Crown, Zap, ArrowRight, ArrowLeft, Cloud, HardDrive, Calendar, Users, ChevronUp } from 'lucide-react';
+import { Trophy, Crown, Zap, ArrowRight, ArrowLeft, Cloud, HardDrive, Calendar, Users, ChevronUp, Share2 } from 'lucide-react';
 import { useGoogleScrollBars } from '../useGoogleScrollBars';
+import ShareScorecardModal from '../components/ShareScorecardModal';
 
 interface Props {
   language: Language;
@@ -22,6 +23,7 @@ const HistoryScreen: React.FC<Props> = ({ language, history, onBack }) => {
   const [cloudHistory, setCloudHistory] = useState<GameHistoryEntry[]>([]);
   const [activeTab, setActiveTab] = useState<'local' | 'cloud'>('local');
   const [isLoadingCloud, setIsLoadingCloud] = useState(false);
+  const [selectedShareEntry, setSelectedShareEntry] = useState<GameHistoryEntry | null>(null);
   const { isBarsVisible, scrollContainerRef, handleScroll, showBars } = useGoogleScrollBars();
 
   useEffect(() => {
@@ -151,21 +153,59 @@ const HistoryScreen: React.FC<Props> = ({ language, history, onBack }) => {
                   </div>
                 </div>
 
-                {/* Shield badge */}
-                <div 
-                  className={`w-12 h-12 rounded-2xl flex flex-col items-center justify-center font-black text-[#1a0833] shadow-[2px_2px_0px_0px_#241442] border-2 border-[#241442] shrink-0 ${winnerBg}`}
-                  style={{ backgroundColor: winnerHex }}
-                >
-                  <Trophy size={16} color="#1a0833" />
-                  <span className="text-[8px] text-[#1a0833] font-black tracking-tighter uppercase leading-none mt-0.5">
-                    {entry.winnerColor === 'TIE' ? 'TIE' : entry.winnerColor.slice(0, 4)}
-                  </span>
+                {/* Actions & Shield badge */}
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    onClick={() => {
+                      sound.playClick();
+                      setSelectedShareEntry(entry);
+                    }}
+                    className="p-2 bg-slate-100 hover:bg-slate-200 text-[#1a0833] rounded-xl border border-[#241442] shadow-[1px_1px_0px_0px_#241442] active:translate-y-0.5"
+                    title="اشتراک‌گذاری کارنامه"
+                  >
+                    <Share2 size={15} />
+                  </button>
+
+                  <div 
+                    className={`w-11 h-11 rounded-2xl flex flex-col items-center justify-center font-black text-[#1a0833] shadow-[2px_2px_0px_0px_#241442] border-2 border-[#241442] shrink-0 ${winnerBg}`}
+                    style={{ backgroundColor: winnerHex }}
+                  >
+                    <Trophy size={15} color="#1a0833" />
+                    <span className="text-[8px] text-[#1a0833] font-black tracking-tighter uppercase leading-none mt-0.5">
+                      {entry.winnerColor === 'TIE' ? 'TIE' : entry.winnerColor.slice(0, 4)}
+                    </span>
+                  </div>
                 </div>
               </div>
             );
           })
         )}
       </div>
+
+      {/* Share Scorecard Modal for past matches */}
+      {selectedShareEntry && (
+        <ShareScorecardModal
+          isOpen={!!selectedShareEntry}
+          onClose={() => setSelectedShareEntry(null)}
+          winners={[{
+            id: 0,
+            color: (selectedShareEntry.winnerColor as TeamColor) || TeamColor.Blue,
+            timeRemaining: 0,
+            isEliminated: false,
+            playerIds: [],
+            score: selectedShareEntry.totalScore || 20
+          }]}
+          players={selectedShareEntry.players.map((p, idx) => ({
+            id: idx,
+            name: p,
+            teamId: 0,
+            teamColor: (selectedShareEntry.winnerColor as TeamColor) || TeamColor.Blue
+          }))}
+          playedCards={[]}
+          language={language}
+          historyEntry={selectedShareEntry}
+        />
+      )}
 
       {/* Floating reveal trigger when bars are hidden */}
       {!isBarsVisible && (

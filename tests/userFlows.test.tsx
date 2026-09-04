@@ -199,7 +199,7 @@ describe('Complete End-to-End User Flow Tests', () => {
     render(<App />);
 
     // Switch to English
-    const enLangBtn = screen.getByText('English');
+    const enLangBtn = screen.getByText(/English/i);
     fireEvent.click(enLangBtn);
 
     // Verify English text

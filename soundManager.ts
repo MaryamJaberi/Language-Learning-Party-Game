@@ -678,6 +678,63 @@ class SoundManager {
       this.bgmTimeout = null;
     }
   }
+
+  /**
+   * High-clarity native speech pronunciation using Web Speech Synthesis API
+   */
+  public speak(text: string, lang: string = 'en-US'): void {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    if (!text || text.trim() === '') return;
+
+    try {
+      // Cancel previous speech to prevent backlog
+      window.speechSynthesis.cancel();
+
+      const bcpMap: Record<string, string> = {
+        'en-US': 'en-US',
+        'en': 'en-GB',
+        'nl': 'nl-NL',
+        'de': 'de-DE',
+        'fr': 'fr-FR',
+        'es': 'es-ES',
+        'it': 'it-IT',
+        'fa': 'fa-IR',
+        'ar': 'ar-SA',
+        'tr': 'tr-TR',
+        'pl': 'pl-PL',
+        'uk': 'uk-UA'
+      };
+
+      const targetBCP = bcpMap[lang] || lang || 'en-US';
+      const cleanText = text.replace(/[\(\)\[\]"']/g, '').trim();
+
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      utterance.lang = targetBCP;
+      utterance.rate = 0.92; // Slightly slower for optimal learner articulation
+      utterance.pitch = 1.0;
+      utterance.volume = this.isMuted ? 0 : 1.0;
+
+      // Select high-quality matching voice if available
+      const voices = window.speechSynthesis.getVoices();
+      if (voices && voices.length > 0) {
+        const matchingVoice = voices.find(v => 
+          v.lang.toLowerCase() === targetBCP.toLowerCase() || 
+          v.lang.toLowerCase().startsWith(targetBCP.split('-')[0].toLowerCase())
+        );
+        if (matchingVoice) {
+          utterance.voice = matchingVoice;
+        }
+      }
+
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {
+      // Safe fallback on restricted webviews
+    }
+  }
+
+  public speakTargetPhrase(text: string, lang: string = 'en-US'): void {
+    this.speak(text, lang);
+  }
 }
 
 export const sound = new SoundManager();

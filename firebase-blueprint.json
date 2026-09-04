@@ -33,6 +33,33 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["id", "date", "winnerNames", "winnerColor", "players"]
+    },
+    "OnlineRoom": {
+      "title": "OnlineRoom",
+      "description": "Live synchronized multiplayer game room for remote play",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string" },
+        "hostId": { "type": "string" },
+        "hostName": { "type": "string" },
+        "status": { "type": "string", "enum": ["lobby", "playing", "round_ended", "game_over"] },
+        "currentRound": { "type": "number" },
+        "activePlayerIndex": { "type": "number" },
+        "settings": { "type": "object" },
+        "teams": { "type": "array" },
+        "players": { "type": "array" },
+        "currentCard": { "type": "object" },
+        "roundTimer": { "type": "number" },
+        "isTimerRunning": { "type": "boolean" },
+        "playedCards": { "type": "array" },
+        "voiceProvider": { "type": "string" },
+        "voiceLink": { "type": "string" },
+        "reactions": { "type": "array" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "code", "hostId", "status"]
     }
   },
   "firestore": {
@@ -43,6 +70,10 @@
     "/users/{userId}/matches/{matchId}": {
       "schema": "GameMatch",
       "description": "Match history records owned by the user"
+    },
+    "/rooms/{roomId}": {
+      "schema": "OnlineRoom",
+      "description": "Public remote multiplayer game room document"
     }
   }
 }
