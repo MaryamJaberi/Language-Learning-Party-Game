@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Language } from '../types';
 import { NATIVE_LANGUAGE_NAMES } from '../translations';
-import { tUI, tf, isRtlLang } from '../ui';
+import { tUI, isRtlLang } from '../ui';
 import { SUPPORTED_LANGUAGES } from '../constants';
-import { FlagIcon } from '../components/FlagIcon';
+import { ScreenFrame } from '../components/ScreenFrame';
 import { TeamMascot } from '../components/Mascots';
 import { sound } from '../soundManager';
 import { auth, signInWithGoogle, logOut } from '../firebase';
@@ -18,6 +18,7 @@ import {
   LogIn, 
   LogOut as LogOutIcon, 
   Globe, 
+  ChevronDown,
   CheckCircle,
   CloudCheck,
   Smartphone,
@@ -50,6 +51,7 @@ const IntroScreen: React.FC<Props> = ({
   const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isAppInstalled, setIsAppInstalled] = useState(false);
+  const [openLangs, setOpenLangs] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -118,10 +120,12 @@ const IntroScreen: React.FC<Props> = ({
   };
 
   return (
-    <div className="h-full min-h-0 flex-1 flex flex-col p-3 text-center select-none overflow-hidden" dir={isRTL ? 'rtl' : 'ltr'}>
-      
-      {/* Top Bar with Google Sign-In & Brand Badge */}
-      <div className="w-full max-w-sm flex items-center justify-between px-1 mb-1 shrink-0">
+    <>
+    <ScreenFrame
+      dir={isRTL ? 'rtl' : 'ltr'}
+      className="p-3 text-center select-none"
+      header={
+      <div className="w-full max-w-sm mx-auto flex items-center justify-between px-1 mb-1">
         <div className="flex items-center gap-1.5 bg-[#241442] text-[#FFE600] px-2.5 py-1 rounded-xl border border-[#FFE600]/40 text-[10px] font-black tracking-widest uppercase shadow-[2px_2px_0px_0px_#241442]">
           <Zap size={14} color="#FFE600" fill="#FFE600" />
           <span>SHOCK YOU!</span>
@@ -160,9 +164,60 @@ const IntroScreen: React.FC<Props> = ({
           )}
         </button>
       </div>
-
-      {/* Brand + mascot (scrolls if needed) */}
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain w-full max-w-sm mx-auto">
+      }
+      footer={
+        <div className="w-full max-w-sm mx-auto space-y-2 text-start">
+          <div className="bg-white p-2 rounded-2xl border-[3.5px] border-[#241442] shadow-[4px_4px_0px_0px_#241442]">
+            <button
+              type="button"
+              onClick={() => { sound.playToggle(); setOpenLangs(v => !v); }}
+              className="w-full flex items-center gap-2"
+            >
+              <Globe size={14} color="#FF007F" />
+              <div className="min-w-0 flex-1">
+                <div className="text-[10px] uppercase tracking-wider text-[#1a0833] font-black">{t.uiLanguageLabel}</div>
+                <div className="text-sm font-black text-[#FF007F] truncate">{NATIVE_LANGUAGE_NAMES[language]}</div>
+              </div>
+              <ChevronDown size={16} className={`shrink-0 ${openLangs ? 'rotate-180' : ''}`} />
+            </button>
+            {openLangs ? (
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {SUPPORTED_LANGUAGES.map(l => (
+                  <button
+                    key={l.code}
+                    type="button"
+                    onClick={() => { sound.playToggle(); onLanguageChange(l.code); setOpenLangs(false); }}
+                    className={`h-8 rounded-xl font-black text-[12px] border-2 border-[#241442] px-2.5 ${
+                      language === l.code ? 'bg-gradient-to-r from-[#FF007F] to-[#FF2E93] text-white' : 'bg-[#F4E8FF]/60 text-[#1a0833]'
+                    }`}
+                  >
+                    {l.nativeName}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
+          <button
+            onClick={() => { sound.playStartGame(); onNext(); }}
+            className="pixel-btn pixel-btn-pink w-full py-3 text-base font-display uppercase tracking-wider flex items-center justify-center gap-2"
+          >
+            <Gamepad2 size={22} color="#FFFFFF" />
+            <span>{t.newGame}</span>
+            <Zap size={18} color="#FFE600" fill="#FFE600" />
+          </button>
+          <div className="grid grid-cols-2 gap-2">
+            <button onClick={() => { sound.playClick(); onOpenHistory(); }} className="pixel-btn pixel-btn-cyan py-2.5 text-xs font-black flex items-center justify-center gap-1.5">
+              <Trophy size={16} color="#1a0833" />
+              <span>{t.history}</span>
+            </button>
+            <button onClick={() => { sound.playClick(); onOpenHelp(); }} className="pixel-btn pixel-btn-yellow py-2.5 text-xs font-black flex items-center justify-center gap-1.5">
+              <BookOpen size={16} color="#1a0833" />
+              <span>{t.guide}</span>
+            </button>
+          </div>
+        </div>
+      }
+    >
       {/* Brand Title Area - Party & Co SHOCK YOU! Style */}
       <div className="w-full mt-0.5">
         <div className="pixel-card-shock bg-gradient-to-br from-[#2f1857] via-[#43167a] to-[#6b1cb0] text-white p-3.5 sm:p-4 mx-0.5 relative overflow-hidden border-[3.5px] border-[#241442]">
@@ -211,145 +266,7 @@ const IntroScreen: React.FC<Props> = ({
           <span>{t.tapMascot}</span>
         </div>
       </div>
-      </div>
-
-      {/* Interactive Controls & Language Selection Area */}
-      <div className="w-full max-w-sm mx-auto space-y-2 shrink-0">
-        
-        {/* Language Selector Card */}
-        <div className="bg-white p-2.5 rounded-2xl border-[3.5px] border-[#241442] shadow-[4px_4px_0px_0px_#241442]">
-          <div className="flex items-center justify-center gap-1.5 text-[11px] uppercase tracking-wider text-[#1a0833] font-black mb-1">
-            <Globe size={14} color="#FF007F" />
-            <span>{t.uiLanguageLabel}</span>
-          </div>
-          <p className="text-[10px] text-slate-500 font-bold mb-1.5 leading-snug">{t.uiLanguageHint}</p>
-          
-          <div className="grid grid-cols-5 gap-1.5" dir="ltr">
-            {SUPPORTED_LANGUAGES.map(l => {
-              const isSelected = language === l.code;
-              return (
-                <button 
-                  key={l.code}
-                  type="button"
-                  onClick={() => {
-                    sound.playToggle();
-                    onLanguageChange(l.code);
-                  }}
-                  className={`h-9 rounded-xl font-black text-[10px] border-2 border-[#241442] flex items-center justify-center gap-0.5 ${
-                    isSelected 
-                    ? 'bg-gradient-to-r from-[#FF007F] to-[#FF2E93] text-white shadow-[1.5px_1.5px_0px_0px_#241442]' 
-                    : 'bg-[#F4E8FF]/60 text-[#1a0833]'
-                  }`}
-                  title={l.nativeName}
-                >
-                  <FlagIcon language={l.code} size={14} />
-                </button>
-              );
-            })}
-          </div>
-          <p className="mt-1.5 text-[11px] font-black text-[#FF007F]">
-            {NATIVE_LANGUAGE_NAMES[language]}
-          </p>
-        </div>
-
-        {/* Primary Action Buttons */}
-        <div className="flex flex-col gap-2">
-          {/* High Voltage Start Button (Pass-the-phone / Local) */}
-          <button 
-            onClick={() => {
-              sound.playStartGame();
-              onNext();
-            }}
-            className="pixel-btn pixel-btn-pink w-full py-3 text-base sm:text-lg font-display uppercase tracking-wider flex items-center justify-center gap-2"
-          >
-            <Gamepad2 size={22} color="#FFFFFF" />
-            <span>{t.newGame}</span>
-            <Zap size={18} color="#FFE600" fill="#FFE600" />
-          </button>
-
-          {/* Remote / Online Multiplayer Button */}
-          <button
-            onClick={() => {
-              sound.playClick();
-              onOpenOnline();
-            }}
-            className="pixel-btn pixel-btn-cyan w-full py-2.5 text-xs sm:text-sm font-black flex items-center justify-center gap-2 text-[#1a0833] shadow-[3px_3px_0px_0px_#241442]"
-          >
-            <Globe size={18} className="text-[#FF007F]" />
-            <span>{t.onlineMultiplayer}</span>
-            <Sparkles size={16} className="text-[#FF007F]" />
-          </button>
-          
-          {/* Secondary Actions */}
-          <div className="grid grid-cols-2 gap-2">
-            <button 
-              onClick={() => {
-                sound.playClick();
-                onOpenHistory();
-              }}
-              className="pixel-btn pixel-btn-cyan py-2.5 text-xs sm:text-sm font-black flex items-center justify-center gap-1.5"
-            >
-              <Trophy size={16} color="#1a0833" />
-              <span>{t.history}</span>
-            </button>
-
-            <button 
-              onClick={() => {
-                sound.playClick();
-                onOpenHelp();
-              }}
-              className="pixel-btn pixel-btn-yellow py-2.5 text-xs sm:text-sm font-black flex items-center justify-center gap-1.5"
-            >
-              <BookOpen size={16} color="#1a0833" />
-              <span>{t.guide}</span>
-            </button>
-          </div>
-
-          {/* PWA / Mobile Installation Banner & Button */}
-          <div className="bg-gradient-to-r from-[#1b0933] to-[#301254] p-2.5 rounded-2xl border-2 border-[#FFE600] shadow-[3px_3px_0px_0px_#241442] flex flex-col gap-1.5 text-white">
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5 text-right flex-1 min-w-0">
-                <div className="w-7 h-7 rounded-lg bg-[#FFE600] flex items-center justify-center text-[#1a0833] shrink-0 font-black">
-                  <Smartphone size={16} />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="text-[11px] font-black text-[#FFE600] leading-tight truncate">
-                    {t.installApp}
-                  </div>
-                  <div className="text-[9.5px] text-slate-300 truncate">
-                    {t.installSub}
-                  </div>
-                </div>
-              </div>
-
-              <button
-                onClick={handleOpenInstall}
-                className="px-3 py-1.5 bg-[#39FF14] hover:bg-[#32e012] text-[#1a0833] font-black text-xs rounded-xl border-2 border-[#241442] shadow-[2px_2px_0px_0px_#241442] active:translate-y-0.5 shrink-0 flex items-center gap-1"
-              >
-                <Download size={13} />
-                <span>{t.addToHome}</span>
-              </button>
-            </div>
-
-            {/* Sub-badge indicating native store release coming soon */}
-            <div className="text-[9px] text-[#00F0FF] bg-[#241442]/90 px-2 py-0.5 rounded-lg border border-[#00F0FF]/30 flex items-center justify-center gap-1 font-bold">
-              <Zap size={10} color="#00F0FF" fill="#00F0FF" />
-              <span>
-                {t.comingSoonStores}
-              </span>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      {/* Footer Tag */}
-      <div className="mt-1 px-3 py-0.5 bg-[#241442] text-[#00F0FF] text-[9.5px] font-mono tracking-widest rounded-full border border-[#00F0FF]/30 flex items-center gap-1 shrink-0">
-        <Zap size={11} color="#00F0FF" fill="#00F0FF" />
-        <span>PARTY & CO • SHOCK EDITION</span>
-      </div>
-
-      {/* Install Prompt & Guide Modal */}
+    </ScreenFrame>
       <InstallPromptModal
         language={language}
         isOpen={isInstallModalOpen}
@@ -357,7 +274,7 @@ const IntroScreen: React.FC<Props> = ({
         deferredPrompt={deferredPrompt}
         onInstalled={() => setIsAppInstalled(true)}
       />
-    </div>
+    </>
   );
 };
 

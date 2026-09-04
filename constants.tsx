@@ -60,8 +60,8 @@ export interface LanguageInfo {
 }
 
 export const SUPPORTED_LANGUAGES: LanguageInfo[] = [
-  { code: 'en-US', name: 'English (US)', nativeName: 'American English', persianName: 'انگلیسی آمریکایی', flag: '🇺🇸', direction: 'ltr', popular: true },
-  { code: 'en', name: 'English (UK)', nativeName: 'British English', persianName: 'انگلیسی بریتانیایی', flag: '🇬🇧', direction: 'ltr', popular: true },
+  { code: 'en-US', name: 'English (US)', nativeName: 'English (US)', persianName: 'انگلیسی آمریکایی', flag: '🇺🇸', direction: 'ltr', popular: true },
+  { code: 'en', name: 'English', nativeName: 'English', persianName: 'انگلیسی', flag: '🇬🇧', direction: 'ltr', popular: true },
   { code: 'nl', name: 'Dutch', nativeName: 'Nederlands', persianName: 'هلندی', flag: '🇳🇱', direction: 'ltr', popular: true },
   { code: 'de', name: 'German', nativeName: 'Deutsch', persianName: 'آلمانی', flag: '🇩🇪', direction: 'ltr', popular: true },
   { code: 'fr', name: 'French', nativeName: 'Français', persianName: 'فرانسوی', flag: '🇫🇷', direction: 'ltr', popular: true },

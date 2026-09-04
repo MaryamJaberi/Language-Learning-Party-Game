@@ -1,12 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { GameSettings } from '../types';
 import { CATEGORIES } from '../constants';
-import { TRANSLATIONS } from '../translations';
 import { tUI, tf, isRtlLang } from '../ui';
-import { TeamMascot } from '../components/Mascots';
+import { ScreenFrame } from '../components/ScreenFrame';
 import { NeonCategoryIcon } from '../components/NeonIcons';
 import { sound } from '../soundManager';
-import { Layers, HelpCircle, ArrowRight, ArrowLeft, Check, Sparkles, CheckSquare } from 'lucide-react';
+import { Layers, HelpCircle, ArrowRight, ArrowLeft, Check, Sparkles, CheckSquare, ChevronDown } from 'lucide-react';
 
 interface Props {
   settings: GameSettings;
@@ -19,6 +18,7 @@ interface Props {
 const CategoryScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpenHelp }) => {
   const t = tUI(settings.language);
   const isRTL = isRtlLang(settings.language);
+  const [openTopics, setOpenTopics] = useState(false);
   
   const allCategoryKeys = Object.keys(CATEGORIES);
 
@@ -54,141 +54,104 @@ const CategoryScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onO
     onSave({ ...settings, selectedCategories: essentials });
   };
 
+  const selectedCats = settings.selectedCategories || [];
+  const topicSummary = selectedCats
+    .slice(0, 2)
+    .map((k) => t.categories?.[k] || k.replace('CAT_', ''))
+    .join(' · ') + (selectedCats.length > 2 ? ` +${selectedCats.length - 2}` : '');
+
   return (
-    <div className="h-full min-h-0 flex-1 flex flex-col p-3 sm:p-3.5 select-none overflow-hidden relative" dir={isRTL ? 'rtl' : 'ltr'}>
-      
-      {/* Fixed Header */}
-      <header className="shrink-0 mb-2">
-        <div className="flex items-center justify-between bg-gradient-to-r from-[#1e1b4b] via-[#312e81] to-[#4338ca] text-white p-2.5 sm:p-3 border-[2.5px] border-[#0f172a] rounded-2xl shadow-[3px_3px_0px_0px_#0f172a]">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-[#f59e0b] border-2 border-[#0f172a] flex items-center justify-center text-[#0f172a] shadow-[1px_1px_0px_0px_#0f172a]">
-              <Layers size={18} color="#0f172a" />
+    <ScreenFrame
+      dir={isRTL ? 'rtl' : 'ltr'}
+      className="p-3 sm:p-3.5 select-none"
+      header={
+        <header className="mb-2">
+          <div className="flex items-center justify-between bg-gradient-to-r from-[#1e1b4b] via-[#312e81] to-[#4338ca] text-white p-2.5 sm:p-3 border-[2.5px] border-[#0f172a] rounded-2xl shadow-[3px_3px_0px_0px_#0f172a]">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-8 h-8 rounded-xl bg-[#f59e0b] border-2 border-[#0f172a] flex items-center justify-center shrink-0">
+                <Layers size={18} color="#0f172a" />
+              </div>
+              <div className="min-w-0">
+                <h2 className="text-sm font-black uppercase tracking-wider leading-tight truncate">
+                  {t.categories_title}
+                </h2>
+                <span className="text-[10px] text-[#f59e0b] font-black block">
+                  {tf(settings.language, 'stepOf', { n: 2, total: 4 })} · {t.stepTopics}
+                </span>
+              </div>
             </div>
-            <div>
-              <h2 className="text-sm sm:text-base font-black uppercase tracking-wider leading-tight">
-                {t.categories_title || 'موضوعات و دسته‌بندی‌ها'}
-              </h2>
-              <span className="text-[10px] text-[#f59e0b] font-black block">
-                {tf(settings.language, 'stepOf', { n: 2, total: 4 })} · {t.stepTopics}
-              </span>
-            </div>
+            <button
+              type="button"
+              onClick={() => { sound.playClick(); onOpenHelp(); }}
+              className="px-2.5 py-1.5 bg-[#f59e0b] text-[#0f172a] border-2 border-[#0f172a] font-black text-xs rounded-xl shadow-[2px_2px_0px_0px_#0f172a] flex items-center gap-1 shrink-0"
+            >
+              <HelpCircle size={14} color="#0f172a" />
+              <span>{t.guide}</span>
+            </button>
           </div>
-          <button 
-            type="button"
-            onClick={() => {
-              sound.playClick();
-              onOpenHelp();
-            }} 
-            className="px-2.5 py-1.5 bg-[#f59e0b] hover:bg-amber-400 text-[#0f172a] border-2 border-[#0f172a] font-black text-[11px] sm:text-xs rounded-xl shadow-[2px_2px_0px_0px_#0f172a] transition-transform active:translate-y-0.5 flex items-center gap-1"
-          >
-            <HelpCircle size={14} color="#0f172a" />
-            <span>{t.guide}</span>
-          </button>
-        </div>
-
-        {/* Quick Action Bar (Select All / Essentials) inside Top Section */}
-        <div className="flex items-center justify-between gap-2 mt-2">
-          <button
-            type="button"
-            onClick={selectAll}
-            className="flex-1 py-1.5 px-2 bg-white hover:bg-slate-50 text-[#0f172a] border-2 border-[#0f172a] rounded-xl text-[11px] sm:text-xs font-black shadow-[2px_2px_0px_0px_#0f172a] flex items-center justify-center gap-1 active:translate-y-0.5"
-          >
-            <CheckSquare size={13} className="text-[#10b981]" />
-            <span>{t.selectAllTopics || 'انتخاب همه'}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={selectEssentialTopics}
-            className="flex-1 py-1.5 px-2 bg-[#f1f5f9] hover:bg-slate-200 text-[#0f172a] border-2 border-[#0f172a] rounded-xl text-[11px] sm:text-xs font-black shadow-[2px_2px_0px_0px_#0f172a] flex items-center justify-center gap-1 active:translate-y-0.5"
-          >
-            <Sparkles size={13} className="text-[#f43f5e]" />
-            <span>{t.essentialsTopics || 'موضوعات ضروری'}</span>
-          </button>
-        </div>
-      </header>
-
-      {/* Categories Scrollable Container - Compact 2-column Grid */}
-      <div 
-        className="min-h-0 flex-1 overflow-y-auto pr-0.5 pb-2 overscroll-contain"
-      >
-        <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
-          {allCategoryKeys.map(catKey => {
-            const isSelected = (settings.selectedCategories || []).includes(catKey);
-            const translatedName = t.categories[catKey] || catKey.replace('CAT_', '');
-            
-            return (
-              <button
-                key={catKey}
-                type="button"
-                onClick={() => toggleCategory(catKey)}
-                className={`p-2 sm:p-2.5 rounded-xl border-[2px] border-[#0f172a] flex items-center justify-between gap-1.5 transition-all text-right ${
-                  isSelected
-                  ? 'bg-gradient-to-r from-[#fef3c7] to-[#fde68a] text-[#0f172a] shadow-[2px_2px_0px_0px_#0f172a] -translate-y-0.5'
-                  : 'bg-white text-[#0f172a] shadow-[1px_1px_0px_0px_#0f172a] hover:bg-slate-50'
-                }`}
-              >
-                <div className="flex items-center gap-1.5 min-w-0 flex-1">
-                  <div className="p-1 rounded-lg border border-[#0f172a] shrink-0 bg-[#0f172a]">
-                    <NeonCategoryIcon catKey={catKey} size={15} />
-                  </div>
-                  <span className="font-black text-[11px] sm:text-xs text-[#0f172a] truncate leading-tight">
-                    {translatedName}
-                  </span>
-                </div>
-
-                {/* High Contrast Checkbox */}
-                <div className={`w-5 h-5 border-2 border-[#0f172a] flex items-center justify-center rounded-lg shrink-0 shadow-[1px_1px_0px_0px_#0f172a] ${
-                  isSelected ? 'bg-[#0f172a]' : 'bg-white'
-                }`}>
-                  {isSelected && (
-                    <Check size={13} color="#10b981" strokeWidth={4} />
-                  )}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Informational tip */}
-        <div className="mt-3 p-2 bg-white/95 border-2 border-[#0f172a] rounded-2xl flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_#0f172a]">
-          <TeamMascot color="GREEN" size={24} />
-          <span className="text-[11px] text-[#0f172a] font-black">
-            {settings.language === 'fa' 
-              ? '⚡ موضوعات انتخابی با کلمات جذاب بین زبان‌ها توزیع می‌شوند' 
-              : '⚡ Selected categories are balanced dynamically across languages'}
-          </span>
-        </div>
-      </div>
-
-      {/* Fixed Footer Navigation */}
-      <footer className="shrink-0 pt-2 border-t-2 border-[#0f172a]/20">
-        <div className="flex gap-2.5">
-          <button 
-            type="button"
-            onClick={() => {
-              sound.playClick();
-              onBack();
-            }} 
-            className="pixel-btn pixel-btn-dark flex-1 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-1.5 active:scale-95"
-          >
+          <div className="flex items-center gap-2 mt-2">
+            <button type="button" onClick={selectAll} className="flex-1 py-1.5 px-2 bg-white text-[#0f172a] border-2 border-[#0f172a] rounded-xl text-[11px] font-black shadow-[2px_2px_0px_0px_#0f172a] flex items-center justify-center gap-1">
+              <CheckSquare size={13} className="text-[#10b981]" />
+              <span>{t.selectAllTopics}</span>
+            </button>
+            <button type="button" onClick={() => { selectEssentialTopics(); setOpenTopics(true); }} className="flex-1 py-1.5 px-2 bg-[#f1f5f9] text-[#0f172a] border-2 border-[#0f172a] rounded-xl text-[11px] font-black shadow-[2px_2px_0px_0px_#0f172a] flex items-center justify-center gap-1">
+              <Sparkles size={13} className="text-[#f43f5e]" />
+              <span>{t.essentialsTopics}</span>
+            </button>
+          </div>
+        </header>
+      }
+      footer={
+        <div className="flex gap-2.5 pt-2">
+          <button type="button" onClick={() => { sound.playClick(); onBack(); }} className="pixel-btn pixel-btn-dark flex-1 py-2.5 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1.5">
             {isRTL ? <ArrowRight size={15} /> : <ArrowLeft size={15} />}
             <span>{t.back}</span>
           </button>
-          <button 
-            type="button"
-            onClick={() => {
-              sound.playStartGame();
-              onNext();
-            }} 
-            className="pixel-btn pixel-btn-pink flex-[2] py-2.5 text-sm sm:text-base font-black uppercase tracking-wider flex items-center justify-center gap-2 active:scale-95"
-          >
+          <button type="button" onClick={() => { sound.playStartGame(); onNext(); }} className="pixel-btn pixel-btn-pink flex-[2] py-2.5 text-sm font-black uppercase tracking-wider flex items-center justify-center gap-2">
             <span>{t.nextSetup || t.next}</span>
             {isRTL ? <ArrowLeft size={16} /> : <ArrowRight size={16} />}
           </button>
         </div>
-      </footer>
-    </div>
+      }
+    >
+      <section className="bg-white border-[2.5px] border-[#0f172a] shadow-[3px_3px_0px_0px_#0f172a] rounded-2xl overflow-hidden">
+        <button type="button" onClick={() => { sound.playClick(); setOpenTopics(v => !v); }} className="w-full flex items-center gap-2 p-2.5 text-start">
+          <div className="min-w-0 flex-1">
+            <div className="text-[10px] font-black uppercase tracking-wider text-slate-500">{t.categories_title}</div>
+            <div className="text-[13px] font-black text-[#0f172a] truncate">{topicSummary}</div>
+          </div>
+          <ChevronDown size={16} className={`shrink-0 ${openTopics ? 'rotate-180' : ''}`} />
+        </button>
+        {openTopics ? (
+          <div className="grid grid-cols-2 gap-2 p-2.5 pt-0">
+            {allCategoryKeys.map(catKey => {
+              const isSelected = selectedCats.includes(catKey);
+              const translatedName = t.categories?.[catKey] || catKey.replace('CAT_', '');
+              return (
+                <button
+                  key={catKey}
+                  type="button"
+                  onClick={() => toggleCategory(catKey)}
+                  className={`p-2 rounded-xl border-[2px] border-[#0f172a] flex items-center justify-between gap-1.5 ${
+                    isSelected ? 'bg-[#fde68a] shadow-[2px_2px_0px_0px_#0f172a]' : 'bg-white'
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                    <div className="p-1 rounded-lg border border-[#0f172a] shrink-0 bg-[#0f172a]">
+                      <NeonCategoryIcon catKey={catKey} size={15} />
+                    </div>
+                    <span className="font-black text-[11px] text-[#0f172a] truncate">{translatedName}</span>
+                  </div>
+                  <div className={`w-5 h-5 border-2 border-[#0f172a] flex items-center justify-center rounded-lg shrink-0 ${isSelected ? 'bg-[#0f172a]' : 'bg-white'}`}>
+                    {isSelected ? <Check size={13} color="#10b981" strokeWidth={4} /> : null}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        ) : null}
+      </section>
+    </ScreenFrame>
   );
 };
 

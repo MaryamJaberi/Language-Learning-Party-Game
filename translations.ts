@@ -3,7 +3,7 @@ import { Language } from './types';
 export const NATIVE_LANGUAGE_NAMES: Record<Language, string> = {
   fa: "فارسی",
   'en-US': "English (US)",
-  en: "English (UK)",
+  en: "English",
   nl: "Nederlands",
   de: "Deutsch",
   fr: "Français",

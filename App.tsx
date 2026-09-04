@@ -316,7 +316,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <main className="w-full h-full min-h-0 max-w-md mx-auto flex flex-col overflow-hidden shadow-2xl relative bg-[#170B2C]">
+    <main className="w-full max-w-md mx-auto flex flex-col overflow-hidden shadow-2xl relative bg-[#170B2C]" style={{ height: '100%', minHeight: 0, flex: 1 }}>
       
       {/* Offline PWA Connectivity Indicator */}
       <OfflineIndicator language={settings.language} />
