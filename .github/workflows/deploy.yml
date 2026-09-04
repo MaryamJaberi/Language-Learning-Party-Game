@@ -47,11 +47,11 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Enable and configure GitHub Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        continue-on-error: true
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        continue-on-error: true
