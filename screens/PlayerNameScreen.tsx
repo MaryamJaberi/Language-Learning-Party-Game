@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { GameSettings, TeamColor } from '../types';
 import { COLORS_MAP } from '../constants';
 import { TRANSLATIONS } from '../translations';
-import { tUI, tf, isRtlLang } from '../ui';
 import { TeamMascot } from '../components/Mascots';
 import { sound } from '../soundManager';
 import { getRandomCharacters } from '../characters';
@@ -26,8 +25,8 @@ interface Props {
 }
 
 const PlayerNameScreen: React.FC<Props> = ({ settings, onSave, onStart, onBack, onOpenHelp }) => {
-  const t = tUI(settings.language);
-  const isRTL = isRtlLang(settings.language);
+  const t = TRANSLATIONS[settings.language] || TRANSLATIONS.fa;
+  const isRTL = settings.language === 'fa' || settings.language === 'ar';
 
   // Ensure default names are populated with cartoon characters if blank
   useEffect(() => {
@@ -85,7 +84,7 @@ const PlayerNameScreen: React.FC<Props> = ({ settings, onSave, onStart, onBack, 
                 {t.playerNames}
               </h1>
               <span className="text-[10px] text-[#f59e0b] font-black block">
-                {tf(settings.language, 'stepOf', { n: 4, total: 4 })} · {t.stepPlayers}
+                مرحله ۴ از ۴: چیدمان و نام اعضا
               </span>
             </div>
           </div>

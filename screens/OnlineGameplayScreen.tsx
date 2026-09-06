@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { OnlineRoomState, OnlinePlayer, Language, TeamColor, LanguageCard, PlayedCardRecord } from '../types';
 import { COLORS_MAP, SUPPORTED_LANGUAGES } from '../constants';
-import { tUI, isRtlLang } from '../ui';
+import { TRANSLATIONS } from '../translations';
 import { TeamMascot } from '../components/Mascots';
 import { sound } from '../soundManager';
 import { 
@@ -13,6 +13,7 @@ import {
   getDeviceId 
 } from '../onlineRoomService';
 import ShareScorecardModal from '../components/ShareScorecardModal';
+import { FlagIcon } from '../components/FlagIcon';
 import { 
   Check, 
   X, 
@@ -44,8 +45,8 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
   language,
   onExit
 }) => {
-  const t = tUI(language);
-  const isRTL = isRtlLang(language);
+  const t = TRANSLATIONS[language] || TRANSLATIONS.fa;
+  const isRTL = language === 'fa' || language === 'ar';
   const myDeviceId = getDeviceId();
 
   const [room, setRoom] = useState<OnlineRoomState>(initialRoom);
@@ -163,7 +164,11 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
 
   // Pronounce word
   const handlePronounce = (text: string, lang: string) => {
-    sound.speak(text, lang, { force: true });
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang === 'fa' ? 'fa-IR' : lang === 'nl' ? 'nl-NL' : 'en-US';
+      window.speechSynthesis.speak(utterance);
+    }
   };
 
   const currentCard = room.currentCard;
@@ -281,8 +286,8 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
           </div>
         </div>
       ) : (
+        /* ACTIVE TURN GAMEPLAY */
         <div className="flex-1 min-h-0 flex flex-col justify-between my-auto space-y-2">
-          {/* ACTIVE TURN GAMEPLAY */}
           
           {/* Active Player & Turn Notification */}
           <div 
@@ -336,13 +341,13 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
                 </div>
               </div>
             ) : (
+              /* 2. SCENARIO B: DESCRIBER / SPECTATORS SEE THE CARD TO EXPLAIN */
               <div className="bg-white p-4 rounded-3xl border-[3.5px] border-[#241442] shadow-[5px_5px_0px_0px_#241442] text-start space-y-2.5 relative">
-                {/* 2. SCENARIO B: DESCRIBER / SPECTATORS SEE THE CARD TO EXPLAIN */}
                 
                 {/* Header Tag */}
                 <div className="flex items-center justify-between border-b pb-1.5 border-slate-200">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-base">{langInfo?.flag}</span>
+                    <FlagIcon language={langInfo?.code || 'fa'} size={18} />
                     <span className="text-xs font-black text-[#1a0833]">{langInfo?.name}</span>
                     <span className="text-[9.5px] bg-[#F4E8FF] text-[#FF007F] px-1.5 py-0.5 rounded font-black border border-[#FF007F]/40">
                       {currentCard?.cefrLevel}
@@ -360,7 +365,7 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
                     این کلمه را برای {activePlayer?.name} توصیف کنید:
                   </span>
                   <div className="flex items-center justify-center gap-2">
-                    <h2 className="text-2xl sm:text-3xl font-black text-[#1a0833] font-display">
+                    <h2 dir="ltr" className="text-2xl sm:text-3xl font-black text-[#1a0833] font-display">
                       {currentCard?.targetText || 'Loading...'}
                     </h2>
                     {currentCard && (
@@ -375,18 +380,8 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
                   </div>
 
                   {/* Native Translation */}
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F8EFFF] rounded-xl border border-[#241442] text-xs font-black text-[#FF007F]">
+                  <div className="inline-block px-3 py-1 bg-[#F8EFFF] rounded-xl border border-[#241442] text-xs font-black text-[#FF007F]">
                     {currentCard?.translation}
-                    {currentCard?.translation && (
-                      <button
-                        type="button"
-                        onClick={() => handlePronounce(currentCard.translation, currentCard.nativeLanguage || 'fa')}
-                        className="p-0.5 rounded-full text-[#FF007F]"
-                        title="تلفظ زبان من"
-                      >
-                        <Volume2 size={13} />
-                      </button>
-                    )}
                   </div>
                 </div>
 

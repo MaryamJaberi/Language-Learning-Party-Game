@@ -1,6 +1,5 @@
 import { Language, CEFRLevel, LanguageCard, ContentType, LearningMode, CardGameMode } from './types';
 import { WORD_BANK } from './words';
-import { cardsFromPhraseBank } from './phraseBank';
 
 // Rich Curated Language Cards Database
 export const CURATED_LANGUAGE_CARDS: LanguageCard[] = [
@@ -959,15 +958,7 @@ export function buildSessionCardPool(
   
   let pool: LanguageCard[] = [];
 
-  // 0. Official A1 / A2 / B1 multilingual phrase banks
-  pool = cardsFromPhraseBank(
-    activeTargets,
-    activeCats,
-    cefrLevel,
-    nativeLanguage,
-    cardGameMode
-  );
-
+  // Target language names for reverse prompt
   const langDisplayNames: Record<string, string> = {
     'en-US': 'انگلیسی آمریکایی 🇺🇸',
     'en': 'انگلیسی بریتانیایی 🇬🇧',
@@ -980,12 +971,7 @@ export function buildSessionCardPool(
     'ar': 'عربی 🇸🇦',
     'tr': 'ترکی 🇹🇷',
     'pl': 'لهستانی 🇵🇱',
-    'uk': 'اوکراینی 🇺🇦',
-    'zh': 'چینی 🇨🇳',
-    'ja': 'ژاپنی 🇯🇵',
-    'ko': 'کره‌ای 🇰🇷',
-    'hi': 'هندی 🇮🇳',
-    'pt': 'پرتغالی 🇵🇹'
+    'uk': 'اوکراینی 🇺🇦'
   };
 
   // 1. Gather curated cards matching selected target languages

@@ -60,8 +60,8 @@ export interface LanguageInfo {
 }
 
 export const SUPPORTED_LANGUAGES: LanguageInfo[] = [
-  { code: 'en-US', name: 'English (US)', nativeName: 'English (US)', persianName: 'انگلیسی آمریکایی', flag: '🇺🇸', direction: 'ltr', popular: true },
-  { code: 'en', name: 'English', nativeName: 'English', persianName: 'انگلیسی', flag: '🇬🇧', direction: 'ltr', popular: true },
+  { code: 'en-US', name: 'English (US)', nativeName: 'American English', persianName: 'انگلیسی آمریکایی', flag: '🇺🇸', direction: 'ltr', popular: true },
+  { code: 'en', name: 'English (UK)', nativeName: 'British English', persianName: 'انگلیسی بریتانیایی', flag: '🇬🇧', direction: 'ltr', popular: true },
   { code: 'nl', name: 'Dutch', nativeName: 'Nederlands', persianName: 'هلندی', flag: '🇳🇱', direction: 'ltr', popular: true },
   { code: 'de', name: 'German', nativeName: 'Deutsch', persianName: 'آلمانی', flag: '🇩🇪', direction: 'ltr', popular: true },
   { code: 'fr', name: 'French', nativeName: 'Français', persianName: 'فرانسوی', flag: '🇫🇷', direction: 'ltr', popular: true },
@@ -71,12 +71,7 @@ export const SUPPORTED_LANGUAGES: LanguageInfo[] = [
   { code: 'ar', name: 'Arabic', nativeName: 'العربية', persianName: 'عربی', flag: '🇸🇦', direction: 'rtl', popular: true },
   { code: 'tr', name: 'Turkish', nativeName: 'Türkçe', persianName: 'ترکی', flag: '🇹🇷', direction: 'ltr', popular: true },
   { code: 'pl', name: 'Polish', nativeName: 'Polski', persianName: 'لهستانی', flag: '🇵🇱', direction: 'ltr' },
-  { code: 'uk', name: 'Ukrainian', nativeName: 'Українська', persianName: 'اوکراینی', flag: '🇺🇦', direction: 'ltr' },
-  { code: 'pt', name: 'Portuguese', nativeName: 'Português', persianName: 'پرتغالی', flag: '🇵🇹', direction: 'ltr' },
-  { code: 'zh', name: 'Chinese', nativeName: '中文', persianName: 'چینی', flag: '🇨🇳', direction: 'ltr' },
-  { code: 'ja', name: 'Japanese', nativeName: '日本語', persianName: 'ژاپنی', flag: '🇯🇵', direction: 'ltr' },
-  { code: 'ko', name: 'Korean', nativeName: '한국어', persianName: 'کره‌ای', flag: '🇰🇷', direction: 'ltr' },
-  { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी', persianName: 'هندی', flag: '🇮🇳', direction: 'ltr' }
+  { code: 'uk', name: 'Ukrainian', nativeName: 'Українська', persianName: 'اوکراینی', flag: '🇺🇦', direction: 'ltr' }
 ];
 
 export interface CEFRLevelInfo {
