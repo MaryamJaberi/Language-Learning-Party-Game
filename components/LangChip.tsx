@@ -3,15 +3,17 @@ import { Language } from '../types';
 import { SUPPORTED_LANGUAGES } from '../constants';
 import { Check } from 'lucide-react';
 
-export function LangChip({
-  code,
-  selected,
-  onClick,
-}: {
+export interface LangChipProps {
   code: Language;
   selected?: boolean;
   onClick: () => void;
-}) {
+}
+
+export const LangChip: React.FC<LangChipProps> = ({
+  code,
+  selected,
+  onClick,
+}) => {
   const info = SUPPORTED_LANGUAGES.find((l) => l.code === code);
   return (
     <button

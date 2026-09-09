@@ -8,6 +8,7 @@ interface Props {
   activePlayerIndex?: number;
   eliminatedTeamIds?: number[];
   teams?: Team[];
+  compact?: boolean;
 }
 
 const PlayerCircle: React.FC<Props> = ({ 
@@ -15,11 +16,12 @@ const PlayerCircle: React.FC<Props> = ({
   activeIndex, 
   activePlayerIndex, 
   eliminatedTeamIds, 
-  teams 
+  teams,
+  compact = false
 }) => {
-  const radius = 95;
-  const centerX = 125;
-  const centerY = 125;
+  const radius = compact ? 70 : 88;
+  const centerX = 115;
+  const centerY = 115;
 
   const currentActive = activePlayerIndex !== undefined 
     ? activePlayerIndex 
@@ -30,8 +32,13 @@ const PlayerCircle: React.FC<Props> = ({
   if (!players || players.length === 0) return null;
 
   return (
-    <div className="relative w-64 h-64 mx-auto select-none bg-white p-2 border-[3.5px] border-[#241c48] rounded-3xl shadow-[4px_4px_0px_0px_#241c48]">
-      <svg width="240" height="240" viewBox="0 0 250 250" className="mx-auto">
+    <div className={`relative mx-auto select-none bg-white border-[3px] border-[#241c48] rounded-2xl shadow-[3px_3px_0px_0px_#241c48] transition-all flex items-center justify-center ${
+      compact ? 'w-44 h-44 p-1' : 'w-52 h-52 sm:w-60 sm:h-60 p-1.5'
+    }`}>
+      <svg 
+        viewBox="0 0 230 230" 
+        className="w-full h-full"
+      >
         {/* Retro dotted tracking radial ring */}
         <circle 
           cx={centerX} 
@@ -39,8 +46,8 @@ const PlayerCircle: React.FC<Props> = ({
           r={radius} 
           fill="none" 
           stroke="#241c48" 
-          strokeWidth="3" 
-          strokeDasharray="6,8" 
+          strokeWidth="2.5" 
+          strokeDasharray="5,6" 
           className="opacity-40"
         />
         

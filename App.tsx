@@ -316,7 +316,15 @@ const App: React.FC = () => {
   };
 
   return (
-    <main className="w-full max-w-md mx-auto flex flex-col overflow-hidden shadow-2xl relative bg-[#170B2C]" style={{ height: '100%', minHeight: 0, flex: 1 }}>
+    <main 
+      className="w-full max-w-md mx-auto flex flex-col shadow-2xl relative bg-[#170B2C] min-h-0 flex-1" 
+      style={{ 
+        height: '100%', 
+        maxHeight: '100dvh',
+        paddingTop: 'env(safe-area-inset-top, 0px)',
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)'
+      }}
+    >
       
       {/* Offline PWA Connectivity Indicator */}
       <OfflineIndicator language={settings.language} />

@@ -29,7 +29,8 @@ import {
   Lightbulb,
   Clock,
   Eye,
-  EyeOff
+  EyeOff,
+  Users
 } from 'lucide-react';
 
 interface UndoSnapshot {
@@ -116,6 +117,7 @@ const GameplayScreen: React.FC<Props> = ({
   const [showHint, setShowHint] = useState(false);
   const [showGrammar, setShowGrammar] = useState(false);
   const [showAlmostModal, setShowAlmostModal] = useState(false);
+  const [showSeatingCircle, setShowSeatingCircle] = useState(false);
   const [streakCount, setStreakCount] = useState(0);
   const [cardStartTime, setCardStartTime] = useState<number>(Date.now());
   const [powerCardsUsed, setPowerCardsUsed] = useState<string[]>([]);
@@ -444,7 +446,7 @@ const GameplayScreen: React.FC<Props> = ({
   }
 
   return (
-    <div className="h-full min-h-0 flex-1 flex flex-col justify-between p-3.5 sm:p-4 select-none relative overflow-hidden" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="h-full min-h-0 flex-1 flex flex-col justify-between p-2.5 sm:p-3.5 select-none relative overflow-y-auto overscroll-contain" dir={isRTL ? 'rtl' : 'ltr'}>
       
       {/* Turn Change Flash Banner */}
       {turnFlash && (
@@ -487,6 +489,20 @@ const GameplayScreen: React.FC<Props> = ({
         {/* Control Actions (Sound, Guide, Pause) */}
         <div className="flex items-center gap-1.5">
           <button 
+            aria-label="Toggle Seating Circle"
+            title="نمایش / مخفی‌سازی چیدمان دور میز"
+            onClick={() => {
+              sound.playClick();
+              setShowSeatingCircle(prev => !prev);
+            }}
+            className={`p-1.5 rounded-xl border border-[#241442] transition-colors ${
+              showSeatingCircle ? 'bg-[#00F0FF] text-[#1a0833]' : 'bg-[#F4E8FF] text-[#1a0833]'
+            }`}
+          >
+            <Users size={15} />
+          </button>
+
+          <button 
             aria-label="Sound Toggle"
             onClick={() => {
               const currentMuted = settings.soundEnabled === false;
@@ -525,14 +541,17 @@ const GameplayScreen: React.FC<Props> = ({
 
       </div>
 
-      {/* Player Arrangement Circle (Interactive Table Seating) */}
-      <div className="my-1 shrink-0">
-        <PlayerCircle 
-          players={players} 
-          activePlayerIndex={activePlayerIndex} 
-          teams={teams} 
-        />
-      </div>
+      {/* Player Arrangement Circle (Interactive Table Seating - Toggleable) */}
+      {showSeatingCircle && (
+        <div className="my-1 shrink-0 transition-all">
+          <PlayerCircle 
+            players={players} 
+            activePlayerIndex={activePlayerIndex} 
+            teams={teams} 
+            compact={true}
+          />
+        </div>
+      )}
 
       {/* Main Active Language Card */}
       <div className="w-full flex-1 min-h-0 flex flex-col justify-between my-1">

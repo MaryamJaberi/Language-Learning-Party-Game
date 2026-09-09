@@ -1,5 +1,6 @@
 import { Language, CEFRLevel, LanguageCard, ContentType, LearningMode, CardGameMode } from './types';
 import { WORD_BANK } from './words';
+import { cardsFromPhraseBank } from './phraseBank';
 
 // Rich Curated Language Cards Database
 export const CURATED_LANGUAGE_CARDS: LanguageCard[] = [
@@ -971,7 +972,12 @@ export function buildSessionCardPool(
     'ar': 'عربی 🇸🇦',
     'tr': 'ترکی 🇹🇷',
     'pl': 'لهستانی 🇵🇱',
-    'uk': 'اوکراینی 🇺🇦'
+    'uk': 'اوکراینی 🇺🇦',
+    'pt': 'پرتغالی 🇵🇹',
+    'zh': 'چینی 🇨🇳',
+    'ja': 'ژاپنی 🇯🇵',
+    'ko': 'کره‌ای 🇰🇷',
+    'hi': 'هندی 🇮🇳'
   };
 
   // 1. Gather curated cards matching selected target languages
@@ -988,13 +994,27 @@ export function buildSessionCardPool(
     }
   });
 
-  // 2. Gather synthetic cards for all selected target languages
+  // 2. Gather verified phrases from phraseBank (real-world idioms, dialogue lines, sentences)
+  const bankCards = cardsFromPhraseBank(
+    activeTargets,
+    activeCats,
+    cefrLevel,
+    nativeLanguage,
+    cardGameMode
+  );
+  bankCards.forEach(card => {
+    if (!pool.some(existing => existing.id === card.id)) {
+      pool.push(card);
+    }
+  });
+
+  // 3. Gather synthetic cards for all selected target languages
   activeTargets.forEach(targetLang => {
     const synthCards = generateSyntheticCardsForLanguage(targetLang, nativeLanguage);
     synthCards.forEach(card => {
       const topicMatch = activeCats.length === 0 || activeCats.includes(card.topic);
       const levelMatch = cefrLevel === 'all' || card.cefrLevel === cefrLevel;
-      if (topicMatch && levelMatch) {
+      if (topicMatch && levelMatch && !pool.some(existing => existing.id === card.id)) {
         pool.push(card);
       }
     });
@@ -1012,11 +1032,12 @@ export function buildSessionCardPool(
     });
   }
 
-  // 3. Apply Reverse Translation Transformation
+  // 4. Apply Reverse Translation Transformation
   // In 'reverse' mode: ALL cards become reverse translation
   // In 'mixed' mode: ~40% of cards become reverse translation
   // In 'standard' mode: keep traditional explanation/speaking mode
   const transformedPool = pool.map((card, idx) => {
+    if (card.isReverse) return card;
     const shouldBeReverse = cardGameMode === 'reverse' || (cardGameMode === 'mixed' && idx % 3 === 0);
     if (!shouldBeReverse) {
       return card;
@@ -1030,10 +1051,9 @@ export function buildSessionCardPool(
       prompt: nativeLanguage === 'fa'
         ? `🔄 ترجمه به ${targetLangName}: این عبارت را به زبان هدف ادا کن!`
         : `🔄 Reverse Translate into ${targetLangName}: Speak the translation!`,
-      // In reverse mode, prompt the player with native text, and teammate says targetText
     };
   });
 
-  // 4. Shuffle pool randomly to interleave languages, levels, and reverse modes seamlessly!
+  // 5. Shuffle pool randomly to interleave languages, levels, and reverse modes seamlessly!
   return [...transformedPool].sort(() => Math.random() - 0.5);
 }

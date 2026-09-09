@@ -5,7 +5,7 @@ export enum TeamColor {
   Yellow = 'YELLOW'
 }
 
-export type Language = 'fa' | 'en' | 'en-US' | 'nl' | 'de' | 'fr' | 'ar' | 'tr' | 'pl' | 'uk' | 'es' | 'it';
+export type Language = 'fa' | 'en' | 'en-US' | 'nl' | 'de' | 'fr' | 'ar' | 'tr' | 'pl' | 'uk' | 'es' | 'it' | 'pt' | 'zh' | 'ja' | 'ko' | 'hi';
 
 export type CEFRLevel = 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2' | 'all';
 

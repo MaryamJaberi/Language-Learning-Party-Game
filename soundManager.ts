@@ -686,7 +686,7 @@ class SoundManager {
   /**
    * High-clarity native speech pronunciation using Web Speech Synthesis API
    */
-  public speak(text: string, lang: string = 'en-US'): void {
+  public speak(text: string, lang: string = 'en-US', options?: { force?: boolean }): void {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
     if (!text || text.trim() === '') return;
 
@@ -706,7 +706,12 @@ class SoundManager {
         'ar': 'ar-SA',
         'tr': 'tr-TR',
         'pl': 'pl-PL',
-        'uk': 'uk-UA'
+        'uk': 'uk-UA',
+        'pt': 'pt-PT',
+        'zh': 'zh-CN',
+        'ja': 'ja-JP',
+        'ko': 'ko-KR',
+        'hi': 'hi-IN'
       };
 
       const targetBCP = bcpMap[lang] || lang || 'en-US';
@@ -716,7 +721,7 @@ class SoundManager {
       utterance.lang = targetBCP;
       utterance.rate = 0.92; // Slightly slower for optimal learner articulation
       utterance.pitch = 1.0;
-      utterance.volume = this.isMuted ? 0 : 1.0;
+      utterance.volume = (!options?.force && this.isMuted) ? 0 : 1.0;
 
       // Select high-quality matching voice if available
       const voices = window.speechSynthesis.getVoices();

@@ -69,8 +69,8 @@ const SeatingConfirmScreen: React.FC<Props> = ({
         </div>
 
         {/* Interactive Seating Circle SVG */}
-        <div className="relative w-60 h-60 sm:w-68 sm:h-68 mx-auto select-none bg-white p-2 border-[3.5px] border-[#241442] rounded-3xl shadow-[4px_4px_0px_0px_#241442] my-auto flex items-center justify-center shrink-0">
-          <svg width="240" height="240" viewBox="0 0 270 270" className="mx-auto">
+        <div className="relative w-52 h-52 sm:w-64 sm:h-64 mx-auto select-none bg-white p-2 border-[3.5px] border-[#241442] rounded-3xl shadow-[4px_4px_0px_0px_#241442] my-auto flex items-center justify-center shrink-0">
+          <svg viewBox="0 0 270 270" className="w-full h-full mx-auto">
             {/* Table Center */}
             <circle cx={centerX} cy={centerY} r="42" fill="#241442" stroke="#FF007F" strokeWidth="3" />
             <circle cx={centerX} cy={centerY} r="36" fill="#311b59" />
