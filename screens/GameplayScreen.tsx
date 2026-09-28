@@ -395,12 +395,12 @@ const GameplayScreen: React.FC<Props> = ({
 
     if (type === 'time') {
       setRoundTimer(prev => prev + 10000);
-      setBonusNotification('⏱️ ۱۰+ ثانیه زمان اضافه شد!');
+      setBonusNotification(isRTL ? '⏱️ ۱۰+ ثانیه زمان اضافه شد!' : '⏱️ +10s Time Added!');
       setTimeout(() => setBonusNotification(null), 1500);
       setPowerCardsUsed(prev => [...prev, 'time']);
     } else if (type === 'hint') {
       setShowHint(true);
-      setBonusNotification('💡 راهنما فعال شد!');
+      setBonusNotification(isRTL ? '💡 راهنما فعال شد!' : '💡 Hint Activated!');
       setTimeout(() => setBonusNotification(null), 1500);
     }
   };
@@ -491,7 +491,7 @@ const GameplayScreen: React.FC<Props> = ({
         <div className="flex items-center gap-1.5">
           <button 
             aria-label="Toggle Seating Circle"
-            title="نمایش / مخفی‌سازی چیدمان دور میز"
+            title={isRTL ? "نمایش / مخفی‌سازی چیدمان دور میز" : "Toggle Table Seating"}
             onClick={() => {
               sound.playClick();
               setShowSeatingCircle(prev => !prev);
@@ -631,7 +631,7 @@ const GameplayScreen: React.FC<Props> = ({
                   {/* Pronounce Button */}
                   <button
                     type="button"
-                    title="پخش تلفظ صوتی"
+                    title={isRTL ? "پخش تلفظ صوتی" : "Audio Pronunciation"}
                     onClick={() => {
                       sound.playClick();
                       sound.speakTargetPhrase(currentCard.targetText, currentCard.targetLanguage);
@@ -661,7 +661,7 @@ const GameplayScreen: React.FC<Props> = ({
                     {currentCard?.targetText && (
                       <button
                         type="button"
-                        title="پخش تلفظ صوتی"
+                        title={isRTL ? "پخش تلفظ صوتی" : "Audio Pronunciation"}
                         onClick={() => {
                           sound.playClick();
                           sound.speakTargetPhrase(currentCard.targetText, currentCard.targetLanguage);

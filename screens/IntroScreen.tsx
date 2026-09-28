@@ -163,12 +163,25 @@ const IntroScreen: React.FC<Props> = ({
   return (
     <div className="h-full min-h-0 flex-1 flex flex-col items-center justify-between p-3.5 sm:p-4 text-center select-none overflow-y-auto overscroll-contain" dir={isRTL ? 'rtl' : 'ltr'}>
       
-      {/* Top Bar: Brand Pill on one side, Sound, History, Help & Profile on the other */}
+      {/* Top Bar: Language Picker Pill on one side, Sound, History, Help & Profile on the other */}
       <div className="w-full max-w-sm flex items-center justify-between px-1 mb-2 shrink-0 gap-1.5">
-        <div className="flex items-center gap-1.5 bg-[#FFFBF4] px-2.5 py-1 rounded-[14px] border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E] text-xs font-bold text-[#1E1B2E]">
-          <FlagIcon language={language} size={15} />
-          <span className="font-display tracking-tight">{language === 'fa' ? 'Turn · دور' : 'Turn'}</span>
-        </div>
+        <button
+          id="header-language-btn"
+          type="button"
+          onClick={() => {
+            sound.playClick();
+            setIsLanguageModalOpen(true);
+          }}
+          className="h-10 flex items-center gap-1.5 bg-[#FFFBF4] hover:bg-[#F4EDE1] px-2.5 sm:px-3 rounded-[14px] border-2 border-[#1E1B2E] shadow-[3px_3px_0px_0px_#1E1B2E] text-xs font-bold text-[#1E1B2E] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#1E1B2E] transition-all cursor-pointer shrink-0"
+          title={language === 'fa' ? 'تغییر زبان برنامه' : 'Change app language'}
+          aria-label={language === 'fa' ? 'تغییر زبان برنامه' : 'Change app language'}
+        >
+          <FlagIcon language={language} size={17} />
+          <span className="font-bold tracking-tight">
+            {currentLangInfo.nativeName || currentLangInfo.name}
+          </span>
+          <ChevronDown size={14} className="text-[#1E1B2E]/60 shrink-0" />
+        </button>
 
         {/* Top Controls: Sound, History, Help & Profile (Leaderboard is inside Profile) */}
         <div className="flex items-center gap-2">
@@ -264,38 +277,8 @@ const IntroScreen: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* Interactive Controls & Language Selection Area */}
+      {/* Interactive Action Buttons */}
       <div className="w-full max-w-sm space-y-2.5 my-auto shrink-0">
-        
-        {/* Tabletop Language Selector Card */}
-        <div className="bg-[#FFFBF4] p-3 rounded-[22px] border-2 border-[#1E1B2E] shadow-[4px_4px_0px_0px_#1E1B2E] flex items-center justify-between gap-2.5">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-9 h-9 rounded-full bg-[#F4EDE1] border-2 border-[#1E1B2E] flex items-center justify-center shrink-0">
-              <Globe size={18} className="text-[#1E1B2E]" />
-            </div>
-            <div className="text-start min-w-0">
-              <div className="text-xs sm:text-sm font-bold text-[#1E1B2E] truncate font-ui">
-                {currentLangInfo.name}
-              </div>
-              <div className="text-[10px] sm:text-[11px] text-[#1E1B2E]/60 font-medium truncate font-ui">
-                {language === 'fa' ? 'زبان برنامه و بازی' : 'App & game language'}
-              </div>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => {
-              sound.playClick();
-              setIsLanguageModalOpen(true);
-            }}
-            className="px-3 py-1.5 rounded-xl bg-[#FFFBF4] hover:bg-[#F4EDE1] text-[#1E1B2E] text-xs font-bold border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E] shrink-0 flex items-center gap-1 active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#1E1B2E] transition-all font-ui"
-          >
-            <span>{language === 'fa' ? 'تغییر' : 'Change'}</span>
-            <ChevronDown size={14} />
-          </button>
-        </div>
-
         {/* Primary Action: Orange "Start new game" Button (Page 3) */}
         <div className="flex flex-col gap-2.5">
           <button 

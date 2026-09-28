@@ -207,7 +207,7 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
             className="flex items-center gap-1.5 bg-[#1E9E93] text-white px-2.5 py-1 rounded-[12px] text-xs font-bold border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E] active:translate-y-0.5"
           >
             <Headphones size={13} />
-            <span>تماس صوتی فعال</span>
+            <span>{language === 'fa' ? 'تماس صوتی فعال' : 'Voice call active'}</span>
             <ExternalLink size={11} />
           </a>
         )}
@@ -215,7 +215,7 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
         {/* Round Badge */}
         <div className="flex items-center gap-1.5 bg-[#F2B63D] text-[#1E1B2E] px-3 py-1 rounded-[12px] text-xs font-bold border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E]">
           <Clock size={13} />
-          <span>راند {room.currentRound} از {room.settings.roundsCount || 3}</span>
+          <span>{language === 'fa' ? `راند ${room.currentRound} از ${room.settings.roundsCount || 3}` : `Round ${room.currentRound} of ${room.settings.roundsCount || 3}`}</span>
         </div>
 
         {/* Room Code */}
@@ -229,6 +229,9 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
         {room.teams.map(t => {
           const cfg = COLORS_MAP[t.color] || { bg: 'bg-[#1E9E93]', text: 'text-[#1E1B2E]', hex: '#1E9E93' };
           const isActive = t.id === activeTeam.id;
+          const teamLabel = language === 'fa'
+            ? `تیم ${t.color === 'BLUE' ? 'آبی' : t.color === 'RED' ? 'قرمز' : t.color === 'GREEN' ? 'سبز' : 'زرد'}`
+            : `Team ${t.color === 'BLUE' ? 'Blue' : t.color === 'RED' ? 'Red' : t.color === 'GREEN' ? 'Green' : 'Yellow'}`;
 
           return (
             <div
@@ -240,7 +243,7 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
               <div className="flex items-center gap-1">
                 <TeamMascot color={t.color} size={18} animate={false} />
                 <span className="text-[10px] font-bold text-[#1E1B2E] truncate">
-                  تیم {t.color === 'BLUE' ? 'آبی' : t.color === 'RED' ? 'قرمز' : t.color === 'GREEN' ? 'سبز' : 'زرد'}
+                  {teamLabel}
                 </span>
               </div>
               <span className="text-xs font-bold px-1.5 py-0.5 bg-[#F4EDE1] text-[#1E1B2E] rounded-[6px] border border-[#1E1B2E] font-mono">
@@ -257,12 +260,12 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
           <div className="p-4 bg-[#FFFBF4] rounded-[24px] border-2 border-[#1E1B2E] shadow-[4px_4px_0px_0px_#1E1B2E] w-full max-w-sm space-y-2.5">
             <Trophy size={48} className="text-[#F2B63D] mx-auto drop-shadow-md" />
             <h2 className="text-xl font-bold text-[#1E1B2E] font-display">
-              پایان مسابقه آنلاین! 🏆
+              {language === 'fa' ? 'پایان مسابقه آنلاین! 🏆' : 'Online Match Complete! 🏆'}
             </h2>
             <div className="p-2.5 bg-[#F4EDE1] rounded-[14px] border-2 border-[#1E1B2E]">
-              <span className="text-xs font-bold text-[#E0603F] block">تیم قهرمان:</span>
+              <span className="text-xs font-bold text-[#E0603F] block">{language === 'fa' ? 'تیم قهرمان:' : 'Champion Team:'}</span>
               <span className="text-sm font-bold text-[#1E1B2E]">
-                {winners.map(w => `تیم ${w.color === 'BLUE' ? 'آبی' : w.color === 'RED' ? 'قرمز' : w.color === 'GREEN' ? 'سبز' : 'زرد'}`).join(' و ')}
+                {winners.map(w => language === 'fa' ? `تیم ${w.color === 'BLUE' ? 'آبی' : w.color === 'RED' ? 'قرمز' : w.color === 'GREEN' ? 'سبز' : 'زرد'}` : `Team ${w.color}`).join(language === 'fa' ? ' و ' : ' & ')}
               </span>
             </div>
 
@@ -275,14 +278,14 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
               className="pixel-btn pixel-btn-orange w-full py-2.5 text-xs font-bold uppercase flex items-center justify-center gap-1.5 rounded-[12px]"
             >
               <Share2 size={16} />
-              <span>اشتراک‌گذاری کارنامه مسابقه 📤</span>
+              <span>{language === 'fa' ? 'اشتراک‌گذاری کارنامه مسابقه 📤' : 'Share Match Scorecard 📤'}</span>
             </button>
 
             <button
               onClick={onExit}
               className="w-full py-2 bg-[#FFFBF4] hover:bg-[#F4EDE1] text-[#1E1B2E] rounded-[12px] font-bold text-xs border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E]"
             >
-              خروج به صفحه اصلی
+              {language === 'fa' ? 'خروج به صفحه اصلی' : 'Exit to Main Menu'}
             </button>
           </div>
         </div>
@@ -297,7 +300,7 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
             <div className="flex items-center gap-2">
               <TeamMascot color={activeTeam.color} size={28} />
               <div className="text-start">
-                <span className="text-[10px] text-[#1E1B2E]/70 font-bold uppercase block">نوبت توضیح و حدس:</span>
+                <span className="text-[10px] text-[#1E1B2E]/70 font-bold uppercase block">{language === 'fa' ? 'نوبت توضیح و حدس:' : 'Active Guesser / Turn:'}</span>
                 <span className="text-xs font-bold text-[#1E1B2E]">{activePlayer?.name}</span>
               </div>
             </div>
@@ -320,11 +323,12 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
 
                 <div className="space-y-1">
                   <h3 className="text-lg font-bold text-[#1E1B2E] font-display">
-                    🙈 نوبت حدس زدن شماست!
+                    {language === 'fa' ? '🙈 نوبت حدس زدن شماست!' : "🙈 It's your turn to guess!"}
                   </h3>
                   <p className="text-xs text-[#1E1B2E]/80 leading-relaxed font-medium">
-                    کارت از روی صفحه شما مخفی است تا بازی لو نرود.
-                    به صدای هم‌تیمی‌هایتان در تماس صوتی (گوگل میت / دیسکورد) گوش دهید و کلمه هدف را حدس بزنید!
+                    {language === 'fa' 
+                      ? 'کارت از روی صفحه شما مخفی است تا بازی لو نرود. به صدای هم‌تیمی‌هایتان در تماس صوتی (گوگل میت / دیسکورد) گوش دهید و کلمه هدف را حدس بزنید!' 
+                      : 'The card is hidden on your screen to avoid spoilers. Listen to your teammates on the voice call and guess the target word!'}
                   </p>
                 </div>
 
@@ -337,7 +341,7 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
                 </div>
 
                 <div className="text-[10px] text-[#1E1B2E] font-bold bg-[#F4EDE1] px-3 py-1 rounded-[12px] border border-[#1E1B2E]">
-                  🎙️ در حال گوش دادن به هم‌تیمی‌ها...
+                  {language === 'fa' ? '🎙️ در حال گوش دادن به هم‌تیمی‌ها...' : '🎙️ Listening to teammates...'}
                 </div>
               </div>
             ) : (
@@ -355,14 +359,14 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
                   </div>
 
                   <span className="text-[10px] font-bold bg-[#F2B63D] text-[#1E1B2E] px-2 py-0.5 rounded-[8px] border border-[#1E1B2E]">
-                    {(currentCard?.points || 1) * (currentCard?.isGolden ? 2 : 1)} امتیاز ⭐
+                    {(currentCard?.points || 1) * (currentCard?.isGolden ? 2 : 1)} {language === 'fa' ? 'امتیاز ⭐' : 'pts ⭐'}
                   </span>
                 </div>
 
                 {/* Target Word with Subtle Tinted Plate for AAA Readability */}
                 <div className="text-center p-3 rounded-[16px] bg-[#F4EDE1] border-2 border-[#1E1B2E] space-y-1.5">
                   <span className="text-[10px] text-[#1E1B2E]/70 font-bold block uppercase">
-                    این کلمه را برای {activePlayer?.name} توصیف کنید:
+                    {language === 'fa' ? `این کلمه را برای ${activePlayer?.name} توصیف کنید:` : `Describe this word for ${activePlayer?.name}:`}
                   </span>
                   <div className="flex items-center justify-center gap-2">
                     <h2 dir="ltr" className="text-2xl sm:text-3xl font-bold text-[#1E1B2E] font-card-word">
@@ -372,7 +376,7 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
                       <button
                         onClick={() => handlePronounce(currentCard.targetText, currentCard.targetLanguage)}
                         className="p-1.5 bg-[#F2B63D] hover:bg-[#e0a634] rounded-[10px] border-2 border-[#1E1B2E] text-[#1E1B2E] shadow-[1.5px_1.5px_0px_0px_#1E1B2E]"
-                        title="تلفظ صوتی"
+                        title={language === 'fa' ? "تلفظ صوتی" : "Audio Pronunciation"}
                       >
                         <Volume2 size={16} />
                       </button>
@@ -388,7 +392,7 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
                 {/* Grammar / Hint Clue */}
                 {currentCard?.grammarPoint && (
                   <div className="text-[11px] bg-[#FFFBF4] p-2 rounded-[12px] border border-[#1E1B2E] text-[#1E1B2E]">
-                    <span className="font-bold text-[#1E9E93]">راهنمای گرامری: </span>
+                    <span className="font-bold text-[#1E9E93]">{language === 'fa' ? 'راهنمای گرامری: ' : 'Grammar Note: '}</span>
                     <span>{currentCard.grammarPoint}</span>
                   </div>
                 )}
@@ -400,7 +404,7 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
                     className="pixel-btn pixel-btn-teal py-2.5 rounded-[12px] text-xs font-bold flex items-center justify-center gap-1"
                   >
                     <Check size={16} />
-                    <span>درست حدس زد! (+امتیاز)</span>
+                    <span>{language === 'fa' ? 'درست حدس زد! (+امتیاز)' : 'Guessed Correctly! (+pts)'}</span>
                   </button>
 
                   <button
@@ -408,7 +412,7 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
                     className="pixel-btn pixel-btn-orange py-2.5 rounded-[12px] text-xs font-bold flex items-center justify-center gap-1"
                   >
                     <X size={16} />
-                    <span>پاس / خطا</span>
+                    <span>{language === 'fa' ? 'پاس / خطا' : 'Pass / Wrong'}</span>
                   </button>
                 </div>
 
@@ -419,7 +423,7 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
 
           {/* Quick Real-Time Emoji Reaction Bar */}
           <div className="flex items-center justify-center gap-2 bg-[#FFFBF4] p-1.5 rounded-[16px] border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E] shrink-0 font-ui">
-            <span className="text-[10px] text-[#1E1B2E]/70 font-bold ml-1">واکنش:</span>
+            <span className="text-[10px] text-[#1E1B2E]/70 font-bold ml-1">{language === 'fa' ? 'واکنش:' : 'React:'}</span>
             {['👏', '🔥', '😂', '💡', '⚡'].map(emoji => (
               <button
                 key={emoji}

@@ -42,8 +42,8 @@ const DEFAULT_SETTINGS: GameSettings = {
   roundDuration: 60,
   difficulty: 'easy',
   cefrLevel: 'all',
-  nativeLanguage: 'en-US',
-  targetLanguages: ['nl', 'es'],
+  nativeLanguage: 'fa',
+  targetLanguages: ['nl', 'en'],
   cardGameMode: 'mixed',
   autoPronounceOnCorrect: true,
   selectedCategories: [
@@ -55,8 +55,8 @@ const DEFAULT_SETTINGS: GameSettings = {
     "CAT_WORK",
     "CAT_SMALLTALK"
   ],
-  playerNames: getRandomCharacters('en-US', 8),
-  language: 'en-US',
+  playerNames: getRandomCharacters('fa', 8),
+  language: 'fa',
   passPhoneScreenEnabled: false,
   soundEnabled: true,
   powerCardsEnabled: true
@@ -136,7 +136,7 @@ const App: React.FC = () => {
     if (savedSettings) {
       try {
         const parsed = JSON.parse(savedSettings);
-        const nativeLang = parsed?.nativeLanguage || 'en-US';
+        const nativeLang = parsed?.nativeLanguage || parsed?.language || 'fa';
         const isEnglishNative = nativeLang === 'en-US' || nativeLang === 'en';
         
         // Normalize player names: if native language is English, ensure no leftover Persian names
@@ -147,15 +147,15 @@ const App: React.FC = () => {
         }
 
         // Normalize UI language: if native is English and language was 'fa', switch to 'en-US'
-        let uiLang = parsed?.language || 'en-US';
+        let uiLang = parsed?.language || (isEnglishNative ? 'en-US' : 'fa');
         if (isEnglishNative && uiLang === 'fa') {
           uiLang = 'en-US';
         }
 
-        // Target languages: if native is English, exclude English so user learns foreign languages
+        // Target languages
         let targets = Array.isArray(parsed?.targetLanguages) && parsed.targetLanguages.length > 0 
           ? parsed.targetLanguages 
-          : ['nl', 'es'];
+          : (isEnglishNative ? ['nl', 'es'] : ['nl', 'en']);
         if (isEnglishNative) {
           targets = targets.filter((t: string) => t !== 'en' && t !== 'en-US');
           if (targets.length === 0) targets = ['nl', 'es'];
@@ -380,6 +380,17 @@ const App: React.FC = () => {
     };
   }, [gameStatus, activePlayerIndex, players]);
 
+  // Auto-pause when tab is hidden or app switched (Interrupt & resume safety)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden && gameStatus === GameStatus.ActiveTurn) {
+        setGameStatus(GameStatus.Paused);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [gameStatus]);
+
   // Record Game to Local & Firebase History
   const handleGameFinish = (entry: GameHistoryEntry) => {
     const updated = [entry, ...history];
@@ -453,6 +464,8 @@ const App: React.FC = () => {
       {currentScreen === 'INTRO' && (
         <IntroScreen
           language={settings.language}
+          settings={settings}
+          onUpdateSettings={saveSettings}
           onLanguageChange={(l) => saveSettings({ ...settings, language: l, nativeLanguage: settings.nativeLanguage || l })}
           onNext={() => setCurrentScreen('SETUP')}
           onOpenSinglePlayer={handleOpenSinglePlayer}

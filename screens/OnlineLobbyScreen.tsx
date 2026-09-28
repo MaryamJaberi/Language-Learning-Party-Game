@@ -152,7 +152,7 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
       });
       setViewMode('in_lobby');
     } catch (err: any) {
-      setErrorMessage(err.message || 'خطا در ایجاد اتاق');
+      setErrorMessage(err.message || (isRTL ? 'خطا در ایجاد اتاق' : 'Error creating room'));
     } finally {
       setIsLoading(false);
     }
@@ -179,7 +179,7 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
       setCurrentRoom(room);
       setViewMode('in_lobby');
     } catch (err: any) {
-      setErrorMessage(err.message || 'اتاق پیدا نشد');
+      setErrorMessage(err.message || (isRTL ? 'اتاق پیدا نشد' : 'Room not found'));
     } finally {
       setIsLoading(false);
     }
@@ -208,7 +208,9 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
     sound.playClick();
     const link = `${window.location.origin}?room=${currentRoom.code}`;
     const text = encodeURIComponent(
-      `🎮 بیا تو بازی دورهمی یادگیری زبان (دور)!\nکد اتاق: ${currentRoom.code}\nلینک ورود مستقیم:\n${link}`
+      language === 'fa'
+        ? `🎮 بیا تو بازی دورهمی یادگیری زبان (دور)!\nکد اتاق: ${currentRoom.code}\nلینک ورود مستقیم:\n${link}`
+        : `🎮 Join my Turn language party game!\nRoom Code: ${currentRoom.code}\nDirect link:\n${link}`
     );
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
   };
@@ -228,7 +230,7 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
     try {
       await startOnlineGame(currentRoom.id);
     } catch (err: any) {
-      setErrorMessage(err.message || 'خطا در شروع بازی');
+      setErrorMessage(err.message || (isRTL ? 'خطا در شروع بازی' : 'Error starting game'));
       setIsLoading(false);
     }
   };
@@ -374,8 +376,8 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
                     : 'bg-[#F4EDE1] text-[#1E1B2E]/70'
                 }`}
               >
-                <span>تلفن رایگان</span>
-                <span className="text-[9px] block opacity-80 font-normal">بدون نصب</span>
+                <span>{language === 'fa' ? 'تلفن رایگان' : 'Free Voice'}</span>
+                <span className="text-[9px] block opacity-80 font-normal">{language === 'fa' ? 'بدون نصب' : 'In-App'}</span>
               </button>
 
               <button
@@ -388,7 +390,7 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
                 }`}
               >
                 <span>Google Meet</span>
-                <span className="text-[9px] block opacity-80 font-normal">گوگل میت</span>
+                <span className="text-[9px] block opacity-80 font-normal">{language === 'fa' ? 'گوگل میت' : 'Video call'}</span>
               </button>
 
               <button
@@ -401,7 +403,7 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
                 }`}
               >
                 <span>Discord</span>
-                <span className="text-[9px] block opacity-80 font-normal">دیسکورد</span>
+                <span className="text-[9px] block opacity-80 font-normal">{language === 'fa' ? 'دیسکورد' : 'Voice server'}</span>
               </button>
             </div>
           </div>
@@ -414,7 +416,7 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
             className="pixel-btn pixel-btn-orange w-full py-3 text-sm font-bold uppercase flex items-center justify-center gap-2 mt-2 rounded-[14px]"
           >
             {isLoading ? (
-              <span>در حال ایجاد اتاق...</span>
+              <span>{language === 'fa' ? 'در حال ایجاد اتاق...' : 'Creating room...'}</span>
             ) : (
               <>
                 <Crown size={18} />
@@ -446,7 +448,7 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
               type="text"
               value={roomCodeInput}
               onChange={(e) => setRoomCodeInput(e.target.value.toUpperCase())}
-              placeholder="مثلا: AB123"
+              placeholder={language === 'fa' ? 'مثلا: AB123' : 'e.g. AB123'}
               className="w-full px-3 py-2 bg-[#F4EDE1] rounded-[12px] border-2 border-[#1E1B2E] text-center text-lg font-mono font-bold text-[#E0603F] tracking-widest uppercase focus:outline-none"
             />
           </div>
@@ -473,7 +475,7 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
             className="pixel-btn pixel-btn-teal w-full py-3 text-sm font-bold uppercase flex items-center justify-center gap-2 mt-2 rounded-[14px]"
           >
             {isLoading ? (
-              <span>در حال اتصال...</span>
+              <span>{language === 'fa' ? 'در حال اتصال...' : 'Connecting...'}</span>
             ) : (
               <>
                 <Users size={18} />
@@ -493,7 +495,7 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
           <div className="bg-[#FFFBF4] p-3 rounded-[20px] border-2 border-[#1E1B2E] shadow-[3px_3px_0px_0px_#1E1B2E] space-y-2 shrink-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
-                <span className="text-xs font-bold text-[#1E1B2E]/70 uppercase">کد اتاق:</span>
+                <span className="text-xs font-bold text-[#1E1B2E]/70 uppercase">{language === 'fa' ? 'کد اتاق:' : 'Room Code:'}</span>
                 <span className="px-3 py-1 bg-[#F4EDE1] text-[#1E1B2E] font-mono text-lg font-bold rounded-[12px] border-2 border-[#1E1B2E] tracking-widest">
                   {currentRoom.code}
                 </span>
@@ -503,19 +505,19 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
                 <button
                   onClick={handleCopyCode}
                   className="p-2 bg-[#FFFBF4] hover:bg-[#F4EDE1] text-[#1E1B2E] rounded-[10px] border-2 border-[#1E1B2E] shadow-[1px_1px_0px_0px_#1E1B2E] flex items-center gap-1 text-xs font-bold"
-                  title="کپی کد"
+                  title={language === 'fa' ? 'کپی کد' : 'Copy Code'}
                 >
                   {copiedCode ? <Check size={14} className="text-[#1E9E93]" /> : <Copy size={14} />}
-                  <span>{copiedCode ? 'کپی شد' : 'کپی کد'}</span>
+                  <span>{copiedCode ? (language === 'fa' ? 'کپی شد' : 'Copied') : (language === 'fa' ? 'کپی کد' : 'Copy')}</span>
                 </button>
 
                 <button
                   onClick={handleCopyLink}
                   className="p-2 bg-[#F2B63D] hover:bg-[#e0a634] text-[#1E1B2E] rounded-[10px] border-2 border-[#1E1B2E] flex items-center gap-1 text-xs font-bold shadow-[1px_1px_0px_0px_#1E1B2E]"
-                  title="کپی لینک مستقیم"
+                  title={language === 'fa' ? 'کپی لینک مستقیم' : 'Copy Direct Link'}
                 >
                   {copiedLink ? <Check size={14} /> : <Share2 size={14} />}
-                  <span>لینک</span>
+                  <span>{language === 'fa' ? 'لینک' : 'Link'}</span>
                 </button>
               </div>
             </div>
@@ -526,7 +528,11 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
                 <div className="flex items-center gap-1.5 text-xs font-bold text-[#1E1B2E]">
                   <PhoneCall size={14} className="text-[#E0603F]" />
                   <span>
-                    {currentRoom.voiceProvider === 'meet' ? 'تماس Google Meet' : currentRoom.voiceProvider === 'discord' ? 'اتاق Discord' : 'تلفن صوتی بازی'}
+                    {currentRoom.voiceProvider === 'meet' 
+                      ? (language === 'fa' ? 'تماس Google Meet' : 'Google Meet Call')
+                      : currentRoom.voiceProvider === 'discord' 
+                        ? (language === 'fa' ? 'اتاق Discord' : 'Discord Server')
+                        : (language === 'fa' ? 'تلفن صوتی بازی' : 'In-Game Voice Room')}
                   </span>
                 </div>
 
@@ -536,7 +542,7 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
                   rel="noreferrer"
                   className="px-2.5 py-1 bg-[#1E9E93] text-white font-bold text-[11px] rounded-[8px] border border-[#1E1B2E] flex items-center gap-1 shadow-[1px_1px_0px_0px_#1E1B2E]"
                 >
-                  <span>ورود به تماس</span>
+                  <span>{language === 'fa' ? 'ورود به تماس' : 'Join Call'}</span>
                   <ExternalLink size={11} />
                 </a>
               </div>
@@ -549,10 +555,10 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
             <div className="flex items-center justify-between border-b-2 pb-1.5 border-[#1E1B2E]/20">
               <span className="text-xs font-bold text-[#1E1B2E] flex items-center gap-1.5">
                 <Users size={14} className="text-[#E0603F]" />
-                <span>بازیکنان متصل ({currentRoom.players.length} نفر):</span>
+                <span>{language === 'fa' ? `بازیکنان متصل (${currentRoom.players.length} نفر):` : `Connected Players (${currentRoom.players.length}):`}</span>
               </span>
               <span className="text-[10px] text-[#1E1B2E]/70 font-bold">
-                روی نام تیم برای جابجایی کلیک کنید
+                {language === 'fa' ? 'روی نام تیم برای جابجایی کلیک کنید' : 'Click team to switch'}
               </span>
             </div>
 
@@ -562,6 +568,9 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
                 const config = COLORS_MAP[t.color] || { bg: 'bg-[#1E9E93]', text: 'text-[#1E1B2E]', hex: '#1E9E93' };
                 const teamPlayers = currentRoom.players.filter(p => p.teamId === t.id);
                 const isMyTeam = currentRoom.players.find(p => p.id === myPlayerId)?.teamId === t.id;
+                const teamName = language === 'fa' 
+                  ? `تیم ${t.color === 'BLUE' ? 'آبی' : t.color === 'RED' ? 'قرمز' : t.color === 'GREEN' ? 'سبز' : 'زرد'}`
+                  : `Team ${t.color === 'BLUE' ? 'Blue' : t.color === 'RED' ? 'Red' : t.color === 'GREEN' ? 'Green' : 'Yellow'}`;
 
                 return (
                   <div
@@ -573,7 +582,7 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
                     <div className="flex items-center justify-between mb-1.5">
                       <div className="flex items-center gap-1 text-[11px] font-bold text-[#1E1B2E]">
                         <TeamMascot color={t.color} size={18} />
-                        <span>تیم {t.color === 'BLUE' ? 'آبی' : t.color === 'RED' ? 'قرمز' : t.color === 'GREEN' ? 'سبز' : 'زرد'}</span>
+                        <span>{teamName}</span>
                       </div>
 
                       {!isMyTeam && (
@@ -581,21 +590,21 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
                           onClick={() => handleSwitchTeam(t.id)}
                           className="text-[9px] font-bold bg-[#FFFBF4] hover:bg-[#F4EDE1] text-[#1E1B2E] border border-[#1E1B2E] px-1.5 py-0.5 rounded-[6px] shadow-[1px_1px_0px_0px_#1E1B2E]"
                         >
-                          عضویت
+                          {language === 'fa' ? 'عضویت' : 'Join'}
                         </button>
                       )}
                     </div>
 
                     <div className="space-y-1">
                       {teamPlayers.length === 0 ? (
-                        <span className="text-[10px] text-[#1E1B2E]/50 italic block">بدون بازیکن</span>
+                        <span className="text-[10px] text-[#1E1B2E]/50 italic block">{language === 'fa' ? 'بدون بازیکن' : 'No players'}</span>
                       ) : (
                         teamPlayers.map(p => (
                           <div key={p.id} className="flex items-center justify-between text-xs font-bold text-[#1E1B2E] bg-[#FFFBF4] p-1 rounded-[8px] border border-[#1E1B2E]">
                             <span className="truncate">{p.name} {p.isHost && '👑'}</span>
                             {p.deviceId === myDeviceId && (
                               <span className="text-[9px] bg-[#1E9E93] text-white px-1 rounded font-bold">
-                                من
+                                {language === 'fa' ? 'من' : 'You'}
                               </span>
                             )}
                           </div>
@@ -610,12 +619,12 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
             {/* Game Rules / Target Languages Pill */}
             <div className="mt-auto pt-2 border-t-2 border-[#1E1B2E]/20 text-start text-[10.5px] text-[#1E1B2E]/70 space-y-0.5 font-ui">
               <div>
-                <span className="font-bold text-[#1E1B2E]">زبان‌های مسابقه: </span>
+                <span className="font-bold text-[#1E1B2E]">{language === 'fa' ? 'زبان‌های مسابقه: ' : 'Target Languages: '}</span>
                 <span>{currentRoom.settings.targetLanguages?.map(l => NATIVE_LANGUAGE_NAMES[l] || l).join(' + ')}</span>
               </div>
               <div>
-                <span className="font-bold text-[#1E1B2E]">مدت هر راند: </span>
-                <span>{currentRoom.settings.roundDuration || 60} ثانیه</span>
+                <span className="font-bold text-[#1E1B2E]">{language === 'fa' ? 'مدت هر راند: ' : 'Round Duration: '}</span>
+                <span>{currentRoom.settings.roundDuration || 60} {language === 'fa' ? 'ثانیه' : 'seconds'}</span>
               </div>
             </div>
 
@@ -635,7 +644,7 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
             ) : (
               <div className="p-3 bg-[#F2B63D] text-[#1E1B2E] rounded-[16px] border-2 border-[#1E1B2E] font-bold text-xs flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_#1E1B2E] animate-pulse">
                 <Sparkles size={16} />
-                <span>منتظر میزبان برای زدن دکمه شروع بازی...</span>
+                <span>{language === 'fa' ? 'منتظر میزبان برای زدن دکمه شروع بازی...' : 'Waiting for host to start the game...'}</span>
               </div>
             )}
           </div>
