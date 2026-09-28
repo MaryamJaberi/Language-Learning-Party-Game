@@ -1,0 +1,280 @@
+@import url('https://fonts.googleapis.com/css2?family=Lalezar&family=Rubik:wght@400;500;700;800&family=Vazirmatn:wght@400;500;700;800&display=swap');
+
+/* Mobile view & cross-browser base adjustments */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  min-height: 100dvh;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #F4EDE1;
+  color: #1E1B2E;
+  font-synthesis: none;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background-color: #F4EDE1;
+}
+
+body {
+  font-family: 'Rubik', 'Vazirmatn', system-ui, -apple-system, sans-serif;
+  background-color: #F4EDE1;
+  color: #1E1B2E;
+  overflow-x: hidden;
+}
+
+/* Script-specific rules */
+[dir="rtl"] {
+  letter-spacing: 0;
+  line-height: 1.6;
+}
+
+/* Turn Game Night Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F4EDE1;
+}
+::-webkit-scrollbar-thumb {
+  background: #1E1B2E;
+  border-radius: 9999px;
+}
+
+/* Touch scroll inertia */
+.overflow-y-auto,
+.overflow-x-auto,
+.overflow-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Display & UI Fonts
+   Latin/Cyrillic:
+     Headings, Card Word, Timer: Rubik 800
+     Buttons & Text: Rubik 400, 500, 700
+   Arabic/Persian:
+     Headings, Card Word, Timer: Lalezar
+     Buttons & Text: Vazirmatn 400, 500, 700
+*/
+.font-display {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 800;
+}
+[dir="rtl"] .font-display,
+.font-display-fa {
+  font-family: 'Lalezar', cursive, sans-serif;
+  font-weight: normal;
+}
+
+.font-ui {
+  font-family: 'Rubik', sans-serif;
+}
+[dir="rtl"] .font-ui,
+.font-ui-fa {
+  font-family: 'Vazirmatn', sans-serif;
+}
+
+.font-card-word {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.font-card-word-rtl {
+  font-family: 'Lalezar', cursive, sans-serif;
+  font-weight: normal;
+}
+
+.font-timer {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Tabletop Card Surfaces with 2px ink border & 4x4 flat shadow */
+.tabletop-card {
+  background: #FFFBF4;
+  border: 2px solid #1E1B2E;
+  box-shadow: 4px 4px 0px 0px #1E1B2E;
+  border-radius: 28px;
+}
+
+.tabletop-section {
+  background: #FFFBF4;
+  border: 2px solid #1E1B2E;
+  box-shadow: 4px 4px 0px 0px #1E1B2E;
+  border-radius: 22px;
+}
+
+.tabletop-icon-btn {
+  background: #FFFBF4;
+  border: 2px solid #1E1B2E;
+  box-shadow: 3px 3px 0px 0px #1E1B2E;
+  border-radius: 14px;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+.tabletop-icon-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px 0px #1E1B2E;
+}
+
+/* Compatibility aliases for previous pixel cards */
+.pixel-card {
+  background: #FFFBF4;
+  border: 2px solid #1E1B2E;
+  box-shadow: 4px 4px 0px 0px #1E1B2E;
+  border-radius: 22px;
+}
+
+.pixel-card-shock {
+  background: #FFFBF4;
+  border: 2px solid #1E1B2E;
+  box-shadow: 4px 4px 0px 0px #1E1B2E;
+  border-radius: 28px;
+}
+
+.pixel-card-neon {
+  background: #FFFBF4;
+  border: 2px solid #1E1B2E;
+  box-shadow: 4px 4px 0px 0px #1E1B2E;
+  border-radius: 22px;
+}
+
+.contrast-flashcard {
+  background: #FFFBF4;
+  color: #1E1B2E;
+  border: 2px solid #1E1B2E;
+  box-shadow: 4px 4px 0px 0px #1E1B2E;
+  border-radius: 28px;
+}
+
+/* Tabletop Buttons: 2px ink border, 4x4 flat shadow, 18px radius */
+.pixel-btn, .tabletop-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border: 2px solid #1E1B2E;
+  border-radius: 18px;
+  font-family: 'Rubik', 'Vazirmatn', sans-serif;
+  font-weight: 700;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px 0px #1E1B2E;
+  touch-action: manipulation;
+}
+
+.pixel-btn:active, .tabletop-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px #1E1B2E;
+}
+
+.pixel-btn:disabled, .pixel-btn.disabled,
+.tabletop-btn:disabled, .tabletop-btn.disabled {
+  opacity: 0.5;
+  background-color: #E6DFD5 !important;
+  color: #8C867E !important;
+  border-color: #8C867E !important;
+  box-shadow: 2px 2px 0px 0px #8C867E !important;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Specific Palette Button Variants */
+.pixel-btn-orange, .pixel-btn-pink {
+  background-color: #E0603F;
+  color: #FFFFFF;
+}
+
+.pixel-btn-teal, .pixel-btn-cyan {
+  background-color: #1E9E93;
+  color: #FFFFFF;
+}
+
+.pixel-btn-mustard, .pixel-btn-yellow {
+  background-color: #F2B63D;
+  color: #1E1B2E;
+}
+
+.pixel-btn-lime {
+  background-color: #1E9E93;
+  color: #FFFFFF;
+}
+
+.pixel-btn-purple {
+  background-color: #1E1B2E;
+  color: #FFFFFF;
+}
+
+.pixel-btn-card, .pixel-btn-white {
+  background-color: #FFFBF4;
+  color: #1E1B2E;
+}
+
+.pixel-btn-dark {
+  background-color: #FFFBF4;
+  color: #1E1B2E;
+}
+
+/* RTL shadow mirroring */
+[dir="rtl"] .pixel-btn,
+[dir="rtl"] .tabletop-btn,
+[dir="rtl"] .tabletop-card,
+[dir="rtl"] .tabletop-section,
+[dir="rtl"] .pixel-card,
+[dir="rtl"] .pixel-card-shock,
+[dir="rtl"] .contrast-flashcard {
+  box-shadow: -4px 4px 0px 0px #1E1B2E;
+}
+
+[dir="rtl"] .tabletop-icon-btn {
+  box-shadow: -3px 3px 0px 0px #1E1B2E;
+}
+
+[dir="rtl"] .pixel-btn:active,
+[dir="rtl"] .tabletop-btn:active {
+  transform: translate(-2px, 2px);
+  box-shadow: -2px 2px 0px 0px #1E1B2E;
+}
+
+[dir="rtl"] .tabletop-icon-btn:active {
+  transform: translate(-2px, 2px);
+  box-shadow: -1px 1px 0px 0px #1E1B2E;
+}
+
+/* Animations */
+@keyframes float-up-fade {
+  0% { transform: translateY(0) scale(0.8); opacity: 1; }
+  100% { transform: translateY(-40px) scale(1.1); opacity: 0; }
+}
+.animate-float-up {
+  animation: float-up-fade 0.8s ease-out forwards;
+}
+
+@keyframes pop-in {
+  0% { transform: scale(0.95); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-fadeIn {
+  animation: pop-in 0.2s ease-out forwards;
+}
+
+/* Safe area padding utilities */
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}

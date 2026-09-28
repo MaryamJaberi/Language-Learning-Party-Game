@@ -1,0 +1,117 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile with game preferences and sync data",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "lastLoginAt": { "type": "string", "format": "date-time" },
+        "totalGamesPlayed": { "type": "number" },
+        "settings": { "type": "object" }
+      },
+      "required": ["uid", "createdAt"]
+    },
+    "GameMatch": {
+      "title": "GameMatch",
+      "description": "Recorded match result and statistics",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "date": { "type": "string" },
+        "winnerNames": { "type": "array", "items": { "type": "string" } },
+        "winnerColor": { "type": "string" },
+        "players": { "type": "array", "items": { "type": "string" } },
+        "roundsCount": { "type": "number" },
+        "difficulty": { "type": "string" },
+        "language": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "date", "winnerNames", "winnerColor", "players"]
+    },
+    "OnlineRoom": {
+      "title": "OnlineRoom",
+      "description": "Live synchronized multiplayer game room for remote play",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string" },
+        "hostId": { "type": "string" },
+        "hostName": { "type": "string" },
+        "status": { "type": "string", "enum": ["lobby", "playing", "round_ended", "game_over"] },
+        "currentRound": { "type": "number" },
+        "activePlayerIndex": { "type": "number" },
+        "settings": { "type": "object" },
+        "teams": { "type": "array" },
+        "players": { "type": "array" },
+        "currentCard": { "type": "object" },
+        "roundTimer": { "type": "number" },
+        "isTimerRunning": { "type": "boolean" },
+        "playedCards": { "type": "array" },
+        "voiceProvider": { "type": "string" },
+        "voiceLink": { "type": "string" },
+        "reactions": { "type": "array" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "code", "hostId", "status"]
+    },
+    "LeaderboardRecord": {
+      "title": "LeaderboardRecord",
+      "description": "High score entries on the global and local leaderboard",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "playerName": { "type": "string" },
+        "score": { "type": "number" },
+        "accuracy": { "type": "number" },
+        "totalCards": { "type": "number" },
+        "targetLanguage": { "type": "string" },
+        "cefrLevel": { "type": "string" },
+        "date": { "type": "string" }
+      },
+      "required": ["id", "playerName", "score", "accuracy"]
+    },
+    "WeakCard": {
+      "title": "WeakCard",
+      "description": "Cards the user struggled with for spaced repetition and review",
+      "type": "object",
+      "properties": {
+        "cardId": { "type": "string" },
+        "targetText": { "type": "string" },
+        "targetLanguage": { "type": "string" },
+        "translation": { "type": "string" },
+        "mistakeCount": { "type": "number" },
+        "lastPracticed": { "type": "string" }
+      },
+      "required": ["cardId", "targetText"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Individual user document containing settings and profile"
+    },
+    "/users/{userId}/matches/{matchId}": {
+      "schema": "GameMatch",
+      "description": "Match history records owned by the user"
+    },
+    "/users/{userId}/weak_cards/{cardId}": {
+      "schema": "WeakCard",
+      "description": "User specific weak cards for spaced repetition"
+    },
+    "/leaderboard/{entryId}": {
+      "schema": "LeaderboardRecord",
+      "description": "Global leaderboard rankings"
+    },
+    "/rooms/{roomId}": {
+      "schema": "OnlineRoom",
+      "description": "Public remote multiplayer game room document"
+    }
+  }
+}

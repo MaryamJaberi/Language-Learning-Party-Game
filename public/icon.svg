@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" rx="128" fill="#170B2C" />
+  <circle cx="256" cy="256" r="210" fill="#241442" stroke="#FF007F" stroke-width="16" />
+  <circle cx="256" cy="256" r="150" fill="#1C002B" stroke="#00F0FF" stroke-width="12" stroke-dasharray="16 12" />
+  
+  <!-- Central Neon Hourglass / Dour Emblem -->
+  <path d="M196 160 L316 160 L280 240 L316 320 L196 320 L232 240 Z" fill="#FFE600" stroke="#241442" stroke-width="12" stroke-linejoin="round"/>
+  
+  <!-- Sparkles -->
+  <circle cx="160" cy="180" r="14" fill="#39FF14" />
+  <circle cx="352" cy="190" r="16" fill="#00F0FF" />
+  <circle cx="170" cy="330" r="16" fill="#FF007F" />
+  <circle cx="340" cy="325" r="14" fill="#FFE600" />
+  
+  <!-- Lightning Icon Center -->
+  <path d="M260 210 L235 260 L258 260 L248 300 L285 248 L262 248 Z" fill="#FF007F" stroke="#170B2C" stroke-width="4" stroke-linejoin="round"/>
+</svg>
