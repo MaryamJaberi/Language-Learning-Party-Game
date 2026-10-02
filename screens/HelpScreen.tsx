@@ -58,8 +58,8 @@ const DEFAULT_HELP: Record<string, { title: string; sections: Array<{ id: string
 const HelpScreen: React.FC<Props> = ({ language, onClose, initialSection }) => {
   const t = tUI(language);
   const isRTL = isRtlLang(language);
-  const help = t?.helpContent || DEFAULT_HELP[language] || DEFAULT_HELP.fa;
-  const sections = help.sections || DEFAULT_HELP.fa.sections;
+  const help = t?.helpContent || DEFAULT_HELP[language] || DEFAULT_HELP.en || DEFAULT_HELP.fa;
+  const sections = help.sections || (DEFAULT_HELP.en && DEFAULT_HELP.en.sections) || DEFAULT_HELP.fa.sections;
   const { isBarsVisible, scrollContainerRef, handleScroll, showBars } = useGoogleScrollBars();
 
   useEffect(() => {
@@ -115,10 +115,10 @@ const HelpScreen: React.FC<Props> = ({ language, onClose, initialSection }) => {
           <div className="flex-1 min-w-0">
             <span className="text-[10px] bg-[#F2B63D] text-[#1E1B2E] border border-[#1E1B2E] px-2 py-0.5 rounded-[8px] font-bold uppercase shadow-xs flex items-center gap-1 w-fit">
               <Zap size={11} color="#1E1B2E" fill="#1E1B2E" />
-              <span>{language === 'fa' ? 'نکته طلایی بازی' : 'PARTY TIP'}</span>
+              <span>{t.partyTipTitle || (isRTL ? 'نکته طلایی بازی' : 'PARTY TIP')}</span>
             </span>
             <p className="text-[11.5px] font-bold text-[#1E1B2E] leading-normal mt-1">
-              {language === 'fa' ? 'کلمه را به یارتان برسانید و بدون اتلاف وقت گوشی را به نفر بعد بدهید!' : 'Pass the phone after every correct word. Avoid using forbidden gestures!'}
+              {t.partyTipDesc || (isRTL ? 'کلمه را به یارتان برسانید و بدون اتلاف وقت گوشی را به نفر بعد بدهید!' : 'Pass the phone after every correct word. Avoid using forbidden gestures!')}
             </p>
           </div>
         </div>
@@ -152,7 +152,7 @@ const HelpScreen: React.FC<Props> = ({ language, onClose, initialSection }) => {
           className="absolute bottom-2 left-1/2 -translate-x-1/2 z-30 px-3 py-1 bg-[#1E1B2E] hover:bg-[#2E2844] text-[#F2B63D] border border-[#1E1B2E] rounded-full text-[11px] font-bold shadow-lg flex items-center gap-1 backdrop-blur-xs animate-pulse font-ui"
         >
           <ChevronUp size={14} />
-          <span>{language === 'fa' ? 'ادامه' : 'Resume'}</span>
+          <span>{t.resume || (isRTL ? 'ادامه' : 'Resume')}</span>
         </button>
       )}
 

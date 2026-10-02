@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { 
+  Language,
   GameSettings, 
   GameStatus, 
   GameHistoryEntry, 
@@ -35,6 +36,7 @@ import { auth, saveMatchToCloud, syncSettingsToCloud } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { getRandomCharacters } from './characters';
 import { isRtlLang } from './ui';
+import { PLAYER_AVATARS } from './constants';
 
 const DEFAULT_SETTINGS: GameSettings = {
   playerCount: 4,
@@ -76,7 +78,7 @@ const App: React.FC = () => {
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
   const [singlePlayerSettings, setSinglePlayerSettings] = useState<SinglePlayerSettings>({
     targetLanguage: 'nl',
-    nativeLanguage: 'en-US',
+    nativeLanguage: 'fa',
     cefrLevel: 'all',
     displayMode: 'text_and_audio',
     questionCount: 10,
@@ -161,9 +163,21 @@ const App: React.FC = () => {
           if (targets.length === 0) targets = ['nl', 'es'];
         }
 
+        // Validate numbers and enums against corrupted or outdated data
+        const validRounds = [3, 4, 5, 6, 7, 8, 9, 10];
+        const validTimes = [6, 8, 10, 15, 20, 30, 45, 60, 90, 120, 180, 240, 300];
+        const rounds = validRounds.includes(Number(parsed?.roundsCount)) ? Number(parsed.roundsCount) : 5;
+        const duration = validTimes.includes(Number(parsed?.roundDuration)) ? Number(parsed.roundDuration) : 60;
+        const playerCount = [4, 6, 8].includes(Number(parsed?.playerCount)) ? (Number(parsed.playerCount) as 4 | 6 | 8) : 4;
+        const cardGameMode = ['mixed', 'reverse', 'standard'].includes(parsed?.cardGameMode) ? parsed.cardGameMode : 'mixed';
+
         setSettings(prev => ({ 
           ...prev, 
           ...parsed,
+          roundsCount: rounds,
+          roundDuration: duration,
+          playerCount,
+          cardGameMode,
           nativeLanguage: nativeLang,
           language: uiLang,
           targetLanguages: targets,
@@ -210,12 +224,67 @@ const App: React.FC = () => {
     }
   }, [settings.soundEnabled, currentScreen]);
 
+  useEffect(() => {
+    if (typeof sound?.addMuteListener === 'function') {
+      const unsub = sound.addMuteListener((muted) => {
+        setSettings(prev => ({ ...prev, soundEnabled: !muted }));
+      });
+      return unsub;
+    }
+  }, []);
+
   const saveSettings = (newSettings: GameSettings) => {
     setSettings(newSettings);
     localStorage.setItem('dor_settings', JSON.stringify(newSettings));
     if (auth.currentUser) {
       syncSettingsToCloud(auth.currentUser.uid, newSettings).catch(console.error);
     }
+  };
+
+  const handleGlobalLanguageChange = (newLang: Language) => {
+    const isRTL = isRtlLang(newLang);
+    if (typeof document !== 'undefined') {
+      document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+      document.documentElement.lang = newLang;
+    }
+
+    const newNative = newLang;
+    const newPlayerNames = getRandomCharacters(newNative, settings.playerCount || 8);
+    
+    // Ensure targets do not include the player's native language
+    let targets = (settings.targetLanguages || []).filter(t => t !== newLang && !(newLang.startsWith('en') && t.startsWith('en')));
+    if (targets.length === 0) {
+      if (newLang === 'fa' || newLang === 'ar' || newLang === 'tr') {
+        targets = ['en', 'de'];
+      } else if (newLang === 'en' || newLang === 'en-US') {
+        targets = ['es', 'fr'];
+      } else {
+        targets = ['en', 'es'];
+      }
+    }
+
+    const updatedSettings: GameSettings = {
+      ...settings,
+      language: newLang,
+      nativeLanguage: newNative,
+      playerNames: newPlayerNames,
+      targetLanguages: targets
+    };
+
+    saveSettings(updatedSettings);
+
+    // Also update single player settings
+    setSinglePlayerSettings(prev => {
+      let singleTarget = prev.targetLanguage;
+      if (singleTarget === newLang || (newLang.startsWith('en') && singleTarget.startsWith('en'))) {
+        singleTarget = newLang.startsWith('en') ? 'es' : 'en';
+      }
+      return {
+        ...prev,
+        nativeLanguage: newNative,
+        targetLanguage: singleTarget
+      };
+    });
   };
 
   /**
@@ -260,16 +329,15 @@ const App: React.FC = () => {
 
     const effectiveNative = settings.nativeLanguage || settings.language || 'en-US';
     const isEnNative = effectiveNative === 'en-US' || effectiveNative === 'en';
-    const randomCartoonDefaults = getRandomCharacters(isEnNative ? 'en-US' : effectiveNative, settings.playerCount);
+    const randomCartoonDefaults = getRandomCharacters(effectiveNative, settings.playerCount);
     
     const initialPlayers: Player[] = Array.from({ length: settings.playerCount }).map((_, i) => {
       const teamId = i % teamCount;
-      const customName = settings.playerNames[i]?.trim();
-      const hasPersian = customName && /[\u0600-\u06FF]/.test(customName);
-      const defaultName = (customName && !(isEnNative && hasPersian)) 
+      const customName = settings.playerNames?.[i]?.trim();
+      const defaultName = customName && customName.length > 0 
         ? customName 
-        : (randomCartoonDefaults[i] || (settings.language === 'fa' ? `بازیکن ${i + 1}` : `Player ${i + 1}`));
-      const avatar = (settings.playerAvatars && settings.playerAvatars[i]) || 'pirate';
+        : (effectiveNative === 'fa' ? `بازیکن ${i + 1}` : `Player ${i + 1}`);
+      const avatar = PLAYER_AVATARS[i % PLAYER_AVATARS.length];
       return {
         id: i,
         name: defaultName,
@@ -281,9 +349,9 @@ const App: React.FC = () => {
 
     // Build the Multi-Language balanced card pool from user selections
     let activeTargets = settings.targetLanguages || ['nl', 'es'];
-    if (isEnNative) {
-      activeTargets = activeTargets.filter(t => t !== 'en' && t !== 'en-US');
-      if (activeTargets.length === 0) activeTargets = ['nl', 'es'];
+    activeTargets = activeTargets.filter(t => t !== effectiveNative && !(isEnNative && (t === 'en' || t === 'en-US')));
+    if (activeTargets.length === 0) {
+      activeTargets = isEnNative ? ['es', 'fr'] : ['en', 'es'];
     }
 
     const pool = buildSessionCardPool(
@@ -423,16 +491,21 @@ const App: React.FC = () => {
 
   const handleStartSinglePlayer = (config: SinglePlayerSettings) => {
     setIsSingleSetupOpen(false);
+    const effectiveNative = config.nativeLanguage || settings.nativeLanguage || settings.language || 'fa';
+    const effectiveConfig = {
+      ...config,
+      nativeLanguage: effectiveNative
+    };
     const cards = getUniqueCardsForSession(
-      config.targetLanguage,
-      config.nativeLanguage,
-      config.cefrLevel,
-      config.selectedCategories,
-      config.questionCount,
+      effectiveConfig.targetLanguage,
+      effectiveNative,
+      effectiveConfig.cefrLevel,
+      effectiveConfig.selectedCategories,
+      effectiveConfig.questionCount,
       true
     );
     setSinglePlayerCards(cards);
-    setSinglePlayerSettings(config);
+    setSinglePlayerSettings(effectiveConfig);
     setCurrentScreen('SINGLE_PLAYER');
   };
 
@@ -443,12 +516,16 @@ const App: React.FC = () => {
 
   const handlePracticeWeakCards = (weakCards: LanguageCard[]) => {
     setSinglePlayerCards(weakCards);
+    setSinglePlayerSettings(prev => ({
+      ...prev,
+      nativeLanguage: settings.nativeLanguage || settings.language || 'fa'
+    }));
     setCurrentScreen('SINGLE_PLAYER');
   };
 
   return (
     <main 
-      className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto flex flex-col relative bg-[#F4EDE1] text-[#1E1B2E] min-h-0 flex-1 min-h-screen" 
+      className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto flex flex-col relative bg-[var(--bg)] text-[var(--ink)] min-h-0 flex-1 min-h-screen" 
       style={{ 
         height: '100%', 
         maxHeight: '100dvh',
@@ -466,7 +543,7 @@ const App: React.FC = () => {
           language={settings.language}
           settings={settings}
           onUpdateSettings={saveSettings}
-          onLanguageChange={(l) => saveSettings({ ...settings, language: l, nativeLanguage: settings.nativeLanguage || l })}
+          onLanguageChange={handleGlobalLanguageChange}
           onNext={() => setCurrentScreen('SETUP')}
           onOpenSinglePlayer={handleOpenSinglePlayer}
           onOpenOnline={() => setCurrentScreen('ONLINE_LOBBY')}
@@ -609,6 +686,7 @@ const App: React.FC = () => {
       {/* 10. SINGLE-PLAYER FLASHCARDS & VOICE CHALLENGE */}
       {currentScreen === 'SINGLE_PLAYER' && (
         <SinglePlayerScreen
+          key={`${singlePlayerSettings.displayMode}-${singlePlayerSettings.targetLanguage}-${singlePlayerCards.length}`}
           initialCards={singlePlayerCards}
           initialSettings={singlePlayerSettings}
           uiLanguage={settings.language}

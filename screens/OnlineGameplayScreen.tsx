@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { OnlineRoomState, OnlinePlayer, Language, TeamColor, LanguageCard, PlayedCardRecord } from '../types';
 import { COLORS_MAP, SUPPORTED_LANGUAGES } from '../constants';
 import { TRANSLATIONS } from '../translations';
-import { isRtlLang } from '../ui';
+import { isRtlLang, tUI, tf } from '../ui';
 import { TeamMascot } from '../components/Mascots';
 import { sound } from '../soundManager';
 import { 
@@ -46,7 +46,7 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
   language,
   onExit
 }) => {
-  const t = TRANSLATIONS[language] || TRANSLATIONS.fa;
+  const t = tUI(language);
   const isRTL = isRtlLang(language);
   const myDeviceId = getDeviceId();
 
@@ -359,14 +359,14 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
                   </div>
 
                   <span className="text-[10px] font-bold bg-[#F2B63D] text-[#1E1B2E] px-2 py-0.5 rounded-[8px] border border-[#1E1B2E]">
-                    {(currentCard?.points || 1) * (currentCard?.isGolden ? 2 : 1)} {language === 'fa' ? 'امتیاز ⭐' : 'pts ⭐'}
+                    {(currentCard?.points || 1) * (currentCard?.isGolden ? 2 : 1)} {t.score || 'pts'} ⭐
                   </span>
                 </div>
 
                 {/* Target Word with Subtle Tinted Plate for AAA Readability */}
                 <div className="text-center p-3 rounded-[16px] bg-[#F4EDE1] border-2 border-[#1E1B2E] space-y-1.5">
                   <span className="text-[10px] text-[#1E1B2E]/70 font-bold block uppercase">
-                    {language === 'fa' ? `این کلمه را برای ${activePlayer?.name} توصیف کنید:` : `Describe this word for ${activePlayer?.name}:`}
+                    {tf(language, 'describeFor', { player: activePlayer?.name || '' })}
                   </span>
                   <div className="flex items-center justify-center gap-2">
                     <h2 dir="ltr" className="text-2xl sm:text-3xl font-bold text-[#1E1B2E] font-card-word">
@@ -376,7 +376,7 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
                       <button
                         onClick={() => handlePronounce(currentCard.targetText, currentCard.targetLanguage)}
                         className="p-1.5 bg-[#F2B63D] hover:bg-[#e0a634] rounded-[10px] border-2 border-[#1E1B2E] text-[#1E1B2E] shadow-[1.5px_1.5px_0px_0px_#1E1B2E]"
-                        title={language === 'fa' ? "تلفظ صوتی" : "Audio Pronunciation"}
+                        title={t.audioPronunciation || "Audio Pronunciation"}
                       >
                         <Volume2 size={16} />
                       </button>
@@ -392,7 +392,7 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
                 {/* Grammar / Hint Clue */}
                 {currentCard?.grammarPoint && (
                   <div className="text-[11px] bg-[#FFFBF4] p-2 rounded-[12px] border border-[#1E1B2E] text-[#1E1B2E]">
-                    <span className="font-bold text-[#1E9E93]">{language === 'fa' ? 'راهنمای گرامری: ' : 'Grammar Note: '}</span>
+                    <span className="font-bold text-[#1E9E93]">{t.grammarNote || 'Grammar Note: '}</span>
                     <span>{currentCard.grammarPoint}</span>
                   </div>
                 )}
@@ -404,7 +404,7 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
                     className="pixel-btn pixel-btn-teal py-2.5 rounded-[12px] text-xs font-bold flex items-center justify-center gap-1"
                   >
                     <Check size={16} />
-                    <span>{language === 'fa' ? 'درست حدس زد! (+امتیاز)' : 'Guessed Correctly! (+pts)'}</span>
+                    <span>{t.guessedCorrectly}</span>
                   </button>
 
                   <button
@@ -412,7 +412,7 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
                     className="pixel-btn pixel-btn-orange py-2.5 rounded-[12px] text-xs font-bold flex items-center justify-center gap-1"
                   >
                     <X size={16} />
-                    <span>{language === 'fa' ? 'پاس / خطا' : 'Pass / Wrong'}</span>
+                    <span>{t.passWrong}</span>
                   </button>
                 </div>
 
@@ -423,7 +423,7 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
 
           {/* Quick Real-Time Emoji Reaction Bar */}
           <div className="flex items-center justify-center gap-2 bg-[#FFFBF4] p-1.5 rounded-[16px] border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E] shrink-0 font-ui">
-            <span className="text-[10px] text-[#1E1B2E]/70 font-bold ml-1">{language === 'fa' ? 'واکنش:' : 'React:'}</span>
+            <span className="text-[10px] text-[#1E1B2E]/70 font-bold ml-1">{t.react || 'React:'}</span>
             {['👏', '🔥', '😂', '💡', '⚡'].map(emoji => (
               <button
                 key={emoji}

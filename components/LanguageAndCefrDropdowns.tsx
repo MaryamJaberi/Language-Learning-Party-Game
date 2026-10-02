@@ -5,7 +5,7 @@ import { NATIVE_LANGUAGE_NAMES } from '../translations';
 import { FlagIcon } from './FlagIcon';
 import { LanguagePickerModal } from './LanguagePickerModal';
 import { sound } from '../soundManager';
-import { isRtlLang } from '../ui';
+import { isRtlLang, tUI } from '../ui';
 import { getRandomCharacters } from '../characters';
 import { 
   Globe, 
@@ -29,6 +29,7 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
   settings,
   onSave,
 }) => {
+  const t = tUI(settings.language);
   const isRTL = isRtlLang(settings.language);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -59,25 +60,16 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
 
   const setNativeLang = (lang: Language) => {
     sound.playToggle();
-    const isEnglishNative = lang === 'en-US' || lang === 'en';
-    const newUiLang = (isEnglishNative && settings.language === 'fa') ? lang : (settings.language || lang);
     const newPlayerNames = getRandomCharacters(lang, 8);
-    let newTargets = [...(settings.targetLanguages || ['nl', 'de'])];
-    if (isEnglishNative) {
-      newTargets = newTargets.filter(t => t !== 'en' && t !== 'en-US');
-      if (newTargets.length === 0) {
-        newTargets = ['nl', 'es'];
-      }
-    } else if (newTargets.includes(lang)) {
-      newTargets = newTargets.filter(t => t !== lang);
-      if (newTargets.length === 0) {
-        newTargets = ['en-US'];
-      }
+    let newTargets = [...(settings.targetLanguages || ['en', 'es'])];
+    newTargets = newTargets.filter(t => t !== lang && !(lang.startsWith('en') && t.startsWith('en')));
+    if (newTargets.length === 0) {
+      newTargets = lang.startsWith('en') ? ['es', 'fr'] : ['en', 'es'];
     }
     onSave({
       ...settings,
       nativeLanguage: lang,
-      language: newUiLang,
+      language: lang,
       playerNames: newPlayerNames,
       targetLanguages: newTargets
     });
@@ -85,14 +77,17 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
 
   const setAppLanguage = (lang: Language) => {
     sound.playToggle();
-    const isEnglish = lang === 'en-US' || lang === 'en';
-    const newNative = (isEnglish && settings.nativeLanguage === 'fa') ? lang : (settings.nativeLanguage || lang);
-    const newPlayerNames = getRandomCharacters(newNative, 8);
+    const newPlayerNames = getRandomCharacters(lang, 8);
+    let targets = (settings.targetLanguages || []).filter(t => t !== lang && !(lang.startsWith('en') && t.startsWith('en')));
+    if (targets.length === 0) {
+      targets = lang.startsWith('en') ? ['es', 'fr'] : ['en', 'es'];
+    }
     onSave({
       ...settings,
       language: lang,
-      nativeLanguage: newNative,
-      playerNames: newPlayerNames
+      nativeLanguage: lang,
+      playerNames: newPlayerNames,
+      targetLanguages: targets
     });
   };
 
@@ -138,10 +133,10 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
             </div>
             <div>
               <span className="text-xs sm:text-sm font-bold text-[#1E1B2E] block leading-tight">
-                {isRTL ? 'زبان‌های هدف مسابقه (در حال یادگیری)' : 'Target Languages (Learning)'}
+                {t.targetLanguages}
               </span>
               <span className="text-[10px] text-[#1E1B2E]/70 font-medium block">
-                {isRTL ? 'کلمات کارت‌ها به این زبان‌ها نمایش داده می‌شوند' : 'Cards will test words in these languages'}
+                {t.targetLanguagesSub}
               </span>
             </div>
           </div>
@@ -154,10 +149,10 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
               setPickerMode('target');
             }}
             className="px-2.5 py-1 rounded-[10px] bg-[#F2B63D] hover:bg-[#e0a634] text-[#1E1B2E] border-2 border-[#1E1B2E] text-[10.5px] font-bold shrink-0 flex items-center gap-1 shadow-[1px_1px_0px_0px_#1E1B2E] active:scale-95 transition-all"
-            title="فهرست کامل ۳۸ زبان"
+            title={t.all38Languages}
           >
             <Globe size={12} />
-            <span>{isRTL ? '۳۸ زبان ▾' : 'All 38 ▾'}</span>
+            <span>{t.all38Languages}</span>
           </button>
         </div>
 
@@ -181,7 +176,7 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
                       type="button"
                       onClick={() => removeTargetLang(code)}
                       className="w-4 h-4 rounded-full bg-[#1E1B2E]/20 hover:bg-[#E0603F] hover:text-white flex items-center justify-center text-[10px] ml-0.5 transition-colors cursor-pointer"
-                      title={isRTL ? 'حذف این زبان' : 'Remove language'}
+                      title={t.removeLanguage}
                     >
                       <X size={10} />
                     </button>
@@ -201,7 +196,7 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setIsSearchFocused(true)}
-              placeholder={isRTL ? 'جستجوی زبان جدید برای تگ شدن (مثلاً انگلیسی، فرانسوی...)' : 'Search language to tag (e.g. Spanish, German)...'}
+              placeholder={t.searchLanguagePlaceholder}
               className="w-full bg-transparent text-xs font-bold text-[#1E1B2E] placeholder-[#1E1B2E]/40 outline-none"
             />
             {searchQuery && (
@@ -220,7 +215,7 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
             <div className="absolute top-full mt-1.5 left-0 right-0 bg-[#FFFBF4] border-2 border-[#1E1B2E] rounded-[14px] shadow-[3px_3px_0px_0px_#1E1B2E] z-30 overflow-hidden divide-y divide-[#1E1B2E]/10 max-h-48 overflow-y-auto">
               {searchResults.length === 0 ? (
                 <div className="p-2.5 text-center text-xs font-bold text-[#1E1B2E]/60">
-                  {isRTL ? 'زبان مورد نظر پیدا نشد. برای دیدن همه ۳۸ زبان دکمه بالا را بزنید.' : 'No matching language found.'}
+                  {t.all38Languages}
                 </div>
               ) : (
                 searchResults.map(lang => {
@@ -243,7 +238,7 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
                         <span className="text-[10px] text-[#1E1B2E]/60 font-medium">({lang.name} • {lang.persianName})</span>
                       </div>
                       <span className="text-[10px] px-1.5 py-0.5 rounded font-bold border border-[#1E1B2E]/20">
-                        {isAlreadyAdded ? (isRTL ? 'تگ شده ✓' : 'Added ✓') : (isRTL ? '+ افزودن' : '+ Add')}
+                        {isAlreadyAdded ? t.added : t.add}
                       </span>
                     </button>
                   );
@@ -260,7 +255,7 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
           type="button"
           onClick={() => sound.playClick()}
           className="w-full flex items-center justify-between gap-2 text-start cursor-default"
-          aria-label={isRTL ? 'سطح دشواری و تسلط (CEFR)' : 'Proficiency Level (CEFR)'}
+          aria-label={t.cefrLevel}
         >
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-[10px] bg-[#F2B63D] border-2 border-[#1E1B2E] flex items-center justify-center text-[#1E1B2E] shrink-0 shadow-[1px_1px_0px_0px_#1E1B2E]">
@@ -268,7 +263,7 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
             </div>
             <div>
               <span className="text-xs sm:text-sm font-bold text-[#1E1B2E] block leading-tight">
-                {isRTL ? 'سطح دشواری و تسلط (CEFR)' : 'Proficiency Level (CEFR)'}
+                {t.cefrLevel}
               </span>
               <span className="text-[10px] text-[#1E1B2E]/70 font-medium block truncate">
                 {activeCefrInfo?.name[settings.language] || activeCefrInfo?.name.en}
@@ -314,7 +309,7 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
           </div>
           <div className="truncate">
             <span className="text-xs sm:text-sm font-bold text-[#1E1B2E] block leading-tight">
-              {isRTL ? 'زبان مادری و راهنمای کارت‌ها (Native Language)' : 'Native / Support Language'}
+              {t.nativeLanguage}
             </span>
             <div className="flex items-center gap-1.5 mt-0.5">
               <FlagIcon language={nativeLang} size={14} />
@@ -333,7 +328,7 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
           }}
           className="px-2.5 py-1.5 rounded-[10px] bg-[#E0603F] text-white text-xs font-bold border-2 border-[#1E1B2E] shadow-[1.5px_1.5px_0px_0px_#1E1B2E] hover:bg-[#cf5435] active:scale-95 shrink-0"
         >
-          {isRTL ? 'تغییر مادری ▾' : 'Change ▾'}
+          {t.changeNative}
         </button>
       </div>
 
@@ -345,7 +340,7 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
           </div>
           <div className="truncate">
             <span className="text-xs sm:text-sm font-bold text-[#1E1B2E] block leading-tight">
-              {isRTL ? 'زبان رابط برنامه (App UI Language)' : 'App UI Language'}
+              {t.appUiLanguage}
             </span>
             <div className="flex items-center gap-1.5 mt-0.5">
               <FlagIcon language={appUiLang} size={14} />
@@ -364,7 +359,7 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
           }}
           className="px-2.5 py-1.5 rounded-[10px] bg-[#FFFBF4] hover:bg-[#F4EDE1] text-[#1E1B2E] text-xs font-bold border-2 border-[#1E1B2E] shadow-[1.5px_1.5px_0px_0px_#1E1B2E] active:scale-95 shrink-0"
         >
-          {isRTL ? 'تغییر رابط ▾' : 'Change UI ▾'}
+          {t.changeUi}
         </button>
       </div>
 
@@ -387,10 +382,10 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
           selectedLanguages={pickerMode === 'target' ? targetLangs : undefined}
           onSelectLanguages={pickerMode === 'target' ? (langs) => onSave({ ...settings, targetLanguages: langs }) : undefined}
           title={pickerMode === 'target' 
-            ? (isRTL ? 'انتخاب زبان‌های هدف مسابقه' : 'Select Target Languages')
+            ? t.targetLanguages
             : pickerMode === 'ui'
-              ? (isRTL ? 'انتخاب زبان رابط برنامه' : 'Select App UI Language')
-              : (isRTL ? 'انتخاب زبان مادری و راهنما' : 'Select Native Language')}
+              ? t.appUiLanguage
+              : t.nativeLanguage}
           isRTL={isRTL}
         />
       )}

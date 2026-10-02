@@ -7,6 +7,7 @@ class SoundManager {
   
   // Background music state
   private currentBgmMode: 'none' | 'menu' | 'game' = 'none';
+  private lastBgmMode: 'none' | 'menu' | 'game' = 'menu';
   private bgmTimeout: number | null = null;
   private bgmStep: number = 0;
 
@@ -71,15 +72,55 @@ class SoundManager {
     return this.ctx;
   }
 
+  private muteListeners: Set<(muted: boolean) => void> = new Set();
+
+  public addMuteListener(fn: (muted: boolean) => void): () => void {
+    this.muteListeners.add(fn);
+    return () => this.muteListeners.delete(fn);
+  }
+
+  private notifyMuteListeners(muted: boolean) {
+    this.muteListeners.forEach(fn => {
+      try { fn(muted); } catch {}
+    });
+  }
+
   public setMuted(muted: boolean) {
     this.isMuted = muted;
+    try {
+      localStorage.setItem('dor_sound_muted', muted ? 'true' : 'false');
+    } catch {}
+
     if (muted) {
+      if (this.currentBgmMode !== 'none') {
+        this.lastBgmMode = this.currentBgmMode;
+      }
       this.stopBGM();
     } else {
-      if (this.currentBgmMode === 'menu') {
-        this.startMenuBGM();
+      // Restore background music when unmuting - ensure AudioContext is active
+      const ctx = this.getAudioContext();
+      const resumeBgm = () => {
+        if (this.isMuted) return;
+        if (this.lastBgmMode === 'game') {
+          this.startGameplayBGM(60);
+        } else {
+          this.lastBgmMode = 'menu';
+          this.startMenuBGM();
+        }
+      };
+
+      if (ctx) {
+        if (ctx.state === 'suspended') {
+          ctx.resume().then(resumeBgm).catch(resumeBgm);
+        } else {
+          resumeBgm();
+        }
+      } else {
+        resumeBgm();
       }
     }
+
+    this.notifyMuteListeners(muted);
   }
 
   public setSoundEnabled(enabled: boolean) {
@@ -88,6 +129,10 @@ class SoundManager {
 
   public getMuted(): boolean {
     return this.isMuted;
+  }
+
+  public setMute(muted: boolean) {
+    this.setMuted(muted);
   }
 
   public isSoundEnabled(): boolean {
@@ -550,8 +595,9 @@ class SoundManager {
 
   // 1. Menu & Ambient BGM (Warm, relaxing 32-step progression: Cmaj7 - Am7 - Dm7 - G7)
   public startMenuBGM() {
+    this.lastBgmMode = 'menu';
     if (this.isMuted) return;
-    if (this.currentBgmMode === 'menu') return;
+    if (this.currentBgmMode === 'menu' && this.bgmTimeout !== null) return;
 
     this.stopBGM();
     this.currentBgmMode = 'menu';
@@ -563,6 +609,9 @@ class SoundManager {
     if (this.currentBgmMode !== 'menu' || this.isMuted) return;
     const ctx = this.getAudioContext();
     if (!ctx) return;
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(() => {});
+    }
 
     // Upbeat relaxed tempo (300ms per step)
     const stepMs = 300;
@@ -629,6 +678,7 @@ class SoundManager {
 
   // 2. Gameplay Dynamic Rhythm BGM
   public startGameplayBGM(secondsRemaining: number) {
+    this.lastBgmMode = 'game';
     if (this.isMuted) return;
     if (this.currentBgmMode === 'game') return;
 

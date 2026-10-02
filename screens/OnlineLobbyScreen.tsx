@@ -29,7 +29,8 @@ import {
   ExternalLink,
   MessageSquare,
   Sparkles,
-  PhoneCall
+  PhoneCall,
+  AlertCircle
 } from 'lucide-react';
 
 interface Props {
@@ -84,7 +85,11 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
       currentRoom.id,
       (updatedRoom) => {
         if (!updatedRoom) {
-          setErrorMessage('اتاق بسته شد یا وجود ندارد.');
+          setErrorMessage(
+            isRTL 
+              ? 'اتاق بازی بسته شد یا وجود ندارد. راه‌حل: از دوستان خود کد جدیدی بگیرید یا با زدن دکمه «ساخت اتاق جدید» یک بازی تازه شروع کنید.'
+              : 'Room was closed. Fix: Ask the host for a new code or create a new room.'
+          );
           setViewMode('select');
           return;
         }
@@ -97,7 +102,11 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
         }
       },
       (err) => {
-        setErrorMessage(err.message);
+        setErrorMessage(
+          isRTL
+            ? `خطا در همگام‌سازی اتاق: ${err.message}. راه‌حل: لطفاً وضعیت اتصال اینترنت خود را بررسی کنید.`
+            : `Sync error: ${err.message}. Fix: Check your internet connection.`
+        );
       }
     );
 
@@ -107,7 +116,11 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
   // Handle Create Room
   const handleCreateRoom = async () => {
     if (!playerName.trim()) {
-      setErrorMessage(language === 'fa' ? 'لطفا نام خود را وارد کنید' : 'Please enter your name');
+      setErrorMessage(
+        isRTL 
+          ? 'نام بازیکن وارد نشده است. راه‌حل: در کادر بالا یک نام یا لقب برای نمایش در بازی تایپ کنید و مجدداً دکمه ساخت را بزنید.'
+          : 'Player name is empty. Fix: Type your name or nickname above and tap create again.'
+      );
       return;
     }
     localStorage.setItem('dor_player_name', playerName.trim());
@@ -152,7 +165,11 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
       });
       setViewMode('in_lobby');
     } catch (err: any) {
-      setErrorMessage(err.message || (isRTL ? 'خطا در ایجاد اتاق' : 'Error creating room'));
+      setErrorMessage(
+        isRTL 
+          ? `خطا در ایجاد اتاق آنلاین: ${err.message || 'مشکل ارتباط با سرور'}. راه‌حل: فیلترشکن یا اتصال اینترنت خود را بررسی نموده و دوباره تلاش کنید.`
+          : `Error creating room: ${err.message}. Fix: Check your internet connection and try again.`
+      );
     } finally {
       setIsLoading(false);
     }
@@ -161,11 +178,19 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
   // Handle Join Room
   const handleJoinRoom = async () => {
     if (!roomCodeInput.trim()) {
-      setErrorMessage(language === 'fa' ? 'لطفا کد اتاق را وارد کنید' : 'Please enter room code');
+      setErrorMessage(
+        isRTL 
+          ? 'کد اتاق وارد نشده است. راه‌حل: کد ۴ یا ۶ رقمی را که میزبان بازی برای شما ارسال کرده در کادر کد وارد نمایید.'
+          : 'Room code is empty. Fix: Enter the room code sent to you by the host.'
+      );
       return;
     }
     if (!playerName.trim()) {
-      setErrorMessage(language === 'fa' ? 'لطفا نام خود را وارد کنید' : 'Please enter your name');
+      setErrorMessage(
+        isRTL 
+          ? 'نام بازیکن وارد نشده است. راه‌حل: در کادر بالا یک نام یا لقب برای نمایش در بازی تایپ کنید.'
+          : 'Player name is empty. Fix: Type your name or nickname above.'
+      );
       return;
     }
     localStorage.setItem('dor_player_name', playerName.trim());
@@ -179,7 +204,11 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
       setCurrentRoom(room);
       setViewMode('in_lobby');
     } catch (err: any) {
-      setErrorMessage(err.message || (isRTL ? 'اتاق پیدا نشد' : 'Room not found'));
+      setErrorMessage(
+        isRTL 
+          ? `اتاقی با کد «${roomCodeInput.trim().toUpperCase()}» پیدا نشد. راه‌حل: از درستی حروف کد اطمینان حاصل کنید، از میزبان بخواهید کد را مجدداً چک کند یا خودتان یک اتاق تازه بسازید.`
+          : `Room not found. Fix: Check the code spelling with the host or create a new room.`
+      );
     } finally {
       setIsLoading(false);
     }
@@ -266,10 +295,11 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* Error Banner */}
+      {/* Error Banner with Actionable Guidance */}
       {errorMessage && (
-        <div className="w-full mb-2 p-2 bg-[#fee2e2] text-[#b91c1c] rounded-[14px] text-xs font-bold border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E] animate-shake">
-          {errorMessage}
+        <div className="w-full mb-3 p-3 bg-rose-50 text-rose-800 rounded-[14px] text-xs font-bold border-2 border-rose-300 shadow-[2px_2px_0px_0px_#1E1B2E] flex items-start gap-2 text-start leading-relaxed">
+          <AlertCircle size={16} className="text-rose-600 shrink-0 mt-0.5" />
+          <div className="flex-1">{errorMessage}</div>
         </div>
       )}
 

@@ -1,0 +1,19 @@
+App Title (Max 30 chars):
+Dor: Language Party Game
+
+Short Description (Max 80 chars):
+Fun party game for learning languages with 4, 6, or 8 players passing one phone!
+
+Full Description:
+"Dor: Language" is a vibrant, fast-paced party game designed for friends, families, and language learners to play together using just a single phone passed hand-to-hand.
+
+Key Features:
+• Multi-Language Learning: English, Dutch, Persian, German, French, Spanish, Italian, Turkish, Arabic, and more.
+• 4, 6, or 8 Players: Seamless team-based gameplay passing one phone.
+• Hot Seat Mode: Fast rounds, instant word guessing, and score tracking.
+• Smart Pronunciation: Listen to correct pronunciation for cards at all CEFR levels (A1 to C2).
+• Fully Offline Capable: Play anywhere, anytime without an internet connection.
+• Clean & Friendly: No mid-game ad interruptions, no daily play limits.
+
+Category: Word / Educational
+Target Audience: Everyone

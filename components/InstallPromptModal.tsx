@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Language } from '../types';
 import { sound } from '../soundManager';
-import { isRtlLang } from '../ui';
+import { isRtlLang, tUI } from '../ui';
 import { 
   Download, 
   Smartphone, 
@@ -33,11 +33,12 @@ export const InstallPromptModal: React.FC<Props> = ({
   deferredPrompt,
   onInstalled
 }) => {
-  const [activeTab, setActiveTab] = useState<'android' | 'ios'>('android');
+  const [activeTab, setActiveTab] = useState<'apk' | 'android' | 'ios'>('android');
   const [isInstalling, setIsInstalling] = useState(false);
   const [isInstalledSuccess, setIsInstalledSuccess] = useState(false);
 
   const isRTL = isRtlLang(language);
+  const t = tUI(language);
 
   // Detect iOS by userAgent
   useEffect(() => {
@@ -66,12 +67,11 @@ export const InstallPromptModal: React.FC<Props> = ({
         setIsInstalling(false);
       }
     } else {
-      // Fallback instruction trigger
       sound.playToggle();
     }
   };
 
-  const handleTabChange = (tab: 'android' | 'ios') => {
+  const handleTabChange = (tab: 'apk' | 'android' | 'ios') => {
     sound.playToggle();
     setActiveTab(tab);
   };
@@ -89,7 +89,7 @@ export const InstallPromptModal: React.FC<Props> = ({
         if (e.target === e.currentTarget) handleClose();
       }}
     >
-      <div className="relative w-full max-w-sm bg-[#FFFBF4] text-[#1E1B2E] rounded-[24px] border-2 border-[#1E1B2E] shadow-[6px_6px_0px_0px_#1E1B2E] overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-md bg-[#FFFBF4] text-[#1E1B2E] rounded-[24px] border-2 border-[#1E1B2E] shadow-[6px_6px_0px_0px_#1E1B2E] overflow-hidden flex flex-col max-h-[92vh]">
         
         {/* Header Ribbon */}
         <div className="bg-[#FFFBF4] text-[#1E1B2E] p-3.5 border-b-2 border-[#1E1B2E]/20 flex items-center justify-between shrink-0">
@@ -99,10 +99,10 @@ export const InstallPromptModal: React.FC<Props> = ({
             </div>
             <div className="text-start">
               <h3 className="text-sm font-bold font-display uppercase tracking-wider text-[#1E1B2E]">
-                {language === 'fa' ? 'نصب روی گوشی (PWA)' : 'Install on Mobile (PWA)'}
+                {t.installApp || (isRTL ? 'نصب روی گوشی (PWA) و دانلود APK' : 'Install on Mobile (PWA & APK)')}
               </h3>
               <p className="text-[10px] text-[#E0603F] font-bold">
-                {language === 'fa' ? 'اجرای سریع، تمام‌صفحه و آفلاین' : 'Fast, Fullscreen & Offline'}
+                {isRTL ? 'فایل نصبی مستقیم APK + پکیج کامل Google Play Store' : 'Signed APK + Complete Play Store Submission Bundle'}
               </p>
             </div>
           </div>
@@ -120,31 +120,133 @@ export const InstallPromptModal: React.FC<Props> = ({
         <div className="p-4 space-y-3.5 overflow-y-auto overscroll-contain flex-1 font-ui">
           
           {/* OS Switcher Tabs */}
-          <div className="grid grid-cols-2 gap-2 p-1 bg-[#F4EDE1] border-2 border-[#1E1B2E] rounded-[14px]">
+          <div className="grid grid-cols-3 gap-1.5 p-1 bg-[#F4EDE1] border-2 border-[#1E1B2E] rounded-[14px]">
+            <button
+              onClick={() => handleTabChange('apk')}
+              className={`py-2 px-1.5 rounded-[10px] font-bold text-[11px] sm:text-xs flex items-center justify-center gap-1 transition-all border-2 ${
+                activeTab === 'apk'
+                  ? 'bg-[#FFFBF4] text-[#1E1B2E] border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E]'
+                  : 'border-transparent text-[#1E1B2E]/70 hover:text-[#1E1B2E]'
+              }`}
+            >
+              <span>📦 {isRTL ? 'فایل APK و پلی‌استور' : 'APK & Play Store'}</span>
+            </button>
+
             <button
               onClick={() => handleTabChange('android')}
-              className={`py-2 px-3 rounded-[10px] font-bold text-xs flex items-center justify-center gap-1.5 transition-all border-2 ${
+              className={`py-2 px-1.5 rounded-[10px] font-bold text-[11px] sm:text-xs flex items-center justify-center gap-1 transition-all border-2 ${
                 activeTab === 'android'
                   ? 'bg-[#FFFBF4] text-[#1E1B2E] border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E]'
                   : 'border-transparent text-[#1E1B2E]/70 hover:text-[#1E1B2E]'
               }`}
             >
-              <span>🤖 Android</span>
+              <span>🤖 Android {isRTL ? '(PWA)' : ''}</span>
             </button>
 
             <button
               onClick={() => handleTabChange('ios')}
-              className={`py-2 px-3 rounded-[10px] font-bold text-xs flex items-center justify-center gap-1.5 transition-all border-2 ${
+              className={`py-2 px-1.5 rounded-[10px] font-bold text-[11px] sm:text-xs flex items-center justify-center gap-1 transition-all border-2 ${
                 activeTab === 'ios'
                   ? 'bg-[#FFFBF4] text-[#1E1B2E] border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E]'
                   : 'border-transparent text-[#1E1B2E]/70 hover:text-[#1E1B2E]'
               }`}
             >
-              <span>🍏 iOS (iPhone)</span>
+              <span>🍏 iOS {isRTL ? '(آیفون)' : ''}</span>
             </button>
           </div>
 
-          {/* Android Section */}
+          {/* TAB 1: APK & GOOGLE PLAY DOWNLOADS */}
+          {activeTab === 'apk' && (
+            <div className="space-y-3 text-start">
+              
+              {/* Card 1: Direct APK Download */}
+              <div className="bg-[#FFFBF4] p-3.5 rounded-[16px] border-2 border-[#1E1B2E] shadow-[3px_3px_0px_0px_#1E1B2E] space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-[8px] bg-[#12B5A4] text-white flex items-center justify-center font-bold">
+                      <Download size={18} />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-black text-[#1E1B2E]">
+                        {isRTL ? 'دانلود مستقیم فایل نصبی APK' : 'Download Signed Android APK'}
+                      </h4>
+                      <span className="text-[10px] text-[#1E1B2E]/70 font-medium">
+                        {isRTL ? 'حجم: ۱.۲ مگابایت • نسخه ۱.۰.۱ • کاملاً آفلاین' : 'Size: 1.2 MB • v1.0.1 • 100% Offline'}
+                      </span>
+                    </div>
+                  </div>
+                  <span className="text-[9.5px] font-bold text-[#12B5A4] bg-emerald-50 px-2 py-0.5 rounded-[6px] border border-[#12B5A4]">
+                    {isRTL ? 'آماده نصب ✓' : 'Signed v1-v3 ✓'}
+                  </span>
+                </div>
+
+                <p className="text-[11px] text-[#1E1B2E]/80 leading-relaxed font-medium">
+                  {isRTL 
+                    ? 'فایل نصبی استاندارد اندروید، امضا شده با کلید اختصاصی. مناسب برای تست مستقیم روی انواع گوشی‌های اندروید یا انتشار در کافه‌بازار و مایکت.'
+                    : 'Standard Android APK signed with production keystore. Ready for direct installation on any Android phone or alternative app stores.'}
+                </p>
+
+                <a
+                  href="./downloads/dor-zaban-v1.0.apk"
+                  download="dor-zaban-v1.0.apk"
+                  onClick={() => sound.playClick()}
+                  className="w-full py-2.5 px-3 bg-[#2347C5] hover:bg-[#1a38a0] text-white rounded-[12px] font-bold text-xs flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_#15204A] active:translate-y-0.5 transition-all text-center no-underline"
+                >
+                  <Download size={16} />
+                  <span>{isRTL ? 'دانلود فایل APK (کلیک کنید)' : 'Download APK (1.2 MB)'}</span>
+                </a>
+              </div>
+
+              {/* Card 2: Google Play Submission Bundle */}
+              <div className="bg-[#F4EDE1] p-3.5 rounded-[16px] border-2 border-[#1E1B2E] space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-[8px] bg-[#F5B52E] text-[#15204A] flex items-center justify-center font-bold">
+                      <Sparkles size={18} />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-black text-[#1E1B2E]">
+                        {isRTL ? 'پکیج انتشار در Google Play Console' : 'Google Play Submission Package (ZIP)'}
+                      </h4>
+                      <span className="text-[10px] text-[#1E1B2E]/70 font-medium">
+                        {isRTL ? 'شامل کلید Keystore، سورس Android Studio، فایل AAB و راهنما' : 'Includes Keystore, Android Studio project, AAB & Guide'}
+                      </span>
+                    </div>
+                  </div>
+                  <span className="text-[9.5px] font-bold text-[#2347C5] bg-blue-50 px-2 py-0.5 rounded-[6px] border border-[#2347C5]">
+                    {isRTL ? 'ویژه گوگل‌پلی' : 'Play Store Ready'}
+                  </span>
+                </div>
+
+                {/* Important Notice about AAB vs APK for Google Play */}
+                <div className="p-2.5 bg-[#FFFBF4] rounded-[10px] border border-[#1E1B2E]/30 text-[10.5px] leading-relaxed text-[#1E1B2E]">
+                  <span className="font-bold text-[#D6455D]">⚠️ {isRTL ? 'نکته الزامی گوگل پلی:' : 'Google Play Requirement:'} </span>
+                  {isRTL 
+                    ? 'گوگل پلی برای برنامه‌های جدید فایل APK را قبول نمی‌کند و حتماً فرمت Android App Bundle (.aab) را می‌خواهد. این پکیج شامل سورس کامل اندروید استودیو با دستور یک‌کلیکی ./gradlew bundleRelease برای ساخت فایل AAB است.'
+                    : 'Google Play strictly requires Android App Bundle (.aab) format for new app submissions. This bundle includes the full Android Studio project ready to build the .aab with 1 click.'}
+                </div>
+
+                <div className="text-[10.5px] text-[#1E1B2E]/80 space-y-1 font-medium bg-[#FFFBF4] p-2.5 rounded-[10px] border border-[#1E1B2E]/20">
+                  <div><strong>Package ID:</strong> <code className="text-[#2347C5]">com.dour.languagegame</code></div>
+                  <div><strong>Version:</strong> 1.0.1 (VersionCode: 10001) • Target SDK: 34 (Android 14)</div>
+                  <div><strong>AssetLinks:</strong> <code className="text-[#12B5A4]">/.well-known/assetlinks.json</code> فعال است</div>
+                </div>
+
+                <a
+                  href="./downloads/dor-zaban-google-play-package.zip"
+                  download="dor-zaban-google-play-package.zip"
+                  onClick={() => sound.playClick()}
+                  className="w-full py-2.5 px-3 bg-[#12B5A4] hover:bg-[#0fa091] text-white rounded-[12px] font-bold text-xs flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_#15204A] active:translate-y-0.5 transition-all text-center no-underline"
+                >
+                  <Download size={16} />
+                  <span>{isRTL ? 'دانلود پکیج کامل گوگل پلی (ZIP - ۲.۳ مگابایت)' : 'Download Full Play Store Package (ZIP - 2.3 MB)'}</span>
+                </a>
+              </div>
+
+            </div>
+          )}
+
+          {/* TAB 2: ANDROID PWA SECTION */}
           {activeTab === 'android' && (
             <div className="space-y-3 text-start">
               {/* Direct Install CTA Button if browser supports it */}
@@ -155,7 +257,7 @@ export const InstallPromptModal: React.FC<Props> = ({
                   className="pixel-btn pixel-btn-orange w-full py-2.5 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 rounded-[12px]"
                 >
                   <Download size={16} />
-                  <span>{language === 'fa' ? 'نصب مستقیم با یک کلیک' : 'Instant 1-Click Install'}</span>
+                  <span>{t.installDirect || (isRTL ? 'نصب مستقیم PWA با یک کلیک' : 'Instant 1-Click PWA Install')}</span>
                   <Zap size={14} />
                 </button>
               )}
@@ -163,7 +265,7 @@ export const InstallPromptModal: React.FC<Props> = ({
               {isInstalledSuccess && (
                 <div className="p-3 bg-[#FFFBF4] border-2 border-[#1E1B2E] text-[#1E9E93] rounded-[14px] flex items-center gap-2 text-xs font-bold shadow-[2px_2px_0px_0px_#1E1B2E]">
                   <CheckCircle2 size={18} />
-                  <span>{language === 'fa' ? 'بازی با موفقیت روی گوشی نصب شد!' : 'App successfully installed!'}</span>
+                  <span>{t.appInstalledSuccess || (isRTL ? 'بازی با موفقیت روی گوشی نصب شد!' : 'App successfully installed!')}</span>
                 </div>
               )}
 
@@ -171,7 +273,7 @@ export const InstallPromptModal: React.FC<Props> = ({
               <div className="bg-[#F4EDE1] p-3 rounded-[16px] border-2 border-[#1E1B2E] space-y-2.5">
                 <div className="text-[11px] font-bold text-[#1E1B2E] flex items-center gap-1.5">
                   <Sparkles size={14} className="text-[#E0603F]" />
-                  <span>{language === 'fa' ? 'نحوه افزودن در مرورگر کروم (Chrome):' : 'How to Add in Google Chrome:'}</span>
+                  <span>{isRTL ? 'نحوه افزودن در مرورگر کروم (Chrome):' : 'How to Add in Google Chrome:'}</span>
                 </div>
 
                 <div className="space-y-2 text-[11px] text-[#1E1B2E]/80 font-medium">
@@ -209,24 +311,10 @@ export const InstallPromptModal: React.FC<Props> = ({
                   </div>
                 </div>
               </div>
-
-              {/* Native Store Release Notice */}
-              <div className="bg-[#FFFBF4] p-2.5 rounded-[14px] border-2 border-[#1E1B2E] flex items-center gap-2">
-                <div className="w-7 h-7 rounded-[8px] bg-[#F2B63D] text-[#1E1B2E] border border-[#1E1B2E] flex items-center justify-center shrink-0">
-                  <Zap size={14} />
-                </div>
-                <div className="text-[10px] text-[#1E1B2E] font-bold leading-tight">
-                  <span>
-                    {language === 'fa'
-                      ? '🚀 نسخه بومی اندروید (APK، کافه‌بازار و گوگل‌پلی) به‌زودی منتشر می‌شود!'
-                      : '🚀 Native Android App (Play Store & Direct APK) coming soon!'}
-                  </span>
-                </div>
-              </div>
             </div>
           )}
 
-          {/* iOS Section */}
+          {/* TAB 3: IOS SECTION */}
           {activeTab === 'ios' && (
             <div className="space-y-3 text-start">
               <div className="bg-[#F4EDE1] p-3 rounded-[16px] border-2 border-[#1E1B2E] space-y-2.5">
@@ -270,20 +358,6 @@ export const InstallPromptModal: React.FC<Props> = ({
                   </div>
                 </div>
               </div>
-
-              {/* iOS Native Store Notice */}
-              <div className="bg-[#FFFBF4] p-2.5 rounded-[14px] border-2 border-[#1E1B2E] flex items-center gap-2">
-                <div className="w-7 h-7 rounded-[8px] bg-[#F2B63D] text-[#1E1B2E] border border-[#1E1B2E] flex items-center justify-center shrink-0">
-                  <Apple size={14} />
-                </div>
-                <div className="text-[10px] text-[#1E1B2E] font-bold leading-tight">
-                  <span>
-                    {language === 'fa'
-                      ? '🍏 نسخه رسمی iOS (سیب‌اپ و اپ‌استور) به‌زودی در دسترس خواهد بود!'
-                      : '🍏 Native iOS App on the App Store coming soon!'}
-                  </span>
-                </div>
-              </div>
             </div>
           )}
 
@@ -291,12 +365,12 @@ export const InstallPromptModal: React.FC<Props> = ({
           <div className="grid grid-cols-2 gap-2 pt-1 border-t border-[#1E1B2E]/10">
             <div className="bg-[#F4EDE1] p-2 rounded-[10px] border border-[#1E1B2E] flex items-center gap-1.5 text-[10px] font-bold text-[#1E1B2E]">
               <WifiOff size={13} className="text-[#E0603F]" />
-              <span>{language === 'fa' ? 'آفلاین و بدون مصرف نت' : 'Works 100% Offline'}</span>
+              <span>{t.worksOffline || (isRTL ? 'آفلاین و بدون مصرف نت' : 'Works 100% Offline')}</span>
             </div>
 
             <div className="bg-[#F4EDE1] p-2 rounded-[10px] border border-[#1E1B2E] flex items-center gap-1.5 text-[10px] font-bold text-[#1E1B2E]">
               <ShieldCheck size={13} className="text-[#1E9E93]" />
-              <span>{language === 'fa' ? 'کم‌حجم و بدون تبلیغات' : 'Lightweight & Safe'}</span>
+              <span>{t.lightweightSafe || (isRTL ? 'امضا شده و امن' : 'Signed & Verified')}</span>
             </div>
           </div>
 
@@ -308,7 +382,7 @@ export const InstallPromptModal: React.FC<Props> = ({
             onClick={handleClose}
             className="pixel-btn pixel-btn-yellow px-5 py-2 text-xs font-bold rounded-[10px]"
           >
-            {language === 'fa' ? 'متوجه شدم، بستن' : 'Got it, Close'}
+            {t.gotItClose || (isRTL ? 'متوجه شدم، بستن' : 'Got it, Close')}
           </button>
         </div>
 

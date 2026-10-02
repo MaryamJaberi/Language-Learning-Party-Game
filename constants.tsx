@@ -1,53 +1,66 @@
 import { TeamColor, Language, CEFRLevel } from './types';
 
 export const COLORS_MAP: Record<TeamColor, { bg: string, text: string, hex: string, surface: string, border: string, glow: string, name: string, faName: string }> = {
-  [TeamColor.Red]: { 
-    bg: 'bg-[#E0603F]', 
-    text: 'text-white', 
-    hex: '#E0603F', 
-    surface: '#FFFBF4', 
-    border: '#1E1B2E',
-    glow: 'rgba(224, 96, 63, 0.3)',
-    name: 'Orange',
-    faName: 'نارنجی'
-  },
   [TeamColor.Blue]: { 
-    bg: 'bg-[#1E9E93]', 
+    bg: 'bg-[#2347C5]', 
     text: 'text-white', 
-    hex: '#1E9E93', 
-    surface: '#FFFBF4', 
-    border: '#1E1B2E',
-    glow: 'rgba(30, 158, 147, 0.3)',
-    name: 'Teal',
-    faName: 'فیروزه‌ای'
+    hex: '#2347C5', 
+    surface: 'var(--panel)', 
+    border: '#2347C5',
+    glow: 'rgba(35, 71, 197, 0.25)',
+    name: 'Blue',
+    faName: 'آبی'
   },
-  [TeamColor.Yellow]: { 
-    bg: 'bg-[#F2B63D]', 
-    text: 'text-[#1E1B2E]', 
-    hex: '#F2B63D', 
-    surface: '#FFFBF4', 
-    border: '#1E1B2E',
-    glow: 'rgba(242, 182, 61, 0.3)',
-    name: 'Mustard',
-    faName: 'خردلی'
+  [TeamColor.Red]: { 
+    bg: 'bg-[#E0533C]', 
+    text: 'text-white', 
+    hex: '#E0533C', 
+    surface: 'var(--panel)', 
+    border: '#E0533C',
+    glow: 'rgba(224, 83, 60, 0.25)',
+    name: 'Red',
+    faName: 'قرمز'
   },
   [TeamColor.Green]: { 
-    bg: 'bg-[#1E1B2E]', 
+    bg: 'bg-[#12B5A4]', 
     text: 'text-white', 
-    hex: '#1E1B2E', 
-    surface: '#FFFBF4', 
-    border: '#1E1B2E',
-    glow: 'rgba(30, 27, 46, 0.3)',
-    name: 'Ink',
-    faName: 'مشکی'
+    hex: '#12B5A4', 
+    surface: 'var(--panel)', 
+    border: '#12B5A4',
+    glow: 'rgba(18, 181, 164, 0.25)',
+    name: 'Green',
+    faName: 'سبز'
+  },
+  [TeamColor.Yellow]: { 
+    bg: 'bg-[#F5B52E]', 
+    text: 'text-[#15204A]', 
+    hex: '#F5B52E', 
+    surface: 'var(--panel)', 
+    border: '#F5B52E',
+    glow: 'rgba(245, 181, 46, 0.25)',
+    name: 'Yellow',
+    faName: 'زرد'
   },
 };
 
-// "Turn · Game night" Tabletop Color Palette
+export const PLAYER_AVATARS = ['🦊', '🦁', '🐼', '🐨', '🐯', '🐰', '🐸', '🐵'];
+
+export const TEAM_HEX_COLORS: Record<TeamColor, string> = {
+  [TeamColor.Blue]: '#2347C5',
+  [TeamColor.Red]: '#E0533C',
+  [TeamColor.Green]: '#12B5A4',
+  [TeamColor.Yellow]: '#F5B52E',
+};
+
+// "Turn · Game night" Modern Color Palette (Based on HTML design)
 export const UI_COLORS = {
-  ink: '#1E1B2E',              // text, borders, flat shadow
-  paper: '#F4EDE1',            // warm paper background
-  card: '#FFFBF4',             // surface cards
+  ink: '#15204A',              // text, borders
+  paper: '#EEF3FA',            // background
+  card: '#FFFFFF',             // surface cards
+  lapis: '#2347C5',            // primary brand blue
+  turq: '#12B5A4',             // turquoise accent
+  saffron: '#F5B52E',          // saffron yellow accent
+  line: '#DFE6F2',             // light borders
   orange: '#E0603F',           // primary, Team 1
   teal: '#1E9E93',             // correct, Team 2
   mustard: '#F2B63D',          // almost, points, Team 3

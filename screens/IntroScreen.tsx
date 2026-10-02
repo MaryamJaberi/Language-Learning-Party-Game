@@ -142,7 +142,8 @@ const IntroScreen: React.FC<Props> = ({
 
   const handleHistoryClick = () => {
     sound.playClick();
-    onOpenHistory();
+    setProfileInitialTab('history');
+    setIsProfileModalOpen(true);
   };
 
   const handleLoginForHistory = async () => {
@@ -161,43 +162,45 @@ const IntroScreen: React.FC<Props> = ({
   };
 
   return (
-    <div className="h-full min-h-0 flex-1 flex flex-col items-center justify-between p-3.5 sm:p-4 text-center select-none overflow-y-auto overscroll-contain" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="h-full min-h-0 flex-1 flex flex-col items-center justify-between p-3.5 sm:p-4 text-center select-none overflow-y-auto overscroll-contain bg-[var(--bg)] text-[var(--ink)]" dir={isRTL ? 'rtl' : 'ltr'}>
       
-      {/* Top Bar: Language Picker Pill on one side, Sound, History, Help & Profile on the other */}
+      {/* Top Bar: Language Picker Pill on one side, Sound, Help & Profile on the other */}
       <div className="w-full max-w-sm flex items-center justify-between px-1 mb-2 shrink-0 gap-1.5">
         <button
           id="header-language-btn"
+          data-testid="header-language-btn"
           type="button"
           onClick={() => {
             sound.playClick();
             setIsLanguageModalOpen(true);
           }}
-          className="h-10 flex items-center gap-1.5 bg-[#FFFBF4] hover:bg-[#F4EDE1] px-2.5 sm:px-3 rounded-[14px] border-2 border-[#1E1B2E] shadow-[3px_3px_0px_0px_#1E1B2E] text-xs font-bold text-[#1E1B2E] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#1E1B2E] transition-all cursor-pointer shrink-0"
-          title={language === 'fa' ? 'تغییر زبان برنامه' : 'Change app language'}
-          aria-label={language === 'fa' ? 'تغییر زبان برنامه' : 'Change app language'}
+          className="h-10 flex items-center gap-1.5 bg-[var(--panel)] hover:bg-[var(--bg)] px-3 rounded-full border border-[var(--line)] shadow-xs text-xs font-bold text-[var(--ink)] active:scale-95 transition-all cursor-pointer shrink-0"
+          title={t.changeLanguage}
+          aria-label={t.changeLanguage}
         >
           <FlagIcon language={language} size={17} />
           <span className="font-bold tracking-tight">
             {currentLangInfo.nativeName || currentLangInfo.name}
           </span>
-          <ChevronDown size={14} className="text-[#1E1B2E]/60 shrink-0" />
+          <ChevronDown size={14} className="text-[var(--mute)] shrink-0" />
         </button>
 
-        {/* Top Controls: Sound, History, Help & Profile (Leaderboard is inside Profile) */}
+        {/* Top Controls: Mobile APK, Sound, Help & Profile (History is inside Profile) */}
         <div className="flex items-center gap-2">
-          {/* Sound Mute / Unmute Button */}
-          <SoundHeaderButton variant="icon-only" language={language} className="w-10 h-10 p-0 justify-center" />
-
-          {/* History Button */}
+          {/* Mobile APK / Play Store Download Button */}
           <button
-            id="header-history-btn"
-            onClick={handleHistoryClick}
-            aria-label={t.history || 'تاریخچه'}
-            className="w-10 h-10 p-0 flex items-center justify-center rounded-[14px] border-2 border-[#1E1B2E] bg-[#FFFBF4] hover:bg-[#F4EDE1] text-[#1E1B2E] shadow-[3px_3px_0px_0px_#1E1B2E] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#1E1B2E] transition-all shrink-0"
-            title={language === 'fa' ? 'تاریخچه بازی‌ها' : 'Game History'}
+            id="header-install-btn"
+            type="button"
+            onClick={handleOpenInstall}
+            aria-label={isRTL ? 'دانلود APK اندروید و پکیج گوگل‌پلی' : 'Download Android APK & Play Store Package'}
+            className="ib"
+            title={isRTL ? 'دانلود APK اندروید و پکیج گوگل‌پلی' : 'Download Android APK & Play Store Package'}
           >
-            <History size={18} className="text-[#1E1B2E]" />
+            <Download size={18} />
           </button>
+
+          {/* Sound Mute / Unmute Button */}
+          <SoundHeaderButton variant="icon-only" language={language} className="w-10 h-10 p-0 justify-center ib" />
 
           {/* Help / Guide button */}
           <button
@@ -207,71 +210,53 @@ const IntroScreen: React.FC<Props> = ({
               onOpenHelp?.();
             }}
             aria-label={t.guide || 'راهنما'}
-            className="w-10 h-10 p-0 flex items-center justify-center rounded-[14px] border-2 border-[#1E1B2E] bg-[#FFFBF4] hover:bg-[#F4EDE1] text-[#1E1B2E] shadow-[3px_3px_0px_0px_#1E1B2E] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#1E1B2E] transition-all shrink-0"
-            title={language === 'fa' ? 'راهنمای بازی و قوانین' : 'Game Rules & Guide'}
+            className="ib"
+            title={t.gameRules}
           >
-            <BookOpen size={18} className="text-[#1E1B2E]" />
+            <BookOpen size={18} />
           </button>
 
-          {/* User Profile button (Hosts Leaderboard & Records) */}
+          {/* User Profile button (Hosts History, Records & Leaderboard) */}
           <button
             id="header-profile-btn"
-            onClick={() => {
-              sound.playClick();
-              setProfileInitialTab('records');
-              setIsProfileModalOpen(true);
-            }}
-            aria-label={language === 'fa' ? 'پروفایل و لیدربرد' : 'Profile & Leaderboard'}
-            className="w-10 h-10 p-0 flex items-center justify-center rounded-[14px] border-2 border-[#1E1B2E] bg-[#FFFBF4] hover:bg-[#F4EDE1] text-[#1E1B2E] shadow-[3px_3px_0px_0px_#1E1B2E] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#1E1B2E] transition-all shrink-0"
-            title={language === 'fa' ? 'پروفایل، رکوردها و لیدربرد' : 'Profile, Records & Leaderboard'}
+            onClick={handleHistoryClick}
+            aria-label={isRTL ? 'پروفایل و لیدربرد و تاریخچه' : 'Profile, History & Leaderboard'}
+            className="ib"
+            title={isRTL ? 'پروفایل و لیدربرد و تاریخچه' : 'Profile, History & Leaderboard'}
           >
             {user?.photoURL ? (
-              <img src={user.photoURL} alt="avatar" className="w-5 h-5 rounded-lg border border-[#1E1B2E] object-cover" referrerPolicy="no-referrer" />
+              <img src={user.photoURL} alt="avatar" className="w-5 h-5 rounded-full border border-[var(--line)] object-cover" referrerPolicy="no-referrer" />
             ) : (
-              <UserIcon size={18} className="text-[#1E1B2E]" />
+              <UserIcon size={18} />
             )}
           </button>
         </div>
       </div>
 
-      {/* Hero Tabletop Card Area with Stacked Peeking Cards (Page 3 of Proposal) */}
-      <div className="relative w-full max-w-sm mx-auto my-2 shrink-0">
-        {/* Underneath Card 2: Mustard #F2B63D peek */}
-        <div className="absolute inset-0 translate-x-2 translate-y-3 bg-[#F2B63D] border-2 border-[#1E1B2E] rounded-[28px] pointer-events-none" />
-        {/* Underneath Card 1: Teal #1E9E93 peek */}
-        <div className="absolute inset-0 translate-x-1 translate-y-1.5 bg-[#1E9E93] border-2 border-[#1E1B2E] rounded-[28px] pointer-events-none" />
-        
-        {/* Top Paper Card: #FFFBF4 with 2px ink border & 4x4 flat shadow */}
-        <div className="relative bg-[#FFFBF4] border-2 border-[#1E1B2E] shadow-[4px_4px_0px_0px_#1E1B2E] rounded-[28px] p-5 sm:p-6 text-start flex flex-col justify-between min-h-[240px] sm:min-h-[260px]">
-          {/* Top Label (A2 removed as requested) */}
+      {/* Hero Modern Card Area (Aligned with HTML design system) */}
+      <div className="relative w-full max-w-sm mx-auto my-auto shrink-0">
+        <div className="panel p-5 sm:p-6 text-start flex flex-col justify-between min-h-[230px] sm:min-h-[250px] rounded-[24px] shadow-sm">
+          {/* Top Label */}
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold tracking-wider text-[#E0603F] uppercase font-ui">
-              VOCAB & CONVERSATION PARTY
+            <span className="text-[11px] font-bold tracking-wider text-[var(--lapis)] uppercase font-ui">
+              {t.vocabParty}
             </span>
-            <span className="px-2.5 py-0.5 bg-[#1E9E93] text-[#FFFBF4] text-[10.5px] font-bold rounded-full font-ui flex items-center gap-1">
+            <span className="px-2.5 py-0.5 bg-[var(--lapis-soft)] text-[var(--lapis)] text-[10.5px] font-bold rounded-full font-ui flex items-center gap-1">
               <Sparkles size={11} />
-              <span>Multi-Lingual</span>
+              <span>{t.multiLingual}</span>
             </span>
           </div>
 
           {/* Main Titles */}
           <div className="my-auto py-2">
-            <h1 className="text-5xl sm:text-6xl font-extrabold text-[#1E1B2E] leading-none tracking-tight font-display mb-1">
-              Turn
+            <h1 className="text-5xl sm:text-6xl font-black text-[var(--ink)] leading-none tracking-tight font-display mb-1">
+              {t.title || 'Turn'}
             </h1>
-            {language === 'fa' ? (
-              <h2 className="text-4xl sm:text-5xl font-normal text-[#E0603F] leading-tight font-display mb-2.5">
-                دور
-              </h2>
-            ) : (
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#E0603F] leading-tight font-display mb-2.5">
-                Language Party Game
-              </h2>
-            )}
-            <p className="text-[#1E1B2E]/70 text-xs sm:text-sm font-medium leading-relaxed font-ui">
-              {language === 'fa' 
-                ? 'گوشی رو دست‌به‌دست کن. زمان رو شکست بده. صحبت کن.' 
-                : 'Pass one phone. Beat the clock. Speak.'}
+            <h2 className="text-xl sm:text-2xl font-extrabold text-[var(--lapis)] leading-tight font-display mb-2">
+              {t.subtitle}
+            </h2>
+            <p className="text-[var(--mute)] text-xs sm:text-sm font-medium leading-relaxed font-ui">
+              {t.tagline}
             </p>
           </div>
         </div>
@@ -279,7 +264,7 @@ const IntroScreen: React.FC<Props> = ({
 
       {/* Interactive Action Buttons */}
       <div className="w-full max-w-sm space-y-2.5 my-auto shrink-0">
-        {/* Primary Action: Orange "Start new game" Button (Page 3) */}
+        {/* Primary Action: Start Game Button */}
         <div className="flex flex-col gap-2.5">
           <button 
             type="button"
@@ -288,13 +273,13 @@ const IntroScreen: React.FC<Props> = ({
               sound.playStartGame();
               onNext();
             }}
-            className="w-full h-14 sm:h-15 bg-[#E0603F] hover:bg-[#d55434] text-white border-2 border-[#1E1B2E] shadow-[4px_4px_0px_0px_#1E1B2E] rounded-[18px] text-base sm:text-lg font-bold flex items-center justify-center gap-2.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-[2px_2px_0px_0px_#1E1B2E] transition-all font-ui"
+            className="start-btn w-full h-14 sm:h-15 text-base sm:text-lg font-bold flex items-center justify-center gap-2.5 active:scale-[0.98] transition-all font-ui"
           >
-            <Users size={22} className="text-white" />
-            <span>{language === 'fa' ? 'شروع بازی جدید' : 'Start new game'}</span>
+            <Users size={22} />
+            <span>{t.startNewGame || t.newGame}</span>
           </button>
 
-          {/* Secondary Game Modes: Single player & Online room in Card surfaces */}
+          {/* Secondary Game Modes: Single player & Online room */}
           <div className="grid grid-cols-2 gap-2.5">
             {/* 1. Single Player Mode */}
             <button
@@ -304,10 +289,10 @@ const IntroScreen: React.FC<Props> = ({
                 sound.playClick();
                 onOpenSinglePlayer();
               }}
-              className="py-3 px-3 bg-[#FFFBF4] hover:bg-[#F4EDE1] text-[#1E1B2E] border-2 border-[#1E1B2E] rounded-[18px] font-bold text-xs sm:text-sm shadow-[4px_4px_0px_0px_#1E1B2E] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[2px_2px_0px_0px_#1E1B2E] transition-all flex items-center justify-center gap-2 font-ui"
+              className="py-3 px-3 bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] rounded-[16px] font-bold text-xs sm:text-sm shadow-xs active:scale-[0.98] transition-all flex items-center justify-center gap-2 font-ui"
             >
-              <Mic size={16} className="text-[#1E1B2E]" />
-              <span>{language === 'fa' ? 'تک‌نفره' : 'Single player'}</span>
+              <Mic size={16} className="text-[var(--lapis)]" />
+              <span>{t.singlePlayerBtn}</span>
             </button>
 
             {/* 2. Online Multiplayer Mode */}
@@ -318,10 +303,10 @@ const IntroScreen: React.FC<Props> = ({
                 sound.playClick();
                 onOpenOnline();
               }}
-              className="py-3 px-3 bg-[#FFFBF4] hover:bg-[#F4EDE1] text-[#1E1B2E] border-2 border-[#1E1B2E] rounded-[18px] font-bold text-xs sm:text-sm shadow-[4px_4px_0px_0px_#1E1B2E] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[2px_2px_0px_0px_#1E1B2E] transition-all flex items-center justify-center gap-2 font-ui"
+              className="py-3 px-3 bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] rounded-[16px] font-bold text-xs sm:text-sm shadow-xs active:scale-[0.98] transition-all flex items-center justify-center gap-2 font-ui"
             >
-              <Globe size={16} className="text-[#1E1B2E]" />
-              <span>{language === 'fa' ? 'اتاق آنلاین' : 'Online room'}</span>
+              <Globe size={16} className="text-[var(--turq)]" />
+              <span>{t.onlineRoom}</span>
             </button>
           </div>
         </div>
@@ -357,8 +342,8 @@ const IntroScreen: React.FC<Props> = ({
           setIsLanguageModalOpen(false);
         }}
         mode="single"
-        title={language === 'fa' ? 'انتخاب زبان برنامه و بازی' : 'Select App & Game Language'}
-        subtitle={language === 'fa' ? 'پشتیبانی از بیش از ۳۵ زبان دنیا' : 'Over 35 supported languages'}
+        title={t.languageSelectTitle || (isRTL ? 'انتخاب زبان برنامه و بازی' : 'Select App & Game Language')}
+        subtitle={t.all38Languages || (isRTL ? 'پشتیبانی از بیش از ۳۵ زبان دنیا' : 'Over 35 supported languages')}
         isRTL={isRTL}
       />
 
@@ -381,10 +366,10 @@ const IntroScreen: React.FC<Props> = ({
                 </div>
                 <div className="text-start">
                   <h2 className="text-base sm:text-lg font-black tracking-tight">
-                    {language === 'fa' ? 'نوع بازی را انتخاب کنید' : 'Choose Game Mode'}
+                    {t.chooseGameMode || (isRTL ? 'نوع بازی را انتخاب کنید' : 'Choose Game Mode')}
                   </h2>
                   <p className="text-[11px] text-pink-200 font-bold">
-                    {language === 'fa' ? 'حالت مسابقه مورد نظر خود را آغاز نمایید' : 'Select your preferred challenge mode'}
+                    {t.selectChallengeMode || (isRTL ? 'حالت مسابقه مورد نظر خود را آغاز نمایید' : 'Select your preferred challenge mode')}
                   </p>
                 </div>
               </div>
@@ -419,21 +404,21 @@ const IntroScreen: React.FC<Props> = ({
                     </div>
                     <div>
                       <h3 className="text-sm font-black text-[#FFE600] group-hover:text-yellow-200">
-                        {language === 'fa' ? '۱. بازی دورهمی حضوری (Pass & Play)' : '1. Local Party (Pass & Play)'}
+                        {t.localPartyMode || (isRTL ? '۱. بازی دورهمی حضوری (Pass & Play)' : '1. Local Party (Pass & Play)')}
                       </h3>
                       <span className="text-[10px] text-[#00F0FF] font-bold">
-                        {language === 'fa' ? '۲ تا ۸ بازیکن • مسابقه با یک گوشی' : '2 to 8 players • One shared phone'}
+                        {t.localPartyDesc || (isRTL ? '۲ تا ۸ بازیکن • مسابقه با یک گوشی' : '2 to 8 players • One shared phone')}
                       </span>
                     </div>
                   </div>
                   <span className="text-xs font-black bg-[#FFE600] text-[#1a0833] px-2.5 py-1 rounded-xl shadow-[1px_1px_0px_0px_#241442]">
-                    {language === 'fa' ? 'شروع ➔' : 'Start ➔'}
+                    {t.start || (isRTL ? 'شروع ➔' : 'Start ➔')}
                   </span>
                 </div>
                 <p className="text-[11px] text-slate-300 font-medium leading-relaxed text-start">
-                  {language === 'fa' 
+                  {t.localPartySub || (isRTL 
                     ? 'گوشی بین تیم‌ها می‌چرخد! تایمر زنگ‌دار، چرخ شانس موضوعات و کارت‌های واژگان برای یک مسابقه دورهمی پرشور.'
-                    : 'Pass the phone between teams! Buzzer timer, category wheel, and vocabulary cards for an energetic party.'}
+                    : 'Pass the phone between teams! Buzzer timer, category wheel, and vocabulary cards for an energetic party.')}
                 </p>
               </div>
 
@@ -453,21 +438,21 @@ const IntroScreen: React.FC<Props> = ({
                     </div>
                     <div>
                       <h3 className="text-sm font-black text-[#FF007F] group-hover:text-pink-300">
-                        {language === 'fa' ? '۲. چالش تک‌نفره و سنجش تلفظ' : '2. Single-Player & Voice Challenge'}
+                        {t.singlePlayer || (isRTL ? '۲. چالش تک‌نفره و سنجش تلفظ' : '2. Single-Player & Voice Challenge')}
                       </h3>
                       <span className="text-[10px] text-[#39FF14] font-bold">
-                        {language === 'fa' ? 'تمرین گفتار با میکروفون • ثبت در لیدربرد' : 'Voice pronunciation • Leaderboard records'}
+                        {t.singlePlayerSub || (isRTL ? 'تمرین گفتار با میکروفون • ثبت در لیدربرد' : 'Voice pronunciation • Leaderboard records')}
                       </span>
                     </div>
                   </div>
                   <span className="text-xs font-black bg-[#FF007F] text-white px-2.5 py-1 rounded-xl shadow-[1px_1px_0px_0px_#241442]">
-                    {language === 'fa' ? 'شروع ➔' : 'Start ➔'}
+                    {t.start || (isRTL ? 'شروع ➔' : 'Start ➔')}
                   </span>
                 </div>
                 <p className="text-[11px] text-slate-300 font-medium leading-relaxed text-start">
-                  {language === 'fa' 
+                  {t.singlePlayerDetail || (isRTL 
                     ? 'فلش‌کارت‌های تخصصی در بیش از ۳۸ زبان، تمرین با هوش مصنوعی و میکروفون و ثبت رکوردهای برتر در لیدربرد تک‌نفره.'
-                    : 'Curated CEFR flashcards in 38+ languages, AI pronunciation score via mic, and top scores on the solo leaderboard.'}
+                    : 'Curated CEFR flashcards in 38+ languages, AI pronunciation score via mic, and top scores on the solo leaderboard.')}
                 </p>
               </div>
 
@@ -487,21 +472,21 @@ const IntroScreen: React.FC<Props> = ({
                     </div>
                     <div>
                       <h3 className="text-sm font-black text-[#00F0FF] group-hover:text-cyan-200">
-                        {language === 'fa' ? '۳. بازی آنلاین چندنفره (از راه دور)' : '3. Online Multiplayer (Remote Rooms)'}
+                        {t.onlineMultiplayer || (isRTL ? '۳. بازی آنلاین چندنفره (از راه دور)' : '3. Online Multiplayer (Remote Rooms)')}
                       </h3>
                       <span className="text-[10px] text-purple-300 font-bold">
-                        {language === 'fa' ? 'اتاق‌های مجازی • کد دعوت ۶ رقمی' : 'Virtual rooms • 6-digit invite code'}
+                        {t.onlineMultiplayerDesc || (isRTL ? 'اتاق‌های مجازی • کد دعوت ۶ رقمی' : 'Virtual rooms • 6-digit invite code')}
                       </span>
                     </div>
                   </div>
                   <span className="text-xs font-black bg-[#00F0FF] text-[#1a0833] px-2.5 py-1 rounded-xl shadow-[1px_1px_0px_0px_#241442]">
-                    {language === 'fa' ? 'ورود ➔' : 'Join ➔'}
+                    {t.joinGameBtn || (isRTL ? 'ورود ➔' : 'Join ➔')}
                   </span>
                 </div>
                 <p className="text-[11px] text-slate-300 font-medium leading-relaxed text-start">
-                  {language === 'fa' 
+                  {t.onlineMultiplayerSub || (isRTL 
                     ? 'از هر فاصله‌ای با دوستان خود بازی کنید! ساخت اتاق اختصاصی یا ورود با کد دعوت جهت مسابقه آنلاین تیمی.'
-                    : 'Play with friends from anywhere! Host a custom room or join via invite code for real-time multiplayer.'}
+                    : 'Play with friends from anywhere! Host a custom room or join via invite code for real-time multiplayer.')}
                 </p>
               </div>
 
@@ -514,7 +499,7 @@ const IntroScreen: React.FC<Props> = ({
                 onClick={() => setIsGameModeModalOpen(false)}
                 className="text-xs font-bold text-slate-400 hover:text-white"
               >
-                {language === 'fa' ? 'بستن پنجره' : 'Close'}
+                {t.close || (isRTL ? 'بستن پنجره' : 'Close')}
               </button>
             </div>
           </div>
@@ -537,15 +522,15 @@ const IntroScreen: React.FC<Props> = ({
                 <History size={24} />
               </div>
               <h3 className="text-base font-black">
-                {language === 'fa' ? 'ورود به حساب برای مشاهده تاریخچه' : 'Sign in to access Game History'}
+                {t.signInForHistory || (isRTL ? 'ورود به حساب برای مشاهده تاریخچه' : 'Sign in to access Game History')}
               </h3>
             </div>
 
             <div className="p-4 space-y-3 text-center">
               <p className="text-xs text-slate-300 font-medium leading-relaxed">
-                {language === 'fa' 
+                {t.signInHistoryDesc || (isRTL 
                   ? 'سوابق مسابقات، امتیازات تیمی، کلمات یادگرفته‌شده و رکوردهای شما به صورت ابری ذخیره می‌شوند. برای مشاهده تاریخچه و ادامه، با حساب گوگل خود وارد شوید.'
-                  : 'Your match logs, scores, learned vocabulary, and records are saved to the cloud. Please sign in with your Google account to access your history.'}
+                  : 'Your match logs, scores, learned vocabulary, and records are saved to the cloud. Please sign in with your Google account to access your history.')}
               </p>
 
               <button
@@ -555,7 +540,7 @@ const IntroScreen: React.FC<Props> = ({
                 className="w-full py-3 bg-[#39FF14] hover:bg-[#32e012] text-[#1a0833] font-black text-sm rounded-xl border-2 border-[#241442] shadow-[3px_3px_0px_0px_#241442] active:translate-y-0.5 flex items-center justify-center gap-2"
               >
                 <LogIn size={16} />
-                <span>{isAuthLoading ? (language === 'fa' ? 'در حال اتصال...' : 'Connecting...') : (language === 'fa' ? 'ورود با حساب گوگل' : 'Sign in with Google')}</span>
+                <span>{isAuthLoading ? (t.connecting || 'Connecting...') : (t.signInWithGoogle || 'Sign in with Google')}</span>
               </button>
 
               <button
@@ -563,7 +548,7 @@ const IntroScreen: React.FC<Props> = ({
                 onClick={() => setIsHistoryLoginModalOpen(false)}
                 className="w-full py-2 text-xs font-bold text-slate-400 hover:text-white"
               >
-                {language === 'fa' ? 'انصراف' : 'Cancel'}
+                {t.cancel || (isRTL ? 'انصراف' : 'Cancel')}
               </button>
             </div>
           </div>

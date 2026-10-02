@@ -8,7 +8,7 @@
     <meta name="description" content="بازی دورهمی آموزش و یادگیری زبان به صورت چندزبانه، جذاب و تعاملی برای گروه‌های ۴، ۶ و ۸ نفره">
     <meta property="og:title" content="Language app Dour - بازی دورهمی یادگیری زبان">
     <meta property="og:description" content="بازی دورهمی آموزش و یادگیری زبان به صورت چندزبانه، جذاب و تعاملی برای گروه‌های ۴، ۶ و ۸ نفره">
-    <meta name="theme-color" content="#F4EDE1">
+    <meta name="theme-color" content="#EEF3FA">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -23,13 +23,19 @@
     <style>
         body {
             font-family: 'Rubik', 'Vazirmatn', system-ui, -apple-system, sans-serif;
-            background-color: #F4EDE1;
-            color: #1E1B2E;
+            background-color: #EEF3FA;
+            color: #15204A;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
             overflow-x: hidden;
             touch-action: manipulation;
             font-synthesis: none;
+        }
+        @media (prefers-color-scheme: dark) {
+            body:not([data-theme="light"]) {
+                background-color: #0E1530;
+                color: #EAF0FF;
+            }
         }
         [dir="rtl"] {
             letter-spacing: 0;

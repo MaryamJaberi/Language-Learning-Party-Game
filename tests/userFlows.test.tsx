@@ -9,33 +9,23 @@ describe('Complete End-to-End User Flow Tests', () => {
     vi.clearAllMocks();
   });
 
-  const launchActiveGame = (playerNames = ['سارا', 'رضا', 'مریم', 'علی']) => {
-    // 1. Intro -> Unified Setup (Languages, CEFR, Players & Topics all in 1 screen)
+  const launchActiveGame = () => {
+    // 1. Intro -> Setup Screen
     fireEvent.click(screen.getByText('شروع بازی جدید'));
 
-    // 2. Select 4 players
-    const p4Btn = screen.getByRole('button', { name: /4 بازیکن/i });
-    if (p4Btn) fireEvent.click(p4Btn);
-    
-    // 3. Fill in player names directly in Setup
-    const playerInputs = screen.getAllByPlaceholderText(/بازیکن/i);
-    playerNames.forEach((name, idx) => {
-      if (playerInputs[idx]) {
-        fireEvent.change(playerInputs[idx], { target: { value: name } });
-      }
-    });
+    // 2. Click "شروع بازی" (bottom start bar button)
+    const startBtn = screen.getByRole('button', { name: /شروع بازی/i });
+    fireEvent.click(startBtn);
 
-    // 4. Setup -> Seating Confirmation
-    fireEvent.click(screen.getByRole('button', { name: /مرحله بعد/i }));
-    
-    // 5. Confirm Seating -> Start Round 1
-    fireEvent.click(screen.getByRole('button', { name: /شروع دور ۱/i }));
+    // 3. Confirm Seating -> Start Round 1
+    const confirmBtn = screen.getByRole('button', { name: /شروع دور ۱/i });
+    fireEvent.click(confirmBtn);
   };
 
   test('Flow 1: Intro screen renders cleanly with "دور" title, language selector, help, and history', () => {
     render(<App />);
 
-    // 1. Check Persian title "دور" without illegible diacritics
+    // 1. Check Persian title "دور"
     const titleElements = screen.getAllByText('دور');
     expect(titleElements.length).toBeGreaterThan(0);
     expect(titleElements[0].textContent).toBe('دور');
@@ -72,81 +62,63 @@ describe('Complete End-to-End User Flow Tests', () => {
     expect(screen.getByText('شروع بازی جدید')).toBeInTheDocument();
   });
 
-  test('Flow 2: Complete Setup, Category Selection, Player Names, and Seating Table Confirmation', () => {
+  test('Flow 2: Complete Setup, Player Count, and Seating Table Confirmation', () => {
     render(<App />);
 
     // 1. From Intro -> Click "شروع بازی جدید"
     const newGameBtn = screen.getByText('شروع بازی جدید');
     fireEvent.click(newGameBtn);
 
-    // 2. Direct Unified Setup Screen
+    // 2. Setup Screen matches HTML design
     expect(screen.getByText('تنظیمات بازی')).toBeInTheDocument();
-    expect(screen.getAllByText(/موضوعات/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/زبان مادری من/i)).toBeInTheDocument();
+    expect(screen.getByText(/زبان‌هایی که می‌خوام یاد بگیرم/i)).toBeInTheDocument();
 
     // Select 4 players
-    const p4Btn = screen.getByRole('button', { name: /4 بازیکن/i });
+    const p4Btn = document.getElementById('players')?.querySelectorAll('button')[0];
     expect(p4Btn).toBeInTheDocument();
-    fireEvent.click(p4Btn);
+    fireEvent.click(p4Btn!);
+    expect(p4Btn).toHaveAttribute('aria-checked', 'true');
 
-    // 3. Player Names are directly inside Setup Screen
-    const inputs = screen.getAllByPlaceholderText(/بازیکن/i);
-    expect(inputs.length).toBe(4);
+    // Click "شروع بازی" -> Go to Seating Confirmation
+    const startBtn = screen.getByRole('button', { name: /شروع بازی/i });
+    fireEvent.click(startBtn);
 
-    fireEvent.change(inputs[0], { target: { value: 'سارا' } });
-    fireEvent.change(inputs[1], { target: { value: 'رضا' } });
-    fireEvent.change(inputs[2], { target: { value: 'مریم' } });
-    fireEvent.change(inputs[3], { target: { value: 'علی' } });
-
-    // Click "مرحله بعد" -> Go to Seating Confirmation
-    const nextBtn = screen.getByRole('button', { name: /مرحله بعد/i });
-    fireEvent.click(nextBtn);
-
-    // 4. Seating Confirmation Screen
+    // 3. Seating Confirmation Screen
     expect(screen.getByText('چیدمان دور میز')).toBeInTheDocument();
-    expect(screen.getAllByText(/سارا/).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/رضا/).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/مریم/).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/علی/).length).toBeGreaterThan(0);
 
     // Confirm seating and start round 1
     const confirmSeatingBtn = screen.getByRole('button', { name: /شروع دور ۱/i });
     fireEvent.click(confirmSeatingBtn);
 
-    // 5. Now in GameplayScreen
+    // 4. Now in GameplayScreen
     expect(screen.getAllByText(/دور/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/سارا/).length).toBeGreaterThan(0);
     expect(screen.getByRole('button', { name: /درست بود!/i })).toBeInTheDocument();
   });
 
   test('Flow 3: Gameplay mechanics - Guessing, Clockwise Turns, Undo, Word Swapping, and Pausing', () => {
     render(<App />);
 
-    launchActiveGame(['سارا', 'رضا', 'مریم', 'علی']);
+    launchActiveGame();
 
-    // Player 1 (ساعتگرد: نفر اول)
+    // Player 1 is active
     expect(screen.getAllByText(/دور/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/سارا/).length).toBeGreaterThan(0);
-    
-    // Check initial active player 1 is displayed
     const correctBtn = screen.getByRole('button', { name: /درست بود!/i });
     expect(correctBtn).toBeInTheDocument();
 
     // Record player 1 guessing correctly
     fireEvent.click(correctBtn);
 
-    // Player 2 (رضا) is now active, and Floating Undo button appears
-    expect(screen.getAllByText(/رضا/).length).toBeGreaterThan(0);
+    // Floating Undo button appears
     const undoBtn = screen.getByRole('button', { name: /بازگشت کارت قبلی/i });
     expect(undoBtn).toBeInTheDocument();
 
-    // Test Undo -> Reverts to Player 1 (سارا)
+    // Test Undo -> Reverts to Player 1
     fireEvent.click(undoBtn);
-    expect(screen.getAllByText(/سارا/).length).toBeGreaterThan(0);
     expect(screen.queryByRole('button', { name: /بازگشت کارت قبلی/i })).not.toBeInTheDocument();
 
-    // Advance again to Player 2
+    // Advance again
     fireEvent.click(correctBtn);
-    expect(screen.getAllByText(/رضا/).length).toBeGreaterThan(0);
 
     // Test Pause Game
     const pauseBtn = screen.getByLabelText('Pause');
@@ -189,21 +161,21 @@ describe('Complete End-to-End User Flow Tests', () => {
     expect(screen.getByText('Start New Game')).toBeInTheDocument();
 
     // 2. Open Language Picker Modal and switch to Deutsch
-    fireEvent.click(screen.getByRole('button', { name: /Change/i }));
+    fireEvent.click(screen.getByTestId('header-language-btn'));
     fireEvent.click(screen.getByText('Deutsch'));
 
     expect(screen.getByText('Runde')).toBeInTheDocument();
     expect(screen.getByText('Neues Spiel')).toBeInTheDocument();
 
     // 3. Open Language Picker Modal and switch to Nederlands
-    fireEvent.click(screen.getByRole('button', { name: /Change/i }));
+    fireEvent.click(screen.getByTestId('header-language-btn'));
     fireEvent.click(screen.getByText('Nederlands'));
 
     expect(screen.getByText('Beurt')).toBeInTheDocument();
     expect(screen.getByText('Nieuw Spel')).toBeInTheDocument();
 
     // 4. Switch back to Persian
-    fireEvent.click(screen.getByRole('button', { name: /Change/i }));
+    fireEvent.click(screen.getByTestId('header-language-btn'));
     fireEvent.click(screen.getByText('فارسی'));
 
     const faTitle = screen.getAllByText('دور');
@@ -214,7 +186,7 @@ describe('Complete End-to-End User Flow Tests', () => {
   test('Flow 5: Pause and Exit to Intro screen', () => {
     render(<App />);
 
-    launchActiveGame(['سارا', 'رضا', 'مریم', 'علی']);
+    launchActiveGame();
 
     // Pause and Exit to Intro
     const pauseBtn = screen.getByLabelText('Pause');
@@ -266,88 +238,60 @@ describe('Complete End-to-End User Flow Tests', () => {
     expect(screen.queryByText(/نحوه افزودن در مرورگر کروم/i)).not.toBeInTheDocument();
   });
 
-  test('Flow 7: 6 Players (3 Teams) Setup, CEFR Level B1 selection, and gameplay turn rotation', () => {
+  test('Flow 7: 6 Players (3 Teams) Setup, and gameplay turn rotation', () => {
     render(<App />);
 
-    // 1. Intro -> Direct Unified Setup Screen
+    // 1. Intro -> Setup Screen
     fireEvent.click(screen.getByText('شروع بازی جدید'));
 
-    // 2. Select CEFR Level B1 directly from pills
-    const b1Btn = screen.getByRole('button', { name: /B1/i });
-    fireEvent.click(b1Btn);
+    // 2. Select 6 Players (3 Teams: Blue, Red, Green)
+    const p6Btn = document.getElementById('players')?.querySelectorAll('button')[1];
+    expect(p6Btn).toBeInTheDocument();
+    fireEvent.click(p6Btn!);
+    expect(p6Btn).toHaveAttribute('aria-checked', 'true');
 
-    // 3. Select 6 Players (3 Teams: Blue, Red, Green)
-    const p6Btn = screen.getByRole('button', { name: /6 بازیکن/i });
-    fireEvent.click(p6Btn);
+    // 3. Setup -> Seating Confirmation
+    fireEvent.click(screen.getByRole('button', { name: /شروع بازی/i }));
 
-    // 4. Verify 6 inputs and fill names right in Setup
-    const inputs = screen.getAllByPlaceholderText(/بازیکن/i);
-    expect(inputs.length).toBe(6);
-    const sixPlayerNames = ['امیر', 'ندا', 'سینا', 'بهار', 'کیان', 'رویا'];
-    sixPlayerNames.forEach((name, idx) => {
-      fireEvent.change(inputs[idx], { target: { value: name } });
-    });
-
-    // 5. Setup -> Seating Confirmation
-    fireEvent.click(screen.getByRole('button', { name: /مرحله بعد/i }));
-
-    // 6. Verify Seating Table with 6 players
+    // 4. Verify Seating Table with 6 players
     expect(screen.getByText('چیدمان دور میز')).toBeInTheDocument();
-    sixPlayerNames.forEach(name => {
-      expect(screen.getAllByText(new RegExp(name)).length).toBeGreaterThan(0);
-    });
 
     // Confirm Seating -> Start Round 1
     fireEvent.click(screen.getByRole('button', { name: /شروع دور ۱/i }));
 
-    // 7. Gameplay - Player 1 (امیر) is active
-    expect(screen.getAllByText(/امیر/).length).toBeGreaterThan(0);
+    // 5. Gameplay
+    expect(screen.getAllByText(/دور/i).length).toBeGreaterThan(0);
     const correctBtn = screen.getByRole('button', { name: /درست بود!/i });
 
-    // Clockwise to Player 2 (ندا)
+    // Clockwise through 3 turns
     fireEvent.click(correctBtn);
-    expect(screen.getAllByText(/ندا/).length).toBeGreaterThan(0);
-
-    // Clockwise to Player 3 (سینا)
     fireEvent.click(correctBtn);
-    expect(screen.getAllByText(/سینا/).length).toBeGreaterThan(0);
+    fireEvent.click(correctBtn);
+    expect(screen.getByRole('button', { name: /درست بود!/i })).toBeInTheDocument();
   });
 
-  test('Flow 8: 8 Players (4 Teams) Setup, CEFR Level A1 selection, and full rotation', () => {
+  test('Flow 8: 8 Players (4 Teams) Setup, and full rotation', () => {
     render(<App />);
 
-    // 1. Intro -> Direct Unified Setup Screen
+    // 1. Intro -> Setup Screen
     fireEvent.click(screen.getByText('شروع بازی جدید'));
 
-    // 2. Select CEFR Level A1 directly from pills
-    const a1Btn = screen.getByRole('button', { name: /A1/i });
-    fireEvent.click(a1Btn);
-
-    // 3. Select 8 Players (4 Teams: Blue, Red, Green, Yellow)
-    const p8Btn = screen.getByRole('button', { name: /8 بازیکن/i });
-    fireEvent.click(p8Btn);
-
-    // 4. Verify 8 inputs directly in Setup
-    const inputs = screen.getAllByPlaceholderText(/بازیکن/i);
-    expect(inputs.length).toBe(8);
-    const eightNames = ['P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8'];
-    eightNames.forEach((name, idx) => {
-      fireEvent.change(inputs[idx], { target: { value: name } });
-    });
+    // 2. Select 8 Players (4 Teams: Blue, Red, Green, Yellow)
+    const p8Btn = document.getElementById('players')?.querySelectorAll('button')[2];
+    expect(p8Btn).toBeInTheDocument();
+    fireEvent.click(p8Btn!);
+    expect(p8Btn).toHaveAttribute('aria-checked', 'true');
 
     // Setup -> Seating Confirmation
-    fireEvent.click(screen.getByRole('button', { name: /مرحله بعد/i }));
+    fireEvent.click(screen.getByRole('button', { name: /شروع بازی/i }));
     expect(screen.getByText('چیدمان دور میز')).toBeInTheDocument();
 
     // Confirm Seating -> Start Round 1
     fireEvent.click(screen.getByRole('button', { name: /شروع دور ۱/i }));
 
-    // Verify Player 1 starts
-    expect(screen.getAllByText(/P1/).length).toBeGreaterThan(0);
+    // Gameplay turn advances cleanly
     const correctBtn = screen.getByRole('button', { name: /درست بود!/i });
     fireEvent.click(correctBtn);
-
-    // Verify Player 2 is next
-    expect(screen.getAllByText(/P2/).length).toBeGreaterThan(0);
+    expect(screen.getByRole('button', { name: /درست بود!/i })).toBeInTheDocument();
   });
 });

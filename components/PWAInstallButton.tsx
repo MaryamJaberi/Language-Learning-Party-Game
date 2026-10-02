@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { usePWAInstall } from '../usePWAInstall';
 import { Download, Smartphone, Share2, PlusSquare, X, CheckCircle2 } from 'lucide-react';
 import { sound } from '../soundManager';
-import { isRtlLang } from '../ui';
+import { isRtlLang, tUI } from '../ui';
 
 interface Props {
   language?: string;
@@ -13,6 +13,7 @@ export const PWAInstallButton: React.FC<Props> = ({ language = 'fa', variant = '
   const { isInstallable, isInstalled, isIOS, install } = usePWAInstall();
   const [showIOSGuide, setShowIOSGuide] = useState(false);
   const isRTL = isRtlLang(language);
+  const t = tUI(language);
 
   // If already running inside installed standalone PWA, hide button
   if (isInstalled) {
@@ -44,10 +45,10 @@ export const PWAInstallButton: React.FC<Props> = ({ language = 'fa', variant = '
             </div>
             <div>
               <h4 className="text-xs font-black text-[#1a0833]">
-                {language === 'fa' ? 'نصب نسخه آفلاین اپلیکیشن' : 'Install Offline PWA App'}
+                {t.installApp || (isRTL ? 'نصب نسخه آفلاین اپلیکیشن' : 'Install Offline PWA App')}
               </h4>
               <p className="text-[10px] font-bold text-[#1a0833]/80">
-                {language === 'fa' ? 'دسترسی سریع و بدون نیاز به اینترنت' : 'Fast fullscreen & offline play'}
+                {t.fastOffline || (isRTL ? 'دسترسی سریع و بدون نیاز به اینترنت' : 'Fast fullscreen & offline play')}
               </p>
             </div>
           </div>
@@ -57,7 +58,7 @@ export const PWAInstallButton: React.FC<Props> = ({ language = 'fa', variant = '
             className="px-3 py-1.5 bg-[#FF007F] hover:bg-[#FF2E93] text-white border-2 border-[#241442] rounded-xl font-black text-xs shadow-[2px_2px_0px_0px_#241442] active:translate-y-0.5 flex items-center gap-1 shrink-0"
           >
             <Download size={13} />
-            <span>{language === 'fa' ? 'نصب' : 'Install'}</span>
+            <span>{t.addToHome || (isRTL ? 'نصب' : 'Install')}</span>
           </button>
         </div>
       ) : (
@@ -68,7 +69,7 @@ export const PWAInstallButton: React.FC<Props> = ({ language = 'fa', variant = '
           className="px-2.5 py-1.5 bg-[#39FF14] hover:bg-[#32e012] text-[#1a0833] border-2 border-[#241442] rounded-xl font-black text-xs shadow-[2px_2px_0px_0px_#241442] active:translate-y-0.5 flex items-center gap-1 transition-transform"
         >
           <Download size={14} className="text-[#1a0833]" />
-          <span className="text-[11px] font-black">{language === 'fa' ? 'نصب PWA' : 'Install App'}</span>
+          <span className="text-[11px] font-black">{t.installApp || (isRTL ? 'نصب PWA' : 'Install App')}</span>
         </button>
       )}
 
@@ -89,7 +90,7 @@ export const PWAInstallButton: React.FC<Props> = ({ language = 'fa', variant = '
                   <Smartphone size={18} />
                 </div>
                 <h3 className="text-sm font-black text-[#1a0833]">
-                  {language === 'fa' ? 'راهنمای نصب بازی روی گوشی' : 'Install PWA on Mobile'}
+                  {t.installGuideMobile || (isRTL ? 'راهنمای نصب بازی روی گوشی' : 'Install PWA on Mobile')}
                 </h3>
               </div>
               <button
@@ -106,7 +107,7 @@ export const PWAInstallButton: React.FC<Props> = ({ language = 'fa', variant = '
                   ۱
                 </div>
                 <p className="font-bold leading-relaxed">
-                  {language === 'fa' ? (
+                  {isRTL ? (
                     <>در مرورگر (سافاری یا کروم)، دکمه <strong>اشتراک‌گذاری (Share <Share2 size={12} className="inline mx-0.5" />)</strong> یا منوی سه نقطه را لمس کنید.</>
                   ) : (
                     <>Tap the <strong>Share</strong> button in Safari toolbar or browser menu.</>
@@ -119,7 +120,7 @@ export const PWAInstallButton: React.FC<Props> = ({ language = 'fa', variant = '
                   ۲
                 </div>
                 <p className="font-bold leading-relaxed">
-                  {language === 'fa' ? (
+                  {isRTL ? (
                     <>گزینه <strong>افزودن به صفحه اصلی (Add to Home Screen <PlusSquare size={12} className="inline mx-0.5" />)</strong> را انتخاب کنید.</>
                   ) : (
                     <>Select <strong>Add to Home Screen</strong> from the options.</>
@@ -132,7 +133,7 @@ export const PWAInstallButton: React.FC<Props> = ({ language = 'fa', variant = '
                   ۳
                 </div>
                 <p className="font-bold leading-relaxed">
-                  {language === 'fa' ? (
+                  {isRTL ? (
                     <>اکنون آیکون بازی روی صفحه گوشی شما قرار گرفته و بدون نیاز به اینترنت و تمام‌صفحه باز می‌شود!</>
                   ) : (
                     <>The game icon is now added to your home screen with offline and fullscreen support!</>
@@ -145,7 +146,7 @@ export const PWAInstallButton: React.FC<Props> = ({ language = 'fa', variant = '
               onClick={() => setShowIOSGuide(false)}
               className="mt-4 w-full py-2.5 rounded-xl bg-[#241442] text-white font-black text-xs hover:bg-[#1a0833] transition"
             >
-              {language === 'fa' ? 'متوجه شدم ✓' : 'Got it ✓'}
+              {t.gotIt || (isRTL ? 'متوجه شدم ✓' : 'Got it ✓')}
             </button>
           </div>
         </div>

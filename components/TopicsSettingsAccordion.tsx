@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { GameSettings } from '../types';
 import { CATEGORIES } from '../constants';
 import { TRANSLATIONS } from '../translations';
-import { isRtlLang } from '../ui';
+import { isRtlLang, tUI } from '../ui';
 import { NeonCategoryIcon } from './NeonIcons';
 import { sound } from '../soundManager';
 import { 
@@ -35,7 +35,7 @@ export const TopicsSettingsAccordion: React.FC<Props> = ({
   isOpenDefault = false
 }) => {
   const [isOpen, setIsOpen] = useState(isOpenDefault);
-  const t = TRANSLATIONS[settings.language] || TRANSLATIONS.fa;
+  const t = tUI(settings.language);
   const isRTL = isRtlLang(settings.language);
 
   const allCategoryKeys = Object.keys(CATEGORIES);
@@ -78,10 +78,10 @@ export const TopicsSettingsAccordion: React.FC<Props> = ({
   };
 
   const badgeText = isEssentialOnly
-    ? (isRTL ? 'موضوعات ضروری (پیش‌فرض)' : 'Essentials (Default)')
+    ? (t.essentialsTopics || 'Essentials')
     : isAllSelected
-    ? (isRTL ? 'همه موضوعات' : 'All Topics')
-    : (isRTL ? `${selectedCategories.length} موضوع فعال` : `${selectedCategories.length} Active`);
+    ? (t.selectAllTopics || 'All Topics')
+    : `${selectedCategories.length} ${t.activeCount || 'Active'}`;
 
   return (
     <div className="bg-white border-[2.5px] border-[#0f172a] shadow-[2.5px_2.5px_0px_0px_#0f172a] rounded-2xl overflow-hidden transition-all" dir={isRTL ? 'rtl' : 'ltr'}>
@@ -97,12 +97,12 @@ export const TopicsSettingsAccordion: React.FC<Props> = ({
           </div>
           <div className="text-right truncate">
             <span className="text-xs sm:text-sm font-black text-[#0f172a] block leading-tight">
-              {isRTL ? 'انتخاب موضوعات مسابقه (موقعیت‌ها)' : 'Game Topics & Situations'}
+              {t.categories_title || 'Game Topics & Situations'}
             </span>
             <span className="text-[10px] text-slate-500 font-bold block truncate">
               {isEssentialOnly 
-                ? (isRTL ? 'پیش‌فرض: ضروری (غذا، رستوران، سفر، خرید، روزمره...) - لمس برای باز شدن' : 'Default: Essentials - Tap to customize')
-                : (isRTL ? `${selectedCategories.length} موضوع انتخاب شده - لمس برای ویرایش` : `${selectedCategories.length} categories chosen`)}
+                ? `${t.essentialsTopics} • ${selectedCategories.length}`
+                : `${selectedCategories.length} / ${allCategoryKeys.length}`}
             </span>
           </div>
         </div>
@@ -137,7 +137,7 @@ export const TopicsSettingsAccordion: React.FC<Props> = ({
               }`}
             >
               <Sparkles size={13} className="text-[#f43f5e]" />
-              <span>{isRTL ? 'موضوعات ضروری (پیش‌فرض)' : 'Essentials (Default)'}</span>
+              <span>{t.essentialsTopics}</span>
             </button>
 
             <button
@@ -150,7 +150,7 @@ export const TopicsSettingsAccordion: React.FC<Props> = ({
               }`}
             >
               <CheckSquare size={13} className="text-[#10b981]" />
-              <span>{isRTL ? 'انتخاب همه موضوعات' : 'Select All Topics'}</span>
+              <span>{t.selectAllTopics}</span>
             </button>
           </div>
 

@@ -20,6 +20,10 @@ export const SoundHeaderButton: React.FC<Props> = ({
   // Keep state in sync with sound manager
   useEffect(() => {
     setIsMuted(sound.getMuted());
+    const unsub = sound.addMuteListener((m) => {
+      setIsMuted(m);
+    });
+    return unsub;
   }, []);
 
   const handleToggle = (e: React.MouseEvent) => {

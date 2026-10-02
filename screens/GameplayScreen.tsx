@@ -9,6 +9,7 @@ import Modal from '../components/Modal';
 import EndGameScreen from './EndGameScreen';
 import { TeamMascot } from '../components/Mascots';
 import { sound } from '../soundManager';
+import { FlagIcon } from '../components/FlagIcon';
 import { 
   Zap, 
   Volume2, 
@@ -480,7 +481,7 @@ const GameplayScreen: React.FC<Props> = ({
 
         {/* Center Target Language & CEFR Level Badge */}
         <div className="flex items-center gap-1.5 bg-[#F4EDE1] text-[#1E1B2E] px-2.5 py-1 rounded-[12px] border-2 border-[#1E1B2E] font-bold text-xs shadow-[2px_2px_0px_0px_#1E1B2E]">
-          <span className="text-sm">{targetLangInfo.flag}</span>
+          <FlagIcon language={activeLangCode} size={15} />
           <span className="truncate max-w-[70px] font-bold">{targetLangInfo.nativeName}</span>
           <span className="bg-[#1E9E93] text-white text-[9.5px] font-bold px-1.5 py-0.2 rounded-full border border-[#1E1B2E]">
             {currentCard?.cefrLevel || 'A1'}

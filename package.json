@@ -9,6 +9,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "lint": "tsc --noEmit",
+    "build:apk": "bash scripts/build-apk.sh",
+    "build:google-play": "bash scripts/build-google-play-bundle.sh",
     "deploy": "vite build"
   },
   "dependencies": {

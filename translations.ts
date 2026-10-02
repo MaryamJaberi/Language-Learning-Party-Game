@@ -992,8 +992,117 @@ export const TRANSLATIONS: Record<Language, any> = ({
 } as any) as Record<Language, any>;
 
 TRANSLATIONS['en-US'] = TRANSLATIONS.en;
-TRANSLATIONS['es'] = TRANSLATIONS.en;
-TRANSLATIONS['it'] = TRANSLATIONS.en;
+
+// Russian translations
+TRANSLATIONS['ru'] = {
+  title: "Тур",
+  subtitle: "Командная игра для изучения языков с друзьями",
+  newGame: "Новая игра",
+  history: "История",
+  guide: "Правила",
+  setup: "Настройки",
+  players: "Игроки",
+  rounds: "Раунды",
+  duration: "Длительность раунда",
+  seconds: "Секунд",
+  back: "Назад",
+  next: "Далее",
+  languageSelectTitle: "Выбор языков матча",
+  nativeLanguageLabel: "Родной язык / подсказки:",
+  targetLanguagesLabel: "Изучаемые языки (цели):",
+  targetLanguagesHint: "Выберите от 1 до 4 языков. Карточки будут случайным образом распределены!",
+  cefrLevelTitle: "Уровень CEFR",
+  cefrLevelHint: "Выберите сложность фраз",
+  categories_title: "Темы и ситуации",
+  selectAllTopics: "Выбрать все темы",
+  clearAllTopics: "Снять все",
+  difficulty_title: "Сложность слов",
+  difficulty_hint: "Выберите сложность",
+  difficultyLevels: {
+    easy: "Легкий (A1)",
+    medium: "Средний (A2-B1)",
+    hard: "Сложный (B2-C1)",
+    all: "Смешанный (Все)"
+  },
+  difficultyDescs: {
+    easy: "Базовые слова и приветствия (A1)",
+    medium: "Практические фразы и ситуации (A2-B1)",
+    hard: "Идиомы и пословицы (B2-C1)",
+    all: "Сбалансированная смесь всех уровней"
+  },
+  wordsFinished: "Карточки закончились",
+  categories: {
+    CAT_EVERYDAY: "Повседневная жизнь",
+    CAT_RESTAURANT: "Ресторан и кафе",
+    CAT_FOOD: "Еда и напитки",
+    CAT_TRAVEL: "Путешествия",
+    CAT_TRANSPORT: "Транспорт",
+    CAT_SHOPPING: "Покупки",
+    CAT_WORK: "Работа и карьера",
+    CAT_EDUCATION: "Учеба и образование",
+    CAT_FAMILY: "Семья и отношения",
+    CAT_SOCIAL: "Общение и праздники",
+    CAT_HEALTH: "Здоровье",
+    CAT_CITY: "Город и маршруты",
+    CAT_TECH: "Технологии",
+    CAT_SMALLTALK: "Разговоры и идиомы",
+    CAT_SPORTS: "Спорт",
+    CAT_NATURE: "Природа и погода",
+    CAT_OBJECTS: "Предметы",
+    CAT_ANIMALS: "Животные",
+    CAT_JOBS: "Профессии",
+    CAT_PLACES: "Места",
+    CAT_VEHICLES: "Транспортные средства",
+    CAT_FEELINGS: "Чувства",
+    CAT_ADJECTIVES: "Прилагательные",
+    CAT_ENTERTAINMENT: "Кино и медиа"
+  },
+  minCategory: "Выберите хотя бы одну тему",
+  categoryHint: "Выберите хотя бы одну тему. Карточки выбираются случайно.",
+  playerNames: "Имена игроков",
+  namesHint: "Партнеры по команде сидят друг напротив друга. Ход по часовой стрелке.",
+  start: "Начать игру",
+  round: "Раунд",
+  of: "из",
+  timeRound: "Время раунда",
+  nextRound: "Следующий раунд",
+  roundEnded: "Раунд {n} завершен",
+  passPhone: "Передайте телефон следующему",
+  paused: "Пауза",
+  resume: "Продолжить",
+  exit: "Выход",
+  swap: "Сменить карту",
+  swapReady: "Смена через {n}с",
+  eliminated: "Команда выбыла!",
+  teamEliminated: "Время команды вышло.",
+  onlyOneTeam: "Осталась только одна команда!",
+  winner: "Победитель!",
+  winners: "Победители!",
+  tie: "Ничья!",
+  returnMenu: "В главное меню",
+  rules: "Общие правила",
+  howToPlay: "Как играть",
+  noHistory: "Игр пока нет.",
+  quitGame: "Выйти из игры",
+  roundOver: "Завершен",
+  teamNames: { BLUE: "Синий", RED: "Красный", GREEN: "Зеленый", YELLOW: "Желтый" },
+  powerCardsTitle: "Карты силы и комбо",
+  coachModeTitle: "Режим тихого тренера",
+  goldenCardBadge: "Золотая карта! (2x очки)",
+  speedBonusBadge: "Бонус за скорость! (+1)",
+  streakBadge: "Огненная серия! 🔥",
+  almostCorrectBtn: "Почти правильно (Голосование)",
+  learningSummaryTitle: "Итоги матча",
+  totalScore: "Общий счет",
+  accuracyLabel: "Точность",
+  cardsReviewed: "Пройденные карты",
+  missedCardsTitle: "Карточки для повторения",
+  playAgain: "Сыграть снова с теми же настройками"
+};
+
+// Import extended translations (es, it, pt, zh, ja, ko, hi)
+import { EXTENDED_TRANSLATIONS } from './translations.more';
+Object.assign(TRANSLATIONS, EXTENDED_TRANSLATIONS);
 
 // Fallback proxy to ensure any supported language code never returns undefined
 export const SAFE_TRANSLATIONS: Record<Language, any> = new Proxy(TRANSLATIONS, {

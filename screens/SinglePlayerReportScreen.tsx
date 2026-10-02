@@ -38,7 +38,7 @@ const SinglePlayerReportScreen: React.FC<Props> = ({
   const isRTL = isRtlLang(language);
 
   const [playerName, setPlayerName] = useState(() => {
-    return localStorage.getItem('dor_single_player_name') || (language === 'fa' ? 'قهرمان زبان' : 'Language Pro');
+    return localStorage.getItem('dor_single_player_name') || t.languagePro || (isRTL ? 'قهرمان زبان' : 'Language Pro');
   });
   const [isScoreSubmitted, setIsScoreSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);

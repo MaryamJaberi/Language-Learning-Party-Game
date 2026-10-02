@@ -158,9 +158,9 @@ const CategoryScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onO
         <div className="mt-3 p-2.5 bg-[#FFFBF4] border-2 border-[#1E1B2E] rounded-[18px] flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_#1E1B2E]">
           <TeamMascot color="GREEN" size={24} />
           <span className="text-[11px] text-[#1E1B2E] font-bold">
-            {settings.language === 'fa' 
+            {t.categoriesHintTip || (isRTL 
               ? '⚡ موضوعات انتخابی با کلمات جذاب بین زبان‌ها توزیع می‌شوند' 
-              : '⚡ Selected categories are balanced dynamically across languages'}
+              : '⚡ Selected categories are balanced dynamically across languages')}
           </span>
         </div>
       </div>

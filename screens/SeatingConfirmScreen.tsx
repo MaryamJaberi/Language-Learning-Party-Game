@@ -40,7 +40,7 @@ const SeatingConfirmScreen: React.FC<Props> = ({
             <Users size={16} color="#1E1B2E" />
           </div>
           <h2 className="text-base sm:text-lg font-bold font-display leading-tight text-[#1E1B2E]">
-            {settings.language === 'fa' ? 'چیدمان دور میز' : 'Table Seating Guide'}
+            {t.tableSeatingTitle}
           </h2>
         </div>
         <button 
@@ -62,9 +62,7 @@ const SeatingConfirmScreen: React.FC<Props> = ({
         <div className="text-[11px] font-bold text-[#1E1B2E] bg-[#FFFBF4] p-2.5 border-2 border-[#1E1B2E] rounded-[16px] text-center shadow-[2px_2px_0px_0px_#1E1B2E] flex items-center justify-center gap-1.5 shrink-0">
           <Sparkles size={14} color="#1E9E93" />
           <span>
-            {settings.language === 'fa' 
-              ? '🎯 هم‌تیمی‌ها روبروی هم می‌نشینند! چرخش نوبت ساعت‌گرد است.' 
-              : '🎯 Teammates sit directly opposite each other! Rotation is clockwise.'}
+            {t.tableSeatingTip}
           </span>
         </div>
 
@@ -209,7 +207,7 @@ const SeatingConfirmScreen: React.FC<Props> = ({
           }} 
           className="pixel-btn pixel-btn-teal flex-[2] py-3 text-sm sm:text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2 rounded-[18px]"
         >
-          <span>{settings.language === 'fa' ? 'شروع دور ۱' : 'Start Round 1'}</span>
+          <span>{t.seatedStart || `${t.start} ${t.round} 1`}</span>
           <Zap size={18} />
         </button>
       </div>

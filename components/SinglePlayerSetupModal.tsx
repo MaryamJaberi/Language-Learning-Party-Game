@@ -63,18 +63,18 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
       onClick={onClose}
     >
       <div 
-        className="w-full max-w-sm max-h-[92dvh] flex flex-col bg-[#FFFBF4] border-2 border-[#1E1B2E] rounded-[24px] shadow-[4px_4px_0px_0px_#1E1B2E] overflow-hidden"
+        className="w-full max-w-sm max-h-[92dvh] flex flex-col bg-[var(--panel)] border border-[var(--line)] rounded-[24px] shadow-2xl overflow-hidden text-[var(--ink)]"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-[#F4EDE1] p-3.5 text-[#1E1B2E] flex items-center justify-between border-b-2 border-[#1E1B2E]">
+        <div className="bg-[var(--bg)] p-3.5 text-[var(--ink)] flex items-center justify-between border-b border-[var(--line)]">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-[12px] bg-[#E0603F] text-white flex items-center justify-center border-2 border-[#1E1B2E] shadow-[1.5px_1.5px_0px_0px_#1E1B2E]">
+            <div className="w-8 h-8 rounded-[12px] bg-[var(--lapis)] text-white flex items-center justify-center shadow-xs">
               <Sparkles size={16} />
             </div>
             <div>
               <h2 className="text-sm font-extrabold tracking-tight font-display">{t.singlePlayer}</h2>
-              <p className="text-[10px] text-[#1E1B2E]/70 font-bold">{isRTL ? 'فلش‌کارت انفرادی و چالش گفتار' : 'Flashcard & Voice Challenge'}</p>
+              <p className="text-[10px] text-[var(--mute)] font-bold">{isRTL ? 'فلش‌کارت انفرادی و چالش گفتار' : 'Flashcard & Voice Challenge'}</p>
             </div>
           </div>
           <button 
@@ -82,7 +82,7 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
               sound.playClick();
               onClose();
             }}
-            className="w-7 h-7 rounded-[8px] bg-[#FFFBF4] hover:bg-[#eae0d0] text-[#1E1B2E] border border-[#1E1B2E] flex items-center justify-center transition-transform active:scale-95"
+            className="w-8 h-8 rounded-full bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] flex items-center justify-center transition-all"
             aria-label="Close"
           >
             <X size={16} />
@@ -119,7 +119,7 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                     {currentTargetLangInfo.nativeName}
                   </div>
                   <div className="text-[9.5px] text-[#1E1B2E]/70 font-medium">
-                    {isRTL ? currentTargetLangInfo.persianName : currentTargetLangInfo.name}
+                    {isRTL ? 'زبان یادگیری و تمرین' : 'Target Practice Language'}
                   </div>
                 </div>
               </div>
@@ -181,7 +181,7 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                     {currentNativeLangInfo.nativeName}
                   </div>
                   <div className="text-[9.5px] text-[#1E1B2E]/70 font-medium">
-                    {isRTL ? currentNativeLangInfo.persianName : currentNativeLangInfo.name} ({isRTL ? 'ترجمه و راهنمای کارت' : 'Card guide language'})
+                    {isRTL ? 'زبان مادری و راهنمای کارت' : 'Native Card Guide'}
                   </div>
                 </div>
               </div>

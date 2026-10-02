@@ -22,6 +22,7 @@ import {
   Share2
 } from 'lucide-react';
 import ShareScorecardModal from '../components/ShareScorecardModal';
+import { FlagIcon } from '../components/FlagIcon';
 
 interface Props {
   winners: Team[];
@@ -271,9 +272,9 @@ const EndGameScreen: React.FC<Props> = ({
                   return (
                     <div key={langCode} className="bg-[#F4EDE1] p-2.5 rounded-[14px] border-2 border-[#1E1B2E] flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="text-lg">{langInfo?.flag || '🌐'}</span>
+                        <FlagIcon language={langCode} size={22} />
                         <div>
-                          <span className="font-bold text-xs text-[#1E1B2E]">{langInfo?.name || langCode}</span>
+                          <span className="font-bold text-xs text-[#1E1B2E]">{langInfo?.nativeName || langInfo?.name || langCode}</span>
                           <span className="text-[10px] text-[#1E1B2E]/70 block font-medium">
                             {isRTL ? `${stat.correct} از ${stat.total} کارت درست` : `${stat.correct} of ${stat.total} correct`}
                           </span>
@@ -348,7 +349,7 @@ const EndGameScreen: React.FC<Props> = ({
                         )}
                         <div>
                           <div className="flex items-center gap-1.5">
-                            <span className="text-xs">{langInfo?.flag}</span>
+                            <FlagIcon language={record.card.targetLanguage} size={15} />
                             <span className="font-bold text-xs text-[#1E1B2E]">{record.card.targetText}</span>
                             <button
                               type="button"

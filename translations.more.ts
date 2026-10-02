@@ -1,6 +1,6 @@
-import { TRANSLATIONS } from './translations';
+export const EXTENDED_TRANSLATIONS: Record<string, any> = {};
 
-TRANSLATIONS['es'] = {
+EXTENDED_TRANSLATIONS['es'] = {
   title: "Turno",
   subtitle: "Juego de fiesta para aprender idiomas con amigos",
   newGame: "Nueva partida",
@@ -111,7 +111,7 @@ TRANSLATIONS['es'] = {
   playAgain: "Jugar otra vez con lo mismo"
 };
 
-TRANSLATIONS['it'] = {
+EXTENDED_TRANSLATIONS['it'] = {
   title: "Turno",
   subtitle: "Party game per imparare le lingue con gli amici",
   newGame: "Nuova partita",
@@ -222,7 +222,7 @@ TRANSLATIONS['it'] = {
   playAgain: "Rigioca con le stesse impostazioni"
 };
 
-TRANSLATIONS['pt'] = {
+EXTENDED_TRANSLATIONS['pt'] = {
   title: "Vez",
   subtitle: "Jogo de festa para aprender línguas com amigos",
   newGame: "Novo jogo",
@@ -333,7 +333,7 @@ TRANSLATIONS['pt'] = {
   playAgain: "Jogar outra vez com as mesmas definições"
 };
 
-TRANSLATIONS['zh'] = {
+EXTENDED_TRANSLATIONS['zh'] = {
   title: "回合",
   subtitle: "和朋友一起玩的语言派对游戏",
   newGame: "新游戏",
@@ -444,7 +444,7 @@ TRANSLATIONS['zh'] = {
   playAgain: "用同样设置再玩"
 };
 
-TRANSLATIONS['ja'] = {
+EXTENDED_TRANSLATIONS['ja'] = {
   title: "ターン",
   subtitle: "友だちと学ぶ言語パーティーゲーム",
   newGame: "新しいゲーム",
@@ -555,7 +555,7 @@ TRANSLATIONS['ja'] = {
   playAgain: "同じ設定でもう一度"
 };
 
-TRANSLATIONS['ko'] = {
+EXTENDED_TRANSLATIONS['ko'] = {
   title: "턴",
   subtitle: "친구와 함께하는 언어 파티 게임",
   newGame: "새 게임",
@@ -666,7 +666,7 @@ TRANSLATIONS['ko'] = {
   playAgain: "같은 설정으로 다시"
 };
 
-TRANSLATIONS['hi'] = {
+EXTENDED_TRANSLATIONS['hi'] = {
   title: "बारी",
   subtitle: "दोस्तों के साथ भाषा सीखने वाला पार्टी गेम",
   newGame: "नया खेल",

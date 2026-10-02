@@ -245,18 +245,10 @@ export const LanguagePickerModal: React.FC<LanguagePickerModalProps> = ({
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
-                          <span className={`font-bold text-xs truncate ${isSelected ? 'text-white' : 'text-[#1E1B2E]'}`}>
+                          <span className={`font-bold text-sm truncate ${isSelected ? 'text-white' : 'text-[#1E1B2E]'}`}>
                             {lang.nativeName}
                           </span>
-                          {lang.popular && (
-                            <span className="text-[9px] px-1.5 rounded-full bg-[#F2B63D] text-[#1E1B2E] font-bold leading-tight">
-                              ★
-                            </span>
-                          )}
                         </div>
-                        <p className={`text-[10px] truncate ${isSelected ? 'text-white/80 font-medium' : 'text-[#1E1B2E]/60 font-medium'}`}>
-                          {lang.name} • {lang.persianName}
-                        </p>
                       </div>
                     </div>
 

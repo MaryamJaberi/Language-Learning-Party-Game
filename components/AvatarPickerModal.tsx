@@ -1,7 +1,7 @@
 import React from 'react';
 import { PixelAvatar, AVATARS_LIST, AvatarId } from './PixelAvatars';
 import { sound } from '../soundManager';
-import { isRtlLang } from '../ui';
+import { isRtlLang, tUI } from '../ui';
 import { X, Sparkles, Dices, Check } from 'lucide-react';
 
 interface Props {
@@ -24,6 +24,7 @@ export const AvatarPickerModal: React.FC<Props> = ({
   if (!isOpen) return null;
 
   const isRTL = isRtlLang(language);
+  const t = tUI(language);
 
   const handleSelect = (id: AvatarId) => {
     sound.playToggle();
@@ -50,10 +51,10 @@ export const AvatarPickerModal: React.FC<Props> = ({
             </div>
             <div>
               <h3 className="text-sm font-black text-white leading-tight">
-                {language === 'fa' ? 'انتخاب آواتار بامزه' : 'Choose Cute Avatar'}
+                {t.chooseCuteAvatar || (isRTL ? 'انتخاب آواتار بامزه' : 'Choose Cute Avatar')}
               </h3>
               <span className="text-[10.5px] text-[#FFE600] font-bold block">
-                {language === 'fa' ? `برای: ${playerName}` : `For: ${playerName}`}
+                {isRTL ? `برای: ${playerName}` : `For: ${playerName}`}
               </span>
             </div>
           </div>
@@ -77,7 +78,7 @@ export const AvatarPickerModal: React.FC<Props> = ({
             className="w-full py-2 px-3 bg-[#10b981] hover:bg-emerald-600 active:translate-y-0.5 text-[#0f172a] border-2 border-[#0f172a] rounded-xl font-black text-xs shadow-[2px_2px_0px_0px_#0f172a] flex items-center justify-center gap-1.5 transition-all"
           >
             <Dices size={16} />
-            <span>{language === 'fa' ? 'انتخاب تصادفی آواتار 🎲' : 'Random Avatar 🎲'}</span>
+            <span>{t.randomAvatarBtn || (isRTL ? 'انتخاب تصادفی آواتار 🎲' : 'Random Avatar 🎲')}</span>
           </button>
         </div>
 
