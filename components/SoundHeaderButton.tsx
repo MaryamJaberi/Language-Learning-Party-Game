@@ -54,18 +54,18 @@ export const SoundHeaderButton: React.FC<Props> = ({
       onClick={handleToggle}
       title={titleText}
       aria-label={label}
-      className={`flex items-center justify-center rounded-[14px] border-2 border-[#1E1B2E] font-bold text-xs shadow-[3px_3px_0px_0px_#1E1B2E] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#1E1B2E] transition-all shrink-0 select-none ${
-        variant === 'icon-only' ? 'w-10 h-10 p-0' : 'gap-1 px-3 py-1.5'
+      className={`flex items-center justify-center rounded-[12px] border font-bold text-xs shadow-[var(--shadow-sm)] active:translate-y-0.5 transition-all shrink-0 select-none ${
+        variant === 'icon-only' ? 'w-9 h-9 p-0' : 'gap-1 px-3 py-1.5'
       } ${
         isMuted
-          ? 'bg-[#E0603F] text-white'
-          : 'bg-[#FFFBF4] hover:bg-[#F4EDE1] text-[#1E1B2E]'
+          ? 'bg-[var(--vermilion)] text-white border-[var(--vermilion)]'
+          : 'bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border-[var(--line)]'
       } ${className}`}
     >
       {isMuted ? (
         <VolumeX size={16} className="text-white shrink-0 animate-pulse" />
       ) : (
-        <Volume2 size={16} className="text-[#120524] shrink-0" />
+        <Volume2 size={16} className="text-[var(--ink)] shrink-0" />
       )}
       {variant !== 'icon-only' && (
         <span className="text-[11px] leading-none">

@@ -29,11 +29,11 @@ const TimerDisplay: React.FC<Props> = ({
   const remainingSeconds = seconds % 60;
   const centiseconds = Math.floor((effectiveMs % 1000) / 10);
 
-  // Tabletop palette colors based on time status
+  // Modern palette colors based on time status
   const isPanic = seconds <= 10;
   const digitColor = isPanic 
-    ? 'text-[#E0603F]' 
-    : 'text-[#1E1B2E]';
+    ? 'text-red-600 dark:text-red-400' 
+    : 'text-[var(--ink)]';
 
   const sizeClasses = {
     sm: 'text-base',
@@ -46,15 +46,15 @@ const TimerDisplay: React.FC<Props> = ({
       {/* Clock Capsule */}
       <div className={`flex flex-col items-center transition-all ${active ? 'scale-105' : 'opacity-100'}`}>
         {label && (
-          <span className="text-[10px] uppercase tracking-wider text-white bg-[#E0603F] border-2 border-[#1E1B2E] px-2 py-0.5 rounded-[10px] font-bold mb-1 shadow-[2px_2px_0px_0px_#1E1B2E]">
+          <span className="text-[10px] uppercase tracking-wider text-white bg-[var(--lapis)] px-2 py-0.5 rounded-lg font-bold mb-1 shadow-xs">
             {label}
           </span>
         )}
 
-        <div className={`px-4 py-1.5 bg-[#FFFBF4] border-2 border-[#1E1B2E] rounded-[18px] shadow-[3px_3px_0px_0px_#1E1B2E] flex items-center justify-center gap-2 ${
-          isPanic ? 'ring-2 ring-[#E0603F] animate-pulse' : ''
+        <div className={`px-4 py-1.5 bg-[var(--panel)] border border-[var(--line)] rounded-2xl shadow-xs flex items-center justify-center gap-2 ${
+          isPanic ? 'ring-2 ring-red-500 animate-pulse' : ''
         }`}>
-          <NeonClock size={18} color={isPanic ? '#E0603F' : '#1E9E93'} />
+          <NeonClock size={18} color={isPanic ? '#EF4444' : '#12B5A4'} />
 
           <div className={`font-timer ${sizeClasses[size]} ${digitColor} tabular-nums flex items-baseline font-extrabold`} dir="ltr">
             <span>{minutes.toString().padStart(2, '0')}</span>
@@ -83,22 +83,22 @@ const TimerDisplay: React.FC<Props> = ({
             return (
               <div 
                 key={t.id}
-                className={`px-2 py-1 rounded-[12px] border-2 border-[#1E1B2E] flex items-center justify-between text-[11px] font-bold transition-all ${
+                className={`px-2.5 py-1.5 rounded-xl border border-[var(--line)] flex items-center justify-between text-[11px] font-bold transition-all ${
                   t.isEliminated
-                    ? 'bg-[#E6DFD5] opacity-50 line-through text-[#1E1B2E]/60'
+                    ? 'bg-[var(--bg)] opacity-40 line-through text-[var(--mute)]'
                     : isActiveTeam 
-                      ? 'bg-[#FFFBF4] shadow-[2px_2px_0px_0px_#1E1B2E] -translate-y-0.5 ring-2 ring-[#E0603F]' 
-                      : 'bg-[#FFFBF4] text-[#1E1B2E]'
+                      ? 'bg-[var(--panel)] shadow-sm ring-2 ring-[var(--turq)] -translate-y-0.5' 
+                      : 'bg-[var(--panel)] text-[var(--ink)] shadow-xs'
                 }`}
-                style={{ borderInlineStartWidth: '5px', borderInlineStartColor: config.hex }}
+                style={{ borderInlineStartWidth: '4px', borderInlineStartColor: config.hex }}
               >
-                <div className="truncate flex items-center gap-1">
+                <div className="truncate flex items-center gap-1.5">
                   <span>{t.color}</span>
-                  <span className="px-1.5 py-0.2 bg-[#F2B63D] text-[#1E1B2E] rounded-[6px] text-[10px] font-bold border border-[#1E1B2E]">
+                  <span className="px-1.5 py-0.5 bg-[var(--saffron)] text-[#15204A] rounded-md text-[10px] font-bold">
                     {t.score || 0}★
                   </span>
                 </div>
-                <span className="font-timer text-[11px] font-bold" dir="ltr">
+                <span className="font-timer text-[11px] font-bold text-[var(--ink)]" dir="ltr">
                   {tMin}:{tRemSec.toString().padStart(2, '0')}
                 </span>
               </div>

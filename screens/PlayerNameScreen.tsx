@@ -142,20 +142,20 @@ const PlayerNameScreen: React.FC<Props> = ({ settings, onSave, onStart, onBack, 
     : '';
 
   return (
-    <div className="h-full min-h-0 flex-1 flex flex-col p-3 sm:p-3.5 select-none overflow-hidden relative font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full min-h-0 flex-1 flex flex-col p-3 sm:p-4 select-none overflow-hidden relative font-ui text-[var(--ink)] bg-[var(--bg)]" dir={isRTL ? 'rtl' : 'ltr'}>
       
       {/* Fixed Stable Header */}
       <header className="shrink-0 mb-2 font-ui">
-        <div className="flex items-center justify-between bg-[#FFFBF4] text-[#1E1B2E] p-2.5 sm:p-3 border-2 border-[#1E1B2E] rounded-[20px] shadow-[3px_3px_0px_0px_#1E1B2E]">
+        <div className="flex items-center justify-between bg-[var(--panel)] text-[var(--ink)] p-2.5 sm:p-3 border border-[var(--line)] rounded-[20px] shadow-xs">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-[12px] bg-[#F4EDE1] border-2 border-[#1E1B2E] flex items-center justify-center text-[#1E1B2E] shadow-[1px_1px_0px_0px_#1E1B2E]">
-              <Users size={16} color="#1E1B2E" />
+            <div className="w-8 h-8 rounded-xl bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center">
+              <Users size={16} />
             </div>
             <div>
-              <h1 className="text-sm sm:text-base font-bold font-display uppercase tracking-wider leading-tight">
+              <h1 className="text-sm sm:text-base font-bold font-display uppercase tracking-wider leading-tight text-[var(--ink)]">
                 {t.playerNames}
               </h1>
-              <span className="text-[10px] text-[#E0603F] font-bold block">
+              <span className="text-[10px] text-[var(--lapis)] font-bold block">
                 {isRTL ? 'مرحله ۴ از ۴: چیدمان و نام اعضا' : 'Step 4 of 4: Team Lineup & Names'}
               </span>
             </div>
@@ -168,9 +168,9 @@ const PlayerNameScreen: React.FC<Props> = ({ settings, onSave, onStart, onBack, 
                 sound.playClick();
                 onOpenHelp?.();
               }} 
-              className="px-2.5 py-1.5 bg-[#F2B63D] hover:bg-[#e0a634] text-[#1E1B2E] border-2 border-[#1E1B2E] font-bold text-xs rounded-[10px] shadow-[2px_2px_0px_0px_#1E1B2E] transition-transform active:translate-y-0.5 flex items-center gap-1.5"
+              className="px-2.5 py-1.5 bg-[var(--lapis-soft)] hover:bg-[var(--lapis-soft)]/80 text-[var(--lapis)] font-bold text-xs rounded-xl shadow-xs transition-transform active:scale-95 flex items-center gap-1.5 cursor-pointer"
             >
-              <HelpCircle size={14} color="#1E1B2E" />
+              <HelpCircle size={14} />
               <span>{t.guide}</span>
             </button>
           </div>
@@ -178,10 +178,10 @@ const PlayerNameScreen: React.FC<Props> = ({ settings, onSave, onStart, onBack, 
       </header>
 
       {/* Quick Action & Cartoon Characters Banner */}
-      <div className="shrink-0 mb-2 flex items-center justify-between gap-2 bg-[#FFFBF4] p-2 border-2 border-[#1E1B2E] rounded-[14px] shadow-[2px_2px_0px_0px_#1E1B2E] font-ui">
+      <div className="shrink-0 mb-2 flex items-center justify-between gap-2 bg-[var(--panel)] p-2.5 border border-[var(--line)] rounded-xl shadow-xs font-ui">
         <div className="flex items-center gap-1.5 min-w-0">
-          <Sparkles size={15} className="text-[#E0603F] shrink-0" />
-          <span className="text-[11px] font-bold text-[#1E1B2E] truncate">
+          <Sparkles size={15} className="text-[var(--saffron)] shrink-0" />
+          <span className="text-[11px] font-bold text-[var(--mute)] truncate">
             {isRTL 
               ? 'روی آواتار کلیک کنید تا شخصیت دلخواه خود را انتخاب کنید!' 
               : 'Tap any avatar to choose your favorite retro character!'}
@@ -190,10 +190,10 @@ const PlayerNameScreen: React.FC<Props> = ({ settings, onSave, onStart, onBack, 
         <button
           type="button"
           onClick={randomizeAllNames}
-          className="shrink-0 px-2.5 py-1 bg-[#F2B63D] hover:bg-[#e0a634] active:scale-95 text-[#1E1B2E] border-2 border-[#1E1B2E] rounded-[10px] font-bold text-[10.5px] shadow-[1.5px_1.5px_0px_0px_#1E1B2E] flex items-center gap-1 transition-all"
+          className="shrink-0 px-2.5 py-1.5 bg-[var(--turq)] hover:brightness-105 active:scale-95 text-white rounded-xl font-bold text-[11px] shadow-xs flex items-center gap-1 transition-all cursor-pointer"
         >
           <Dices size={14} />
-          <span>{isRTL ? 'تغییر تصادفی 🎲' : 'Randomize 🎲'}</span>
+          <span>{isRTL ? 'تصادفی 🎲' : 'Randomize 🎲'}</span>
         </button>
       </div>
 
@@ -206,7 +206,7 @@ const PlayerNameScreen: React.FC<Props> = ({ settings, onSave, onStart, onBack, 
           const currentAvatarId = (settings.playerAvatars && (settings.playerAvatars[i] as AvatarId)) || 'pirate';
           
           return (
-            <div key={i} className="flex items-center gap-2.5 bg-[#FFFBF4] p-2.5 border-2 border-[#1E1B2E] rounded-[16px] shadow-[2px_2px_0px_0px_#1E1B2E]">
+            <div key={i} className="flex items-center gap-2.5 bg-[var(--panel)] p-2.5 border border-[var(--line)] rounded-2xl shadow-xs">
               {/* Cute Pixel Avatar & Badge */}
               <button
                 type="button"
@@ -215,15 +215,15 @@ const PlayerNameScreen: React.FC<Props> = ({ settings, onSave, onStart, onBack, 
                   setAvatarPickerIndex(i);
                 }}
                 title={isRTL ? 'تغییر آواتار بازیکن' : 'Change Avatar'}
-                className="flex flex-col items-center justify-center shrink-0 group relative p-1 rounded-[12px] bg-[#F4EDE1] hover:bg-[#eae0d2] border-2 border-[#1E1B2E] transition-all active:scale-95"
+                className="flex flex-col items-center justify-center shrink-0 group relative p-1 rounded-xl bg-[var(--bg)] hover:bg-[var(--line)]/50 border border-[var(--line)] transition-all active:scale-95 cursor-pointer"
               >
                 <div className="w-10 h-10 flex items-center justify-center relative">
                   <PixelAvatar id={currentAvatarId} size={38} />
-                  <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#F2B63D] border border-[#1E1B2E] flex items-center justify-center text-[8px] text-[#1E1B2E] font-bold">
+                  <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[var(--saffron)] flex items-center justify-center text-[8px] text-[var(--ink)] font-bold shadow-xs">
                     ✏️
                   </div>
                 </div>
-                <div className={`mt-0.5 px-1.5 py-0.5 rounded-[6px] text-[8.5px] font-bold border border-[#1E1B2E] ${colorConfig.bg} ${colorConfig.text} uppercase`}>
+                <div className={`mt-0.5 px-1.5 py-0.5 rounded-md text-[8.5px] font-bold border border-black/10 ${colorConfig.bg} ${colorConfig.text} uppercase`}>
                   #{i + 1} {labelColorText(color)}
                 </div>
               </button>
@@ -236,7 +236,7 @@ const PlayerNameScreen: React.FC<Props> = ({ settings, onSave, onStart, onBack, 
                   placeholder={placeholderName}
                   value={settings.playerNames[i] || ''}
                   onChange={(e) => updateName(i, e.target.value)}
-                  className="w-full p-2 bg-[#F4EDE1] border-2 border-[#1E1B2E] rounded-[12px] focus:bg-[#FFFBF4] focus:outline-none transition-all font-bold text-xs text-[#1E1B2E]"
+                  className="w-full p-2 bg-[var(--bg)] border border-[var(--line)] rounded-xl focus:border-[var(--lapis)] focus:outline-hidden transition-all font-bold text-xs text-[var(--ink)]"
                 />
               </div>
 
@@ -251,7 +251,7 @@ const PlayerNameScreen: React.FC<Props> = ({ settings, onSave, onStart, onBack, 
                   updateAvatar(i, getRandomAvatar());
                 }}
                 title={isRTL ? 'تغییر این نام و آواتار' : 'Change this name & avatar'}
-                className="p-2 bg-[#F4EDE1] hover:bg-[#eae0d2] active:scale-95 text-[#1E1B2E] border-2 border-[#1E1B2E] rounded-[10px] shrink-0 flex items-center justify-center"
+                className="p-2 bg-[var(--bg)] hover:bg-[var(--line)]/60 active:scale-95 text-[var(--ink)] border border-[var(--line)] rounded-xl shrink-0 flex items-center justify-center transition-all cursor-pointer"
               >
                 <RefreshCw size={14} />
               </button>
@@ -261,7 +261,7 @@ const PlayerNameScreen: React.FC<Props> = ({ settings, onSave, onStart, onBack, 
       </div>
 
       {/* Fixed Stable Navigation Footer */}
-      <footer className="shrink-0 pt-2 border-t-2 border-[#1E1B2E]/15 font-ui">
+      <footer className="shrink-0 pt-2 border-t border-[var(--line)] font-ui">
         <div className="flex gap-2.5">
           <button 
             type="button"
@@ -269,7 +269,7 @@ const PlayerNameScreen: React.FC<Props> = ({ settings, onSave, onStart, onBack, 
               sound.playClick();
               onBack();
             }} 
-            className="pixel-btn pixel-btn-orange flex-1 py-2.5 text-xs font-bold uppercase flex items-center justify-center gap-1.5 rounded-[16px]"
+            className="flex-1 py-3 text-xs sm:text-sm font-bold uppercase flex items-center justify-center gap-1.5 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs transition-all active:scale-98 cursor-pointer"
           >
             {isRTL ? <ArrowRight size={15} /> : <ArrowLeft size={15} />}
             <span>{t.back}</span>
@@ -278,10 +278,10 @@ const PlayerNameScreen: React.FC<Props> = ({ settings, onSave, onStart, onBack, 
           <button 
             type="button"
             onClick={handleStartGame} 
-            className="pixel-btn pixel-btn-teal flex-[2] py-2.5 text-sm font-bold uppercase flex items-center justify-center gap-2 rounded-[16px]"
+            className="flex-[2] py-3 text-sm sm:text-base font-extrabold uppercase flex items-center justify-center gap-2 rounded-2xl bg-[var(--lapis)] hover:brightness-105 text-[var(--on-lapis)] shadow-md transition-all active:scale-98 cursor-pointer"
           >
             <span>{t.start}</span>
-            <Zap size={16} color="#ffffff" fill="#ffffff" />
+            <Zap size={16} fill="currentColor" />
           </button>
         </div>
       </footer>

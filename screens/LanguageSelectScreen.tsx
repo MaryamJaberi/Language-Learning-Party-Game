@@ -30,20 +30,20 @@ const LanguageSelectScreen: React.FC<Props> = ({
   const isRTL = isRtlLang(settings.language);
 
   return (
-    <div className="h-full min-h-0 flex-1 flex flex-col p-3 sm:p-3.5 select-none overflow-hidden relative font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full min-h-0 flex-1 flex flex-col p-3 sm:p-4 select-none overflow-hidden relative font-ui bg-[var(--bg)] text-[var(--ink)]" dir={isRTL ? 'rtl' : 'ltr'}>
       
       {/* Fixed Header */}
       <header className="shrink-0 mb-2 font-ui">
-        <div className="flex items-center justify-between bg-[#FFFBF4] text-[#1E1B2E] p-2.5 sm:p-3 border-2 border-[#1E1B2E] rounded-[20px] shadow-[3px_3px_0px_0px_#1E1B2E]">
+        <div className="flex items-center justify-between bg-[var(--panel)] text-[var(--ink)] p-2.5 sm:p-3 border border-[var(--line)] rounded-[18px] shadow-[var(--shadow-sm)]">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-[12px] bg-[#F4EDE1] border-2 border-[#1E1B2E] flex items-center justify-center text-[#1E1B2E] shadow-[1px_1px_0px_0px_#1E1B2E]">
-              <Globe size={16} color="#1E1B2E" />
+            <div className="w-8 h-8 rounded-[12px] bg-[var(--bg)] border border-[var(--line)] flex items-center justify-center text-[var(--ink)] shadow-[var(--shadow-sm)]">
+              <Globe size={16} />
             </div>
             <div>
               <h1 className="text-sm sm:text-base font-bold font-display uppercase tracking-wider leading-tight">
                 {t.languageSelectTitle || 'تنظیم زبان و سطح تسلط'}
               </h1>
-              <span className="text-[10px] text-[#E0603F] font-bold block">
+              <span className="text-[10px] text-[var(--vermilion)] font-bold block">
                 {tf(settings.language, 'stepOf', { n: 1, total: 4 })}: {t.stepLanguages}
               </span>
             </div>
@@ -59,9 +59,9 @@ const LanguageSelectScreen: React.FC<Props> = ({
                 sound.playClick();
                 onOpenHelp?.();
               }} 
-              className="px-2.5 py-1.5 bg-[#F2B63D] hover:bg-[#e0a634] text-[#1E1B2E] border-2 border-[#1E1B2E] font-bold text-xs rounded-[10px] shadow-[2px_2px_0px_0px_#1E1B2E] transition-transform active:translate-y-0.5 flex items-center gap-1.5"
+              className="px-2.5 py-1.5 bg-[var(--saffron)] hover:bg-[#e0a634] text-[var(--ink)] border border-[var(--line)] font-bold text-xs rounded-[10px] shadow-[var(--shadow-sm)] transition-transform active:translate-y-0.5 flex items-center gap-1.5"
             >
-              <HelpCircle size={14} color="#1E1B2E" />
+              <HelpCircle size={14} />
               <span>{t.guide}</span>
             </button>
           </div>
@@ -78,7 +78,7 @@ const LanguageSelectScreen: React.FC<Props> = ({
       </div>
 
       {/* Fixed Footer Navigation */}
-      <footer className="shrink-0 pt-2 border-t-2 border-[#1E1B2E]/15 font-ui">
+      <footer className="shrink-0 pt-2 border-t border-[var(--line)] font-ui">
         <div className="flex gap-2.5">
           <button 
             type="button"
@@ -86,7 +86,7 @@ const LanguageSelectScreen: React.FC<Props> = ({
               sound.playClick();
               onBack();
             }} 
-            className="pixel-btn pixel-btn-orange flex-1 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 rounded-[16px] active:scale-95"
+            className="flex-1 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 rounded-[14px] bg-[var(--bg)] hover:bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] shadow-[var(--shadow-sm)] active:translate-y-0.5 transition-all"
           >
             {isRTL ? <ArrowRight size={15} /> : <ArrowLeft size={15} />}
             <span>{t.back}</span>
@@ -97,7 +97,7 @@ const LanguageSelectScreen: React.FC<Props> = ({
               sound.playStartGame();
               onNext();
             }} 
-            className="pixel-btn pixel-btn-teal flex-[2] py-2.5 text-sm sm:text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2 rounded-[16px] active:scale-95"
+            className="flex-[2] py-2.5 text-sm sm:text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2 rounded-[14px] bg-[var(--teal)] hover:bg-[#17857c] text-white shadow-[var(--shadow-sm)] active:translate-y-0.5 transition-all"
           >
             <span>{t.nextTopics}</span>
             {isRTL ? <ArrowLeft size={16} /> : <ArrowRight size={16} />}

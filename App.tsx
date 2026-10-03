@@ -165,9 +165,9 @@ const App: React.FC = () => {
 
         // Validate numbers and enums against corrupted or outdated data
         const validRounds = [3, 4, 5, 6, 7, 8, 9, 10];
-        const validTimes = [6, 8, 10, 15, 20, 30, 45, 60, 90, 120, 180, 240, 300];
         const rounds = validRounds.includes(Number(parsed?.roundsCount)) ? Number(parsed.roundsCount) : 5;
-        const duration = validTimes.includes(Number(parsed?.roundDuration)) ? Number(parsed.roundDuration) : 60;
+        const parsedDuration = Number(parsed?.roundDuration);
+        const duration = !isNaN(parsedDuration) && parsedDuration >= 5 && parsedDuration <= 600 ? parsedDuration : 60;
         const playerCount = [4, 6, 8].includes(Number(parsed?.playerCount)) ? (Number(parsed.playerCount) as 4 | 6 | 8) : 4;
         const cardGameMode = ['mixed', 'reverse', 'standard'].includes(parsed?.cardGameMode) ? parsed.cardGameMode : 'mixed';
 
@@ -525,7 +525,7 @@ const App: React.FC = () => {
 
   return (
     <main 
-      className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto flex flex-col relative bg-[var(--bg)] text-[var(--ink)] min-h-0 flex-1 min-h-screen" 
+      className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto flex flex-col relative bg-[var(--bg)] text-[var(--ink)] min-h-0 flex-1 min-h-screen overflow-x-hidden overflow-y-auto" 
       style={{ 
         height: '100%', 
         maxHeight: '100dvh',

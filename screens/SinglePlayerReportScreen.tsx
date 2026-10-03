@@ -22,7 +22,7 @@ interface Props {
   language: Language;
   onPlayAgain: () => void;
   onPracticeWeakCards: (cards: LanguageCard[]) => void;
-  onOpenLeaderboard: () => void;
+  onOpenLeaderboard?: () => void;
   onExit: () => void;
 }
 
@@ -85,7 +85,7 @@ const SinglePlayerReportScreen: React.FC<Props> = ({
 
   return (
     <div 
-      className="h-full min-h-0 flex-1 flex flex-col justify-between p-3.5 sm:p-4 text-[#1E1B2E] select-none overflow-y-auto overscroll-contain font-ui"
+      className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full min-h-0 flex-1 flex flex-col justify-between p-3 sm:p-4 text-[var(--ink)] bg-[var(--bg)] select-none overflow-y-auto overscroll-contain font-ui"
       dir={isRTL ? 'rtl' : 'ltr'}
     >
       {/* Top Header */}
@@ -95,45 +95,45 @@ const SinglePlayerReportScreen: React.FC<Props> = ({
             sound.playClick();
             onExit();
           }}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-[12px] bg-[#FFFBF4] border-2 border-[#1E1B2E] text-xs font-bold text-[#1E1B2E] hover:bg-[#F4EDE1] shadow-[2px_2px_0px_0px_#1E1B2E]"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[var(--panel)] hover:bg-[var(--bg)] border border-[var(--line)] text-xs font-bold text-[var(--ink)] shadow-xs transition-all active:scale-95 cursor-pointer"
         >
           <ArrowLeft size={14} className={isRTL ? 'rotate-180' : ''} />
           <span>{isRTL ? 'منوی اصلی' : 'Main Menu'}</span>
         </button>
 
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-[12px] bg-[#FFFBF4] border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E] text-xs font-bold text-[#1E9E93]">
+        <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[var(--panel)] border border-[var(--line)] shadow-xs text-xs font-bold text-[var(--turq)]">
           <FlagIcon language={report.settings.targetLanguage} size={15} />
           <span>{report.settings.cefrLevel}</span>
         </div>
       </div>
 
       {/* Main Card: Learning Summary */}
-      <div className="w-full max-w-sm mx-auto space-y-3 shrink-0">
-        <div className="bg-[#FFFBF4] border-2 border-[#1E1B2E] rounded-[24px] shadow-[4px_4px_0px_0px_#1E1B2E] p-4 text-center relative font-ui">
+      <div className="w-full max-w-sm sm:max-w-md mx-auto space-y-3 shrink-0">
+        <div className="bg-[var(--panel)] border border-[var(--line)] rounded-[24px] shadow-xs p-4 sm:p-5 text-center relative font-ui">
           
-          <div className="inline-flex items-center gap-1 px-3 py-0.5 bg-[#F2B63D] text-[#1E1B2E] text-[10px] font-bold uppercase rounded-[8px] border border-[#1E1B2E] mb-1">
+          <div className="inline-flex items-center gap-1 px-3 py-0.5 bg-[var(--lapis-soft)] text-[var(--lapis)] text-[10px] font-bold uppercase rounded-lg mb-1">
             <Award size={13} />
             <span>{t.reportCard}</span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-bold font-display text-[#1E1B2E]">
+          <h1 className="text-2xl sm:text-3xl font-black font-display text-[var(--ink)]">
             {gradeInfo.label}
           </h1>
 
           {/* Grade and Total Score Badge */}
           <div className="my-3 flex items-center justify-center gap-4">
-            <div className="w-16 h-16 rounded-[16px] bg-[#F4EDE1] border-2 border-[#1E1B2E] flex flex-col items-center justify-center shadow-[2px_2px_0px_0px_#1E1B2E]">
-              <span className="text-2xl font-bold font-display" style={{ color: gradeInfo.color }}>
+            <div className="w-16 h-16 rounded-2xl bg-[var(--bg)] border border-[var(--line)] flex flex-col items-center justify-center shadow-xs">
+              <span className="text-2xl font-black font-display" style={{ color: gradeInfo.color }}>
                 {gradeInfo.grade}
               </span>
-              <span className="text-[9px] text-[#1E1B2E]/60 font-bold">{isRTL ? 'رتبه' : 'Grade'}</span>
+              <span className="text-[9px] text-[var(--mute)] font-bold">{isRTL ? 'رتبه' : 'Grade'}</span>
             </div>
 
             <div className="text-left rtl:text-right">
-              <div className="text-3xl sm:text-4xl font-bold font-display text-[#E0603F]">
+              <div className="text-3xl sm:text-4xl font-black font-display text-[var(--lapis)]">
                 {report.totalScore.toLocaleString()}
               </div>
-              <div className="text-xs font-bold text-[#1E9E93] flex items-center gap-1">
+              <div className="text-xs font-bold text-[var(--turq)] flex items-center gap-1">
                 <Sparkles size={12} />
                 <span>{isRTL ? 'مجموع امتیاز مسابقه' : 'Total Score Earned'}</span>
               </div>
@@ -141,55 +141,49 @@ const SinglePlayerReportScreen: React.FC<Props> = ({
           </div>
 
           {/* Personal Record Indicator */}
-          <div className="my-2 p-2 rounded-[14px] bg-[#F4EDE1] border-2 border-[#1E1B2E] flex items-center justify-between text-xs">
-            <div className="flex items-center gap-1.5 text-[#1E1B2E] font-bold">
-              <Trophy size={14} className="text-[#F2B63D]" />
+          <div className="my-2 p-2.5 rounded-xl bg-[var(--bg)] border border-[var(--line)] flex items-center justify-between text-xs">
+            <div className="flex items-center gap-1.5 text-[var(--ink)] font-bold">
+              <Trophy size={14} className="text-[var(--saffron)]" />
               <span>{isRTL ? 'بهترین رکورد شما:' : 'Your Personal Best:'}</span>
             </div>
-            <div className="font-mono font-bold text-[#E0603F] text-sm">
+            <div className="font-mono font-bold text-[var(--turq)] text-sm">
               {Math.max(personalRecords.highestScore, report.totalScore).toLocaleString()} PTS
             </div>
           </div>
 
           {isAllTimeBest && (
-            <div className="mb-2 p-2 rounded-[14px] bg-[#dcfce7] border-2 border-[#1E1B2E] text-[#15803d] text-xs font-bold text-center animate-pulse">
+            <div className="mb-2 p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 text-emerald-600 dark:text-emerald-400 text-xs font-bold text-center animate-pulse">
               🎉 {isRTL ? 'رکورد شخصی جدید! شما بهترین امتیاز خود را ثبت کردید!' : 'New Personal Record! You achieved your highest score ever!'}
             </div>
           )}
 
           {/* Detailed Metric Grid */}
           <div className="grid grid-cols-3 gap-1.5 text-center mt-2">
-            <div className="bg-[#F4EDE1] p-2 rounded-[14px] border-2 border-[#1E1B2E]">
-              <div className="text-base font-bold text-[#15803d]">{report.accuracy}%</div>
-              <div className="text-[10px] text-[#1E1B2E]/70 font-bold">{t.accuracy}</div>
+            <div className="bg-[var(--bg)] p-2.5 rounded-xl border border-[var(--line)]">
+              <div className="text-base font-black text-emerald-600 dark:text-emerald-400">{report.accuracy}%</div>
+              <div className="text-[10px] text-[var(--mute)] font-bold">{t.accuracy}</div>
             </div>
-            <div className="bg-[#F4EDE1] p-2 rounded-[14px] border-2 border-[#1E1B2E]">
-              <div className="text-base font-bold text-[#1E9E93]">{report.correctFirstTry} / {report.totalCards}</div>
-              <div className="text-[10px] text-[#1E1B2E]/70 font-bold">{isRTL ? 'درست بار اول' : 'First Try'}</div>
+            <div className="bg-[var(--bg)] p-2.5 rounded-xl border border-[var(--line)]">
+              <div className="text-base font-black text-[var(--turq)]">{report.correctFirstTry} / {report.totalCards}</div>
+              <div className="text-[10px] text-[var(--mute)] font-bold">{isRTL ? 'درست بار اول' : 'First Try'}</div>
             </div>
-            <div className="bg-[#F4EDE1] p-2 rounded-[14px] border-2 border-[#1E1B2E]">
-              <div className="text-base font-bold text-[#F2B63D]">{report.correctedCount}</div>
-              <div className="text-[10px] text-[#1E1B2E]/70 font-bold">{isRTL ? 'تصحیح‌شده' : 'Corrected'}</div>
+            <div className="bg-[var(--bg)] p-2.5 rounded-xl border border-[var(--line)]">
+              <div className="text-base font-black text-[var(--saffron)]">{report.correctedCount}</div>
+              <div className="text-[10px] text-[var(--mute)] font-bold">{isRTL ? 'تصحیح‌شده' : 'Corrected'}</div>
             </div>
           </div>
         </div>
 
         {/* Submit to Leaderboard Form */}
-        <div className="bg-[#FFFBF4] p-3 rounded-[20px] border-2 border-[#1E1B2E] shadow-[3px_3px_0px_0px_#1E1B2E] font-ui">
-          <div className="text-xs font-bold text-[#1E1B2E] mb-1.5 flex items-center justify-between">
+        <div className="bg-[var(--panel)] p-3.5 rounded-2xl border border-[var(--line)] shadow-xs font-ui">
+          <div className="text-xs font-bold text-[var(--ink)] mb-2 flex items-center justify-between">
             <div className="flex items-center gap-1.5">
-              <Trophy size={14} className="text-[#F2B63D]" />
-              <span>{isRTL ? 'ثبت رکورد در لیدربرد' : 'Post to Leaderboard'}</span>
+              <Trophy size={14} className="text-[var(--saffron)]" />
+              <span>{isRTL ? 'ثبت رکورد در رده‌بندی جهانی' : 'Post to Leaderboard'}</span>
             </div>
-            <button 
-              onClick={() => {
-                sound.playClick();
-                onOpenLeaderboard();
-              }}
-              className="text-[10px] text-[#1E9E93] font-bold hover:underline"
-            >
-              {isRTL ? 'مشاهده لیدربرد' : 'View Ranks'}
-            </button>
+            <span className="text-[10px] text-[var(--mute)] font-medium">
+              {isRTL ? 'مشاهده در پروفایل کاربر' : 'View in User Profile'}
+            </span>
           </div>
 
           <div className="flex gap-2">
@@ -199,15 +193,15 @@ const SinglePlayerReportScreen: React.FC<Props> = ({
               onChange={e => setPlayerName(e.target.value)}
               disabled={isScoreSubmitted || isSubmitting}
               placeholder={isRTL ? 'نام خود را وارد کنید...' : 'Enter player name...'}
-              className="flex-1 bg-[#F4EDE1] text-[#1E1B2E] px-3 py-2 rounded-[12px] border-2 border-[#1E1B2E] text-xs font-bold focus:outline-none"
+              className="flex-1 bg-[var(--bg)] text-[var(--ink)] px-3 py-2 rounded-xl border border-[var(--line)] text-xs font-bold focus:border-[var(--lapis)] focus:outline-hidden"
             />
             <button
               onClick={handleSubmitScore}
               disabled={isScoreSubmitted || isSubmitting || !playerName.trim()}
-              className={`px-3.5 py-2 rounded-[12px] font-bold text-xs border-2 border-[#1E1B2E] flex items-center gap-1 shadow-[2px_2px_0px_0px_#1E1B2E] transition-transform active:scale-95 ${
+              className={`px-3.5 py-2 rounded-xl font-bold text-xs flex items-center gap-1 shadow-xs transition-transform active:scale-95 cursor-pointer ${
                 isScoreSubmitted 
-                  ? 'bg-[#1E9E93] text-white' 
-                  : 'bg-[#F2B63D] text-[#1E1B2E] hover:bg-[#e0a634]'
+                  ? 'bg-[var(--turq)] text-white' 
+                  : 'bg-[var(--lapis)] text-[var(--on-lapis)] hover:brightness-105'
               }`}
             >
               {isScoreSubmitted ? (
@@ -227,9 +221,9 @@ const SinglePlayerReportScreen: React.FC<Props> = ({
 
         {/* Weak Cards Section */}
         {report.weakCards.length > 0 && (
-          <div className="bg-[#FFFBF4] p-3 rounded-[20px] border-2 border-[#1E1B2E] shadow-[3px_3px_0px_0px_#1E1B2E] font-ui">
+          <div className="bg-[var(--panel)] p-3.5 rounded-2xl border border-red-200 dark:border-red-900/40 shadow-xs font-ui">
             <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-[#E0603F]">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-red-500">
                 <AlertCircle size={15} />
                 <span>{t.weakCards} ({report.weakCards.length})</span>
               </div>
@@ -238,7 +232,7 @@ const SinglePlayerReportScreen: React.FC<Props> = ({
                   sound.playClick();
                   onPracticeWeakCards(report.weakCards);
                 }}
-                className="px-2.5 py-1 bg-[#E0603F] text-white rounded-[8px] border border-[#1E1B2E] text-[10px] font-bold flex items-center gap-1 hover:bg-[#c94d2f]"
+                className="px-2.5 py-1 bg-red-500 hover:bg-red-600 text-white rounded-lg text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-all active:scale-95"
               >
                 <RotateCcw size={11} />
                 <span>{t.practiceWeakCards}</span>
@@ -249,15 +243,15 @@ const SinglePlayerReportScreen: React.FC<Props> = ({
               {report.weakCards.map((card, idx) => (
                 <div 
                   key={card.id || idx}
-                  className="bg-[#F4EDE1] p-2 rounded-[12px] border border-[#1E1B2E] flex items-center justify-between text-xs"
+                  className="bg-[var(--bg)] p-2.5 rounded-xl border border-[var(--line)] flex items-center justify-between text-xs"
                 >
                   <div className="min-w-0 flex-1">
-                    <div className="font-bold text-[#1E1B2E] truncate">{card.targetText}</div>
-                    <div className="text-[10.5px] text-[#1E1B2E]/60 truncate">{card.translation}</div>
+                    <div className="font-bold text-[var(--ink)] truncate">{card.targetText}</div>
+                    <div className="text-[10.5px] text-[var(--mute)] truncate">{card.translation}</div>
                   </div>
                   <button
                     onClick={() => handleSpeak(card.targetText, card.targetLanguage)}
-                    className="p-1.5 rounded-[8px] bg-[#FFFBF4] text-[#1E1B2E] hover:bg-[#eae0d2] border border-[#1E1B2E] shrink-0 ml-2 rtl:mr-2 rtl:ml-0"
+                    className="p-1.5 rounded-lg bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--line)]/50 border border-[var(--line)] shrink-0 ml-2 rtl:mr-2 rtl:ml-0 cursor-pointer"
                   >
                     <Volume2 size={14} />
                   </button>
@@ -269,42 +263,29 @@ const SinglePlayerReportScreen: React.FC<Props> = ({
       </div>
 
       {/* Footer Action Buttons */}
-      <div className="w-full max-w-sm mx-auto space-y-2 mt-3 shrink-0 font-ui">
+      <div className="w-full max-w-sm sm:max-w-md mx-auto space-y-2 mt-3 shrink-0 font-ui">
         <button
           onClick={() => {
             sound.playClick();
             onPlayAgain();
           }}
-          className="pixel-btn pixel-btn-teal w-full py-3 rounded-[16px] text-sm sm:text-base uppercase tracking-wider flex items-center justify-center gap-2"
+          className="w-full py-3.5 rounded-2xl bg-[var(--lapis)] hover:brightness-105 text-[var(--on-lapis)] font-extrabold text-sm sm:text-base shadow-md uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98"
         >
           <RotateCcw size={18} />
-          <span>{isRTL ? 'تمرین مجدد با همین تنظیمات' : 'Play Again'}</span>
-          <Flame size={16} color="#F2B63D" />
+          <span className="whitespace-nowrap">{isRTL ? 'تمرین مجدد' : 'Play Again'}</span>
+          <Flame size={16} className="text-[var(--saffron)]" />
         </button>
 
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            onClick={() => {
-              sound.playClick();
-              onOpenLeaderboard();
-            }}
-            className="pixel-btn pixel-btn-mustard py-2.5 rounded-[14px] text-xs font-bold flex items-center justify-center gap-1.5"
-          >
-            <Trophy size={15} color="#1E1B2E]" />
-            <span>{t.leaderboard}</span>
-          </button>
-
-          <button
-            onClick={() => {
-              sound.playClick();
-              onExit();
-            }}
-            className="bg-[#FFFBF4] border-2 border-[#1E1B2E] text-[#1E1B2E] rounded-[14px] shadow-[2px_2px_0px_0px_#1E1B2E] hover:bg-[#F4EDE1] py-2.5 text-xs font-bold flex items-center justify-center gap-1.5"
-          >
-            <ArrowLeft size={15} className={isRTL ? 'rotate-180' : ''} />
-            <span>{isRTL ? 'منوی اصلی' : 'Main Menu'}</span>
-          </button>
-        </div>
+        <button
+          onClick={() => {
+            sound.playClick();
+            onExit();
+          }}
+          className="w-full py-3 rounded-xl text-xs sm:text-sm font-bold bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-98 transition-all"
+        >
+          <ArrowLeft size={16} className={isRTL ? 'rotate-180' : ''} />
+          <span>{isRTL ? 'بازگشت به منوی اصلی' : 'Back to Main Menu'}</span>
+        </button>
       </div>
     </div>
   );

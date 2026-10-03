@@ -214,7 +214,7 @@ describe('Setup Screen Comprehensive Requirements Suite', () => {
     expect(mixedBtn).toHaveAttribute('aria-checked', 'true');
 
     // Click standard mode
-    const standardBtn = Array.from(buttons).find(b => b.textContent?.includes('زبان یادگیری ← زبان من'));
+    const standardBtn = Array.from(buttons).find(b => b.textContent?.includes('هلندی به فارسی') || b.textContent?.includes('انگلیسی به فارسی') || b.textContent?.includes('زبان یادگیری ← زبان من'));
     fireEvent.click(standardBtn!);
     const saved = onSaveMock.mock.calls[onSaveMock.mock.calls.length - 1][0];
     expect(saved.cardGameMode).toBe('standard');
@@ -305,5 +305,35 @@ describe('Setup Screen Comprehensive Requirements Suite', () => {
     const nextBtn = screen.getByRole('button', { name: /مرحله بعد: شروع بازی/ });
     fireEvent.click(nextBtn);
     expect(onNextMock).toHaveBeenCalled();
+  });
+
+  it('11. CEFR Level selection renders all levels (A1, A2, B1, B2, C1, ALL) and updates settings cleanly', () => {
+    render(
+      <SetupScreen
+        settings={{ ...mockDefaultSettings, cefrLevel: 'all' }}
+        onSave={onSaveMock}
+        onNext={onNextMock}
+        onBack={onBackMock}
+      />
+    );
+
+    const cefrGroup = screen.getByRole('radiogroup', { name: /سطح دشواری/ });
+    expect(cefrGroup).toBeInTheDocument();
+
+    const buttons = cefrGroup.querySelectorAll('button');
+    expect(buttons).toHaveLength(6);
+
+    // Initial state 'all'
+    const allBtn = Array.from(buttons).find(b => b.textContent?.includes('ALL'));
+    expect(allBtn).toHaveAttribute('aria-checked', 'true');
+
+    // Switch to B1
+    const b1Btn = Array.from(buttons).find(b => b.textContent?.includes('B1'));
+    expect(b1Btn).toBeDefined();
+    fireEvent.click(b1Btn!);
+
+    expect(onSaveMock).toHaveBeenCalled();
+    const lastSaved = onSaveMock.mock.calls[onSaveMock.mock.calls.length - 1][0];
+    expect(lastSaved.cefrLevel).toBe('B1');
   });
 });

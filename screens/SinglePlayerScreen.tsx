@@ -37,7 +37,11 @@ import {
   ShieldAlert,
   X,
   Languages,
-  ArrowRightLeft
+  ArrowRightLeft,
+  Lightbulb,
+  HelpCircle,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 
 interface Props {
@@ -46,7 +50,7 @@ interface Props {
   uiLanguage: Language;
   onFinish: (report: SinglePlayerSessionReport) => void;
   onExit: () => void;
-  onOpenLeaderboard: () => void;
+  onOpenLeaderboard?: () => void;
 }
 
 // BCP-47 Speech recognition language code mapping
@@ -108,6 +112,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
   const [evaluation, setEvaluation] = useState<EvaluationResult | null>(null);
   const [attempts, setAttempts] = useState(1);
   const [isRevealed, setIsRevealed] = useState(false);
+  const [showOptionsHint, setShowOptionsHint] = useState(false);
   const [results, setResults] = useState<SinglePlayerCardResult[]>([]);
   const [totalScore, setTotalScore] = useState(0);
   const [streak, setStreak] = useState(0);
@@ -260,6 +265,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
     setEvaluation(null);
     setAttempts(1);
     setIsRevealed(false);
+    setShowOptionsHint(false);
     startTimeRef.current = Date.now();
 
     // Check if round advanced to notify user about tighter timer
@@ -536,10 +542,10 @@ const SinglePlayerScreen: React.FC<Props> = ({
 
   if (!currentCard) {
     return (
-      <div className="h-full flex items-center justify-center p-4 text-[#1E1B2E] text-center font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
-        <div className="bg-[#FFFBF4] border-2 border-[#1E1B2E] rounded-[24px] shadow-[4px_4px_0px_0px_#1E1B2E] p-6 max-w-sm">
-          <p className="font-bold mb-4">{isRTL ? 'کارتی برای نمایش وجود ندارد.' : 'No cards available.'}</p>
-          <button onClick={onExit} className="pixel-btn pixel-btn-orange py-2 px-4 rounded-[14px]">
+      <div className="w-full max-w-md mx-auto h-full flex items-center justify-center p-4 text-[var(--ink)] text-center font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
+        <div className="bg-[var(--panel)] border border-[var(--line)] rounded-[24px] shadow-sm p-6 max-w-sm">
+          <p className="font-bold mb-4 text-[var(--mute)]">{isRTL ? 'کارتی برای نمایش وجود ندارد.' : 'No cards available.'}</p>
+          <button onClick={onExit} className="py-2.5 px-5 rounded-xl bg-[var(--lapis)] text-[var(--on-lapis)] font-bold text-sm shadow-xs cursor-pointer">
             {isRTL ? 'بازگشت' : 'Back'}
           </button>
         </div>
@@ -551,7 +557,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
 
   return (
     <div 
-      className="app w-full max-w-[440px] mx-auto min-h-screen px-3.5 pb-12 font-ui relative flex flex-col justify-between"
+      className="app w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto min-h-screen px-3 sm:px-4 pb-12 font-ui relative flex flex-col justify-between"
       dir={isRTL ? 'rtl' : 'ltr'}
     >
       {/* 1. Header (sticky, always visible matching HTML design) */}
@@ -570,11 +576,11 @@ const SinglePlayerScreen: React.FC<Props> = ({
             <ArrowLeft size={19} className={isRTL ? 'rotate-180' : ''} />
           </button>
           <div>
-            <div className="flex items-center gap-1.5">
-              <h1 className="text-xl sm:text-2xl font-black leading-none text-[var(--ink)]">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <h1 className="text-base sm:text-xl font-black leading-none text-[var(--ink)] whitespace-nowrap truncate">
                 {t.singlePlayer || 'تمرین تک‌نفره'}
               </h1>
-              <span className="text-[10px] font-bold text-[var(--turq)] bg-[var(--turq)]/10 px-2 py-0.5 rounded-full border border-[var(--turq)]/20">
+              <span className="text-[10px] font-bold text-[var(--turq)] bg-[var(--turq)]/10 px-2 py-0.5 rounded-full border border-[var(--turq)]/20 shrink-0">
                 {currentCard?.cefrLevel ? `سطح ${currentCard.cefrLevel}` : 'A1'}
               </span>
             </div>
@@ -606,20 +612,6 @@ const SinglePlayerScreen: React.FC<Props> = ({
             title={isRTL ? 'قطع و وصل صدا' : 'Toggle Sound'}
           >
             {sound.getMuted() ? <VolumeX size={18} /> : <Volume2 size={18} />}
-          </button>
-
-          {/* Direct Leaderboard Button */}
-          <button
-            type="button"
-            onClick={() => {
-              sound.playClick();
-              onOpenLeaderboard();
-            }}
-            className="ib"
-            aria-label={isRTL ? 'مشاهده لیدربرد' : 'Leaderboard'}
-            title={isRTL ? 'مشاهده لیدربرد' : 'Leaderboard'}
-          >
-            <Trophy size={18} />
           </button>
         </div>
       </header>
@@ -730,7 +722,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
         {/* Center Card Content Area */}
         <div className="flex-1 flex flex-col items-center justify-center py-2">
           {/* Mode 1: Audio-Only */}
-          {settings.displayMode === 'audio_only' && !isRevealed && !evaluation?.isCorrect ? (
+          {settings.displayMode === 'audio_only' && !evaluation?.isCorrect ? (
             <div className="py-4 flex flex-col items-center justify-center gap-3">
               <div className="w-16 h-16 rounded-full bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center animate-pulse">
                 <Headphones size={30} />
@@ -738,14 +730,19 @@ const SinglePlayerScreen: React.FC<Props> = ({
               <p className="text-sm font-bold text-[var(--ink)] text-center">
                 {isRTL ? 'گوش دهید و کلمه شنیده‌شده را بگویید یا بنویسید' : 'Listen and repeat or type what you hear'}
               </p>
-              <button
-                type="button"
-                onClick={() => setIsRevealed(true)}
-                className="btn-ghost !text-xs !py-1.5 !px-3"
-              >
-                <Eye size={13} />
-                <span>{t.revealHint || 'مشاهده پاسخ'}</span>
-              </button>
+              {!showOptionsHint && quizChoices.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playToggle();
+                    setShowOptionsHint(true);
+                  }}
+                  className="mt-2 text-xs font-bold text-[var(--lapis)] hover:underline flex items-center gap-1.5 bg-[var(--lapis-soft)] px-3.5 py-1.5 rounded-full cursor-pointer transition-transform active:scale-95 shadow-2xs"
+                >
+                  <Lightbulb size={13} className="text-[var(--saffron)]" />
+                  <span>{isRTL ? '💡 هینت (نمایش گزینه‌ها)' : '💡 Hint (Show Options)'}</span>
+                </button>
+              )}
             </div>
           ) : settings.displayMode === 'translate_to_target' ? (
             /* Mode 2: Translate to Target (Native prompt visible in Persian, target text hidden) */
@@ -768,14 +765,19 @@ const SinglePlayerScreen: React.FC<Props> = ({
                   {currentCard.targetText}
                 </div>
               ) : (
-                <button
-                  type="button"
-                  onClick={() => setIsRevealed(true)}
-                  className="mt-3 text-xs font-bold text-[var(--lapis)] hover:underline flex items-center gap-1 bg-[var(--lapis-soft)] px-3 py-1.5 rounded-full"
-                >
-                  <Eye size={13} />
-                  <span>{t.revealHint || 'مشاهده کلمه هدف'}</span>
-                </button>
+                !showOptionsHint && quizChoices.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      sound.playToggle();
+                      setShowOptionsHint(true);
+                    }}
+                    className="mt-3 text-xs font-bold text-[var(--lapis)] hover:underline flex items-center gap-1.5 bg-[var(--lapis-soft)] px-3.5 py-1.5 rounded-full cursor-pointer transition-transform active:scale-95 shadow-2xs"
+                  >
+                    <Lightbulb size={13} className="text-[var(--saffron)]" />
+                    <span>{isRTL ? '💡 هینت (نمایش گزینه‌ها)' : '💡 Hint (Show Options)'}</span>
+                  </button>
+                )
               )}
             </div>
           ) : settings.displayMode === 'translate_to_native' ? (
@@ -799,14 +801,19 @@ const SinglePlayerScreen: React.FC<Props> = ({
                   {currentCard.translation}
                 </div>
               ) : (
-                <button
-                  type="button"
-                  onClick={() => setIsRevealed(true)}
-                  className="mt-3 text-xs font-bold text-[var(--lapis)] hover:underline flex items-center gap-1 bg-[var(--lapis-soft)] px-3 py-1.5 rounded-full"
-                >
-                  <Eye size={13} />
-                  <span>{isRTL ? 'مشاهده معنی فارسی' : 'Reveal Meaning'}</span>
-                </button>
+                !showOptionsHint && quizChoices.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      sound.playToggle();
+                      setShowOptionsHint(true);
+                    }}
+                    className="mt-3 text-xs font-bold text-[var(--lapis)] hover:underline flex items-center gap-1.5 bg-[var(--lapis-soft)] px-3.5 py-1.5 rounded-full cursor-pointer transition-transform active:scale-95 shadow-2xs"
+                  >
+                    <Lightbulb size={13} className="text-[var(--saffron)]" />
+                    <span>{isRTL ? '💡 هینت (نمایش گزینه‌ها)' : '💡 Hint (Show Options)'}</span>
+                  </button>
+                )
               )}
             </div>
           ) : (
@@ -903,25 +910,76 @@ const SinglePlayerScreen: React.FC<Props> = ({
 
       {/* 5. Input Section: 4 Interactive Choices, Mic button and Text Input */}
       <div className="space-y-2 shrink-0 font-ui mt-1">
-        {/* 4 Interactive Multiple-Choice Cards for Quick Quiz Selection */}
+        {/* 4 Interactive Multiple-Choice Cards revealed as Hint */}
         {quizChoices.length > 1 && !evaluation?.isCorrect && (
-          <div>
-            <div className="text-[11px] font-bold text-[var(--mute)] mb-1 px-1 flex items-center justify-between">
-              <span>{isRTL ? 'یا پاسخ را مستقیماً از ۴ گزینه زیر لمس کنید:' : 'Or tap a choice below:'}</span>
-              <span className="text-[10px] bg-[var(--lapis-soft)] text-[var(--lapis)] px-2 py-0.5 rounded-full font-black">۴ گزینه</span>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              {quizChoices.map((choice, idx) => (
-                <button
-                  key={`${choice}-${idx}`}
-                  type="button"
-                  onClick={() => handleOptionSelect(choice)}
-                  className="btn-ghost !text-xs !py-3 !px-2.5 truncate text-center"
-                >
-                  {choice}
-                </button>
-              ))}
-            </div>
+          <div className="pt-0.5">
+            {!showOptionsHint ? (
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playToggle();
+                  setShowOptionsHint(true);
+                }}
+                className="w-full py-2.5 px-3 rounded-xl border border-dashed border-[var(--lapis)]/40 hover:border-[var(--lapis)] bg-[var(--lapis-soft)]/50 hover:bg-[var(--lapis-soft)] text-[var(--lapis)] text-xs font-bold flex items-center justify-center gap-2 transition-all active:scale-[0.99] cursor-pointer shadow-2xs"
+              >
+                <Lightbulb size={15} className="text-[var(--saffron)]" />
+                <span>{isRTL ? '💡 نیاز به راهنما دارید؟ نمایش ۴ گزینه (هینت)' : '💡 Need a hint? Show 4 Choices'}</span>
+                <ChevronDown size={14} />
+              </button>
+            ) : (
+              <div className="animate-fadeIn space-y-2 bg-[var(--panel)] p-3 rounded-2xl border border-[var(--line)] shadow-xs">
+                <div className="text-[11px] font-bold text-[var(--mute)] px-0.5 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5 text-[var(--lapis)] font-black">
+                    <Lightbulb size={14} className="text-[var(--saffron)]" />
+                    <span>{isRTL ? 'راهنما فعال شد: گزینه صحیح را انتخاب کنید' : 'Hint Active: Tap the correct option'}</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      sound.playToggle();
+                      setShowOptionsHint(false);
+                    }}
+                    className="text-[10px] font-bold text-[var(--mute)] hover:text-[var(--ink)] flex items-center gap-1 py-1 px-2 rounded-lg bg-[var(--bg)] border border-[var(--line)] cursor-pointer hover:bg-[var(--line)]/40 transition-colors"
+                    title={isRTL ? 'بستن گزینه‌ها' : 'Hide choices'}
+                  >
+                    <span>{isRTL ? 'مخفی‌سازی گزینه‌ها' : 'Hide'}</span>
+                    <ChevronUp size={12} />
+                  </button>
+                </div>
+
+                {/* Educational clue if card has one */}
+                {currentCard?.hint && (
+                  <div className="text-[11px] font-bold text-[var(--ink)] bg-[var(--saffron)]/15 border border-[var(--saffron)]/30 rounded-xl px-2.5 py-1.5 flex items-center gap-1.5 leading-relaxed">
+                    <span className="shrink-0 text-xs">💡</span>
+                    <span>{currentCard.hint}</span>
+                  </div>
+                )}
+
+                {/* The 4 Choice Buttons */}
+                <div className="grid grid-cols-2 gap-2">
+                  {quizChoices.map((choice, idx) => {
+                    const letters = isRTL ? ['الف', 'ب', 'ج', 'د'] : ['A', 'B', 'C', 'D'];
+                    const letter = letters[idx % letters.length];
+                    return (
+                      <button
+                        key={`${choice}-${idx}`}
+                        type="button"
+                        onClick={() => handleOptionSelect(choice)}
+                        className="p-2.5 rounded-xl border border-[var(--line)] hover:border-[var(--lapis)] bg-[var(--bg)] hover:bg-[var(--lapis-soft)] text-[var(--ink)] text-xs sm:text-sm font-bold flex items-center gap-2 text-start transition-all shadow-2xs active:scale-[0.98] cursor-pointer min-h-[48px] overflow-hidden"
+                        title={choice}
+                      >
+                        <span className="w-6 h-6 rounded-lg bg-[var(--lapis-soft)] text-[var(--lapis)] font-black text-xs flex items-center justify-center shrink-0">
+                          {letter}
+                        </span>
+                        <span className="line-clamp-2 break-words leading-tight flex-1">
+                          {choice}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         )}
         
@@ -964,38 +1022,43 @@ const SinglePlayerScreen: React.FC<Props> = ({
             onKeyDown={e => {
               if (e.key === 'Enter') handleCheckAnswer();
             }}
-            placeholder={t.enterAnswerPlaceholder || '...جمله را اینجا تایپ کنید یا بگویید'}
-            className="flex-1 bg-[var(--panel)] text-[var(--ink)] px-3.5 py-2.5 rounded-[14px] border border-[var(--line)] text-xs sm:text-sm font-bold focus:outline-none focus:border-[var(--lapis)] transition-colors"
+            placeholder={t.enterAnswerPlaceholder || (isRTL ? 'پاسخ را بنویسید یا بگویید...' : 'Type or speak answer...')}
+            className="flex-1 min-w-0 bg-[var(--panel)] text-[var(--ink)] px-3.5 py-2.5 rounded-[14px] border border-[var(--line)] text-xs sm:text-sm font-bold focus:outline-none focus:border-[var(--lapis)] transition-colors"
           />
 
           <button
             type="button"
             onClick={handleCheckAnswer}
-            className="btn-primary !min-h-[44px] !px-4"
+            className="btn-primary !min-h-[44px] !px-3.5 whitespace-nowrap shrink-0 flex items-center justify-center gap-1.5 font-bold text-xs sm:text-sm"
           >
-            <Send size={15} className={isRTL ? 'rotate-180' : ''} />
-            <span>{t.checkAnswer}</span>
+            <Send size={14} className={isRTL ? 'rotate-180' : ''} />
+            <span className="whitespace-nowrap">{t.checkAnswer}</span>
           </button>
         </div>
 
-        {/* Skip Card Button if stuck */}
+        {/* Skip Card / Hint Actions */}
         <div className="flex items-center justify-between text-xs font-bold text-[var(--mute)] pt-1">
           <button
             type="button"
             onClick={() => handleNextCard(true)}
-            className="hover:text-[var(--ink)] transition-colors py-1"
+            className="hover:text-[var(--ink)] transition-colors py-1 cursor-pointer flex items-center gap-1"
           >
-            {isRTL ? 'رد کردن این کارت ⏭️' : 'Skip Card ⏭️'}
+            <span>{isRTL ? 'رد کردن این کارت ⏭️' : 'Skip Card ⏭️'}</span>
           </button>
 
-          <button
-            type="button"
-            onClick={onOpenLeaderboard}
-            className="text-[var(--lapis)] hover:underline flex items-center gap-1 py-1"
-          >
-            <Trophy size={14} />
-            <span>{t.leaderboard}</span>
-          </button>
+          {!showOptionsHint && quizChoices.length > 1 && !evaluation?.isCorrect && (
+            <button
+              type="button"
+              onClick={() => {
+                sound.playToggle();
+                setShowOptionsHint(true);
+              }}
+              className="text-[var(--lapis)] hover:underline flex items-center gap-1 py-1 cursor-pointer"
+            >
+              <Lightbulb size={13} className="text-[var(--saffron)]" />
+              <span>{isRTL ? 'راهنما (هینت)' : 'Hint'}</span>
+            </button>
+          )}
         </div>
 
       </div>

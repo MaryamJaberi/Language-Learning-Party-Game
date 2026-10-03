@@ -90,16 +90,16 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-3.5 space-y-3 text-[#1E1B2E]">
+        <div className="flex-1 overflow-y-auto p-4 space-y-3.5 text-[var(--ink)]">
           
           {/* 1. Target Language Selection */}
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-[#1E1B2E] flex items-center gap-1.5">
-                <Globe size={13} className="text-[#1E9E93]" />
+              <label className="text-xs font-bold text-[var(--ink)] flex items-center gap-1.5">
+                <Globe size={13} className="text-[var(--lapis)]" />
                 <span>{isRTL ? 'زبان تمرین (Target Language):' : 'Target Language:'}</span>
               </label>
-              <span className="text-[9.5px] text-[#1E1B2E]/60 font-bold">۳۸ زبان</span>
+              <span className="text-[10px] text-[var(--mute)] font-bold">۳۸ زبان</span>
             </div>
 
             <button
@@ -108,22 +108,22 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                 sound.playClick();
                 setPickerMode('target');
               }}
-              className="w-full p-2.5 rounded-[16px] bg-[#F4EDE1] hover:bg-[#ece2d3] border-2 border-[#1E1B2E] text-[#1E1B2E] flex items-center justify-between shadow-[2px_2px_0px_0px_#1E1B2E] active:translate-y-0.5 transition-all"
+              className="w-full p-2.5 rounded-2xl bg-[var(--bg)] hover:bg-[var(--line)]/50 border border-[var(--line)] text-[var(--ink)] flex items-center justify-between shadow-xs active:scale-98 transition-all cursor-pointer"
             >
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-[10px] bg-[#FFFBF4] border border-[#1E1B2E] flex items-center justify-center text-lg">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center text-lg shadow-xs">
                   <FlagIcon language={settings.targetLanguage} size={20} />
                 </div>
                 <div className="text-start">
-                  <div className="font-extrabold text-xs text-[#1E1B2E]">
+                  <div className="font-extrabold text-xs text-[var(--ink)]">
                     {currentTargetLangInfo.nativeName}
                   </div>
-                  <div className="text-[9.5px] text-[#1E1B2E]/70 font-medium">
+                  <div className="text-[9.5px] text-[var(--mute)] font-medium">
                     {isRTL ? 'زبان یادگیری و تمرین' : 'Target Practice Language'}
                   </div>
                 </div>
               </div>
-              <div className="px-2 py-0.5 rounded-[8px] bg-[#1E9E93] text-white font-bold text-[10.5px] border border-[#1E1B2E] flex items-center gap-1">
+              <div className="px-2.5 py-1 rounded-lg bg-[var(--lapis-soft)] text-[var(--lapis)] font-bold text-[11px] flex items-center gap-1">
                 <span>{isRTL ? 'تغییر ▾' : 'Change ▾'}</span>
               </div>
             </button>
@@ -141,10 +141,10 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                       sound.playToggle();
                       setSettings(s => ({ ...s, targetLanguage: langCode }));
                     }}
-                    className={`px-2 py-0.5 rounded-[8px] border text-[10px] font-bold shrink-0 flex items-center gap-1 transition-all ${
+                    className={`px-2.5 py-1 rounded-lg border text-[10px] font-bold shrink-0 flex items-center gap-1 transition-all cursor-pointer ${
                       isSelected 
-                        ? 'bg-[#1E9E93] text-white border-[#1E1B2E] shadow-[1px_1px_0px_0px_#1E1B2E]' 
-                        : 'bg-[#FFFBF4] text-[#1E1B2E] border-[#1E1B2E]/40 hover:bg-[#F4EDE1]'
+                        ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs' 
+                        : 'bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--panel)]'
                     }`}
                   >
                     <FlagIcon language={langCode} size={12} />
@@ -156,11 +156,11 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
           </div>
 
           {/* 2. Native Reference Language (Hints & Prompts) */}
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-[#1E1B2E] flex items-center gap-1.5">
-                <Languages size={13} className="text-[#E0603F]" />
-                <span>{isRTL ? 'زبان مادری و راهنما (Native Language):' : 'Native / Guide Language:'}</span>
+              <label className="text-xs font-bold text-[var(--ink)] flex items-center gap-1.5">
+                <Languages size={13} className="text-[var(--turq)]" />
+                <span>{isRTL ? 'زبان مبدأ (راهنما):' : 'Guide / Reference Language:'}</span>
               </label>
             </div>
 
@@ -170,32 +170,32 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                 sound.playClick();
                 setPickerMode('native');
               }}
-              className="w-full p-2.5 rounded-[16px] bg-[#FFFBF4] hover:bg-[#F4EDE1] border-2 border-[#1E1B2E] text-[#1E1B2E] flex items-center justify-between shadow-[2px_2px_0px_0px_#1E1B2E] active:translate-y-0.5 transition-all"
+              className="w-full p-2.5 rounded-2xl bg-[var(--bg)] hover:bg-[var(--line)]/50 border border-[var(--line)] text-[var(--ink)] flex items-center justify-between shadow-xs active:scale-98 transition-all cursor-pointer"
             >
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-[10px] bg-[#F4EDE1] border border-[#1E1B2E] flex items-center justify-center text-lg">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center text-lg shadow-xs">
                   <FlagIcon language={settings.nativeLanguage} size={20} />
                 </div>
                 <div className="text-start">
-                  <div className="font-extrabold text-xs text-[#1E1B2E]">
+                  <div className="font-extrabold text-xs text-[var(--ink)]">
                     {currentNativeLangInfo.nativeName}
                   </div>
-                  <div className="text-[9.5px] text-[#1E1B2E]/70 font-medium">
-                    {isRTL ? 'زبان مادری و راهنمای کارت' : 'Native Card Guide'}
+                  <div className="text-[9.5px] text-[var(--mute)] font-medium">
+                    {isRTL ? 'راهنمای کارت‌ها' : 'Card Guide'}
                   </div>
                 </div>
               </div>
-              <div className="px-2 py-0.5 rounded-[8px] bg-[#E0603F] text-white font-bold text-[10.5px] border border-[#1E1B2E] flex items-center gap-1">
+              <div className="px-2.5 py-1 rounded-lg bg-[var(--lapis-soft)] text-[var(--lapis)] font-bold text-[11px] flex items-center gap-1">
                 <span>{isRTL ? 'تغییر ▾' : 'Change ▾'}</span>
               </div>
             </button>
           </div>
 
           {/* 3. Challenge Mode */}
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-[#1E1B2E] flex items-center justify-between">
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-[var(--ink)] flex items-center justify-between">
               <div className="flex items-center gap-1.5">
-                <Languages size={13} className="text-[#F2B63D]" />
+                <Languages size={13} className="text-[var(--saffron)]" />
                 <span>{isRTL ? 'سبک تمرین:' : 'Training Mode:'}</span>
               </div>
             </label>
@@ -207,16 +207,16 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                   sound.playToggle();
                   setSettings(s => ({ ...s, displayMode: 'text_and_audio' }));
                 }}
-                className={`p-2 rounded-[14px] border-2 flex flex-col items-center text-center gap-0.5 transition-all ${
+                className={`p-2.5 rounded-xl border flex flex-col items-center text-center gap-0.5 transition-all cursor-pointer active:scale-98 ${
                   settings.displayMode === 'text_and_audio'
-                    ? 'bg-[#1E9E93] text-white border-[#1E1B2E] font-bold shadow-[2px_2px_0px_0px_#1E1B2E]'
-                    : 'bg-[#F4EDE1] text-[#1E1B2E] border-[#1E1B2E]/30 hover:bg-[#eae0d0]'
+                    ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] font-bold shadow-xs'
+                    : 'bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--panel)]'
                 }`}
               >
                 <FileText size={15} />
-                <span className="text-[11px] font-bold">{isRTL ? '🗣️ روخوانی و تلفظ' : '🗣️ Reading & Speech'}</span>
-                <span className="text-[9px] opacity-80 leading-tight">
-                  {isRTL ? 'دیدن متن + تلفظ روان' : 'See text + speech'}
+                <span className="text-[11px] font-bold whitespace-nowrap">{isRTL ? 'روخوانی و تلفظ' : 'Reading & Speech'}</span>
+                <span className="text-[9px] opacity-80 leading-tight whitespace-nowrap">
+                  {isRTL ? 'دیدن متن + تلفظ' : 'See text + speech'}
                 </span>
               </button>
 
@@ -227,16 +227,18 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                   sound.playToggle();
                   setSettings(s => ({ ...s, displayMode: 'translate_to_target' }));
                 }}
-                className={`p-2 rounded-[14px] border-2 flex flex-col items-center text-center gap-0.5 transition-all ${
+                className={`p-2.5 rounded-xl border flex flex-col items-center text-center gap-0.5 transition-all cursor-pointer active:scale-98 ${
                   settings.displayMode === 'translate_to_target'
-                    ? 'bg-[#F2B63D] text-[#1E1B2E] border-[#1E1B2E] font-bold shadow-[2px_2px_0px_0px_#1E1B2E]'
-                    : 'bg-[#F4EDE1] text-[#1E1B2E] border-[#1E1B2E]/30 hover:bg-[#eae0d0]'
+                    ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] font-bold shadow-xs'
+                    : 'bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--panel)]'
                 }`}
               >
                 <Languages size={15} />
-                <span className="text-[11px] font-bold">{isRTL ? '🔄 ترجمه به زبان هدف' : '🔄 To Target Lang'}</span>
-                <span className="text-[9px] opacity-80 leading-tight">
-                  {isRTL ? 'دیدن راهنما ➔ بیان به هدف' : 'Native ➔ speak target'}
+                <span className="text-[11px] font-bold whitespace-nowrap">
+                  {isRTL ? `${currentNativeLangInfo.persianName} به ${currentTargetLangInfo.persianName}` : `${currentNativeLangInfo.name} → ${currentTargetLangInfo.name}`}
+                </span>
+                <span className="text-[9px] opacity-80 leading-tight whitespace-nowrap">
+                  {isRTL ? 'دیدن مبدأ ➔ حدس هدف' : 'Prompt ➔ target'}
                 </span>
               </button>
 
@@ -247,16 +249,18 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                   sound.playToggle();
                   setSettings(s => ({ ...s, displayMode: 'translate_to_native' }));
                 }}
-                className={`p-2 rounded-[14px] border-2 flex flex-col items-center text-center gap-0.5 transition-all ${
+                className={`p-2.5 rounded-xl border flex flex-col items-center text-center gap-0.5 transition-all cursor-pointer active:scale-98 ${
                   settings.displayMode === 'translate_to_native'
-                    ? 'bg-[#E0603F] text-white border-[#1E1B2E] font-bold shadow-[2px_2px_0px_0px_#1E1B2E]'
-                    : 'bg-[#F4EDE1] text-[#1E1B2E] border-[#1E1B2E]/30 hover:bg-[#eae0d0]'
+                    ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] font-bold shadow-xs'
+                    : 'bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--panel)]'
                 }`}
               >
                 <ArrowRightLeft size={15} />
-                <span className="text-[11px] font-bold">{isRTL ? '🔁 معکوس به زبان مادری' : '🔁 To Native Lang'}</span>
-                <span className="text-[9px] opacity-80 leading-tight">
-                  {isRTL ? 'دیدن هدف ➔ ترجمه مادری' : 'Target ➔ native meaning'}
+                <span className="text-[11px] font-bold whitespace-nowrap">
+                  {isRTL ? `${currentTargetLangInfo.persianName} به ${currentNativeLangInfo.persianName}` : `${currentTargetLangInfo.name} → ${currentNativeLangInfo.name}`}
+                </span>
+                <span className="text-[9px] opacity-80 leading-tight whitespace-nowrap">
+                  {isRTL ? 'دیدن هدف ➔ حدس ترجمه' : 'Target ➔ meaning'}
                 </span>
               </button>
 
@@ -267,10 +271,10 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                   sound.playToggle();
                   setSettings(s => ({ ...s, displayMode: 'audio_only' }));
                 }}
-                className={`p-2 rounded-[14px] border-2 flex flex-col items-center text-center gap-0.5 transition-all ${
+                className={`p-2.5 rounded-xl border flex flex-col items-center text-center gap-0.5 transition-all cursor-pointer active:scale-98 ${
                   settings.displayMode === 'audio_only'
-                    ? 'bg-[#1E1B2E] text-white border-[#1E1B2E] font-bold shadow-[2px_2px_0px_0px_#1E1B2E]'
-                    : 'bg-[#F4EDE1] text-[#1E1B2E] border-[#1E1B2E]/30 hover:bg-[#eae0d0]'
+                    ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] font-bold shadow-xs'
+                    : 'bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--panel)]'
                 }`}
               >
                 <Headphones size={15} />
@@ -282,15 +286,15 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
             </div>
           </div>
 
-          {/* 4. CEFR Level Selection */}
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-[#1E1B2E] flex items-center gap-1.5">
-              <Layers size={13} className="text-[#1E9E93]" />
+          {/* 4. CEFR Level Selection (A1, A2, B1, B2, C1, all) */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-[var(--ink)] flex items-center gap-1.5">
+              <Layers size={13} className="text-[var(--lapis)]" />
               <span>{isRTL ? 'سطح دشواری (CEFR):' : 'Level (CEFR):'}</span>
             </label>
-            <div className="grid grid-cols-5 gap-1 text-center">
-              {(['A1', 'A2', 'B1', 'B2', 'all'] as CEFRLevel[]).map(lvl => {
-                const isSelected = settings.cefrLevel === lvl;
+            <div className="grid grid-cols-6 gap-1 text-center">
+              {(['A1', 'A2', 'B1', 'B2', 'C1', 'all'] as CEFRLevel[]).map(lvl => {
+                const isSelected = (settings.cefrLevel || 'all') === lvl;
                 return (
                   <button
                     key={lvl}
@@ -298,10 +302,10 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                       sound.playToggle();
                       setSettings(s => ({ ...s, cefrLevel: lvl }));
                     }}
-                    className={`py-1 rounded-[10px] border-2 font-bold text-[11px] transition-all ${
+                    className={`py-1.5 rounded-xl border font-bold text-[11px] transition-all cursor-pointer active:scale-95 ${
                       isSelected 
-                        ? 'bg-[#1E9E93] text-white border-[#1E1B2E] shadow-[1.5px_1.5px_0px_0px_#1E1B2E]' 
-                        : 'bg-[#F4EDE1] border-[#1E1B2E]/20 text-[#1E1B2E] hover:bg-[#eae0d0]'
+                        ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs' 
+                        : 'bg-[var(--bg)] border-[var(--line)] text-[var(--ink)] hover:bg-[var(--panel)]'
                     }`}
                   >
                     {lvl === 'all' ? (isRTL ? 'همه' : 'All') : lvl}
@@ -312,9 +316,9 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
           </div>
 
           {/* 5. Number of Cards */}
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-[#1E1B2E] flex items-center gap-1.5">
-              <Clock size={13} className="text-[#F2B63D]" />
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-[var(--ink)] flex items-center gap-1.5">
+              <Clock size={13} className="text-[var(--saffron)]" />
               <span>{isRTL ? 'تعداد کارت‌ها:' : 'Number of Cards:'}</span>
             </label>
             <div className="grid grid-cols-4 gap-1.5 text-center">
@@ -327,10 +331,10 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                       sound.playToggle();
                       setSettings(s => ({ ...s, questionCount: cnt }));
                     }}
-                    className={`py-1 rounded-[10px] border-2 font-bold text-[11px] transition-all ${
+                    className={`py-1.5 rounded-xl border font-bold text-[11px] transition-all cursor-pointer active:scale-95 ${
                       isSelected 
-                        ? 'bg-[#F2B63D] text-[#1E1B2E] border-[#1E1B2E] shadow-[1.5px_1.5px_0px_0px_#1E1B2E]' 
-                        : 'bg-[#F4EDE1] border-[#1E1B2E]/20 text-[#1E1B2E] hover:bg-[#eae0d0]'
+                        ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs' 
+                        : 'bg-[var(--bg)] border-[var(--line)] text-[var(--ink)] hover:bg-[var(--panel)]'
                     }`}
                   >
                     {cnt} {isRTL ? 'کارت' : 'cards'}
@@ -343,12 +347,12 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
         </div>
 
         {/* Start Button */}
-        <div className="p-3 bg-[#F4EDE1] border-t-2 border-[#1E1B2E]">
+        <div className="p-3.5 bg-[var(--panel)] border-t border-[var(--line)]">
           <button
             onClick={handleStart}
-            className="w-full py-2.5 rounded-[16px] bg-[#E0603F] hover:bg-[#d05333] text-white font-extrabold text-sm border-2 border-[#1E1B2E] shadow-[3px_3px_0px_0px_#1E1B2E] active:translate-y-0.5 transition-all flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-2xl bg-[var(--lapis)] hover:brightness-105 text-[var(--on-lapis)] font-extrabold text-sm shadow-md active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
-            <Play size={16} fill="#FFFFFF" />
+            <Play size={16} fill="currentColor" />
             <span>{isRTL ? 'شروع تمرین هوشمند' : 'Start Practice'}</span>
           </button>
         </div>

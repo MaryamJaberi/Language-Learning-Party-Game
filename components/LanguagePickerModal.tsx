@@ -113,20 +113,20 @@ export const LanguagePickerModal: React.FC<LanguagePickerModalProps> = ({
       dir={isRTL ? 'rtl' : 'ltr'}
     >
       <div 
-        className="bg-[#FFFBF4] border-2 border-[#1E1B2E] rounded-[28px] w-full max-w-lg max-h-[90vh] flex flex-col shadow-[6px_6px_0px_0px_#1E1B2E] overflow-hidden text-[#1E1B2E]"
+        className="bg-[var(--panel)] border border-[var(--line)] rounded-[24px] w-full max-w-lg max-h-[90vh] flex flex-col shadow-[var(--shadow)] overflow-hidden text-[var(--ink)]"
         onClick={e => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="bg-[#FFFBF4] p-3.5 sm:p-4 text-[#1E1B2E] flex items-center justify-between border-b-2 border-[#1E1B2E] shrink-0">
+        <div className="bg-[var(--panel)] p-3.5 sm:p-4 text-[var(--ink)] flex items-center justify-between border-b border-[var(--line)] shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-[14px] bg-[#F4EDE1] border-2 border-[#1E1B2E] text-[#1E1B2E] flex items-center justify-center shadow-[2px_2px_0px_0px_#1E1B2E]">
+            <div className="w-10 h-10 rounded-[14px] bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] flex items-center justify-center shadow-[var(--shadow-sm)]">
               <Globe size={22} />
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-bold tracking-tight leading-tight font-display">
                 {title || (isRTL ? 'انتخاب زبان' : 'Select Language')}
               </h2>
-              <p className="text-[11px] text-[#1E1B2E]/60 font-medium font-ui">
+              <p className="text-[11px] text-[var(--mute)] font-medium font-ui">
                 {subtitle || (isRTL ? `${SUPPORTED_LANGUAGES.length} زبان زنده دنیا` : `${SUPPORTED_LANGUAGES.length} supported languages`)}
               </p>
             </div>
@@ -137,17 +137,17 @@ export const LanguagePickerModal: React.FC<LanguagePickerModalProps> = ({
               sound.playClick();
               onClose();
             }}
-            className="w-8 h-8 rounded-[12px] bg-[#F4EDE1] hover:bg-[#E6DFD5] border-2 border-[#1E1B2E] text-[#1E1B2E] flex items-center justify-center transition-transform active:translate-y-0.5 shadow-[2px_2px_0px_0px_#1E1B2E]"
+            className="w-8 h-8 rounded-[12px] bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] text-[var(--ink)] flex items-center justify-center transition-transform active:translate-y-0.5 shadow-[var(--shadow-sm)]"
           >
             <X size={16} />
           </button>
         </div>
 
         {/* Search & Region Filter Bar */}
-        <div className="p-3 bg-[#F4EDE1] border-b-2 border-[#1E1B2E] space-y-2 shrink-0">
+        <div className="p-3 bg-[var(--bg)] border-b border-[var(--line)] space-y-2 shrink-0">
           {/* Search Box */}
           <div className="relative">
-            <div className={`absolute top-1/2 -translate-y-1/2 ${isRTL ? 'right-3' : 'left-3'} text-[#1E1B2E]/60 pointer-events-none`}>
+            <div className={`absolute top-1/2 -translate-y-1/2 ${isRTL ? 'right-3' : 'left-3'} text-[var(--mute)] pointer-events-none`}>
               <Search size={16} />
             </div>
             <input 
@@ -155,7 +155,7 @@ export const LanguagePickerModal: React.FC<LanguagePickerModalProps> = ({
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder={isRTL ? 'جستجوی نام زبان (فارسی، انگلیسی، بومی)...' : 'Search language (e.g. Spanish, فارسی, Français)...'}
-              className={`w-full py-2 bg-[#FFFBF4] text-[#1E1B2E] placeholder:text-[#1E1B2E]/40 font-medium text-xs rounded-[14px] border-2 border-[#1E1B2E] focus:outline-none transition-colors font-ui ${
+              className={`w-full py-2 bg-[var(--panel)] text-[var(--ink)] placeholder:text-[var(--mute)] font-medium text-xs rounded-[14px] border border-[var(--line)] focus:outline-none transition-colors font-ui ${
                 isRTL ? 'pr-9 pl-8' : 'pl-9 pr-8'
               }`}
             />
@@ -163,7 +163,7 @@ export const LanguagePickerModal: React.FC<LanguagePickerModalProps> = ({
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className={`absolute top-1/2 -translate-y-1/2 ${isRTL ? 'left-2.5' : 'right-2.5'} text-[#1E1B2E]/50 hover:text-[#1E1B2E]`}
+                className={`absolute top-1/2 -translate-y-1/2 ${isRTL ? 'left-2.5' : 'right-2.5'} text-[var(--mute)] hover:text-[var(--ink)]`}
               >
                 <X size={14} />
               </button>
@@ -182,10 +182,10 @@ export const LanguagePickerModal: React.FC<LanguagePickerModalProps> = ({
                     sound.playToggle();
                     setActiveRegion(tab.id);
                   }}
-                  className={`px-3 py-1 rounded-[12px] font-bold text-[11px] whitespace-nowrap transition-all border-2 border-[#1E1B2E] shrink-0 flex items-center gap-1 active:translate-y-0.5 ${
+                  className={`px-3 py-1 rounded-[12px] font-bold text-[11px] whitespace-nowrap transition-all border shrink-0 flex items-center gap-1 active:translate-y-0.5 ${
                     isActive
-                      ? 'bg-[#E0603F] text-white shadow-[2px_2px_0px_0px_#1E1B2E]'
-                      : 'bg-[#FFFBF4] text-[#1E1B2E] hover:bg-[#F4EDE1]'
+                      ? 'bg-[var(--vermilion)] text-white border-[var(--vermilion)] shadow-[var(--shadow-sm)]'
+                      : 'bg-[var(--panel)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--bg)]'
                   }`}
                 >
                   <span>{tab.icon}</span>
@@ -197,10 +197,10 @@ export const LanguagePickerModal: React.FC<LanguagePickerModalProps> = ({
         </div>
 
         {/* Language Grid (Scrollable) */}
-        <div className="flex-1 overflow-y-auto p-3 space-y-1.5 min-h-0 overscroll-contain bg-[#FFFBF4]">
+        <div className="flex-1 overflow-y-auto p-3 space-y-1.5 min-h-0 overscroll-contain bg-[var(--panel)]">
           {filteredLanguages.length === 0 ? (
-            <div className="text-center py-8 text-[#1E1B2E]/60 space-y-2">
-              <Globe size={32} className="mx-auto text-[#1E1B2E]/40" />
+            <div className="text-center py-8 text-[var(--mute)] space-y-2">
+              <Globe size={32} className="mx-auto text-[var(--mute)] opacity-50" />
               <p className="font-bold text-xs font-ui">
                 {isRTL ? 'هیچ زبانی با این عبارت پیدا نشد.' : 'No languages found matching your query.'}
               </p>
@@ -210,7 +210,7 @@ export const LanguagePickerModal: React.FC<LanguagePickerModalProps> = ({
                   setSearchQuery('');
                   setActiveRegion('all');
                 }}
-                className="px-3 py-1 bg-[#E0603F] text-white text-xs font-bold rounded-xl border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E]"
+                className="px-3 py-1 bg-[var(--vermilion)] text-white text-xs font-bold rounded-xl shadow-[var(--shadow-sm)] active:translate-y-0.5 transition-all"
               >
                 {isRTL ? 'نمایش همه زبان‌ها' : 'Show all languages'}
               </button>
@@ -233,19 +233,19 @@ export const LanguagePickerModal: React.FC<LanguagePickerModalProps> = ({
                         handleToggleMulti(lang.code);
                       }
                     }}
-                    className={`p-2.5 rounded-[16px] border-2 border-[#1E1B2E] transition-all flex items-center justify-between text-start active:translate-y-0.5 relative group font-ui ${
+                    className={`p-2.5 rounded-[16px] border transition-all flex items-center justify-between text-start active:translate-y-0.5 relative group font-ui ${
                       isSelected
-                        ? 'bg-[#1E9E93] text-white shadow-[3px_3px_0px_0px_#1E1B2E]'
-                        : 'bg-[#FFFBF4] text-[#1E1B2E] hover:bg-[#F4EDE1] shadow-[2px_2px_0px_0px_#1E1B2E]'
+                        ? 'bg-[var(--teal)] text-white border-[var(--teal)] shadow-[var(--shadow-sm)]'
+                        : 'bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--panel)] shadow-[var(--shadow-sm)]'
                     }`}
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-8 h-8 rounded-xl bg-[#F4EDE1] flex items-center justify-center shrink-0 border border-[#1E1B2E]/30">
+                      <div className="w-8 h-8 rounded-xl bg-[var(--panel)] flex items-center justify-center shrink-0 border border-[var(--line)]">
                         <FlagIcon language={lang.code} size={22} />
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
-                          <span className={`font-bold text-sm truncate ${isSelected ? 'text-white' : 'text-[#1E1B2E]'}`}>
+                          <span className={`font-bold text-sm truncate ${isSelected ? 'text-white' : 'text-[var(--ink)]'}`}>
                             {lang.nativeName}
                           </span>
                         </div>
@@ -255,11 +255,11 @@ export const LanguagePickerModal: React.FC<LanguagePickerModalProps> = ({
                     {/* Indicator */}
                     <div className="shrink-0 ml-2">
                       {isSelected ? (
-                        <div className="w-5 h-5 rounded-full bg-white text-[#1E9E93] flex items-center justify-center shadow-sm">
+                        <div className="w-5 h-5 rounded-full bg-white text-[var(--teal)] flex items-center justify-center shadow-xs">
                           <Check size={12} strokeWidth={3.5} />
                         </div>
                       ) : (
-                        <div className="w-5 h-5 rounded-full border-2 border-[#1E1B2E]/30 group-hover:border-[#1E1B2E]" />
+                        <div className="w-5 h-5 rounded-full border border-[var(--line)] group-hover:border-[var(--ink)]" />
                       )}
                     </div>
                   </button>
@@ -271,9 +271,9 @@ export const LanguagePickerModal: React.FC<LanguagePickerModalProps> = ({
 
         {/* Modal Footer (for multi-select or quick stats) */}
         {mode === 'multi' ? (
-          <div className="p-3 bg-[#F4EDE1] border-t-2 border-[#1E1B2E] flex items-center justify-between gap-3 shrink-0 font-ui">
-            <div className="text-[#1E1B2E] text-xs font-bold flex items-center gap-1.5">
-              <Sparkles size={16} className="text-[#E0603F]" />
+          <div className="p-3 bg-[var(--bg)] border-t border-[var(--line)] flex items-center justify-between gap-3 shrink-0 font-ui">
+            <div className="text-[var(--ink)] text-xs font-bold flex items-center gap-1.5">
+              <Sparkles size={16} className="text-[var(--vermilion)]" />
               <span>
                 {isRTL 
                   ? `${tempMultiSelected.length} زبان انتخاب شده` 
@@ -283,16 +283,16 @@ export const LanguagePickerModal: React.FC<LanguagePickerModalProps> = ({
             <button
               type="button"
               onClick={handleConfirmMulti}
-              className="px-5 py-2.5 bg-[#1E9E93] hover:bg-[#18837a] text-white font-bold text-xs uppercase tracking-wider rounded-[14px] border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E] active:translate-y-0.5 flex items-center gap-1.5"
+              className="px-5 py-2.5 bg-[var(--teal)] hover:bg-[#18837a] text-white font-bold text-xs uppercase tracking-wider rounded-[14px] shadow-[var(--shadow-sm)] active:translate-y-0.5 flex items-center gap-1.5 transition-all"
             >
               <Check size={15} strokeWidth={3} />
               <span>{isRTL ? 'تایید و ذخیره زبان‌ها' : 'Apply Languages'}</span>
             </button>
           </div>
         ) : (
-          <div className="p-2.5 bg-[#F4EDE1] border-t-2 border-[#1E1B2E] flex items-center justify-between text-[11px] text-[#1E1B2E]/70 px-4 shrink-0 font-ui">
+          <div className="p-2.5 bg-[var(--bg)] border-t border-[var(--line)] flex items-center justify-between text-[11px] text-[var(--mute)] px-4 shrink-0 font-ui">
             <span>{isRTL ? 'برای انتخاب کافیست روی هر زبان ضربه بزنید' : 'Tap any language to select instantly'}</span>
-            <span className="text-[#E0603F] font-bold">{SUPPORTED_LANGUAGES.length} {isRTL ? 'زبان' : 'languages'}</span>
+            <span className="text-[var(--vermilion)] font-bold">{SUPPORTED_LANGUAGES.length} {isRTL ? 'زبان' : 'languages'}</span>
           </div>
         )}
       </div>

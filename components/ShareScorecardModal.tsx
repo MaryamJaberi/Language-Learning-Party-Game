@@ -163,20 +163,20 @@ export const ShareScorecardModal: React.FC<Props> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#1E1B2E]/60 backdrop-blur-sm animate-fade-in font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
-      <div className="w-full max-w-sm bg-[#FFFBF4] text-[#1E1B2E] rounded-[24px] border-2 border-[#1E1B2E] shadow-[6px_6px_0px_0px_#1E1B2E] p-4 flex flex-col max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-xs animate-fade-in font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className="w-full max-w-sm bg-[var(--panel)] text-[var(--ink)] rounded-[20px] border border-[var(--line)] shadow-[var(--shadow)] p-4 flex flex-col max-h-[90vh] overflow-y-auto">
         
         {/* Header with Close */}
-        <div className="flex items-center justify-between pb-2 border-b-2 border-[#1E1B2E]/20 shrink-0">
+        <div className="flex items-center justify-between pb-2 border-b border-[var(--line)] shrink-0">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-[10px] bg-[#F2B63D] text-[#1E1B2E] flex items-center justify-center font-bold border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E]">
+            <div className="w-8 h-8 rounded-[10px] bg-[var(--saffron)] text-[var(--ink)] flex items-center justify-center font-bold border border-[var(--line)] shadow-[var(--shadow-sm)]">
               <Share2 size={16} />
             </div>
             <div>
-              <h2 className="text-base font-bold text-[#1E1B2E] font-display uppercase tracking-wide">
+              <h2 className="text-base font-bold text-[var(--ink)] font-display uppercase tracking-wide">
                 اشتراک‌گذاری کارنامه
               </h2>
-              <span className="text-[10px] text-[#1E1B2E]/70 block font-medium">گزارش مسابقه و دستاوردهای زبانی</span>
+              <span className="text-[10px] text-[var(--mute)] block font-medium">گزارش مسابقه و دستاوردهای زبانی</span>
             </div>
           </div>
 
@@ -185,37 +185,37 @@ export const ShareScorecardModal: React.FC<Props> = ({
               sound.playClick();
               onClose();
             }}
-            className="w-7 h-7 rounded-[8px] bg-[#F4EDE1] hover:bg-[#ebdcc8] flex items-center justify-center text-[#1E1B2E] border border-[#1E1B2E] transition-colors"
+            className="w-7 h-7 rounded-[8px] bg-[var(--bg)] hover:bg-[var(--panel)] flex items-center justify-center text-[var(--ink)] border border-[var(--line)] transition-colors"
           >
             <X size={16} />
           </button>
         </div>
 
         {/* Visual Scorecard Preview Card */}
-        <div className="my-3 p-3.5 bg-[#F4EDE1] text-[#1E1B2E] rounded-[18px] border-2 border-[#1E1B2E] space-y-2.5">
+        <div className="my-3 p-3.5 bg-[var(--bg)] text-[var(--ink)] rounded-[16px] border border-[var(--line)] space-y-2.5">
           
           {/* Top Brand Banner */}
-          <div className="flex items-center justify-between border-b border-[#1E1B2E]/20 pb-1.5">
+          <div className="flex items-center justify-between border-b border-[var(--line)] pb-1.5">
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-bold bg-[#1E1B2E] text-[#FFFBF4] px-2 py-0.5 rounded-[6px]">
+              <span className="text-xs font-bold bg-[var(--ink)] text-[var(--bg)] px-2 py-0.5 rounded-[6px]">
                 بازی دور
               </span>
-              <span className="text-[10px] text-[#1E1B2E]/70 font-bold">DOŪR GAME</span>
+              <span className="text-[10px] text-[var(--mute)] font-bold">DOŪR GAME</span>
             </div>
-            <span className="text-[10px] font-bold text-[#1E1B2E]/60">
+            <span className="text-[10px] font-bold text-[var(--mute)]">
               {new Date().toLocaleDateString('fa-IR')}
             </span>
           </div>
 
           {/* Winner Showcase */}
-          <div className="flex items-center gap-2.5 p-2 bg-[#FFFBF4] rounded-[14px] border-2 border-[#1E1B2E]">
+          <div className="flex items-center gap-2.5 p-2 bg-[var(--panel)] rounded-[14px] border border-[var(--line)]">
             <TeamMascot color={winnerColor} size={40} />
             <div className="min-w-0 flex-1 text-start">
-              <div className="flex items-center gap-1 text-[11px] font-bold text-[#E0603F]">
+              <div className="flex items-center gap-1 text-[11px] font-bold text-[var(--vermilion)]">
                 <Crown size={14} />
                 <span>تیم قهرمان: {winnerPlayerNames}</span>
               </div>
-              <span className="text-[10px] text-[#1E1B2E]/70 font-bold block truncate">
+              <span className="text-[10px] text-[var(--mute)] font-bold block truncate">
                 تیم {winnerColor === 'BLUE' ? 'آبی' : winnerColor === 'RED' ? 'قرمز' : winnerColor === 'GREEN' ? 'سبز' : 'زرد'}
               </span>
             </div>
@@ -223,29 +223,29 @@ export const ShareScorecardModal: React.FC<Props> = ({
 
           {/* Key Stats Pill Row */}
           <div className="grid grid-cols-3 gap-1.5 text-center">
-            <div className="bg-[#FFFBF4] p-1.5 rounded-[12px] border-2 border-[#1E1B2E]">
-              <span className="text-[9px] text-[#1E1B2E]/70 font-bold block">مجموع امتیاز</span>
-              <span className="text-base font-bold text-[#1E1B2E]">{totalPoints} ⭐</span>
+            <div className="bg-[var(--panel)] p-1.5 rounded-[12px] border border-[var(--line)]">
+              <span className="text-[9px] text-[var(--mute)] font-bold block">مجموع امتیاز</span>
+              <span className="text-base font-bold text-[var(--ink)]">{totalPoints} ⭐</span>
             </div>
-            <div className="bg-[#FFFBF4] p-1.5 rounded-[12px] border-2 border-[#1E1B2E]">
-              <span className="text-[9px] text-[#1E1B2E]/70 font-bold block">دقت پاسخ‌ها</span>
-              <span className="text-base font-bold text-[#1E1B2E]">{accuracy}% 🎯</span>
+            <div className="bg-[var(--panel)] p-1.5 rounded-[12px] border border-[var(--line)]">
+              <span className="text-[9px] text-[var(--mute)] font-bold block">دقت پاسخ‌ها</span>
+              <span className="text-base font-bold text-[var(--ink)]">{accuracy}% 🎯</span>
             </div>
-            <div className="bg-[#FFFBF4] p-1.5 rounded-[12px] border-2 border-[#1E1B2E]">
-              <span className="text-[9px] text-[#1E1B2E]/70 font-bold block">کارت درست</span>
-              <span className="text-base font-bold text-[#1E1B2E]">{correctCards}/{totalCards} 📚</span>
+            <div className="bg-[var(--panel)] p-1.5 rounded-[12px] border border-[var(--line)]">
+              <span className="text-[9px] text-[var(--mute)] font-bold block">کارت درست</span>
+              <span className="text-base font-bold text-[var(--ink)]">{correctCards}/{totalCards} 📚</span>
             </div>
           </div>
 
           {/* MVP Badge */}
           {mvpName && (
-            <div className="p-1.5 bg-[#FFFBF4] rounded-[12px] border-2 border-[#1E1B2E] flex items-center justify-between text-xs">
+            <div className="p-1.5 bg-[var(--panel)] rounded-[12px] border border-[var(--line)] flex items-center justify-between text-xs">
               <div className="flex items-center gap-1.5">
-                <Flame size={15} className="text-[#E0603F]" />
-                <span className="font-bold text-[#1E1B2E]">ستاره مسابقه (MVP):</span>
-                <span className="font-bold text-[#E0603F]">{mvpName}</span>
+                <Flame size={15} className="text-[var(--vermilion)]" />
+                <span className="font-bold text-[var(--ink)]">ستاره مسابقه (MVP):</span>
+                <span className="font-bold text-[var(--vermilion)]">{mvpName}</span>
               </div>
-              <span className="text-[10px] bg-[#E0603F] text-white px-2 py-0.5 rounded-[6px] font-bold">
+              <span className="text-[10px] bg-[var(--vermilion)] text-white px-2 py-0.5 rounded-[6px] font-bold">
                 {mvpPoints} امتیاز
               </span>
             </div>
@@ -254,12 +254,12 @@ export const ShareScorecardModal: React.FC<Props> = ({
           {/* Learned Vocab Preview */}
           {learnedWords.length > 0 && (
             <div className="text-start">
-              <span className="text-[10px] font-bold text-[#1E1B2E]/70 block mb-1">
+              <span className="text-[10px] font-bold text-[var(--mute)] block mb-1">
                 کلمات یادگرفته شده در این دست:
               </span>
               <div className="flex flex-wrap gap-1">
                 {learnedWords.slice(0, 4).map((w, idx) => (
-                  <span key={idx} className="text-[9.5px] bg-[#FFFBF4] text-[#1E1B2E] px-2 py-0.5 rounded-[6px] border border-[#1E1B2E] font-bold">
+                  <span key={idx} className="text-[9.5px] bg-[var(--panel)] text-[var(--ink)] px-2 py-0.5 rounded-[6px] border border-[var(--line)] font-bold">
                     {w}
                   </span>
                 ))}
@@ -271,7 +271,7 @@ export const ShareScorecardModal: React.FC<Props> = ({
 
         {/* Copy Feedback Alert */}
         {copied && (
-          <div className="mb-2 p-2 bg-[#1E9E93] text-white rounded-[12px] font-bold text-xs flex items-center justify-center gap-1.5 border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E] animate-bounce">
+          <div className="mb-2 p-2 bg-[var(--teal)] text-white rounded-[12px] font-bold text-xs flex items-center justify-center gap-1.5 border border-[var(--line)] shadow-[var(--shadow-sm)] animate-bounce">
             <Check size={16} />
             <span>
               {copyType === 'discord' ? 'متن مخصوص دیسکورد کپی شد!' : 'متن کارنامه به کلیپ‌بورد کپی شد!'}
@@ -285,7 +285,7 @@ export const ShareScorecardModal: React.FC<Props> = ({
           {/* Main Native Share Button */}
           <button
             onClick={handleNativeShare}
-            className="pixel-btn pixel-btn-orange w-full py-2.5 text-xs font-bold uppercase flex items-center justify-center gap-2 rounded-[12px]"
+            className="w-full py-2.5 bg-[var(--vermilion)] hover:bg-[#c94b2a] text-white text-xs font-bold uppercase flex items-center justify-center gap-2 rounded-[12px] shadow-[var(--shadow-sm)] active:translate-y-0.5 transition-all"
           >
             <Share2 size={16} />
             <span>اشتراک مستقیم (واتس‌اپ، تلگرام، پیامک...)</span>
@@ -295,7 +295,7 @@ export const ShareScorecardModal: React.FC<Props> = ({
           <div className="grid grid-cols-3 gap-1.5">
             <button
               onClick={handleWhatsAppShare}
-              className="py-2 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-[10px] font-bold text-xs border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E] flex items-center justify-center gap-1"
+              className="py-2 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-[10px] font-bold text-xs shadow-[var(--shadow-sm)] flex items-center justify-center gap-1 active:translate-y-0.5 transition-all"
             >
               <MessageSquare size={14} />
               <span>واتس‌اپ</span>
@@ -303,7 +303,7 @@ export const ShareScorecardModal: React.FC<Props> = ({
 
             <button
               onClick={handleTelegramShare}
-              className="py-2 bg-[#0088cc] hover:bg-[#0077b5] text-white rounded-[10px] font-bold text-xs border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E] flex items-center justify-center gap-1"
+              className="py-2 bg-[#0088cc] hover:bg-[#0077b5] text-white rounded-[10px] font-bold text-xs shadow-[var(--shadow-sm)] flex items-center justify-center gap-1 active:translate-y-0.5 transition-all"
             >
               <Send size={14} />
               <span>تلگرام</span>
@@ -311,7 +311,7 @@ export const ShareScorecardModal: React.FC<Props> = ({
 
             <button
               onClick={handleDiscordShare}
-              className="py-2 bg-[#5865F2] hover:bg-[#4752c4] text-white rounded-[10px] font-bold text-xs border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E] flex items-center justify-center gap-1"
+              className="py-2 bg-[#5865F2] hover:bg-[#4752c4] text-white rounded-[10px] font-bold text-xs shadow-[var(--shadow-sm)] flex items-center justify-center gap-1 active:translate-y-0.5 transition-all"
             >
               <Zap size={14} />
               <span>دیسکورد</span>
@@ -321,7 +321,7 @@ export const ShareScorecardModal: React.FC<Props> = ({
           {/* Copy Full Text Button */}
           <button
             onClick={() => handleCopyText('full')}
-            className="w-full py-2 bg-[#FFFBF4] hover:bg-[#F4EDE1] text-[#1E1B2E] rounded-[12px] font-bold text-xs border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E] flex items-center justify-center gap-1.5"
+            className="w-full py-2 bg-[var(--bg)] hover:bg-[var(--panel)] text-[var(--ink)] rounded-[12px] font-bold text-xs border border-[var(--line)] shadow-[var(--shadow-sm)] flex items-center justify-center gap-1.5 active:translate-y-0.5 transition-all"
           >
             <Copy size={14} />
             <span>کپی متن خلاصه کارنامه</span>

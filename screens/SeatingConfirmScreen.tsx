@@ -32,14 +32,14 @@ const SeatingConfirmScreen: React.FC<Props> = ({
   const teamCount = settings.playerCount / 2;
 
   return (
-    <div className="h-full min-h-0 flex-1 flex flex-col p-3.5 sm:p-4 select-none overflow-hidden font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full min-h-0 flex-1 flex flex-col p-3 sm:p-4 select-none overflow-hidden font-ui bg-[var(--bg)] text-[var(--ink)]" dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Header Bar */}
-      <div className="flex items-center justify-between mb-2 bg-[#FFFBF4] text-[#1E1B2E] p-3 border-2 border-[#1E1B2E] rounded-[20px] shadow-[3px_3px_0px_0px_#1E1B2E] shrink-0 font-ui">
+      <div className="flex items-center justify-between mb-2 bg-[var(--panel)] text-[var(--ink)] p-3 border border-[var(--line)] rounded-[20px] shadow-xs shrink-0 font-ui">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-[12px] bg-[#F4EDE1] border-2 border-[#1E1B2E] flex items-center justify-center text-[#1E1B2E] shadow-[1px_1px_0px_0px_#1E1B2E]">
-            <Users size={16} color="#1E1B2E" />
+          <div className="w-8 h-8 rounded-xl bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center">
+            <Users size={16} />
           </div>
-          <h2 className="text-base sm:text-lg font-bold font-display leading-tight text-[#1E1B2E]">
+          <h2 className="text-base sm:text-lg font-bold font-display leading-tight text-[var(--ink)]">
             {t.tableSeatingTitle}
           </h2>
         </div>
@@ -48,36 +48,36 @@ const SeatingConfirmScreen: React.FC<Props> = ({
             sound.playClick();
             onOpenHelp?.();
           }} 
-          className="px-3 py-1.5 bg-[#F2B63D] hover:bg-[#e0a634] text-[#1E1B2E] border-2 border-[#1E1B2E] font-bold text-xs rounded-[14px] shadow-[2px_2px_0px_0px_#1E1B2E] transition-transform active:translate-y-0.5 flex items-center gap-1.5"
+          className="px-3 py-1.5 bg-[var(--lapis-soft)] hover:bg-[var(--lapis-soft)]/80 text-[var(--lapis)] font-bold text-xs rounded-xl shadow-xs transition-transform active:scale-95 flex items-center gap-1.5 cursor-pointer"
         >
-          <HelpCircle size={15} color="#1E1B2E" />
+          <HelpCircle size={15} />
           <span>{t.guide}</span>
         </button>
       </div>
 
       {/* Scrollable Content Container */}
-      <div className="min-h-0 flex-1 overflow-y-auto pr-1 pb-2 space-y-2 overscroll-contain flex flex-col justify-between font-ui">
+      <div className="min-h-0 flex-1 overflow-y-auto pr-0.5 pb-2 space-y-2 overscroll-contain flex flex-col justify-between font-ui">
         
         {/* Seating Tip */}
-        <div className="text-[11px] font-bold text-[#1E1B2E] bg-[#FFFBF4] p-2.5 border-2 border-[#1E1B2E] rounded-[16px] text-center shadow-[2px_2px_0px_0px_#1E1B2E] flex items-center justify-center gap-1.5 shrink-0">
-          <Sparkles size={14} color="#1E9E93" />
+        <div className="text-[11px] font-bold text-[var(--mute)] bg-[var(--panel)] p-2.5 border border-[var(--line)] rounded-2xl text-center shadow-xs flex items-center justify-center gap-1.5 shrink-0">
+          <Sparkles size={14} className="text-[var(--saffron)]" />
           <span>
             {t.tableSeatingTip}
           </span>
         </div>
 
         {/* Interactive Seating Circle SVG */}
-        <div className="relative w-52 h-52 sm:w-64 sm:h-64 mx-auto select-none bg-[#FFFBF4] p-2 border-2 border-[#1E1B2E] rounded-[24px] shadow-[4px_4px_0px_0px_#1E1B2E] my-auto flex items-center justify-center shrink-0">
+        <div className="relative w-52 h-52 sm:w-64 sm:h-64 mx-auto select-none bg-[var(--panel)] p-2 border border-[var(--line)] rounded-[24px] shadow-xs my-auto flex items-center justify-center shrink-0">
           <svg viewBox="0 0 270 270" className="w-full h-full mx-auto">
             {/* Table Center */}
-            <circle cx={centerX} cy={centerY} r="42" fill="#1E1B2E" stroke="#E0603F" strokeWidth="2.5" />
-            <circle cx={centerX} cy={centerY} r="36" fill="#2E2844" />
+            <circle cx={centerX} cy={centerY} r="42" fill="var(--bg)" stroke="var(--line)" strokeWidth="2.5" />
+            <circle cx={centerX} cy={centerY} r="34" fill="var(--lapis-soft)" />
             <text 
               x={centerX} 
               y={centerY + 4} 
               textAnchor="middle" 
-              fill="#F2B63D" 
-              className="text-[10px] font-bold uppercase tracking-widest font-mono"
+              fill="var(--lapis)" 
+              className="text-[11px] font-black uppercase tracking-widest font-mono"
             >
               TABLE
             </text>
@@ -88,10 +88,9 @@ const SeatingConfirmScreen: React.FC<Props> = ({
               cy={centerY} 
               r={radius} 
               fill="none" 
-              stroke="#1E1B2E" 
-              strokeWidth="2.5" 
+              stroke="var(--line)" 
+              strokeWidth="2" 
               strokeDasharray="6,6" 
-              className="opacity-30"
             />
 
             {/* Opposite Partner Lines */}
@@ -103,7 +102,7 @@ const SeatingConfirmScreen: React.FC<Props> = ({
               const x2 = centerX + radius * Math.cos(angle2);
               const y2 = centerY + radius * Math.sin(angle2);
               const team = teams[i];
-              const colorConfig = team ? COLORS_MAP[team.color] : { hex: '#1E9E93' };
+              const colorConfig = team ? COLORS_MAP[team.color] : { hex: '#12B5A4' };
 
               return (
                 <line 
@@ -113,9 +112,9 @@ const SeatingConfirmScreen: React.FC<Props> = ({
                   x2={x2} 
                   y2={y2} 
                   stroke={colorConfig.hex} 
-                  strokeWidth="2.5" 
+                  strokeWidth="2" 
                   strokeDasharray="4,4"
-                  className="opacity-80"
+                  className="opacity-70"
                 />
               );
             })}
@@ -125,7 +124,7 @@ const SeatingConfirmScreen: React.FC<Props> = ({
               const angle = (i * 360 / players.length - 90) * (Math.PI / 180);
               const x = centerX + radius * Math.cos(angle);
               const y = centerY + radius * Math.sin(angle);
-              const config = COLORS_MAP[p.teamColor] || { hex: '#1E9E93' };
+              const config = COLORS_MAP[p.teamColor] || { hex: '#12B5A4' };
 
               return (
                 <g key={p.id}>
@@ -134,14 +133,14 @@ const SeatingConfirmScreen: React.FC<Props> = ({
                     cy={y} 
                     r="22" 
                     fill={config.hex} 
-                    stroke="#1E1B2E" 
+                    stroke="var(--panel)" 
                     strokeWidth="2.5" 
                   />
                   <text 
                     x={x} 
                     y={y - 2} 
                     textAnchor="middle" 
-                    fill="#1E1B2E" 
+                    fill="#ffffff" 
                     className="text-[10px] font-bold"
                   >
                     P{i + 1}
@@ -150,8 +149,8 @@ const SeatingConfirmScreen: React.FC<Props> = ({
                     x={x} 
                     y={y + 11} 
                     textAnchor="middle" 
-                    fill="#1E1B2E" 
-                    className="text-[9px] font-bold"
+                    fill="#ffffff" 
+                    className="text-[9px] font-extrabold"
                   >
                     {p.name.slice(0, 7)}
                   </text>
@@ -169,15 +168,15 @@ const SeatingConfirmScreen: React.FC<Props> = ({
             return (
               <div 
                 key={team.id}
-                className="bg-[#FFFBF4] p-2 rounded-[14px] border-2 border-[#1E1B2E] flex items-center gap-2 shadow-[2px_2px_0px_0px_#1E1B2E]"
-                style={{ borderLeftWidth: '5px', borderLeftColor: config.hex }}
+                className="bg-[var(--panel)] p-2 rounded-xl border border-[var(--line)] flex items-center gap-2 shadow-xs"
+                style={{ borderInlineStartWidth: '4px', borderInlineStartColor: config.hex }}
               >
                 <TeamMascot color={team.color} size={24} animate={false} />
                 <div className="min-w-0 flex-1">
-                  <div className="text-[9.5px] font-bold text-[#1E1B2E]/70 uppercase truncate">
+                  <div className="text-[9.5px] font-bold text-[var(--mute)] uppercase truncate">
                     {t.teamNames[team.color]}
                   </div>
-                  <div className="text-[11px] font-bold text-[#1E1B2E] truncate">
+                  <div className="text-[11px] font-bold text-[var(--ink)] truncate">
                     {teamPlayers.map(p => p.name).join(' • ')}
                   </div>
                 </div>
@@ -189,13 +188,13 @@ const SeatingConfirmScreen: React.FC<Props> = ({
       </div>
 
       {/* Buttons */}
-      <div className="flex gap-3 pt-2 shrink-0 border-t-2 border-[#1E1B2E]/20 font-ui">
+      <div className="flex gap-2.5 pt-2 shrink-0 border-t border-[var(--line)] font-ui">
         <button 
           onClick={() => {
             sound.playClick();
             onBack();
           }} 
-          className="pixel-btn pixel-btn-mustard flex-1 py-3 text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 rounded-[18px]"
+          className="flex-1 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs transition-all active:scale-98 cursor-pointer"
         >
           {isRTL ? <ArrowRight size={16} /> : <ArrowLeft size={16} />}
           <span>{t.back}</span>
@@ -205,10 +204,10 @@ const SeatingConfirmScreen: React.FC<Props> = ({
             sound.playStartGame();
             onConfirm();
           }} 
-          className="pixel-btn pixel-btn-teal flex-[2] py-3 text-sm sm:text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2 rounded-[18px]"
+          className="flex-[2] py-3 text-sm sm:text-base font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 rounded-2xl bg-[var(--lapis)] hover:brightness-105 text-[var(--on-lapis)] shadow-md transition-all active:scale-98 cursor-pointer"
         >
           <span>{t.seatedStart || `${t.start} ${t.round} 1`}</span>
-          <Zap size={18} />
+          <Zap size={18} fill="currentColor" />
         </button>
       </div>
     </div>

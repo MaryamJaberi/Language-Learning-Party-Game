@@ -267,7 +267,7 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
   const isHost = currentRoom?.hostId === myDeviceId;
 
   return (
-    <div className="h-full min-h-0 flex-1 flex flex-col items-center justify-between p-3.5 sm:p-4 text-center select-none overflow-y-auto overscroll-contain text-[#1E1B2E] font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full min-h-0 flex-1 flex flex-col items-center justify-between p-3 sm:p-4 text-center select-none overflow-y-auto overscroll-contain text-[var(--ink)] bg-[var(--bg)] font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
       
       {/* Top Header */}
       <div className="w-full flex items-center justify-between mb-2 shrink-0 font-ui">
@@ -283,21 +283,21 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
               onBack();
             }
           }}
-          className="flex items-center gap-1 bg-[#FFFBF4] hover:bg-[#F4EDE1] text-[#1E1B2E] px-3 py-1.5 rounded-[12px] text-xs font-bold border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E]"
+          className="flex items-center gap-1.5 bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] px-3 py-1.5 rounded-xl text-xs font-bold border border-[var(--line)] shadow-xs transition-all active:scale-95 cursor-pointer"
         >
           <ArrowLeft size={14} className={isRTL ? 'rotate-180' : ''} />
           <span>{language === 'fa' ? 'بازگشت' : 'Back'}</span>
         </button>
 
-        <div className="flex items-center gap-1.5 bg-[#F2B63D] text-[#1E1B2E] px-3 py-1 rounded-[12px] font-bold text-xs border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E]">
-          <Globe size={14} className="text-[#E0603F]" />
+        <div className="flex items-center gap-1.5 bg-[var(--lapis-soft)] text-[var(--lapis)] px-3 py-1 rounded-xl font-bold text-xs">
+          <Globe size={14} />
           <span>{language === 'fa' ? 'بازی آنلاین راه دور' : 'Remote Multiplayer'}</span>
         </div>
       </div>
 
       {/* Error Banner with Actionable Guidance */}
       {errorMessage && (
-        <div className="w-full mb-3 p-3 bg-rose-50 text-rose-800 rounded-[14px] text-xs font-bold border-2 border-rose-300 shadow-[2px_2px_0px_0px_#1E1B2E] flex items-start gap-2 text-start leading-relaxed">
+        <div className="w-full mb-3 p-3 bg-rose-50 dark:bg-rose-950/30 text-rose-800 dark:text-rose-300 rounded-xl text-xs font-bold border border-rose-300 dark:border-rose-900/40 shadow-xs flex items-start gap-2 text-start leading-relaxed">
           <AlertCircle size={16} className="text-rose-600 shrink-0 mt-0.5" />
           <div className="flex-1">{errorMessage}</div>
         </div>
@@ -305,16 +305,16 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
 
       {/* 1. SELECTION MODE (Host vs Join) */}
       {viewMode === 'select' && (
-        <div className="w-full max-w-sm my-auto space-y-3 font-ui">
+        <div className="w-full max-w-sm sm:max-w-md my-auto space-y-3 font-ui">
           
-          <div className="bg-[#FFFBF4] text-[#1E1B2E] p-4 rounded-[24px] border-2 border-[#1E1B2E] shadow-[4px_4px_0px_0px_#1E1B2E]">
+          <div className="bg-[var(--panel)] text-[var(--ink)] p-5 rounded-[24px] border border-[var(--line)] shadow-xs">
             <div className="flex justify-center mb-2">
               <TeamMascot color="PARTY" size={70} />
             </div>
-            <h1 className="text-2xl font-bold font-display text-[#1E1B2E] mb-1">
+            <h1 className="text-2xl font-black font-display text-[var(--ink)] mb-1">
               {language === 'fa' ? 'دورهمی آنلاین با دوستان' : 'Online Party Room'}
             </h1>
-            <p className="text-xs text-[#1E9E93] font-bold leading-relaxed">
+            <p className="text-xs text-[var(--mute)] font-medium leading-relaxed">
               {language === 'fa' 
                 ? 'همه با گوشی خود وارد شوند، کارت برای حدس‌زننده مخفی می‌ماند و در دیسکورد یا گوگل میت صحبت کنید!' 
                 : 'Everyone joins on their own phone, cards are hidden from the active guesser, and speak on Discord or Meet!'}
@@ -328,11 +328,11 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
                 sound.playClick();
                 setViewMode('create');
               }}
-              className="pixel-btn pixel-btn-orange w-full py-3.5 text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2 rounded-[16px]"
+              className="w-full py-3.5 text-sm sm:text-base font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 rounded-2xl bg-[var(--lapis)] hover:brightness-105 text-[var(--on-lapis)] shadow-md transition-all active:scale-98 cursor-pointer"
             >
-              <Crown size={20} />
+              <Crown size={18} />
               <span>{language === 'fa' ? 'ایجاد اتاق جدید (میزبان)' : 'Host New Room'}</span>
-              <Zap size={18} color="#F2B63D" fill="#F2B63D" />
+              <Zap size={16} fill="currentColor" />
             </button>
 
             {/* Join Room Button */}
@@ -341,20 +341,20 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
                 sound.playClick();
                 setViewMode('join');
               }}
-              className="pixel-btn pixel-btn-teal w-full py-3.5 text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2 rounded-[16px]"
+              className="w-full py-3.5 text-sm sm:text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs transition-all active:scale-98 cursor-pointer"
             >
-              <Users size={20} />
+              <Users size={18} />
               <span>{language === 'fa' ? 'ورود با کد اتاق (بازیکن)' : 'Join with Room Code'}</span>
             </button>
           </div>
 
           {/* Voice Helper Info Box */}
-          <div className="bg-[#FFFBF4] text-[#1E1B2E] p-3 rounded-[16px] border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E] text-start space-y-1 text-[11px]">
-            <div className="flex items-center gap-1.5 text-[#1E9E93] font-bold">
+          <div className="bg-[var(--panel)] text-[var(--ink)] p-3.5 rounded-2xl border border-[var(--line)] shadow-xs text-start space-y-1 text-[11px]">
+            <div className="flex items-center gap-1.5 text-[var(--turq)] font-bold">
               <Headphones size={14} />
               <span>{language === 'fa' ? 'نحوه ارتباط صوتی:' : 'Voice Chat Setup:'}</span>
             </div>
-            <p className="text-[#1E1B2E]/70 font-medium">
+            <p className="text-[var(--mute)] font-medium leading-relaxed">
               {language === 'fa'
                 ? 'می‌توانید به یک تماس صوتی در گوگل میت (Google Meet)، دیسکورد (Discord) یا اتاق صوتی رایگان درون بازی وصل شوید.'
                 : 'Connect to a Discord call, Google Meet, or instant in-app voice room with your friends.'}
@@ -366,18 +366,18 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
 
       {/* 2. CREATE ROOM FORM */}
       {viewMode === 'create' && (
-        <div className="w-full max-w-sm my-auto space-y-3 bg-[#FFFBF4] p-4 rounded-[24px] border-2 border-[#1E1B2E] shadow-[4px_4px_0px_0px_#1E1B2E] text-start font-ui">
+        <div className="w-full max-w-sm sm:max-w-md my-auto space-y-3 bg-[var(--panel)] p-4 sm:p-5 rounded-[24px] border border-[var(--line)] shadow-xs text-start font-ui">
           
-          <div className="flex items-center gap-2 border-b-2 pb-2 border-[#1E1B2E]/20">
-            <Crown size={20} className="text-[#E0603F]" />
-            <h2 className="text-base font-bold text-[#1E1B2E]">
+          <div className="flex items-center gap-2 border-b border-[var(--line)] pb-2.5">
+            <Crown size={20} className="text-[var(--saffron)]" />
+            <h2 className="text-base font-bold text-[var(--ink)]">
               {language === 'fa' ? 'تنظیمات اتاق آنلاین' : 'Host Room Setup'}
             </h2>
           </div>
 
           {/* Host Name Input */}
           <div>
-            <label className="block text-xs font-bold text-[#1E1B2E] mb-1">
+            <label className="block text-xs font-bold text-[var(--ink)] mb-1">
               {language === 'fa' ? 'نام شما (میزبان):' : 'Your Name (Host):'}
             </label>
             <input
@@ -385,14 +385,14 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
               value={playerName}
               onChange={(e) => setPlayerName(e.target.value)}
               placeholder={language === 'fa' ? 'مثلا: سهراب، مریم...' : 'e.g. Alex'}
-              className="w-full px-3 py-2 bg-[#F4EDE1] rounded-[12px] border-2 border-[#1E1B2E] text-sm font-bold text-[#1E1B2E] focus:outline-none"
+              className="w-full px-3 py-2 bg-[var(--bg)] rounded-xl border border-[var(--line)] text-sm font-bold text-[var(--ink)] focus:border-[var(--lapis)] focus:outline-hidden"
             />
           </div>
 
           {/* Voice Platform Selection */}
           <div>
-            <label className="block text-xs font-bold text-[#1E1B2E] mb-1.5 flex items-center gap-1">
-              <Headphones size={14} className="text-[#E0603F]" />
+            <label className="block text-xs font-bold text-[var(--ink)] mb-1.5 flex items-center gap-1">
+              <Headphones size={14} className="text-[var(--turq)]" />
               <span>{language === 'fa' ? 'پلتفرم مکالمه صوتی:' : 'Voice Platform:'}</span>
             </label>
 
@@ -400,10 +400,10 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
               <button
                 type="button"
                 onClick={() => setVoiceProvider('jitsi')}
-                className={`p-2 rounded-[12px] border-2 border-[#1E1B2E] text-center font-bold text-[11px] transition-all ${
+                className={`p-2.5 rounded-xl border text-center font-bold text-[11px] transition-all cursor-pointer active:scale-95 ${
                   voiceProvider === 'jitsi'
-                    ? 'bg-[#1E9E93] text-white shadow-[2px_2px_0px_0px_#1E1B2E]'
-                    : 'bg-[#F4EDE1] text-[#1E1B2E]/70'
+                    ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs'
+                    : 'bg-[var(--bg)] text-[var(--mute)] border-[var(--line)] hover:bg-[var(--panel)]'
                 }`}
               >
                 <span>{language === 'fa' ? 'تلفن رایگان' : 'Free Voice'}</span>
@@ -413,10 +413,10 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
               <button
                 type="button"
                 onClick={() => setVoiceProvider('meet')}
-                className={`p-2 rounded-[12px] border-2 border-[#1E1B2E] text-center font-bold text-[11px] transition-all ${
+                className={`p-2.5 rounded-xl border text-center font-bold text-[11px] transition-all cursor-pointer active:scale-95 ${
                   voiceProvider === 'meet'
-                    ? 'bg-[#F2B63D] text-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E]'
-                    : 'bg-[#F4EDE1] text-[#1E1B2E]/70'
+                    ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs'
+                    : 'bg-[var(--bg)] text-[var(--mute)] border-[var(--line)] hover:bg-[var(--panel)]'
                 }`}
               >
                 <span>Google Meet</span>
@@ -426,10 +426,10 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
               <button
                 type="button"
                 onClick={() => setVoiceProvider('discord')}
-                className={`p-2 rounded-[12px] border-2 border-[#1E1B2E] text-center font-bold text-[11px] transition-all ${
+                className={`p-2.5 rounded-xl border text-center font-bold text-[11px] transition-all cursor-pointer active:scale-95 ${
                   voiceProvider === 'discord'
-                    ? 'bg-[#E0603F] text-white shadow-[2px_2px_0px_0px_#1E1B2E]'
-                    : 'bg-[#F4EDE1] text-[#1E1B2E]/70'
+                    ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs'
+                    : 'bg-[var(--bg)] text-[var(--mute)] border-[var(--line)] hover:bg-[var(--panel)]'
                 }`}
               >
                 <span>Discord</span>
@@ -443,7 +443,7 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
             type="button"
             disabled={isLoading}
             onClick={handleCreateRoom}
-            className="pixel-btn pixel-btn-orange w-full py-3 text-sm font-bold uppercase flex items-center justify-center gap-2 mt-2 rounded-[14px]"
+            className="w-full py-3 text-sm font-extrabold uppercase flex items-center justify-center gap-2 mt-2 rounded-xl bg-[var(--lapis)] hover:brightness-105 text-[var(--on-lapis)] shadow-md transition-all active:scale-98 cursor-pointer"
           >
             {isLoading ? (
               <span>{language === 'fa' ? 'در حال ایجاد اتاق...' : 'Creating room...'}</span>
@@ -460,18 +460,18 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
 
       {/* 3. JOIN ROOM FORM */}
       {viewMode === 'join' && (
-        <div className="w-full max-w-sm my-auto space-y-3 bg-[#FFFBF4] p-4 rounded-[24px] border-2 border-[#1E1B2E] shadow-[4px_4px_0px_0px_#1E1B2E] text-start font-ui">
+        <div className="w-full max-w-sm sm:max-w-md my-auto space-y-3 bg-[var(--panel)] p-4 sm:p-5 rounded-[24px] border border-[var(--line)] shadow-xs text-start font-ui">
           
-          <div className="flex items-center gap-2 border-b-2 pb-2 border-[#1E1B2E]/20">
-            <Users size={20} className="text-[#1E9E93]" />
-            <h2 className="text-base font-bold text-[#1E1B2E]">
+          <div className="flex items-center gap-2 border-b border-[var(--line)] pb-2.5">
+            <Users size={20} className="text-[var(--turq)]" />
+            <h2 className="text-base font-bold text-[var(--ink)]">
               {language === 'fa' ? 'ورود به اتاق آنلاین' : 'Join Game Room'}
             </h2>
           </div>
 
           {/* Room Code Input */}
           <div>
-            <label className="block text-xs font-bold text-[#1E1B2E] mb-1">
+            <label className="block text-xs font-bold text-[var(--ink)] mb-1">
               {language === 'fa' ? 'کد اتاق (Room Code):' : 'Room Code:'}
             </label>
             <input
@@ -479,13 +479,13 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
               value={roomCodeInput}
               onChange={(e) => setRoomCodeInput(e.target.value.toUpperCase())}
               placeholder={language === 'fa' ? 'مثلا: AB123' : 'e.g. AB123'}
-              className="w-full px-3 py-2 bg-[#F4EDE1] rounded-[12px] border-2 border-[#1E1B2E] text-center text-lg font-mono font-bold text-[#E0603F] tracking-widest uppercase focus:outline-none"
+              className="w-full px-3 py-2.5 bg-[var(--bg)] rounded-xl border border-[var(--line)] text-center text-lg font-mono font-black text-[var(--lapis)] tracking-widest uppercase focus:border-[var(--lapis)] focus:outline-hidden"
             />
           </div>
 
           {/* Player Name */}
           <div>
-            <label className="block text-xs font-bold text-[#1E1B2E] mb-1">
+            <label className="block text-xs font-bold text-[var(--ink)] mb-1">
               {language === 'fa' ? 'نام شما در بازی:' : 'Your Name:'}
             </label>
             <input
@@ -493,7 +493,7 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
               value={playerName}
               onChange={(e) => setPlayerName(e.target.value)}
               placeholder={language === 'fa' ? 'مثلا: نیما، پریا...' : 'e.g. Taylor'}
-              className="w-full px-3 py-2 bg-[#F4EDE1] rounded-[12px] border-2 border-[#1E1B2E] text-sm font-bold text-[#1E1B2E] focus:outline-none"
+              className="w-full px-3 py-2 bg-[var(--bg)] rounded-xl border border-[var(--line)] text-sm font-bold text-[var(--ink)] focus:border-[var(--lapis)] focus:outline-hidden"
             />
           </div>
 
@@ -502,7 +502,7 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
             type="button"
             disabled={isLoading}
             onClick={handleJoinRoom}
-            className="pixel-btn pixel-btn-teal w-full py-3 text-sm font-bold uppercase flex items-center justify-center gap-2 mt-2 rounded-[14px]"
+            className="w-full py-3 text-sm font-extrabold uppercase flex items-center justify-center gap-2 mt-2 rounded-xl bg-[var(--lapis)] hover:brightness-105 text-[var(--on-lapis)] shadow-md transition-all active:scale-98 cursor-pointer"
           >
             {isLoading ? (
               <span>{language === 'fa' ? 'در حال اتصال...' : 'Connecting...'}</span>
@@ -519,31 +519,31 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
 
       {/* 4. IN LOBBY (Real-Time Synchronized Player List & Teams) */}
       {viewMode === 'in_lobby' && currentRoom && (
-        <div className="w-full max-w-sm flex-1 flex flex-col justify-between space-y-2 font-ui">
+        <div className="w-full max-w-sm sm:max-w-md flex-1 flex flex-col justify-between space-y-2 font-ui">
           
           {/* Room PIN & Share Banner */}
-          <div className="bg-[#FFFBF4] p-3 rounded-[20px] border-2 border-[#1E1B2E] shadow-[3px_3px_0px_0px_#1E1B2E] space-y-2 shrink-0">
+          <div className="bg-[var(--panel)] p-3.5 rounded-2xl border border-[var(--line)] shadow-xs space-y-2.5 shrink-0">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs font-bold text-[#1E1B2E]/70 uppercase">{language === 'fa' ? 'کد اتاق:' : 'Room Code:'}</span>
-                <span className="px-3 py-1 bg-[#F4EDE1] text-[#1E1B2E] font-mono text-lg font-bold rounded-[12px] border-2 border-[#1E1B2E] tracking-widest">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-[var(--mute)] uppercase">{language === 'fa' ? 'کد اتاق:' : 'Room Code:'}</span>
+                <span className="px-3 py-1 bg-[var(--bg)] text-[var(--ink)] font-mono text-lg font-black rounded-xl border border-[var(--line)] tracking-widest">
                   {currentRoom.code}
                 </span>
               </div>
 
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1.5">
                 <button
                   onClick={handleCopyCode}
-                  className="p-2 bg-[#FFFBF4] hover:bg-[#F4EDE1] text-[#1E1B2E] rounded-[10px] border-2 border-[#1E1B2E] shadow-[1px_1px_0px_0px_#1E1B2E] flex items-center gap-1 text-xs font-bold"
+                  className="p-2 bg-[var(--bg)] hover:bg-[var(--line)]/50 text-[var(--ink)] rounded-xl border border-[var(--line)] flex items-center gap-1 text-xs font-bold shadow-xs cursor-pointer"
                   title={language === 'fa' ? 'کپی کد' : 'Copy Code'}
                 >
-                  {copiedCode ? <Check size={14} className="text-[#1E9E93]" /> : <Copy size={14} />}
+                  {copiedCode ? <Check size={14} className="text-[var(--turq)]" /> : <Copy size={14} />}
                   <span>{copiedCode ? (language === 'fa' ? 'کپی شد' : 'Copied') : (language === 'fa' ? 'کپی کد' : 'Copy')}</span>
                 </button>
 
                 <button
                   onClick={handleCopyLink}
-                  className="p-2 bg-[#F2B63D] hover:bg-[#e0a634] text-[#1E1B2E] rounded-[10px] border-2 border-[#1E1B2E] flex items-center gap-1 text-xs font-bold shadow-[1px_1px_0px_0px_#1E1B2E]"
+                  className="p-2 bg-[var(--lapis-soft)] hover:bg-[var(--lapis-soft)]/80 text-[var(--lapis)] rounded-xl flex items-center gap-1 text-xs font-bold shadow-xs cursor-pointer"
                   title={language === 'fa' ? 'کپی لینک مستقیم' : 'Copy Direct Link'}
                 >
                   {copiedLink ? <Check size={14} /> : <Share2 size={14} />}
@@ -554,9 +554,9 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
 
             {/* Voice Platform Join Bar */}
             {currentRoom.voiceLink && (
-              <div className="p-2 bg-[#F4EDE1] rounded-[12px] border border-[#1E1B2E] flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-[#1E1B2E]">
-                  <PhoneCall size={14} className="text-[#E0603F]" />
+              <div className="p-2.5 bg-[var(--bg)] rounded-xl border border-[var(--line)] flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-[var(--ink)]">
+                  <PhoneCall size={14} className="text-[var(--turq)]" />
                   <span>
                     {currentRoom.voiceProvider === 'meet' 
                       ? (language === 'fa' ? 'تماس Google Meet' : 'Google Meet Call')
@@ -570,7 +570,7 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
                   href={currentRoom.voiceLink}
                   target="_blank"
                   rel="noreferrer"
-                  className="px-2.5 py-1 bg-[#1E9E93] text-white font-bold text-[11px] rounded-[8px] border border-[#1E1B2E] flex items-center gap-1 shadow-[1px_1px_0px_0px_#1E1B2E]"
+                  className="px-2.5 py-1 bg-[var(--turq)] text-white font-bold text-[11px] rounded-lg flex items-center gap-1 shadow-xs hover:brightness-105"
                 >
                   <span>{language === 'fa' ? 'ورود به تماس' : 'Join Call'}</span>
                   <ExternalLink size={11} />
@@ -580,14 +580,14 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
           </div>
 
           {/* Players List in Lobby & Team Breakdown */}
-          <div className="flex-1 min-h-0 bg-[#FFFBF4] p-3 rounded-[20px] border-2 border-[#1E1B2E] shadow-[3px_3px_0px_0px_#1E1B2E] flex flex-col overflow-y-auto space-y-2">
+          <div className="flex-1 min-h-0 bg-[var(--panel)] p-3.5 rounded-2xl border border-[var(--line)] shadow-xs flex flex-col overflow-y-auto space-y-2">
             
-            <div className="flex items-center justify-between border-b-2 pb-1.5 border-[#1E1B2E]/20">
-              <span className="text-xs font-bold text-[#1E1B2E] flex items-center gap-1.5">
-                <Users size={14} className="text-[#E0603F]" />
+            <div className="flex items-center justify-between border-b border-[var(--line)] pb-2">
+              <span className="text-xs font-bold text-[var(--ink)] flex items-center gap-1.5">
+                <Users size={14} className="text-[var(--lapis)]" />
                 <span>{language === 'fa' ? `بازیکنان متصل (${currentRoom.players.length} نفر):` : `Connected Players (${currentRoom.players.length}):`}</span>
               </span>
-              <span className="text-[10px] text-[#1E1B2E]/70 font-bold">
+              <span className="text-[10px] text-[var(--mute)] font-medium">
                 {language === 'fa' ? 'روی نام تیم برای جابجایی کلیک کنید' : 'Click team to switch'}
               </span>
             </div>
@@ -595,7 +595,6 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
             {/* Teams Grid */}
             <div className="grid grid-cols-2 gap-2">
               {currentRoom.teams.map((t) => {
-                const config = COLORS_MAP[t.color] || { bg: 'bg-[#1E9E93]', text: 'text-[#1E1B2E]', hex: '#1E9E93' };
                 const teamPlayers = currentRoom.players.filter(p => p.teamId === t.id);
                 const isMyTeam = currentRoom.players.find(p => p.id === myPlayerId)?.teamId === t.id;
                 const teamName = language === 'fa' 
@@ -605,12 +604,14 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
                 return (
                   <div
                     key={t.id}
-                    className={`p-2 rounded-[14px] border-2 border-[#1E1B2E] text-start transition-all ${
-                      isMyTeam ? 'ring-2 ring-[#E0603F] bg-[#FFF8FD]' : 'bg-[#F4EDE1]'
+                    className={`p-2.5 rounded-xl border text-start transition-all ${
+                      isMyTeam 
+                        ? 'border-[var(--lapis)] ring-2 ring-[var(--lapis)]/30 bg-[var(--lapis-soft)]/20' 
+                        : 'bg-[var(--bg)] border-[var(--line)]'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1.5">
-                      <div className="flex items-center gap-1 text-[11px] font-bold text-[#1E1B2E]">
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-[var(--ink)]">
                         <TeamMascot color={t.color} size={18} />
                         <span>{teamName}</span>
                       </div>
@@ -618,7 +619,7 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
                       {!isMyTeam && (
                         <button
                           onClick={() => handleSwitchTeam(t.id)}
-                          className="text-[9px] font-bold bg-[#FFFBF4] hover:bg-[#F4EDE1] text-[#1E1B2E] border border-[#1E1B2E] px-1.5 py-0.5 rounded-[6px] shadow-[1px_1px_0px_0px_#1E1B2E]"
+                          className="text-[9px] font-bold bg-[var(--panel)] hover:bg-[var(--line)]/50 text-[var(--ink)] border border-[var(--line)] px-2 py-0.5 rounded-md shadow-xs cursor-pointer"
                         >
                           {language === 'fa' ? 'عضویت' : 'Join'}
                         </button>
@@ -627,13 +628,13 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
 
                     <div className="space-y-1">
                       {teamPlayers.length === 0 ? (
-                        <span className="text-[10px] text-[#1E1B2E]/50 italic block">{language === 'fa' ? 'بدون بازیکن' : 'No players'}</span>
+                        <span className="text-[10px] text-[var(--mute)] italic block">{language === 'fa' ? 'بدون بازیکن' : 'No players'}</span>
                       ) : (
                         teamPlayers.map(p => (
-                          <div key={p.id} className="flex items-center justify-between text-xs font-bold text-[#1E1B2E] bg-[#FFFBF4] p-1 rounded-[8px] border border-[#1E1B2E]">
+                          <div key={p.id} className="flex items-center justify-between text-xs font-bold text-[var(--ink)] bg-[var(--panel)] p-1.5 rounded-lg border border-[var(--line)]">
                             <span className="truncate">{p.name} {p.isHost && '👑'}</span>
                             {p.deviceId === myDeviceId && (
-                              <span className="text-[9px] bg-[#1E9E93] text-white px-1 rounded font-bold">
+                              <span className="text-[9px] bg-[var(--turq)] text-white px-1.5 py-0.2 rounded-sm font-bold">
                                 {language === 'fa' ? 'من' : 'You'}
                               </span>
                             )}
@@ -647,13 +648,13 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
             </div>
 
             {/* Game Rules / Target Languages Pill */}
-            <div className="mt-auto pt-2 border-t-2 border-[#1E1B2E]/20 text-start text-[10.5px] text-[#1E1B2E]/70 space-y-0.5 font-ui">
+            <div className="mt-auto pt-2 border-t border-[var(--line)] text-start text-[10.5px] text-[var(--mute)] space-y-0.5 font-ui">
               <div>
-                <span className="font-bold text-[#1E1B2E]">{language === 'fa' ? 'زبان‌های مسابقه: ' : 'Target Languages: '}</span>
+                <span className="font-bold text-[var(--ink)]">{language === 'fa' ? 'زبان‌های مسابقه: ' : 'Target Languages: '}</span>
                 <span>{currentRoom.settings.targetLanguages?.map(l => NATIVE_LANGUAGE_NAMES[l] || l).join(' + ')}</span>
               </div>
               <div>
-                <span className="font-bold text-[#1E1B2E]">{language === 'fa' ? 'مدت هر راند: ' : 'Round Duration: '}</span>
+                <span className="font-bold text-[var(--ink)]">{language === 'fa' ? 'مدت هر راند: ' : 'Round Duration: '}</span>
                 <span>{currentRoom.settings.roundDuration || 60} {language === 'fa' ? 'ثانیه' : 'seconds'}</span>
               </div>
             </div>
@@ -666,19 +667,18 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
               <button
                 onClick={handleHostStart}
                 disabled={isLoading || currentRoom.players.length < 2}
-                className="pixel-btn pixel-btn-orange w-full py-3.5 text-base font-bold uppercase flex items-center justify-center gap-2 rounded-[16px]"
+                className="w-full py-3.5 text-base font-extrabold uppercase flex items-center justify-center gap-2 rounded-2xl bg-[var(--lapis)] hover:brightness-105 text-[var(--on-lapis)] shadow-md transition-all active:scale-98 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Play size={20} />
+                <Play size={20} fill="currentColor" />
                 <span>{language === 'fa' ? 'شروع بازی آنلاین برای همه 🚀' : 'Start Remote Game 🚀'}</span>
               </button>
             ) : (
-              <div className="p-3 bg-[#F2B63D] text-[#1E1B2E] rounded-[16px] border-2 border-[#1E1B2E] font-bold text-xs flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_#1E1B2E] animate-pulse">
+              <div className="p-3.5 bg-[var(--lapis-soft)] text-[var(--lapis)] rounded-2xl border border-[var(--lapis)]/20 font-bold text-xs flex items-center justify-center gap-2 shadow-xs animate-pulse">
                 <Sparkles size={16} />
                 <span>{language === 'fa' ? 'منتظر میزبان برای زدن دکمه شروع بازی...' : 'Waiting for host to start the game...'}</span>
               </div>
             )}
           </div>
-
         </div>
       )}
 

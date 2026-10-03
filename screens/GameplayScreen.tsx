@@ -448,7 +448,7 @@ const GameplayScreen: React.FC<Props> = ({
   }
 
   return (
-    <div className="h-full min-h-0 flex-1 flex flex-col justify-between p-2.5 sm:p-3.5 select-none relative overflow-y-auto overscroll-contain" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full min-h-0 flex-1 flex flex-col justify-between p-2.5 sm:p-3.5 select-none relative overflow-y-auto overscroll-contain bg-[var(--bg)] text-[var(--ink)] font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
       
       {/* Turn Change Flash Banner */}
       {turnFlash && (
@@ -472,18 +472,18 @@ const GameplayScreen: React.FC<Props> = ({
       )}
 
       {/* Top Header Bar */}
-      <div className="flex items-center justify-between gap-2 bg-[#FFFBF4] p-2 sm:p-2.5 rounded-[18px] border-2 border-[#1E1B2E] text-[#1E1B2E] shadow-[3px_3px_0px_0px_#1E1B2E] shrink-0 font-ui">
+      <div className="flex items-center justify-between gap-2 bg-[var(--panel)] p-2 sm:p-2.5 rounded-2xl border border-[var(--line)] text-[var(--ink)] shadow-xs shrink-0 font-ui">
         
         {/* Round Badge */}
-        <div className="flex items-center gap-1.5 bg-[#E0603F] text-white px-2.5 py-1 rounded-[12px] font-bold text-xs border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E]">
+        <div className="flex items-center gap-1.5 bg-[var(--lapis)] text-white px-2.5 py-1 rounded-xl font-bold text-xs shadow-xs">
           <span>{t.round} {currentRound}/{settings.roundsCount}</span>
         </div>
 
         {/* Center Target Language & CEFR Level Badge */}
-        <div className="flex items-center gap-1.5 bg-[#F4EDE1] text-[#1E1B2E] px-2.5 py-1 rounded-[12px] border-2 border-[#1E1B2E] font-bold text-xs shadow-[2px_2px_0px_0px_#1E1B2E]">
+        <div className="flex items-center gap-1.5 bg-[var(--bg)] text-[var(--ink)] px-2.5 py-1 rounded-xl border border-[var(--line)] font-bold text-xs">
           <FlagIcon language={activeLangCode} size={15} />
           <span className="truncate max-w-[70px] font-bold">{targetLangInfo.nativeName}</span>
-          <span className="bg-[#1E9E93] text-white text-[9.5px] font-bold px-1.5 py-0.2 rounded-full border border-[#1E1B2E]">
+          <span className="bg-[var(--lapis-soft)] text-[var(--lapis)] border border-[var(--lapis)]/20 text-[10px] font-bold px-1.5 py-0.5 rounded-md">
             {currentCard?.cefrLevel || 'A1'}
           </span>
         </div>
@@ -497,8 +497,8 @@ const GameplayScreen: React.FC<Props> = ({
               sound.playClick();
               setShowSeatingCircle(prev => !prev);
             }}
-            className={`w-8 h-8 rounded-[10px] border-2 border-[#1E1B2E] flex items-center justify-center transition-transform active:translate-y-0.5 shadow-[2px_2px_0px_0px_#1E1B2E] ${
-              showSeatingCircle ? 'bg-[#1E9E93] text-white' : 'bg-[#FFFBF4] text-[#1E1B2E]'
+            className={`w-8 h-8 rounded-xl border border-[var(--line)] flex items-center justify-center transition-all active:scale-95 shadow-xs ${
+              showSeatingCircle ? 'bg-[var(--turq)] text-white border-[var(--turq)]' : 'bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)]'
             }`}
           >
             <Users size={14} />
@@ -513,7 +513,7 @@ const GameplayScreen: React.FC<Props> = ({
                 onUpdateSettings({ ...settings, soundEnabled: currentMuted });
               }
             }}
-            className="w-8 h-8 rounded-[10px] border-2 border-[#1E1B2E] bg-[#FFFBF4] hover:bg-[#F4EDE1] text-[#1E1B2E] flex items-center justify-center transition-transform active:translate-y-0.5 shadow-[2px_2px_0px_0px_#1E1B2E]"
+            className="w-8 h-8 rounded-xl border border-[var(--line)] bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] flex items-center justify-center transition-all active:scale-95 shadow-xs"
           >
             {settings.soundEnabled !== false ? <Volume2 size={14} /> : <VolumeX size={14} />}
           </button>
@@ -524,7 +524,7 @@ const GameplayScreen: React.FC<Props> = ({
               sound.playClick();
               onOpenHelp?.();
             }}
-            className="w-8 h-8 rounded-[10px] border-2 border-[#1E1B2E] bg-[#F2B63D] text-[#1E1B2E] flex items-center justify-center transition-transform active:translate-y-0.5 shadow-[2px_2px_0px_0px_#1E1B2E]"
+            className="w-8 h-8 rounded-xl border border-[var(--line)] bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] flex items-center justify-center transition-all active:scale-95 shadow-xs"
           >
             <HelpCircle size={14} />
           </button>
@@ -535,7 +535,7 @@ const GameplayScreen: React.FC<Props> = ({
               sound.playClick();
               setGameStatus(GameStatus.Paused);
             }}
-            className="w-8 h-8 rounded-[10px] border-2 border-[#1E1B2E] bg-[#E0603F] text-white flex items-center justify-center transition-transform active:translate-y-0.5 shadow-[2px_2px_0px_0px_#1E1B2E]"
+            className="w-8 h-8 rounded-xl border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 flex items-center justify-center transition-all active:scale-95 shadow-xs"
           >
             <Pause size={14} />
           </button>
@@ -559,8 +559,8 @@ const GameplayScreen: React.FC<Props> = ({
       <div className="w-full flex-1 min-h-0 flex flex-col justify-between my-1">
         
         <div 
-          className={`w-full h-full p-3 sm:p-4 rounded-[28px] border-2 border-[#1E1B2E] shadow-[4px_4px_0px_0px_#1E1B2E] flex flex-col justify-between relative overflow-hidden transition-all bg-[#FFFBF4] ${
-            currentCard?.isGolden ? 'ring-2 ring-[#F2B63D]' : ''
+          className={`w-full h-full p-3 sm:p-4 rounded-[24px] border border-[var(--line)] shadow-sm flex flex-col justify-between relative overflow-hidden transition-all bg-[var(--panel)] ${
+            currentCard?.isGolden ? 'ring-2 ring-[var(--saffron)]' : ''
           }`}
         >
           {/* Top Card Bar: Active Player & Mode Badge */}
@@ -568,30 +568,26 @@ const GameplayScreen: React.FC<Props> = ({
             
             {/* Active Player Pill */}
             <div 
-              className="px-2.5 py-1 rounded-[12px] border-2 border-[#1E1B2E] font-bold text-xs shadow-[2px_2px_0px_0px_#1E1B2E] flex items-center gap-1.5 bg-[#F4EDE1] text-[#1E1B2E]"
+              className="px-2.5 py-1 rounded-xl border border-[var(--line)] font-bold text-xs shadow-xs flex items-center gap-1.5 bg-[var(--bg)] text-[var(--ink)]"
             >
-              <Zap size={13} fill="#1E1B2E" />
+              <Zap size={13} className="text-[var(--lapis)]" />
               <span>{activePlayer?.name || 'Player'}</span>
-              <span className="text-[10px] opacity-75">({t.teamNames[activeColor]})</span>
+              <span className="text-[10px] text-[var(--mute)]">({t.teamNames[activeColor]})</span>
             </div>
 
             {/* Streak Counter 🔥 */}
             {streakCount > 1 && (
-              <div className="flex items-center gap-1 bg-[#F4EDE1] text-[#E0603F] px-2 py-0.5 rounded-[10px] border-2 border-[#1E1B2E] text-[11px] font-bold">
-                <Flame size={13} color="#E0603F" fill="#E0603F" />
+              <div className="flex items-center gap-1 bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-lg border border-amber-200 dark:border-amber-800/40 text-[11px] font-bold">
+                <Flame size={13} className="text-amber-500 fill-amber-500" />
                 <span>{isRTL ? `کمبو x${streakCount}!` : `Combo x${streakCount}!`}</span>
               </div>
             )}
 
             {/* Clean Learning Mode Badge */}
-            <div className={`px-2.5 py-1 rounded-[12px] border-2 border-[#1E1B2E] font-bold text-[11px] flex items-center gap-1 ${
-              currentCard?.isReverse || currentCard?.learningMode === 'Reverse'
-                ? 'bg-[#F2B63D] text-[#1E1B2E]'
-                : 'bg-[#F4EDE1] text-[#1E1B2E]'
-            }`}>
+            <div className={`px-2.5 py-1 rounded-xl border border-[var(--line)] font-bold text-[11px] flex items-center gap-1 bg-[var(--bg)] text-[var(--ink)]`}>
               {currentCard?.isReverse || currentCard?.learningMode === 'Reverse' ? (
                 <>
-                  <RotateCcw size={12} className="text-[#E0603F]" />
+                  <RotateCcw size={12} className="text-[var(--saffron)]" />
                   <span>{isRTL ? 'ترجمه معکوس' : 'Reverse Translate'}</span>
                 </>
               ) : (
@@ -610,12 +606,12 @@ const GameplayScreen: React.FC<Props> = ({
                 {/* Clean Prompt Bubble in Native Language */}
                 <div 
                   dir={isRtlLang(currentCard.nativeLanguage || settings.nativeLanguage || 'fa') ? 'rtl' : 'ltr'}
-                  className="w-full max-w-sm bg-[#F4EDE1] text-[#1E1B2E] p-2.5 sm:p-3 rounded-[18px] border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E]"
+                  className="w-full max-w-sm bg-[var(--bg)] text-[var(--ink)] p-2.5 sm:p-3 rounded-2xl border border-[var(--line)] shadow-xs"
                 >
-                  <span className="text-[10px] text-[#E0603F] font-bold block mb-0.5">
+                  <span className="text-[10px] text-[var(--lapis)] font-bold block mb-0.5">
                     {currentCard.prompt || (isRtlLang(currentCard.nativeLanguage || settings.nativeLanguage || 'fa') ? 'این عبارت را به زبان هدف ادا کن:' : 'Speak this phrase in target language:')}
                   </span>
-                  <p className="text-sm sm:text-base font-bold text-[#1E1B2E] font-display leading-snug">
+                  <p className="text-sm sm:text-base font-bold text-[var(--ink)] font-display leading-snug">
                     «{currentCard.translation}»
                   </p>
                 </div>
@@ -624,7 +620,7 @@ const GameplayScreen: React.FC<Props> = ({
                 <div className="flex items-center justify-center gap-2 pt-0.5">
                   <h2 
                     dir={isRtlLang(currentCard.targetLanguage) ? 'rtl' : 'ltr'} 
-                    className="text-2xl sm:text-3xl font-extrabold font-card-word tracking-tight text-[#1E1B2E]"
+                    className="text-2xl sm:text-3xl font-extrabold font-card-word tracking-tight text-[var(--ink)]"
                   >
                     {currentCard.targetText}
                   </h2>
@@ -637,7 +633,7 @@ const GameplayScreen: React.FC<Props> = ({
                       sound.playClick();
                       sound.speakTargetPhrase(currentCard.targetText, currentCard.targetLanguage);
                     }}
-                    className="p-1.5 bg-[#1E9E93] hover:bg-[#18837a] text-white rounded-[12px] border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E] transition-transform active:translate-y-0.5"
+                    className="p-1.5 bg-[var(--turq)] hover:brightness-105 text-white rounded-xl shadow-xs transition-all active:scale-95"
                   >
                     <Volume2 size={16} />
                   </button>
@@ -648,13 +644,13 @@ const GameplayScreen: React.FC<Props> = ({
               <div className="w-full flex flex-col items-center">
                 
                 {/* Clean Card Plate */}
-                <div className="w-full max-w-sm my-1 p-3 sm:p-4 rounded-[20px] bg-[#F4EDE1]/80 border-2 border-[#1E1B2E] flex flex-col items-center justify-center space-y-1.5">
+                <div className="w-full max-w-sm my-1 p-3 sm:p-4 rounded-2xl bg-[var(--bg)] border border-[var(--line)] flex flex-col items-center justify-center space-y-1.5 shadow-xs">
                   
                   {/* Hero Target Word / Phrase */}
                   <div className="flex items-center justify-center gap-2">
                     <h2 
                       dir={isRtlLang(currentCard?.targetLanguage || 'en-US') ? 'rtl' : 'ltr'} 
-                      className="text-2xl sm:text-4xl font-extrabold font-card-word tracking-tight text-[#1E1B2E]"
+                      className="text-2xl sm:text-4xl font-extrabold font-card-word tracking-tight text-[var(--ink)]"
                     >
                       {currentCard?.targetText || '---'}
                     </h2>
@@ -667,7 +663,7 @@ const GameplayScreen: React.FC<Props> = ({
                           sound.playClick();
                           sound.speakTargetPhrase(currentCard.targetText, currentCard.targetLanguage);
                         }}
-                        className="p-1.5 bg-[#1E9E93] hover:bg-[#18837a] text-white rounded-[12px] border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E] transition-transform active:translate-y-0.5"
+                        className="p-1.5 bg-[var(--turq)] hover:brightness-105 text-white rounded-xl shadow-xs transition-all active:scale-95"
                       >
                         <Volume2 size={16} />
                       </button>
@@ -678,7 +674,7 @@ const GameplayScreen: React.FC<Props> = ({
                   {currentCard?.translation && (
                     <div 
                       dir={isRtlLang(currentCard.nativeLanguage || settings.nativeLanguage || 'fa') ? 'rtl' : 'ltr'}
-                      className="px-3 py-1 rounded-[12px] bg-[#FFFBF4] text-[#1E1B2E] text-sm sm:text-base font-bold border-2 border-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E]"
+                      className="px-3 py-1 rounded-xl bg-[var(--panel)] text-[var(--ink)] text-sm sm:text-base font-bold border border-[var(--line)] shadow-xs"
                     >
                       {currentCard.translation}
                     </div>
@@ -688,7 +684,7 @@ const GameplayScreen: React.FC<Props> = ({
                   {currentCard?.prompt && !currentCard.prompt.includes('🔄') && !currentCard.prompt.includes('ترجمه به') && (
                     <p 
                       dir={isRtlLang(currentCard.nativeLanguage || settings.nativeLanguage || 'fa') ? 'rtl' : 'ltr'}
-                      className="text-[11.5px] text-[#1E1B2E]/80 font-medium max-w-xs leading-tight mt-0.5"
+                      className="text-[11.5px] text-[var(--mute)] font-medium max-w-xs leading-tight mt-0.5"
                     >
                       {currentCard.prompt}
                     </p>
@@ -702,7 +698,7 @@ const GameplayScreen: React.FC<Props> = ({
             <div className="flex flex-wrap items-center justify-center gap-1.5 mt-2">
               
               {currentCard?.pronunciation && (
-                <span className="text-[10px] bg-[#1E1B2E] text-[#FFFBF4] px-2 py-0.5 rounded-[8px] font-mono font-bold">
+                <span className="text-[10px] bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] px-2 py-0.5 rounded-lg font-mono font-bold">
                   🗣️ {currentCard.pronunciation}
                 </span>
               )}
@@ -711,11 +707,11 @@ const GameplayScreen: React.FC<Props> = ({
                 <button
                   type="button"
                   onClick={() => setShowGrammar(!showGrammar)}
-                  className={`text-[10px] px-2.5 py-1 rounded-[10px] border-2 border-[#1E1B2E] font-bold flex items-center gap-1 transition-all ${
-                    showGrammar ? 'bg-[#1E9E93] text-white' : 'bg-[#FFFBF4] text-[#1E1B2E]'
+                  className={`text-[10px] px-2.5 py-1 rounded-xl border border-[var(--line)] font-bold flex items-center gap-1 transition-all ${
+                    showGrammar ? 'bg-[var(--lapis)] text-white border-[var(--lapis)]' : 'bg-[var(--panel)] text-[var(--ink)]'
                   }`}
                 >
-                  <Sparkles size={11} className={showGrammar ? 'text-white' : 'text-[#1E9E93]'} />
+                  <Sparkles size={11} className={showGrammar ? 'text-white' : 'text-[var(--turq)]'} />
                   <span>{isRTL ? 'گرامر' : 'Grammar'}</span>
                 </button>
               )}
@@ -724,11 +720,11 @@ const GameplayScreen: React.FC<Props> = ({
                 <button
                   type="button"
                   onClick={() => setShowHint(!showHint)}
-                  className={`text-[10px] px-2.5 py-1 rounded-[10px] border-2 border-[#1E1B2E] font-bold flex items-center gap-1 transition-all ${
-                    showHint ? 'bg-[#F2B63D] text-[#1E1B2E]' : 'bg-[#FFFBF4] text-[#1E1B2E]'
+                  className={`text-[10px] px-2.5 py-1 rounded-xl border border-[var(--line)] font-bold flex items-center gap-1 transition-all ${
+                    showHint ? 'bg-[var(--saffron)] text-[#15204A] border-[var(--saffron)]' : 'bg-[var(--panel)] text-[var(--ink)]'
                   }`}
                 >
-                  <Lightbulb size={11} className={showHint ? 'text-[#1E1B2E]' : 'text-[#E0603F]'} />
+                  <Lightbulb size={11} className={showHint ? 'text-[#15204A]' : 'text-[var(--saffron)]'} />
                   <span>{isRTL ? 'راهنما' : 'Hint'}</span>
                 </button>
               )}
@@ -737,13 +733,13 @@ const GameplayScreen: React.FC<Props> = ({
 
             {/* Expandable Grammar / Hint Drawers */}
             {showGrammar && currentCard?.grammarPoint && (
-              <div className="mt-1.5 p-2 bg-[#FFFBF4] text-[#1E1B2E] rounded-[14px] text-[11px] font-medium border-2 border-[#1E1B2E] max-w-xs shadow-[2px_2px_0px_0px_#1E1B2E] animate-fadeIn">
+              <div className="mt-1.5 p-2.5 bg-[var(--bg)] text-[var(--ink)] rounded-xl text-[11px] font-medium border border-[var(--line)] max-w-xs shadow-xs animate-fadeIn">
                 ✨ {currentCard.grammarPoint}
               </div>
             )}
 
             {showHint && currentCard?.hint && (
-              <div className="mt-1.5 p-2 bg-[#FFFBF4] text-[#1E1B2E] rounded-[14px] text-[11px] font-medium border-2 border-[#1E1B2E] max-w-xs shadow-[2px_2px_0px_0px_#1E1B2E] animate-fadeIn">
+              <div className="mt-1.5 p-2.5 bg-[var(--bg)] text-[var(--ink)] rounded-xl text-[11px] font-medium border border-[var(--line)] max-w-xs shadow-xs animate-fadeIn">
                 💡 {currentCard.hint}
               </div>
             )}
@@ -751,11 +747,11 @@ const GameplayScreen: React.FC<Props> = ({
           </div>
 
           {/* Clean Card Footer */}
-          <div className="flex items-center justify-between text-[11px] font-bold border-t-2 border-[#1E1B2E]/20 pt-1.5 shrink-0 font-ui text-[#1E1B2E]">
+          <div className="flex items-center justify-between text-[11px] font-bold border-t border-[var(--line)] pt-2 shrink-0 font-ui text-[var(--mute)]">
             <span>
-              {isRTL ? 'یار پاسخ‌دهنده: ' : 'Guesser: '}<strong className="text-[#1E1B2E] underline">{partnerPlayer?.name || (isRTL ? 'هم‌تیمی' : 'Partner')}</strong>
+              {isRTL ? 'یار پاسخ‌دهنده: ' : 'Guesser: '}<strong className="text-[var(--ink)] font-bold">{partnerPlayer?.name || (isRTL ? 'هم‌تیمی' : 'Partner')}</strong>
             </span>
-            <span className="bg-[#F2B63D] text-[#1E1B2E] px-2 py-0.5 rounded-[8px] border-2 border-[#1E1B2E] text-[10.5px] font-bold shadow-[1px_1px_0px_0px_#1E1B2E]">
+            <span className="bg-[var(--saffron)] text-[#15204A] px-2 py-0.5 rounded-lg text-[10.5px] font-extrabold shadow-xs">
               +{currentCard?.isGolden ? (currentCard.points * 2) : (currentCard?.points || 1)} {isRTL ? 'امتیاز ⭐' : 'pts ⭐'}
             </span>
           </div>
@@ -779,7 +775,7 @@ const GameplayScreen: React.FC<Props> = ({
           <button
             type="button"
             onClick={handleExecuteUndo}
-            className="px-4 py-1.5 bg-[#F2B63D] text-[#1E1B2E] rounded-full border-2 border-[#1E1B2E] font-bold text-xs shadow-[3px_3px_0px_0px_#1E1B2E] flex items-center gap-2"
+            className="px-4 py-1.5 bg-[var(--saffron)] text-[#15204A] rounded-full border border-[var(--saffron)] font-bold text-xs shadow-sm flex items-center gap-2"
           >
             <RotateCcw size={14} />
             <span>{isRTL ? `بازگشت کارت قبلی (${undoTimeLeft}s)` : `Undo Card (${undoTimeLeft}s)`}</span>
@@ -791,36 +787,36 @@ const GameplayScreen: React.FC<Props> = ({
       <div className="w-full space-y-1.5 shrink-0 font-ui">
         
         {/* Main Answer Buttons (Correct / Almost / Skip) */}
-        <div className="flex gap-2">
+        <div className="grid grid-cols-3 gap-2">
           
           {/* Skip / Next */}
           <button
             type="button"
             onClick={handleSkip}
-            className="pixel-btn pixel-btn-orange flex-1 py-3 text-sm font-bold uppercase flex items-center justify-center gap-1.5 rounded-[18px]"
+            className="h-16 text-xs sm:text-sm font-extrabold uppercase flex flex-col items-center justify-center gap-1 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs transition-all active:scale-[0.97] cursor-pointer"
           >
-            <X size={18} strokeWidth={3} />
-            <span>{isRTL ? 'رد کردن' : 'Skip'}</span>
+            <X size={20} strokeWidth={2.5} className="text-rose-500" />
+            <span className="leading-none">{isRTL ? 'رد کردن' : 'Skip'}</span>
           </button>
 
           {/* Almost Correct (Crowd Vote) */}
           <button
             type="button"
             onClick={() => setShowAlmostModal(true)}
-            className="pixel-btn pixel-btn-mustard flex-1 py-3 text-xs font-bold uppercase flex items-center justify-center gap-1 rounded-[18px]"
+            className="h-16 text-xs sm:text-sm font-extrabold uppercase flex flex-col items-center justify-center gap-1 rounded-2xl bg-[var(--saffron)] hover:brightness-105 text-[#15204A] border-0 shadow-xs transition-all active:scale-[0.97] cursor-pointer"
           >
-            <ThumbsUp size={15} />
-            <span>{t.almostCorrectBtn || (isRTL ? 'تقریباً درست' : 'Almost')}</span>
+            <ThumbsUp size={20} className="text-[#15204A]" />
+            <span className="leading-none text-center">{t.almostCorrectBtn || (isRTL ? 'تقریباً درست' : 'Almost')}</span>
           </button>
 
           {/* Correct Answer */}
           <button
             type="button"
             onClick={() => handleCorrect(false)}
-            className="pixel-btn pixel-btn-teal flex-[1.5] py-3 text-sm font-bold uppercase flex items-center justify-center gap-2 rounded-[18px]"
+            className="h-16 text-xs sm:text-sm font-extrabold uppercase flex flex-col items-center justify-center gap-1 rounded-2xl bg-[var(--turq)] hover:brightness-105 text-white border-0 shadow-xs transition-all active:scale-[0.97] cursor-pointer"
           >
-            <Check size={20} strokeWidth={3.5} />
-            <span>{isRTL ? 'درست بود!' : 'Correct!'}</span>
+            <Check size={22} strokeWidth={3} className="text-white" />
+            <span className="leading-none">{isRTL ? 'درست بود!' : 'Correct!'}</span>
           </button>
 
         </div>
@@ -833,9 +829,9 @@ const GameplayScreen: React.FC<Props> = ({
             <button
               type="button"
               onClick={() => usePowerCard('time')}
-              className="flex-1 py-2 bg-[#FFFBF4] hover:bg-[#F4EDE1] text-[#1E1B2E] border-2 border-[#1E1B2E] rounded-[14px] text-[11px] font-bold shadow-[2px_2px_0px_0px_#1E1B2E] flex items-center justify-center gap-1 transition-transform active:translate-y-0.5"
+              className="flex-1 py-2 bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] rounded-xl text-[11px] font-bold shadow-xs flex items-center justify-center gap-1 transition-all active:scale-[0.98]"
             >
-              <Clock size={13} className="text-[#E0603F]" />
+              <Clock size={13} className="text-[var(--lapis)]" />
               <span>{isRTL ? '۱۰+ ثانیه وقت' : '+10s Boost'}</span>
             </button>
           )}
@@ -848,10 +844,10 @@ const GameplayScreen: React.FC<Props> = ({
               sound.playToggle();
               onGetNextWord();
             }}
-            className={`flex-1 py-2 border-2 border-[#1E1B2E] rounded-[14px] text-[11px] font-bold shadow-[2px_2px_0px_0px_#1E1B2E] flex items-center justify-center gap-1 transition-transform active:translate-y-0.5 ${
+            className={`flex-1 py-2 border border-[var(--line)] rounded-xl text-[11px] font-bold shadow-xs flex items-center justify-center gap-1 transition-all active:scale-[0.98] ${
               swapCooldown <= 0
-                ? 'bg-[#F2B63D] text-[#1E1B2E] hover:bg-[#e0a634]'
-                : 'bg-[#E6DFD5] text-[#1E1B2E]/50 cursor-not-allowed'
+                ? 'bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)]'
+                : 'opacity-40 cursor-not-allowed bg-[var(--bg)] text-[var(--mute)]'
             }`}
           >
             <RotateCcw size={13} />

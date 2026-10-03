@@ -32,12 +32,17 @@ import {
   ChevronLeft,
   Users,
   User as UserIcon,
-  ChevronDown
+  ChevronDown,
+  Award
 } from 'lucide-react';
 import { tUI, isRtlLang } from '../ui';
+import { GameSettings } from '../types';
+import { CEFR_LEVELS } from '../constants';
 
 interface Props {
   language: Language;
+  settings?: GameSettings;
+  onUpdateSettings?: (s: GameSettings) => void;
   onLanguageChange: (l: Language) => void;
   onNext: () => void;
   onOpenSinglePlayer: () => void;
@@ -49,6 +54,8 @@ interface Props {
 
 const IntroScreen: React.FC<Props> = ({ 
   language, 
+  settings,
+  onUpdateSettings,
   onLanguageChange, 
   onNext, 
   onOpenSinglePlayer,
@@ -71,6 +78,8 @@ const IntroScreen: React.FC<Props> = ({
   const [profileInitialTab, setProfileInitialTab] = useState<'records' | 'leaderboard'>('records');
 
   const currentLangInfo = SUPPORTED_LANGUAGES.find(l => l.code === language) || SUPPORTED_LANGUAGES[0];
+  const currentCefr = settings?.cefrLevel || 'all';
+  const activeCefrInfo = CEFR_LEVELS.find(l => l.id === currentCefr) || CEFR_LEVELS[5]; // default all
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -162,10 +171,11 @@ const IntroScreen: React.FC<Props> = ({
   };
 
   return (
-    <div className="h-full min-h-0 flex-1 flex flex-col items-center justify-between p-3.5 sm:p-4 text-center select-none overflow-y-auto overscroll-contain bg-[var(--bg)] text-[var(--ink)]" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full min-h-0 flex-1 flex flex-col items-center justify-between p-3.5 sm:p-4 text-center select-none overflow-y-auto overscroll-contain bg-[var(--bg)] text-[var(--ink)] font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
       
       {/* Top Bar: Language Picker Pill on one side, Sound, Help & Profile on the other */}
-      <div className="w-full max-w-sm flex items-center justify-between px-1 mb-2 shrink-0 gap-1.5">
+      <div className="w-full max-w-sm sm:max-w-md flex items-center justify-between px-1 mb-2 shrink-0 gap-2">
+        {/* Language button: Flag icon only as requested ("نام زبان رو ننویس همون آیکون زبان کافیه") */}
         <button
           id="header-language-btn"
           data-testid="header-language-btn"
@@ -174,19 +184,15 @@ const IntroScreen: React.FC<Props> = ({
             sound.playClick();
             setIsLanguageModalOpen(true);
           }}
-          className="h-10 flex items-center gap-1.5 bg-[var(--panel)] hover:bg-[var(--bg)] px-3 rounded-full border border-[var(--line)] shadow-xs text-xs font-bold text-[var(--ink)] active:scale-95 transition-all cursor-pointer shrink-0"
-          title={t.changeLanguage}
+          className="w-10 h-10 flex items-center justify-center bg-[var(--panel)] hover:bg-[var(--bg)] rounded-full border border-[var(--line)] shadow-xs text-xs font-bold text-[var(--ink)] active:scale-95 transition-all cursor-pointer shrink-0"
+          title={`${t.changeLanguage} (${currentLangInfo.nativeName || currentLangInfo.name})`}
           aria-label={t.changeLanguage}
         >
-          <FlagIcon language={language} size={17} />
-          <span className="font-bold tracking-tight">
-            {currentLangInfo.nativeName || currentLangInfo.name}
-          </span>
-          <ChevronDown size={14} className="text-[var(--mute)] shrink-0" />
+          <FlagIcon language={language} size={20} />
         </button>
 
-        {/* Top Controls: Mobile APK, Sound, Help & Profile (History is inside Profile) */}
-        <div className="flex items-center gap-2">
+        {/* Top Controls: Mobile APK, Sound, Help & Profile */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Mobile APK / Play Store Download Button */}
           <button
             id="header-install-btn"
@@ -263,7 +269,7 @@ const IntroScreen: React.FC<Props> = ({
       </div>
 
       {/* Interactive Action Buttons */}
-      <div className="w-full max-w-sm space-y-2.5 my-auto shrink-0">
+      <div className="w-full max-w-sm sm:max-w-md space-y-2.5 my-auto shrink-0">
         {/* Primary Action: Start Game Button */}
         <div className="flex flex-col gap-2.5">
           <button 
@@ -350,25 +356,25 @@ const IntroScreen: React.FC<Props> = ({
       {/* Game Mode Selection Modal */}
       {isGameModeModalOpen && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-fade-in font-ui"
           dir={isRTL ? 'rtl' : 'ltr'}
           onClick={() => setIsGameModeModalOpen(false)}
         >
           <div 
-            className="w-full max-w-md bg-[#1d0d38] border-[3.5px] border-[#FFE600] rounded-3xl shadow-[0_0_30px_rgba(255,230,0,0.3)] overflow-hidden text-white flex flex-col"
+            className="w-full max-w-md bg-[var(--panel)] border border-[var(--line)] rounded-[24px] shadow-[var(--shadow)] overflow-hidden text-[var(--ink)] flex flex-col"
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-[#FF007F] via-[#7B2CBF] to-[#241442] p-4 flex items-center justify-between border-b-[3px] border-[#241442]">
-              <div className="flex items-center gap-2">
-                <div className="w-9 h-9 rounded-xl bg-[#FFE600] text-[#1a0833] flex items-center justify-center font-black shadow-[2px_2px_0px_0px_#241442]">
+            <div className="bg-[var(--panel)] p-4 flex items-center justify-between border-b border-[var(--line)]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-[var(--saffron)] text-[var(--ink)] flex items-center justify-center font-bold shadow-[var(--shadow-sm)] border border-[var(--line)]">
                   <Gamepad2 size={20} />
                 </div>
                 <div className="text-start">
-                  <h2 className="text-base sm:text-lg font-black tracking-tight">
+                  <h2 className="text-base sm:text-lg font-bold font-display tracking-tight text-[var(--ink)]">
                     {t.chooseGameMode || (isRTL ? 'نوع بازی را انتخاب کنید' : 'Choose Game Mode')}
                   </h2>
-                  <p className="text-[11px] text-pink-200 font-bold">
+                  <p className="text-[11px] text-[var(--mute)] font-medium">
                     {t.selectChallengeMode || (isRTL ? 'حالت مسابقه مورد نظر خود را آغاز نمایید' : 'Select your preferred challenge mode')}
                   </p>
                 </div>
@@ -379,9 +385,9 @@ const IntroScreen: React.FC<Props> = ({
                   sound.playClick();
                   setIsGameModeModalOpen(false);
                 }}
-                className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-transform active:scale-95"
+                className="w-8 h-8 rounded-full bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] text-[var(--ink)] flex items-center justify-center transition-transform active:scale-95"
               >
-                <X size={18} />
+                <X size={16} />
               </button>
             </div>
 
@@ -395,27 +401,27 @@ const IntroScreen: React.FC<Props> = ({
                   setIsGameModeModalOpen(false);
                   onNext();
                 }}
-                className="p-3 bg-[#2a134f] hover:bg-[#341861] border-2 border-[#FFE600] rounded-2xl cursor-pointer transition-all active:scale-[0.98] shadow-[3px_3px_0px_0px_#241442] flex flex-col gap-2 group"
+                className="p-3 bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] rounded-[18px] cursor-pointer transition-all active:scale-[0.98] shadow-[var(--shadow-sm)] flex flex-col gap-2 group"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-[#FFE600] text-[#1a0833] flex items-center justify-center font-black">
+                    <div className="w-8 h-8 rounded-lg bg-[var(--saffron)] text-[var(--ink)] flex items-center justify-center font-bold">
                       <Users size={18} />
                     </div>
                     <div>
-                      <h3 className="text-sm font-black text-[#FFE600] group-hover:text-yellow-200">
+                      <h3 className="text-sm font-bold text-[var(--ink)]">
                         {t.localPartyMode || (isRTL ? '۱. بازی دورهمی حضوری (Pass & Play)' : '1. Local Party (Pass & Play)')}
                       </h3>
-                      <span className="text-[10px] text-[#00F0FF] font-bold">
+                      <span className="text-[10px] text-[var(--teal)] font-bold">
                         {t.localPartyDesc || (isRTL ? '۲ تا ۸ بازیکن • مسابقه با یک گوشی' : '2 to 8 players • One shared phone')}
                       </span>
                     </div>
                   </div>
-                  <span className="text-xs font-black bg-[#FFE600] text-[#1a0833] px-2.5 py-1 rounded-xl shadow-[1px_1px_0px_0px_#241442]">
+                  <span className="text-xs font-bold bg-[var(--saffron)] text-[var(--ink)] px-2.5 py-1 rounded-xl shadow-[var(--shadow-sm)] border border-[var(--line)]">
                     {t.start || (isRTL ? 'شروع ➔' : 'Start ➔')}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-300 font-medium leading-relaxed text-start">
+                <p className="text-[11px] text-[var(--mute)] font-medium leading-relaxed text-start">
                   {t.localPartySub || (isRTL 
                     ? 'گوشی بین تیم‌ها می‌چرخد! تایمر زنگ‌دار، چرخ شانس موضوعات و کارت‌های واژگان برای یک مسابقه دورهمی پرشور.'
                     : 'Pass the phone between teams! Buzzer timer, category wheel, and vocabulary cards for an energetic party.')}
@@ -429,27 +435,27 @@ const IntroScreen: React.FC<Props> = ({
                   setIsGameModeModalOpen(false);
                   onOpenSinglePlayer();
                 }}
-                className="p-3 bg-[#2a134f] hover:bg-[#341861] border-2 border-[#FF007F] rounded-2xl cursor-pointer transition-all active:scale-[0.98] shadow-[3px_3px_0px_0px_#241442] flex flex-col gap-2 group"
+                className="p-3 bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] rounded-[18px] cursor-pointer transition-all active:scale-[0.98] shadow-[var(--shadow-sm)] flex flex-col gap-2 group"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-[#FF007F] text-white flex items-center justify-center font-black">
+                    <div className="w-8 h-8 rounded-lg bg-[var(--vermilion)] text-white flex items-center justify-center font-bold">
                       <Mic size={18} />
                     </div>
                     <div>
-                      <h3 className="text-sm font-black text-[#FF007F] group-hover:text-pink-300">
+                      <h3 className="text-sm font-bold text-[var(--ink)]">
                         {t.singlePlayer || (isRTL ? '۲. چالش تک‌نفره و سنجش تلفظ' : '2. Single-Player & Voice Challenge')}
                       </h3>
-                      <span className="text-[10px] text-[#39FF14] font-bold">
+                      <span className="text-[10px] text-[var(--teal)] font-bold">
                         {t.singlePlayerSub || (isRTL ? 'تمرین گفتار با میکروفون • ثبت در لیدربرد' : 'Voice pronunciation • Leaderboard records')}
                       </span>
                     </div>
                   </div>
-                  <span className="text-xs font-black bg-[#FF007F] text-white px-2.5 py-1 rounded-xl shadow-[1px_1px_0px_0px_#241442]">
+                  <span className="text-xs font-bold bg-[var(--vermilion)] text-white px-2.5 py-1 rounded-xl shadow-[var(--shadow-sm)]">
                     {t.start || (isRTL ? 'شروع ➔' : 'Start ➔')}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-300 font-medium leading-relaxed text-start">
+                <p className="text-[11px] text-[var(--mute)] font-medium leading-relaxed text-start">
                   {t.singlePlayerDetail || (isRTL 
                     ? 'فلش‌کارت‌های تخصصی در بیش از ۳۸ زبان، تمرین با هوش مصنوعی و میکروفون و ثبت رکوردهای برتر در لیدربرد تک‌نفره.'
                     : 'Curated CEFR flashcards in 38+ languages, AI pronunciation score via mic, and top scores on the solo leaderboard.')}
@@ -463,27 +469,27 @@ const IntroScreen: React.FC<Props> = ({
                   setIsGameModeModalOpen(false);
                   onOpenOnline();
                 }}
-                className="p-3 bg-[#2a134f] hover:bg-[#341861] border-2 border-[#00F0FF] rounded-2xl cursor-pointer transition-all active:scale-[0.98] shadow-[3px_3px_0px_0px_#241442] flex flex-col gap-2 group"
+                className="p-3 bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] rounded-[18px] cursor-pointer transition-all active:scale-[0.98] shadow-[var(--shadow-sm)] flex flex-col gap-2 group"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-[#00F0FF] text-[#1a0833] flex items-center justify-center font-black">
+                    <div className="w-8 h-8 rounded-lg bg-[var(--teal)] text-white flex items-center justify-center font-bold">
                       <Globe size={18} />
                     </div>
                     <div>
-                      <h3 className="text-sm font-black text-[#00F0FF] group-hover:text-cyan-200">
+                      <h3 className="text-sm font-bold text-[var(--ink)]">
                         {t.onlineMultiplayer || (isRTL ? '۳. بازی آنلاین چندنفره (از راه دور)' : '3. Online Multiplayer (Remote Rooms)')}
                       </h3>
-                      <span className="text-[10px] text-purple-300 font-bold">
+                      <span className="text-[10px] text-[var(--mute)] font-bold">
                         {t.onlineMultiplayerDesc || (isRTL ? 'اتاق‌های مجازی • کد دعوت ۶ رقمی' : 'Virtual rooms • 6-digit invite code')}
                       </span>
                     </div>
                   </div>
-                  <span className="text-xs font-black bg-[#00F0FF] text-[#1a0833] px-2.5 py-1 rounded-xl shadow-[1px_1px_0px_0px_#241442]">
+                  <span className="text-xs font-bold bg-[var(--teal)] text-white px-2.5 py-1 rounded-xl shadow-[var(--shadow-sm)]">
                     {t.joinGameBtn || (isRTL ? 'ورود ➔' : 'Join ➔')}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-300 font-medium leading-relaxed text-start">
+                <p className="text-[11px] text-[var(--mute)] font-medium leading-relaxed text-start">
                   {t.onlineMultiplayerSub || (isRTL 
                     ? 'از هر فاصله‌ای با دوستان خود بازی کنید! ساخت اتاق اختصاصی یا ورود با کد دعوت جهت مسابقه آنلاین تیمی.'
                     : 'Play with friends from anywhere! Host a custom room or join via invite code for real-time multiplayer.')}
@@ -493,11 +499,11 @@ const IntroScreen: React.FC<Props> = ({
             </div>
 
             {/* Footer */}
-            <div className="p-3 bg-[#17092c] border-t border-[#241442] text-center">
+            <div className="p-3 bg-[var(--panel)] border-t border-[var(--line)] text-center">
               <button
                 type="button"
                 onClick={() => setIsGameModeModalOpen(false)}
-                className="text-xs font-bold text-slate-400 hover:text-white"
+                className="text-xs font-bold text-[var(--mute)] hover:text-[var(--ink)] transition-colors"
               >
                 {t.close || (isRTL ? 'بستن پنجره' : 'Close')}
               </button>
@@ -509,25 +515,25 @@ const IntroScreen: React.FC<Props> = ({
       {/* History Login Required Modal */}
       {isHistoryLoginModalOpen && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-fade-in font-ui"
           dir={isRTL ? 'rtl' : 'ltr'}
           onClick={() => setIsHistoryLoginModalOpen(false)}
         >
           <div 
-            className="w-full max-w-sm bg-[#1e0e38] border-[3.5px] border-[#FFE600] rounded-3xl shadow-[0_0_30px_rgba(255,230,0,0.3)] overflow-hidden text-white"
+            className="w-full max-w-sm bg-[var(--panel)] border border-[var(--line)] rounded-[24px] shadow-[var(--shadow)] overflow-hidden text-[var(--ink)]"
             onClick={e => e.stopPropagation()}
           >
-            <div className="bg-gradient-to-r from-[#FF007F] to-[#7B2CBF] p-4 text-center border-b-2 border-[#241442]">
-              <div className="w-12 h-12 rounded-2xl bg-[#FFE600] text-[#1a0833] flex items-center justify-center mx-auto mb-2 shadow-[2px_2px_0px_0px_#241442]">
+            <div className="bg-[var(--panel)] p-4 text-center border-b border-[var(--line)]">
+              <div className="w-12 h-12 rounded-2xl bg-[var(--saffron)] text-[var(--ink)] flex items-center justify-center mx-auto mb-2 shadow-[var(--shadow-sm)] border border-[var(--line)]">
                 <History size={24} />
               </div>
-              <h3 className="text-base font-black">
+              <h3 className="text-base font-bold text-[var(--ink)]">
                 {t.signInForHistory || (isRTL ? 'ورود به حساب برای مشاهده تاریخچه' : 'Sign in to access Game History')}
               </h3>
             </div>
 
             <div className="p-4 space-y-3 text-center">
-              <p className="text-xs text-slate-300 font-medium leading-relaxed">
+              <p className="text-xs text-[var(--mute)] font-medium leading-relaxed">
                 {t.signInHistoryDesc || (isRTL 
                   ? 'سوابق مسابقات، امتیازات تیمی، کلمات یادگرفته‌شده و رکوردهای شما به صورت ابری ذخیره می‌شوند. برای مشاهده تاریخچه و ادامه، با حساب گوگل خود وارد شوید.'
                   : 'Your match logs, scores, learned vocabulary, and records are saved to the cloud. Please sign in with your Google account to access your history.')}
@@ -537,7 +543,7 @@ const IntroScreen: React.FC<Props> = ({
                 type="button"
                 onClick={handleLoginForHistory}
                 disabled={isAuthLoading}
-                className="w-full py-3 bg-[#39FF14] hover:bg-[#32e012] text-[#1a0833] font-black text-sm rounded-xl border-2 border-[#241442] shadow-[3px_3px_0px_0px_#241442] active:translate-y-0.5 flex items-center justify-center gap-2"
+                className="w-full py-2.5 bg-[var(--teal)] hover:bg-[#18837a] text-white font-bold text-sm rounded-[14px] shadow-[var(--shadow-sm)] active:translate-y-0.5 flex items-center justify-center gap-2 transition-all"
               >
                 <LogIn size={16} />
                 <span>{isAuthLoading ? (t.connecting || 'Connecting...') : (t.signInWithGoogle || 'Sign in with Google')}</span>
@@ -546,7 +552,7 @@ const IntroScreen: React.FC<Props> = ({
               <button
                 type="button"
                 onClick={() => setIsHistoryLoginModalOpen(false)}
-                className="w-full py-2 text-xs font-bold text-slate-400 hover:text-white"
+                className="w-full py-2 text-xs font-bold text-[var(--mute)] hover:text-[var(--ink)] transition-colors"
               >
                 {t.cancel || (isRTL ? 'انصراف' : 'Cancel')}
               </button>

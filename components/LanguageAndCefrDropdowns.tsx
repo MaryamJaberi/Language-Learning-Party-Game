@@ -125,17 +125,17 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
     <div className="space-y-3 select-none font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
       
       {/* 1. TARGET LANGUAGES: In-Place Search & Tagged Chips */}
-      <div className="bg-[#FFFBF4] border-2 border-[#1E1B2E] shadow-[3px_3px_0px_0px_#1E1B2E] rounded-[20px] p-3 sm:p-3.5 space-y-2.5">
+      <div className="bg-[var(--panel)] border border-[var(--line)] shadow-[var(--shadow-sm)] rounded-[18px] p-3 sm:p-3.5 space-y-2.5">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-[10px] bg-[#1E9E93] border-2 border-[#1E1B2E] flex items-center justify-center text-white shrink-0 shadow-[1px_1px_0px_0px_#1E1B2E]">
+            <div className="w-7 h-7 rounded-[10px] bg-[var(--teal)] flex items-center justify-center text-white shrink-0 shadow-[var(--shadow-sm)]">
               <BookOpen size={14} />
             </div>
             <div>
-              <span className="text-xs sm:text-sm font-bold text-[#1E1B2E] block leading-tight">
+              <span className="text-xs sm:text-sm font-bold text-[var(--ink)] block leading-tight">
                 {t.targetLanguages}
               </span>
-              <span className="text-[10px] text-[#1E1B2E]/70 font-medium block">
+              <span className="text-[10px] text-[var(--mute)] font-medium block">
                 {t.targetLanguagesSub}
               </span>
             </div>
@@ -148,7 +148,7 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
               sound.playClick();
               setPickerMode('target');
             }}
-            className="px-2.5 py-1 rounded-[10px] bg-[#F2B63D] hover:bg-[#e0a634] text-[#1E1B2E] border-2 border-[#1E1B2E] text-[10.5px] font-bold shrink-0 flex items-center gap-1 shadow-[1px_1px_0px_0px_#1E1B2E] active:scale-95 transition-all"
+            className="px-2.5 py-1 rounded-[10px] bg-[var(--saffron)] hover:bg-[#e0a634] text-[var(--ink)] border border-[var(--line)] text-[10.5px] font-bold shrink-0 flex items-center gap-1 shadow-[var(--shadow-sm)] active:scale-95 transition-all"
             title={t.all38Languages}
           >
             <Globe size={12} />
@@ -164,7 +164,7 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
               return (
                 <div 
                   key={code}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[12px] bg-[#F2B63D] border-2 border-[#1E1B2E] text-[#1E1B2E] font-bold text-xs shadow-[2px_2px_0px_0px_#1E1B2E] animate-fadeIn transition-transform"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[12px] bg-[var(--saffron)] border border-[var(--line)] text-[var(--ink)] font-bold text-xs shadow-[var(--shadow-sm)] animate-fadeIn transition-transform"
                 >
                   <FlagIcon language={code} size={16} />
                   <span>{lang?.nativeName || code}</span>
@@ -175,7 +175,7 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
                     <button
                       type="button"
                       onClick={() => removeTargetLang(code)}
-                      className="w-4 h-4 rounded-full bg-[#1E1B2E]/20 hover:bg-[#E0603F] hover:text-white flex items-center justify-center text-[10px] ml-0.5 transition-colors cursor-pointer"
+                      className="w-4 h-4 rounded-full bg-[var(--ink)]/20 hover:bg-[var(--vermilion)] hover:text-white flex items-center justify-center text-[10px] ml-0.5 transition-colors cursor-pointer"
                       title={t.removeLanguage}
                     >
                       <X size={10} />
@@ -189,21 +189,21 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
 
         {/* In-Place Search Box for Fast Tagging */}
         <div className="relative">
-          <div className="flex items-center gap-2 bg-[#F4EDE1] border-2 border-[#1E1B2E] rounded-[12px] px-2.5 py-1.5 shadow-[1.5px_1.5px_0px_0px_#1E1B2E] focus-within:bg-[#FFFBF4] transition-all">
-            <Search size={14} className="text-[#1E1B2E]/60 shrink-0" />
+          <div className="flex items-center gap-2 bg-[var(--bg)] border border-[var(--line)] rounded-[12px] px-2.5 py-1.5 shadow-[var(--shadow-sm)] focus-within:bg-[var(--panel)] transition-all">
+            <Search size={14} className="text-[var(--mute)] shrink-0" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setIsSearchFocused(true)}
               placeholder={t.searchLanguagePlaceholder}
-              className="w-full bg-transparent text-xs font-bold text-[#1E1B2E] placeholder-[#1E1B2E]/40 outline-none"
+              className="w-full bg-transparent text-xs font-bold text-[var(--ink)] placeholder-[var(--mute)] outline-none"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="text-[#1E1B2E]/60 hover:text-[#1E1B2E] p-0.5"
+                className="text-[var(--mute)] hover:text-[var(--ink)] p-0.5"
               >
                 <X size={12} />
               </button>
@@ -212,9 +212,9 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
 
           {/* Autocomplete Search Dropdown */}
           {searchQuery.trim().length > 0 && (
-            <div className="absolute top-full mt-1.5 left-0 right-0 bg-[#FFFBF4] border-2 border-[#1E1B2E] rounded-[14px] shadow-[3px_3px_0px_0px_#1E1B2E] z-30 overflow-hidden divide-y divide-[#1E1B2E]/10 max-h-48 overflow-y-auto">
+            <div className="absolute top-full mt-1.5 left-0 right-0 bg-[var(--panel)] border border-[var(--line)] rounded-[14px] shadow-[var(--shadow)] z-30 overflow-hidden divide-y divide-[var(--line)] max-h-48 overflow-y-auto">
               {searchResults.length === 0 ? (
-                <div className="p-2.5 text-center text-xs font-bold text-[#1E1B2E]/60">
+                <div className="p-2.5 text-center text-xs font-bold text-[var(--mute)]">
                   {t.all38Languages}
                 </div>
               ) : (
@@ -228,16 +228,16 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
                       disabled={isAlreadyAdded}
                       className={`w-full p-2 flex items-center justify-between text-start text-xs font-bold transition-colors ${
                         isAlreadyAdded 
-                          ? 'bg-[#F4EDE1] text-[#1E1B2E]/40 cursor-not-allowed'
-                          : 'hover:bg-[#F2B63D]/30 active:bg-[#F2B63D] text-[#1E1B2E]'
+                          ? 'bg-[var(--bg)] text-[var(--mute)] cursor-not-allowed'
+                          : 'hover:bg-[var(--saffron)]/30 active:bg-[var(--saffron)] text-[var(--ink)]'
                       }`}
                     >
                       <div className="flex items-center gap-2">
                         <FlagIcon language={lang.code} size={16} />
                         <span className="font-bold">{lang.nativeName}</span>
-                        <span className="text-[10px] text-[#1E1B2E]/60 font-medium">({lang.name} • {lang.persianName})</span>
+                        <span className="text-[10px] text-[var(--mute)] font-medium">({lang.name} • {lang.persianName})</span>
                       </div>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded font-bold border border-[#1E1B2E]/20">
+                      <span className="text-[10px] px-1.5 py-0.5 rounded font-bold border border-[var(--line)]">
                         {isAlreadyAdded ? t.added : t.add}
                       </span>
                     </button>
@@ -250,7 +250,7 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
       </div>
 
       {/* 2. CEFR LEVEL SELECTOR: Direct Horizontal Row of Pills */}
-      <div className="bg-[#FFFBF4] border-2 border-[#1E1B2E] shadow-[3px_3px_0px_0px_#1E1B2E] rounded-[20px] p-3 sm:p-3.5 space-y-2">
+      <div className="bg-[var(--panel)] border border-[var(--line)] shadow-[var(--shadow-sm)] rounded-[18px] p-3 sm:p-3.5 space-y-2">
         <button
           type="button"
           onClick={() => sound.playClick()}
@@ -258,20 +258,20 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
           aria-label={t.cefrLevel}
         >
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-[10px] bg-[#F2B63D] border-2 border-[#1E1B2E] flex items-center justify-center text-[#1E1B2E] shrink-0 shadow-[1px_1px_0px_0px_#1E1B2E]">
+            <div className="w-7 h-7 rounded-[10px] bg-[var(--saffron)] border border-[var(--line)] flex items-center justify-center text-[var(--ink)] shrink-0 shadow-[var(--shadow-sm)]">
               <Award size={14} />
             </div>
             <div>
-              <span className="text-xs sm:text-sm font-bold text-[#1E1B2E] block leading-tight">
+              <span className="text-xs sm:text-sm font-bold text-[var(--ink)] block leading-tight">
                 {t.cefrLevel}
               </span>
-              <span className="text-[10px] text-[#1E1B2E]/70 font-medium block truncate">
+              <span className="text-[10px] text-[var(--mute)] font-medium block truncate">
                 {activeCefrInfo?.name[settings.language] || activeCefrInfo?.name.en}
               </span>
             </div>
           </div>
 
-          <span className="text-[10px] bg-[#1E9E93] text-white px-2 py-0.5 border border-[#1E1B2E] rounded-[8px] font-bold shadow-[1px_1px_0px_0px_#1E1B2E]">
+          <span className="text-[10px] bg-[var(--teal)] text-white px-2 py-0.5 rounded-[8px] font-bold shadow-[var(--shadow-sm)]">
             {activeCefrInfo?.badge}
           </span>
         </button>
@@ -287,10 +287,10 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
                 key={level.id}
                 type="button"
                 onClick={() => selectCefrLevel(level.id)}
-                className={`py-2 px-1 rounded-[12px] border-2 border-[#1E1B2E] flex flex-col items-center justify-center transition-all touch-manipulation active:scale-95 ${
+                className={`py-2 px-1 rounded-[12px] border transition-all touch-manipulation active:scale-95 flex flex-col items-center justify-center ${
                   isSelected
-                    ? 'bg-[#1E9E93] text-white shadow-[2px_2px_0px_0px_#1E1B2E] -translate-y-0.5 font-bold'
-                    : 'bg-[#F4EDE1] hover:bg-[#eae0d2] text-[#1E1B2E] font-medium'
+                    ? 'bg-[var(--teal)] text-white border-[var(--teal)] shadow-[var(--shadow-sm)] font-bold'
+                    : 'bg-[var(--bg)] hover:bg-[var(--panel)] text-[var(--ink)] border-[var(--line)] font-medium'
                 }`}
               >
                 <span className="font-bold text-xs leading-none mb-0.5">{level.code}</span>
@@ -302,18 +302,18 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
       </div>
 
       {/* 3. NATIVE LANGUAGE: Compact Card with Direct Tap */}
-      <div className="bg-[#FFFBF4] border-2 border-[#1E1B2E] shadow-[3px_3px_0px_0px_#1E1B2E] rounded-[20px] p-2.5 sm:p-3 flex items-center justify-between gap-2">
+      <div className="bg-[var(--panel)] border border-[var(--line)] shadow-[var(--shadow-sm)] rounded-[18px] p-2.5 sm:p-3 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
-          <div className="w-7 h-7 rounded-[10px] bg-[#E0603F] border-2 border-[#1E1B2E] flex items-center justify-center text-white shrink-0 shadow-[1px_1px_0px_0px_#1E1B2E]">
+          <div className="w-7 h-7 rounded-[10px] bg-[var(--vermilion)] flex items-center justify-center text-white shrink-0 shadow-[var(--shadow-sm)]">
             <Globe size={14} />
           </div>
           <div className="truncate">
-            <span className="text-xs sm:text-sm font-bold text-[#1E1B2E] block leading-tight">
+            <span className="text-xs sm:text-sm font-bold text-[var(--ink)] block leading-tight">
               {t.nativeLanguage}
             </span>
             <div className="flex items-center gap-1.5 mt-0.5">
               <FlagIcon language={nativeLang} size={14} />
-              <span className="text-[10px] text-[#1E1B2E]/70 font-bold truncate">
+              <span className="text-[10px] text-[var(--mute)] font-bold truncate">
                 {nativeLangInfo.nativeName} ({NATIVE_LANGUAGE_NAMES[nativeLang] || nativeLang})
               </span>
             </div>
@@ -326,25 +326,25 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
             sound.playClick();
             setPickerMode('native');
           }}
-          className="px-2.5 py-1.5 rounded-[10px] bg-[#E0603F] text-white text-xs font-bold border-2 border-[#1E1B2E] shadow-[1.5px_1.5px_0px_0px_#1E1B2E] hover:bg-[#cf5435] active:scale-95 shrink-0"
+          className="px-2.5 py-1.5 rounded-[10px] bg-[var(--vermilion)] text-white text-xs font-bold shadow-[var(--shadow-sm)] hover:bg-[#cf5435] active:scale-95 shrink-0 transition-all"
         >
           {t.changeNative}
         </button>
       </div>
 
       {/* 4. APP UI LANGUAGE: Controls buttons and menus independently */}
-      <div className="bg-[#FFFBF4] border-2 border-[#1E1B2E] shadow-[3px_3px_0px_0px_#1E1B2E] rounded-[20px] p-2.5 sm:p-3 flex items-center justify-between gap-2">
+      <div className="bg-[var(--panel)] border border-[var(--line)] shadow-[var(--shadow-sm)] rounded-[18px] p-2.5 sm:p-3 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
-          <div className="w-7 h-7 rounded-[10px] bg-[#F4EDE1] border-2 border-[#1E1B2E] flex items-center justify-center text-[#1E1B2E] shrink-0 shadow-[1px_1px_0px_0px_#1E1B2E]">
+          <div className="w-7 h-7 rounded-[10px] bg-[var(--bg)] border border-[var(--line)] flex items-center justify-center text-[var(--ink)] shrink-0 shadow-[var(--shadow-sm)]">
             <LayoutGrid size={14} />
           </div>
           <div className="truncate">
-            <span className="text-xs sm:text-sm font-bold text-[#1E1B2E] block leading-tight">
+            <span className="text-xs sm:text-sm font-bold text-[var(--ink)] block leading-tight">
               {t.appUiLanguage}
             </span>
             <div className="flex items-center gap-1.5 mt-0.5">
               <FlagIcon language={appUiLang} size={14} />
-              <span className="text-[10px] text-[#1E1B2E]/70 font-bold truncate">
+              <span className="text-[10px] text-[var(--mute)] font-bold truncate">
                 {appUiLangInfo.nativeName} ({NATIVE_LANGUAGE_NAMES[appUiLang] || appUiLang})
               </span>
             </div>
@@ -357,7 +357,7 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
             sound.playClick();
             setPickerMode('ui');
           }}
-          className="px-2.5 py-1.5 rounded-[10px] bg-[#FFFBF4] hover:bg-[#F4EDE1] text-[#1E1B2E] text-xs font-bold border-2 border-[#1E1B2E] shadow-[1.5px_1.5px_0px_0px_#1E1B2E] active:scale-95 shrink-0"
+          className="px-2.5 py-1.5 rounded-[10px] bg-[var(--bg)] hover:bg-[var(--panel)] text-[var(--ink)] text-xs font-bold border border-[var(--line)] shadow-[var(--shadow-sm)] active:scale-95 shrink-0 transition-all"
         >
           {t.changeUi}
         </button>

@@ -39,19 +39,27 @@ export const signInWithGoogle = async (): Promise<User | null> => {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
     if (user) {
-      // Sync user profile in Firestore
-      const userRef = doc(db, 'users', user.uid);
-      await setDoc(userRef, {
-        uid: user.uid,
-        displayName: user.displayName || 'Player',
-        email: user.email || '',
-        photoURL: user.photoURL || '',
-        lastLoginAt: new Date().toISOString()
-      }, { merge: true });
+      // Sync user profile in Firestore safely (don't block auth if offline or permission denied)
+      try {
+        const userRef = doc(db, 'users', user.uid);
+        await setDoc(userRef, {
+          uid: user.uid,
+          displayName: user.displayName || 'Player',
+          email: user.email || '',
+          photoURL: user.photoURL || '',
+          lastLoginAt: new Date().toISOString()
+        }, { merge: true });
+      } catch (dbErr) {
+        console.warn('Firestore user profile sync deferred:', dbErr);
+      }
     }
     return user;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error signing in with Google:', error);
+    // If user merely closed the popup, don't throw an aggressive fatal error
+    if (error?.code === 'auth/popup-closed-by-user' || error?.code === 'auth/cancelled-popup-request') {
+      return null;
+    }
     throw error;
   }
 };
@@ -119,11 +127,20 @@ export const fetchUserMatchHistory = async (userId: string): Promise<GameHistory
 
 // Sync Settings with Cloud
 export const syncSettingsToCloud = async (userId: string, settings: GameSettings) => {
+  if (!userId || !auth.currentUser || auth.currentUser.uid !== userId) {
+    // Only attempt write when authenticated user matches userId
+    return;
+  }
   try {
     const userRef = doc(db, 'users', userId);
     await setDoc(userRef, { settings }, { merge: true });
-  } catch (error) {
-    console.error('Error saving settings to cloud:', error);
+  } catch (error: any) {
+    // Handle offline or pending permission issues gracefully without crashing or throwing
+    if (error?.code === 'permission-denied') {
+      console.warn('Settings cloud sync pending authentication verification.');
+    } else {
+      console.warn('Settings cloud sync notice:', error?.message || error);
+    }
   }
 };
 

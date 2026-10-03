@@ -56,20 +56,20 @@ const CategoryScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onO
   };
 
   return (
-    <div className="h-full min-h-0 flex-1 flex flex-col p-3 sm:p-3.5 select-none overflow-hidden relative font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full min-h-0 flex-1 flex flex-col p-3 sm:p-4 select-none overflow-hidden relative font-ui bg-[var(--bg)] text-[var(--ink)]" dir={isRTL ? 'rtl' : 'ltr'}>
       
       {/* Fixed Header */}
       <header className="shrink-0 mb-2">
-        <div className="flex items-center justify-between bg-[#FFFBF4] text-[#1E1B2E] p-2.5 sm:p-3 border-2 border-[#1E1B2E] rounded-[20px] shadow-[3px_3px_0px_0px_#1E1B2E]">
+        <div className="flex items-center justify-between bg-[var(--panel)] text-[var(--ink)] p-2.5 sm:p-3 border border-[var(--line)] rounded-[20px] shadow-xs">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-[12px] bg-[#F4EDE1] border-2 border-[#1E1B2E] flex items-center justify-center text-[#1E1B2E] shadow-[1px_1px_0px_0px_#1E1B2E]">
-              <Layers size={16} color="#1E1B2E" />
+            <div className="w-8 h-8 rounded-xl bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center">
+              <Layers size={16} />
             </div>
             <div>
-              <h2 className="text-sm sm:text-base font-bold font-display uppercase tracking-wider leading-tight">
+              <h2 className="text-sm sm:text-base font-bold font-display uppercase tracking-wider leading-tight text-[var(--ink)]">
                 {t.categories_title || 'موضوعات و دسته‌بندی‌ها'}
               </h2>
-              <span className="text-[10px] text-[#E0603F] font-bold block">
+              <span className="text-[10px] text-[var(--lapis)] font-bold block">
                 مرحله ۲ از ۴: موقعیت‌های مکالمه و واژگان
               </span>
             </div>
@@ -82,9 +82,9 @@ const CategoryScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onO
                 sound.playClick();
                 onOpenHelp?.();
               }} 
-              className="px-2.5 py-1.5 bg-[#F2B63D] hover:bg-[#e0a634] text-[#1E1B2E] border-2 border-[#1E1B2E] font-bold text-[11px] sm:text-xs rounded-[10px] shadow-[2px_2px_0px_0px_#1E1B2E] transition-transform active:translate-y-0.5 flex items-center gap-1"
+              className="px-2.5 py-1.5 bg-[var(--lapis-soft)] hover:bg-[var(--lapis-soft)]/80 text-[var(--lapis)] font-bold text-xs rounded-xl shadow-xs transition-transform active:scale-95 flex items-center gap-1 cursor-pointer"
             >
-              <HelpCircle size={14} color="#1E1B2E" />
+              <HelpCircle size={14} />
               <span>{t.guide}</span>
             </button>
           </div>
@@ -95,18 +95,18 @@ const CategoryScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onO
           <button
             type="button"
             onClick={selectAll}
-            className="flex-1 py-1.5 px-2 bg-[#FFFBF4] hover:bg-[#F4EDE1] text-[#1E1B2E] border-2 border-[#1E1B2E] rounded-[12px] text-[11px] sm:text-xs font-bold shadow-[2px_2px_0px_0px_#1E1B2E] flex items-center justify-center gap-1 active:translate-y-0.5"
+            className="flex-1 py-2 px-2 bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] rounded-xl text-xs font-bold shadow-xs flex items-center justify-center gap-1.5 active:scale-98 transition-all cursor-pointer"
           >
-            <CheckSquare size={13} className="text-[#1E9E93]" />
+            <CheckSquare size={14} className="text-[var(--turq)]" />
             <span>{t.selectAllTopics || 'انتخاب همه'}</span>
           </button>
 
           <button
             type="button"
             onClick={selectEssentialTopics}
-            className="flex-1 py-1.5 px-2 bg-[#F4EDE1] hover:bg-[#eae0d2] text-[#1E1B2E] border-2 border-[#1E1B2E] rounded-[12px] text-[11px] sm:text-xs font-bold shadow-[2px_2px_0px_0px_#1E1B2E] flex items-center justify-center gap-1 active:translate-y-0.5"
+            className="flex-1 py-2 px-2 bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] rounded-xl text-xs font-bold shadow-xs flex items-center justify-center gap-1.5 active:scale-98 transition-all cursor-pointer"
           >
-            <Sparkles size={13} className="text-[#E0603F]" />
+            <Sparkles size={14} className="text-[var(--saffron)]" />
             <span>موضوعات ضروری</span>
           </button>
         </div>
@@ -126,27 +126,27 @@ const CategoryScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onO
                 key={catKey}
                 type="button"
                 onClick={() => toggleCategory(catKey)}
-                className={`p-2 sm:p-2.5 rounded-[16px] border-2 border-[#1E1B2E] flex items-center justify-between gap-1.5 transition-all text-start ${
+                className={`p-2 sm:p-2.5 rounded-xl border flex items-center justify-between gap-1.5 transition-all text-start cursor-pointer active:scale-98 ${
                   isSelected
-                  ? 'bg-[#F2B63D] text-[#1E1B2E] shadow-[2px_2px_0px_0px_#1E1B2E] -translate-y-0.5'
-                  : 'bg-[#FFFBF4] text-[#1E1B2E] shadow-[1px_1px_0px_0px_#1E1B2E] hover:bg-[#F4EDE1]'
+                  ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs -translate-y-0.5'
+                  : 'bg-[var(--panel)] text-[var(--ink)] border-[var(--line)] shadow-xs hover:bg-[var(--bg)]'
                 }`}
               >
                 <div className="flex items-center gap-1.5 min-w-0 flex-1">
-                  <div className="p-1 rounded-[8px] border border-[#1E1B2E] shrink-0 bg-[#1E1B2E] text-white">
+                  <div className={`p-1.5 rounded-lg shrink-0 ${isSelected ? 'bg-white/20 text-white' : 'bg-[var(--bg)] text-[var(--ink)]'}`}>
                     <NeonCategoryIcon catKey={catKey} size={15} />
                   </div>
-                  <span className="font-bold text-[11px] sm:text-xs text-[#1E1B2E] truncate leading-tight">
+                  <span className="font-bold text-[11px] sm:text-xs truncate leading-tight">
                     {translatedName}
                   </span>
                 </div>
 
                 {/* High Contrast Checkbox */}
-                <div className={`w-5 h-5 border-2 border-[#1E1B2E] flex items-center justify-center rounded-[6px] shrink-0 shadow-[1px_1px_0px_0px_#1E1B2E] ${
-                  isSelected ? 'bg-[#1E1B2E]' : 'bg-[#FFFBF4]'
+                <div className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 transition-all ${
+                  isSelected ? 'bg-white text-[var(--lapis)]' : 'bg-[var(--bg)] border border-[var(--line)]'
                 }`}>
                   {isSelected && (
-                    <Check size={13} color="#F2B63D" strokeWidth={3.5} />
+                    <Check size={13} strokeWidth={3.5} />
                   )}
                 </div>
               </button>
@@ -155,9 +155,9 @@ const CategoryScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onO
         </div>
 
         {/* Informational tip */}
-        <div className="mt-3 p-2.5 bg-[#FFFBF4] border-2 border-[#1E1B2E] rounded-[18px] flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_#1E1B2E]">
+        <div className="mt-3 p-2.5 bg-[var(--panel)] border border-[var(--line)] rounded-2xl flex items-center justify-center gap-2 shadow-xs">
           <TeamMascot color="GREEN" size={24} />
-          <span className="text-[11px] text-[#1E1B2E] font-bold">
+          <span className="text-[11px] text-[var(--mute)] font-bold">
             {t.categoriesHintTip || (isRTL 
               ? '⚡ موضوعات انتخابی با کلمات جذاب بین زبان‌ها توزیع می‌شوند' 
               : '⚡ Selected categories are balanced dynamically across languages')}
@@ -166,7 +166,7 @@ const CategoryScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onO
       </div>
 
       {/* Fixed Footer Navigation */}
-      <footer className="shrink-0 pt-2 border-t-2 border-[#1E1B2E]/15 font-ui">
+      <footer className="shrink-0 pt-2 border-t border-[var(--line)] font-ui">
         <div className="flex gap-2.5">
           <button 
             type="button"
@@ -174,7 +174,7 @@ const CategoryScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onO
               sound.playClick();
               onBack();
             }} 
-            className="pixel-btn pixel-btn-orange flex-1 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 rounded-[16px] active:scale-95"
+            className="flex-1 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs transition-all active:scale-98 cursor-pointer"
           >
             {isRTL ? <ArrowRight size={15} /> : <ArrowLeft size={15} />}
             <span>{t.back}</span>
@@ -185,9 +185,9 @@ const CategoryScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onO
               sound.playStartGame();
               onNext();
             }} 
-            className="pixel-btn pixel-btn-teal flex-[2] py-2.5 text-sm sm:text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2 rounded-[16px] active:scale-95"
+            className="flex-[2] py-3 text-sm sm:text-base font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 rounded-2xl bg-[var(--lapis)] hover:brightness-105 text-[var(--on-lapis)] shadow-md transition-all active:scale-98 cursor-pointer"
           >
-            <span>{t.next} (تنظیمات)</span>
+            <span className="whitespace-nowrap">{t.next}</span>
             {isRTL ? <ArrowLeft size={16} /> : <ArrowRight size={16} />}
           </button>
         </div>
