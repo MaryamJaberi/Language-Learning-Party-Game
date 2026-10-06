@@ -54,21 +54,39 @@ export const SoundHeaderButton: React.FC<Props> = ({
       onClick={handleToggle}
       title={titleText}
       aria-label={label}
-      className={`flex items-center justify-center rounded-[12px] border font-bold text-xs shadow-[var(--shadow-sm)] active:translate-y-0.5 transition-all shrink-0 select-none ${
-        variant === 'icon-only' ? 'w-9 h-9 p-0' : 'gap-1 px-3 py-1.5'
+      style={{
+        backgroundColor: isMuted ? '#f43f5e' : undefined,
+        color: isMuted ? '#ffffff' : undefined,
+        borderColor: isMuted ? '#e11d48' : undefined,
+        opacity: 1,
+        visibility: 'visible',
+        display: 'inline-flex'
+      }}
+      className={`items-center justify-center font-bold text-xs shadow-xs active:scale-95 transition-all shrink-0 select-none cursor-pointer ${
+        variant === 'icon-only' ? 'w-10 h-10 p-0 rounded-full' : 'gap-1.5 px-3 py-1.5 rounded-[12px]'
       } ${
         isMuted
-          ? 'bg-[var(--vermilion)] text-white border-[var(--vermilion)]'
-          : 'bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border-[var(--line)]'
+          ? '!bg-rose-500 !text-white !border-2 !border-rose-600 dark:!bg-rose-600 dark:!border-rose-500 shadow-rose-500/20 shadow-md ring-2 ring-rose-400/30'
+          : '!bg-[var(--panel)] hover:!bg-[var(--bg)] !text-[var(--ink)] !border !border-[var(--line)]'
       } ${className}`}
     >
       {isMuted ? (
-        <VolumeX size={16} className="text-white shrink-0 animate-pulse" />
+        <VolumeX 
+          size={18} 
+          className="!text-white shrink-0 stroke-white" 
+          strokeWidth={2.5} 
+          style={{ color: '#ffffff', stroke: '#ffffff', display: 'block' }} 
+        />
       ) : (
-        <Volume2 size={16} className="text-[var(--ink)] shrink-0" />
+        <Volume2 
+          size={18} 
+          className="!text-[var(--ink)] shrink-0" 
+          strokeWidth={2} 
+          style={{ display: 'block' }}
+        />
       )}
       {variant !== 'icon-only' && (
-        <span className="text-[11px] leading-none">
+        <span className="text-[11px] leading-none" style={{ color: isMuted ? '#ffffff' : undefined }}>
           {label}
         </span>
       )}

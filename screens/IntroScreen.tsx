@@ -34,7 +34,8 @@ import {
   Users,
   User as UserIcon,
   ChevronDown,
-  Award
+  Award,
+  Swords
 } from 'lucide-react';
 import { tUI, isRtlLang } from '../ui';
 import { GameSettings } from '../types';
@@ -47,6 +48,7 @@ interface Props {
   onLanguageChange: (l: Language) => void;
   onNext: () => void;
   onOpenSinglePlayer: () => void;
+  onOpenDuel?: () => void;
   onOpenOnline: () => void;
   onOpenHistory: () => void;
   onOpenLeaderboard?: () => void;
@@ -60,6 +62,7 @@ const IntroScreen: React.FC<Props> = ({
   onLanguageChange, 
   onNext, 
   onOpenSinglePlayer,
+  onOpenDuel,
   onOpenOnline,
   onOpenHistory, 
   onOpenHelp 
@@ -209,7 +212,7 @@ const IntroScreen: React.FC<Props> = ({
           </button>
 
           {/* Sound Mute / Unmute Button */}
-          <SoundHeaderButton variant="icon-only" language={language} className="w-10 h-10 p-0 justify-center ib" />
+          <SoundHeaderButton variant="icon-only" language={language} className="w-10 h-10 p-0 justify-center" />
 
           {/* Help / Guide button */}
           <button
@@ -291,8 +294,8 @@ const IntroScreen: React.FC<Props> = ({
             <span>{t.startNewGame || t.newGame}</span>
           </button>
 
-          {/* Secondary Game Modes: Single player & Online room */}
-          <div className="grid grid-cols-2 gap-2.5">
+          {/* Secondary Game Modes: Single player, 2-Player Duel & Online room */}
+          <div className="grid grid-cols-3 gap-2">
             {/* 1. Single Player Mode */}
             <button
               type="button"
@@ -301,13 +304,27 @@ const IntroScreen: React.FC<Props> = ({
                 sound.playClick();
                 onOpenSinglePlayer();
               }}
-              className="py-3 px-3 bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] rounded-[16px] font-bold text-xs sm:text-sm shadow-xs active:scale-[0.98] transition-all flex items-center justify-center gap-2 font-ui"
+              className="py-2.5 px-2 bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] rounded-[16px] font-bold text-xs shadow-xs active:scale-[0.98] transition-all flex flex-col items-center justify-center gap-1 font-ui cursor-pointer"
             >
-              <Mic size={16} className="text-[var(--lapis)]" />
-              <span>{t.singlePlayerBtn}</span>
+              <Mic size={18} className="text-[var(--lapis)]" />
+              <span className="truncate">{t.singlePlayerBtn || 'تک‌نفره'}</span>
             </button>
 
-            {/* 2. Online Multiplayer Mode */}
+            {/* 2. Two-Player 1v1 Shared Screen Duel Mode */}
+            <button
+              type="button"
+              id="intro-duel-btn"
+              onClick={() => {
+                sound.playClick();
+                onOpenDuel?.();
+              }}
+              className="py-2.5 px-2 bg-gradient-to-br from-blue-50 to-red-50 dark:from-blue-950/30 dark:to-red-950/30 hover:brightness-105 text-[var(--ink)] border-2 border-dashed border-[#2347C5]/40 rounded-[16px] font-black text-xs shadow-xs active:scale-[0.98] transition-all flex flex-col items-center justify-center gap-1 font-ui cursor-pointer"
+            >
+              <Swords size={18} className="text-[#E0533C]" />
+              <span className="truncate">{isRTL ? 'دوئل دونفره ⚔️' : '1v1 Duel ⚔️'}</span>
+            </button>
+
+            {/* 3. Online Multiplayer Mode */}
             <button
               type="button"
               id="intro-online-btn"
@@ -315,12 +332,37 @@ const IntroScreen: React.FC<Props> = ({
                 sound.playClick();
                 onOpenOnline();
               }}
-              className="py-3 px-3 bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] rounded-[16px] font-bold text-xs sm:text-sm shadow-xs active:scale-[0.98] transition-all flex items-center justify-center gap-2 font-ui"
+              className="py-2.5 px-2 bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] rounded-[16px] font-bold text-xs shadow-xs active:scale-[0.98] transition-all flex flex-col items-center justify-center gap-1 font-ui cursor-pointer"
             >
-              <Globe size={16} className="text-[var(--turq)]" />
-              <span>{t.onlineRoom}</span>
+              <Globe size={18} className="text-[var(--turq)]" />
+              <span className="truncate">{t.onlineRoom || 'آنلاین'}</span>
             </button>
           </div>
+        </div>
+
+        {/* Legal & Privacy Policy Link for Google Play Compliance */}
+        <div className="flex items-center justify-center gap-2.5 pt-1 text-[11px] text-[var(--mute)] font-medium">
+          <button
+            type="button"
+            onClick={() => {
+              setProfileInitialTab('privacy');
+              setIsProfileModalOpen(true);
+            }}
+            className="hover:text-[var(--ink)] underline underline-offset-2 transition-colors cursor-pointer"
+          >
+            {isRTL ? 'حریم خصوصی' : 'Privacy Policy'}
+          </button>
+          <span>•</span>
+          <a
+            href="./privacy.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-[var(--ink)] underline underline-offset-2 transition-colors cursor-pointer"
+          >
+            {isRTL ? 'خط‌مشی وب' : 'Web Policy'}
+          </a>
+          <span>•</span>
+          <span className="opacity-80">v1.0.3</span>
         </div>
       </div>
 
@@ -499,6 +541,40 @@ const IntroScreen: React.FC<Props> = ({
                   {t.onlineMultiplayerSub || (isRTL 
                     ? 'از هر فاصله‌ای با دوستان خود بازی کنید! ساخت اتاق اختصاصی یا ورود با کد دعوت جهت مسابقه آنلاین تیمی.'
                     : 'Play with friends from anywhere! Host a custom room or join via invite code for real-time multiplayer.')}
+                </p>
+              </div>
+
+              {/* Option 4: Two-Player 1v1 Shared-Screen Duel */}
+              <div 
+                onClick={() => {
+                  sound.playClick();
+                  setIsGameModeModalOpen(false);
+                  onOpenDuel?.();
+                }}
+                className="p-3 bg-gradient-to-br from-blue-50/60 to-red-50/60 dark:from-blue-950/20 dark:to-red-950/20 hover:bg-[var(--panel)] border-2 border-dashed border-[#2347C5]/40 rounded-[18px] cursor-pointer transition-all active:scale-[0.98] shadow-[var(--shadow-sm)] flex flex-col gap-2 group"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#2347C5] to-[#E0533C] text-white flex items-center justify-center font-bold">
+                      <Swords size={18} />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-[var(--ink)]">
+                        {isRTL ? '۴. دوئل سرعتی دونفره (روی یک گوشی)' : '4. 1v1 Shared-Screen Duel'}
+                      </h3>
+                      <span className="text-[10px] text-[#E0533C] font-bold">
+                        {isRTL ? 'مسابقه همزمان دو نفر • هرکی زودتر جواب بده!' : 'Head-to-head reflex race • Fastest tap wins!'}
+                      </span>
+                    </div>
+                  </div>
+                  <span className="text-xs font-bold bg-[#E0533C] text-white px-2.5 py-1 rounded-xl shadow-[var(--shadow-sm)]">
+                    {isRTL ? 'دوئل ⚔️' : 'Duel ⚔️'}
+                  </span>
+                </div>
+                <p className="text-[11px] text-[var(--mute)] font-medium leading-relaxed text-start">
+                  {isRTL 
+                    ? 'گوشی بین دو نفر قرار می‌گیرد! هر دو بازیکن سوال را می‌بینند و هرکس سریع‌تر گزینه صحیح را بزند امتیاز می‌گیرد؛ نوار طناب‌کشی، شوک سرعت و راند نهایی!'
+                    : 'Place the phone between two players! Fastest reflex to tap the correct target word wins the round, with tug-of-war meter and shock power-up.'}
                 </p>
               </div>
 

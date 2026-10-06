@@ -360,6 +360,124 @@ class SoundManager {
     } catch (e) {}
   }
 
+  // --- Game Feel & Juice Audio Enhancements ---
+  // Layer 1: Score Tick with Combo Pitch Scaling (+6% per combo tier) and subtle random detune (±3%)
+  public playScoreTick(comboMultiplier: number = 1) {
+    if (this.isMuted) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+
+    try {
+      const now = ctx.currentTime;
+      const baseFreq = 523.25; // C5
+      // Random detune ±3% to prevent auditory fatigue
+      const detuneFactor = 1 + (Math.random() * 0.06 - 0.03);
+      // Combo pitch escalation: +6% per combo tier (max +45%)
+      const comboPitch = 1 + Math.min(0.45, (Math.max(1, comboMultiplier) - 1) * 0.06);
+      const targetFreq = baseFreq * detuneFactor * comboPitch;
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = comboMultiplier >= 3 ? 'sine' : 'triangle';
+      osc.frequency.setValueAtTime(targetFreq, now);
+
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.18);
+    } catch (e) {}
+  }
+
+  // Layer 2: Rank Up / Passed someone - Delicate 3-note ascending stinger
+  public playRankUpStinger() {
+    if (this.isMuted) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+
+    try {
+      const now = ctx.currentTime;
+      // Ascending musical triad: G5 -> C6 -> E6
+      const notes = [783.99, 1046.50, 1318.51];
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const start = now + idx * 0.06;
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, start);
+
+        gain.gain.setValueAtTime(0.16, start);
+        gain.gain.exponentialRampToValueAtTime(0.001, start + 0.22);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(start);
+        osc.stop(start + 0.24);
+      });
+    } catch (e) {}
+  }
+
+  // Layer 2: Rank Down / Passed by - Soft airy gentle exhale (not a negative fail sound)
+  public playRankDownSoftExhale() {
+    if (this.isMuted) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+
+    try {
+      const now = ctx.currentTime;
+      // Soft gentle glide downward: A4 (440Hz) -> F4 (349Hz) with smooth fade
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.exponentialRampToValueAtTime(349, now + 0.35);
+
+      gain.gain.setValueAtTime(0.09, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.40);
+    } catch (e) {}
+  }
+
+  // Layer 2: Milestone & Personal Best Warm Celestial Bell
+  public playMilestoneGlow() {
+    if (this.isMuted) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+
+    try {
+      const now = ctx.currentTime;
+      // Harmonious twin bell: C5 & G5 fading warmly
+      [523.25, 783.99, 1046.50].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + i * 0.04);
+
+        gain.gain.setValueAtTime(0.18, now + i * 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.04 + 0.45);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(now + i * 0.04);
+        osc.stop(now + i * 0.04 + 0.48);
+      });
+    } catch (e) {}
+  }
+
   // 5. Swap / Pass Sound - with 3 distinct swoosh variations
   public playSwap() {
     if (this.isMuted) return;

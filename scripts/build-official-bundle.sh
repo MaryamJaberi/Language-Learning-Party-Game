@@ -62,9 +62,9 @@ $AAPT2_CMD link \
 # 5. Create base module zip
 python3 -c "
 import zipfile
+import os
 
 proto_apk = zipfile.ZipFile('/tmp/proto_apk.zip', 'r')
-apk = zipfile.ZipFile('public/downloads/dor-zaban-v1.0.apk', 'r')
 
 with zipfile.ZipFile('/tmp/base_module.zip', 'w', compression=zipfile.ZIP_DEFLATED) as out:
     # Proto manifest & resources
@@ -78,12 +78,16 @@ with zipfile.ZipFile('/tmp/base_module.zip', 'w', compression=zipfile.ZIP_DEFLAT
     with open('/tmp/r8_out/classes.dex', 'rb') as f:
         out.writestr('dex/classes.dex', f.read())
         
-    # Web assets
-    for name in apk.namelist():
-        if name.startswith('assets/'):
-            if 'google-play-package.zip' in name or 'dor-zaban-v1.0.apk' in name:
-                continue
-            out.writestr(name, apk.read(name))
+    # Fresh Web assets from android/assets
+    if os.path.exists('android/assets'):
+        for root, _, files in os.walk('android/assets'):
+            for file in files:
+                full_path = os.path.join(root, file)
+                rel_path = os.path.relpath(full_path, 'android')
+                if any(bad in rel_path for bad in ['google-play-package.zip', 'dor-zaban-v1.0.apk', 'embeddedAabData', 'dor-zaban-v1.0.aab']):
+                    continue
+                with open(full_path, 'rb') as f:
+                    out.writestr(rel_path, f.read())
 "
 
 # 6. Build bundle using Google's official bundletool with ProGuard mapping & metadata

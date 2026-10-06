@@ -28,9 +28,13 @@ import OnlineLobbyScreen from './screens/OnlineLobbyScreen';
 import OnlineGameplayScreen from './screens/OnlineGameplayScreen';
 import SinglePlayerScreen from './screens/SinglePlayerScreen';
 import SinglePlayerReportScreen from './screens/SinglePlayerReportScreen';
+import DuelScreen from './screens/DuelScreen';
 import SinglePlayerSetupModal from './components/SinglePlayerSetupModal';
+import { DuelSetupModal, DuelSettings } from './components/DuelSetupModal';
 import LeaderboardModal from './components/LeaderboardModal';
 import OfflineIndicator from './components/OfflineIndicator';
+import FeedbackOverlay from './components/FeedbackOverlay';
+import { feedbackDirector } from './feedbackDirector';
 import { sound } from './soundManager';
 import { auth, saveMatchToCloud, syncSettingsToCloud } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -64,7 +68,7 @@ const DEFAULT_SETTINGS: GameSettings = {
   powerCardsEnabled: true
 };
 
-type ScreenType = 'INTRO' | 'LANGUAGE_SELECT' | 'CATEGORIES' | 'SETUP' | 'PLAYERS' | 'SEATING_CONFIRM' | 'GAME' | 'HISTORY' | 'HELP' | 'ONLINE_LOBBY' | 'ONLINE_GAME' | 'SINGLE_PLAYER' | 'SINGLE_REPORT';
+type ScreenType = 'INTRO' | 'LANGUAGE_SELECT' | 'CATEGORIES' | 'SETUP' | 'PLAYERS' | 'SEATING_CONFIRM' | 'GAME' | 'HISTORY' | 'HELP' | 'ONLINE_LOBBY' | 'ONLINE_GAME' | 'SINGLE_PLAYER' | 'SINGLE_REPORT' | 'DUEL_GAME';
 
 const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('INTRO');
@@ -72,6 +76,11 @@ const App: React.FC = () => {
   const [activeHelpSection, setActiveHelpSection] = useState<string>('intro');
   const [settings, setSettings] = useState<GameSettings>(DEFAULT_SETTINGS);
   const [history, setHistory] = useState<GameHistoryEntry[]>([]);
+
+  // 2-Player Shared Screen Duel State
+  const [isDuelSetupOpen, setIsDuelSetupOpen] = useState(false);
+  const [duelSettings, setDuelSettings] = useState<DuelSettings | null>(null);
+  const [duelCards, setDuelCards] = useState<LanguageCard[]>([]);
 
   // Single-Player State
   const [isSingleSetupOpen, setIsSingleSetupOpen] = useState(false);
@@ -115,6 +124,26 @@ const App: React.FC = () => {
     }
   }, [settings.language]);
 
+  // Game Feel Screen Shake Subscription
+  const [shakeStyle, setShakeStyle] = useState<React.CSSProperties>({});
+  useEffect(() => {
+    const unsub = feedbackDirector.subscribe(() => {
+      const s = feedbackDirector.currentShake;
+      if (s.active) {
+        setShakeStyle({
+          transform: `translate3d(${s.x.toFixed(1)}px, ${s.y.toFixed(1)}px, 0)`,
+          transition: 'transform 60ms cubic-bezier(0.16, 1, 0.3, 1)'
+        });
+      } else {
+        setShakeStyle({
+          transform: 'translate3d(0, 0, 0)',
+          transition: 'transform 80ms ease-out'
+        });
+      }
+    });
+    return () => unsub();
+  }, []);
+
   // Gameplay State
   const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.Setup);
   const [teams, setTeams] = useState<Team[]>([]);
@@ -138,8 +167,10 @@ const App: React.FC = () => {
     if (savedSettings) {
       try {
         const parsed = JSON.parse(savedSettings);
-        const nativeLang = parsed?.nativeLanguage || parsed?.language || 'fa';
-        const isEnglishNative = nativeLang === 'en-US' || nativeLang === 'en';
+        let uiLang = parsed?.language || 'fa';
+        const isEnglish = uiLang === 'en' || uiLang === 'en-US' || parsed?.nativeLanguage === 'en' || parsed?.nativeLanguage === 'en-US';
+        const nativeLang = isEnglish ? 'en' : (parsed?.nativeLanguage || uiLang || 'fa');
+        const isEnglishNative = isEnglish;
         
         // Normalize player names: if native language is English, ensure no leftover Persian names
         let loadedNames: string[] = Array.isArray(parsed?.playerNames) ? parsed.playerNames : [];
@@ -149,7 +180,6 @@ const App: React.FC = () => {
         }
 
         // Normalize UI language: if native is English and language was 'fa', switch to 'en-US'
-        let uiLang = parsed?.language || (isEnglishNative ? 'en-US' : 'fa');
         if (isEnglishNative && uiLang === 'fa') {
           uiLang = 'en-US';
         }
@@ -523,6 +553,36 @@ const App: React.FC = () => {
     setCurrentScreen('SINGLE_PLAYER');
   };
 
+  const handleOpenDuel = () => {
+    sound.playClick();
+    setIsDuelSetupOpen(true);
+  };
+
+  const handleStartDuel = (duelSet: DuelSettings) => {
+    setDuelSettings(duelSet);
+    setIsDuelSetupOpen(false);
+    const isEn = settings.language === 'en' || settings.language === 'en-US' || !isRtlLang(settings.language);
+    const effectiveNative = isEn ? 'en' : (duelSet.nativeLanguage || settings.nativeLanguage || settings.language || 'fa');
+    const cards = getUniqueCardsForSession(
+      duelSet.targetLanguage,
+      effectiveNative,
+      duelSet.cefrLevel,
+      settings.selectedCategories,
+      Math.max(duelSet.winningScore * 4, 30),
+      false
+    );
+    setDuelCards(cards.length > 0 ? cards : buildSessionCardPool({
+      ...settings,
+      nativeLanguage: effectiveNative,
+      targetLanguages: [duelSet.targetLanguage],
+      cefrLevel: duelSet.cefrLevel,
+      difficulty: 'all',
+      roundsCount: 3,
+      roundDuration: 60
+    }));
+    setCurrentScreen('DUEL_GAME');
+  };
+
   return (
     <main 
       className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto flex flex-col relative bg-[var(--bg)] text-[var(--ink)] min-h-0 flex-1 min-h-screen overflow-x-hidden overflow-y-auto" 
@@ -530,9 +590,12 @@ const App: React.FC = () => {
         height: '100%', 
         maxHeight: '100dvh',
         paddingTop: 'env(safe-area-inset-top, 0px)',
-        paddingBottom: 'env(safe-area-inset-bottom, 0px)'
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+        ...shakeStyle
       }}
     >
+      {/* Decoupled Game Feel & Juice Feedback Overlay (Layers 1, 2, 3) */}
+      <FeedbackOverlay />
       
       {/* Offline PWA Connectivity Indicator */}
       <OfflineIndicator language={settings.language} />
@@ -546,6 +609,7 @@ const App: React.FC = () => {
           onLanguageChange={handleGlobalLanguageChange}
           onNext={() => setCurrentScreen('SETUP')}
           onOpenSinglePlayer={handleOpenSinglePlayer}
+          onOpenDuel={handleOpenDuel}
           onOpenOnline={() => setCurrentScreen('ONLINE_LOBBY')}
           onOpenHistory={() => setCurrentScreen('HISTORY')}
           onOpenHelp={() => openHelp('intro')}
@@ -708,6 +772,17 @@ const App: React.FC = () => {
         />
       )}
 
+      {/* 12. TWO-PLAYER HEAD-TO-HEAD SHARED SCREEN DUEL */}
+      {currentScreen === 'DUEL_GAME' && duelSettings && (
+        <DuelScreen
+          settings={duelSettings}
+          cards={duelCards}
+          uiLanguage={settings.language}
+          onExit={() => setCurrentScreen('INTRO')}
+          isRTL={isRtlLang(settings.language)}
+        />
+      )}
+
       {/* MODALS */}
       <SinglePlayerSetupModal
         isOpen={isSingleSetupOpen}
@@ -715,6 +790,15 @@ const App: React.FC = () => {
         initialSettings={singlePlayerSettings}
         onClose={() => setIsSingleSetupOpen(false)}
         onStart={handleStartSinglePlayer}
+      />
+
+      <DuelSetupModal
+        isOpen={isDuelSetupOpen}
+        onClose={() => setIsDuelSetupOpen(false)}
+        onStartDuel={handleStartDuel}
+        currentLanguage={settings.targetLanguages?.[0] || 'nl'}
+        uiLanguage={settings.language}
+        isRTL={isRtlLang(settings.language)}
       />
 
       <LeaderboardModal

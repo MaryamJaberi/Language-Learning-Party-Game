@@ -317,6 +317,103 @@ export const InstallPromptModal: React.FC<Props> = ({
                 </div>
               </div>
 
+              {/* Card 4.1: Master 28 Languages Complete Dataset (All CEFR Levels) */}
+              <div className="bg-[var(--bg)] p-3.5 rounded-[16px] border-2 border-indigo-500/40 shadow-[var(--shadow-sm)] space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-[8px] bg-indigo-600 text-white flex items-center justify-center font-bold text-sm">
+                      🌍
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-black text-[var(--ink)] flex items-center gap-1.5">
+                        <span>{isRTL ? 'پکیج دیتابیس کامل ۲۸ زبان (تمامی سطوح CEFR)' : 'Complete 28 Languages Master Dataset'}</span>
+                        <span className="text-[10px] bg-indigo-600 text-white font-black px-1.5 py-0.2 rounded-md">۲۸ زبان</span>
+                      </h4>
+                      <span className="text-[10px] text-[var(--mute)] font-medium">
+                        {isRTL ? 'پوشش سطوح A1 تا C2 • تمامی ۲۸ زبان • فرمت UTF-8 BOM اکسل' : 'CEFR Levels A1-C2 • All 28 Languages • Excel UTF-8 BOM'}
+                      </span>
+                    </div>
+                  </div>
+                  <span className="text-[9.5px] font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded-[6px] border border-indigo-300">
+                    {isRTL ? 'کامل ۲۸ زبان ✓' : '28 Languages ✓'}
+                  </span>
+                </div>
+
+                <p className="text-[11px] text-[var(--mute)] leading-relaxed font-medium">
+                  {isRTL 
+                    ? 'دیتابیس کامل ۲۸ زبان رسمی دنیا در تمامی سطوح A1، A2، B1، B2 و C1/C2 شامل واژگان، عبارات، گرامر، تلفظ‌ها و معادل‌های فارسی و بین‌المللی.'
+                    : 'Complete master dataset for all 28 languages across all CEFR levels (A1-C2) including vocab, sentences, grammar points and translations.'}
+                </p>
+
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    disabled={downloadingFile === 'dour_28_languages_complete_dataset.csv'}
+                    onClick={() => handleDownload('./downloads/dour_28_languages_complete_dataset.csv', 'dour_28_languages_complete_dataset.csv')}
+                    className="flex-1 py-2 px-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[12px] font-bold text-xs flex items-center justify-center gap-1.5 shadow-[var(--shadow-sm)] active:translate-y-0.5 transition-all text-center cursor-pointer disabled:opacity-75"
+                  >
+                    <Download size={14} />
+                    <span>{isRTL ? 'دانلود CSV ۲۸ زبان (اکسل)' : 'Download 28-Lang CSV'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    disabled={downloadingFile === 'dour_28_languages_complete_dataset.json'}
+                    onClick={() => handleDownload('./downloads/dour_28_languages_complete_dataset.json', 'dour_28_languages_complete_dataset.json')}
+                    className="py-2 px-3 bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] rounded-[12px] font-bold text-xs flex items-center justify-center gap-1.5 shadow-2xs active:translate-y-0.5 transition-all text-center cursor-pointer disabled:opacity-75"
+                  >
+                    <span>JSON (۲۸ زبان)</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Card 4.2: Complete Language Learning Dataset (CSV & JSON) */}
+              <div className="bg-[var(--bg)] p-3.5 rounded-[16px] border border-[var(--line)] shadow-[var(--shadow-sm)] space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-[8px] bg-emerald-600 text-white flex items-center justify-center font-bold">
+                      <Download size={18} />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-black text-[var(--ink)]">
+                        {isRTL ? '📊 دانلود کل داده‌های آموزشی زبان (فایل CSV اکسل)' : 'Language Learning Dataset (CSV / Excel)'}
+                      </h4>
+                      <span className="text-[10px] text-[var(--mute)] font-medium">
+                        {isRTL ? '۳۳۰ ردیف آموزشی • ترجمه ۱۲ زبان • فرمت UTF-8 BOM اکسل' : '330 Educational Rows • 12 Languages • Excel UTF-8 BOM'}
+                      </span>
+                    </div>
+                  </div>
+                  <span className="text-[9.5px] font-bold text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-[6px] border border-emerald-300">
+                    {isRTL ? 'اکسل و Sheets ✓' : 'Excel Ready ✓'}
+                  </span>
+                </div>
+
+                <p className="text-[11px] text-[var(--mute)] leading-relaxed font-medium">
+                  {isRTL 
+                    ? 'شامل تمامی کارت‌ها، دایره لغات، جملات پیشرفته C1، تلفظ‌ها و راهنماها به زبان‌های انگلیسی، هلندی، فارسی، آلمانی، فرانسوی، عربی، ترکی و غیره.'
+                    : 'Includes all vocabulary cards, C1 advanced sentences, translations in 12 languages, pronunciations, and grammar notes.'}
+                </p>
+
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    disabled={downloadingFile === 'dour_complete_language_dataset.csv'}
+                    onClick={() => handleDownload('./downloads/dour_complete_language_dataset.csv', 'dour_complete_language_dataset.csv')}
+                    className="flex-1 py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-[12px] font-bold text-xs flex items-center justify-center gap-1.5 shadow-[var(--shadow-sm)] active:translate-y-0.5 transition-all text-center cursor-pointer disabled:opacity-75"
+                  >
+                    <Download size={14} />
+                    <span>{isRTL ? 'دانلود فایل CSV اکسل' : 'Download CSV'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    disabled={downloadingFile === 'dour_complete_language_dataset.json'}
+                    onClick={() => handleDownload('./downloads/dour_complete_language_dataset.json', 'dour_complete_language_dataset.json')}
+                    className="py-2 px-3 bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] rounded-[12px] font-bold text-xs flex items-center justify-center gap-1.5 shadow-2xs active:translate-y-0.5 transition-all text-center cursor-pointer disabled:opacity-75"
+                  >
+                    <span>JSON</span>
+                  </button>
+                </div>
+              </div>
+
             </div>
           )}
 

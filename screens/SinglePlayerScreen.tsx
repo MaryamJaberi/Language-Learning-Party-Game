@@ -14,6 +14,8 @@ import { FlagIcon } from '../components/FlagIcon';
 import { SUPPORTED_LANGUAGES } from '../constants';
 import { evaluateAnswer, EvaluationResult } from '../answerEvaluator';
 import { markCardsAsSeen, saveWeakCards, getPersonalRecords, updatePersonalRecords } from '../contentEngine';
+import { feedbackDirector } from '../feedbackDirector';
+import { SoundHeaderButton } from '../components/SoundHeaderButton';
 import { 
   Mic, 
   MicOff, 
@@ -41,7 +43,8 @@ import {
   Lightbulb,
   HelpCircle,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  KeyRound
 } from 'lucide-react';
 
 interface Props {
@@ -112,7 +115,8 @@ const SinglePlayerScreen: React.FC<Props> = ({
   const [evaluation, setEvaluation] = useState<EvaluationResult | null>(null);
   const [attempts, setAttempts] = useState(1);
   const [isRevealed, setIsRevealed] = useState(false);
-  const [showOptionsHint, setShowOptionsHint] = useState(false);
+  const [showHintSection, setShowHintSection] = useState(false);
+  const [revealedLettersCount, setRevealedLettersCount] = useState(1);
   const [results, setResults] = useState<SinglePlayerCardResult[]>([]);
   const [totalScore, setTotalScore] = useState(0);
   const [streak, setStreak] = useState(0);
@@ -154,30 +158,41 @@ const SinglePlayerScreen: React.FC<Props> = ({
     setSettings(initialSettings);
   }, [initialSettings]);
 
-  // Generate 4 randomized multiple-choice options for current card
-  const quizChoices = useMemo(() => {
-    if (!currentCard || cards.length === 0) return [];
-    
+  // Non-option Smart Hint Calculations (Replaces multiple-choice with word structure & anagram clues)
+  const targetAnswerForHint = useMemo(() => {
+    if (!currentCard) return '';
     const isNativeAnswer = settings.displayMode === 'translate_to_native';
-    const correctAnswer = (isNativeAnswer ? currentCard.translation : currentCard.targetText) || '';
-    
-    // Pick 3 distractors from other cards
-    const otherCards = cards.filter(c => c.id !== currentCard.id);
-    const shuffledOthers = [...otherCards].sort(() => Math.random() - 0.5);
-    const distractorAnswers = new Set<string>();
-    
-    for (const card of shuffledOthers) {
-      const val = (isNativeAnswer ? card.translation : card.targetText) || '';
-      if (val && val !== correctAnswer && !distractorAnswers.has(val)) {
-        distractorAnswers.add(val);
-        if (distractorAnswers.size === 3) break;
-      }
+    return (isNativeAnswer ? currentCard.translation : currentCard.targetText) || '';
+  }, [currentCard, settings.displayMode]);
+
+  // Scrambled letters bank (shuffled letters of the word for anagram clue)
+  const scrambledLetters = useMemo<string[]>(() => {
+    if (!targetAnswerForHint) return [];
+    // Extract non-space characters
+    const cleanChars: string[] = targetAnswerForHint.split('').filter((ch: string) => ch.trim() !== '');
+    // Shuffle array
+    const shuffled = [...cleanChars];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-    
-    // Combine and shuffle
-    const choices = [correctAnswer, ...Array.from(distractorAnswers)];
-    return choices.sort(() => Math.random() - 0.5);
-  }, [currentCard?.id, settings.displayMode, cards]);
+    return shuffled;
+  }, [targetAnswerForHint]);
+
+  // Total alphabetic letters count in answer
+  const totalLettersCount = useMemo<number>(() => {
+    return targetAnswerForHint.split('').filter((ch: string) => ch.trim() !== '').length;
+  }, [targetAnswerForHint]);
+
+  const handleRevealMoreLetter = () => {
+    sound.playToggle();
+    setRevealedLettersCount(prev => Math.min(prev + 1, Math.max(1, totalLettersCount - 1)));
+  };
+
+  const handleAddLetterToInput = (letter: string) => {
+    sound.playClick();
+    setUserInput(prev => prev + letter);
+  };
 
   // Initialize Speech Recognition
   useEffect(() => {
@@ -265,7 +280,8 @@ const SinglePlayerScreen: React.FC<Props> = ({
     setEvaluation(null);
     setAttempts(1);
     setIsRevealed(false);
-    setShowOptionsHint(false);
+    setShowHintSection(false);
+    setRevealedLettersCount(1);
     startTimeRef.current = Date.now();
 
     // Check if round advanced to notify user about tighter timer
@@ -371,8 +387,8 @@ const SinglePlayerScreen: React.FC<Props> = ({
     if (!answer) {
       setActionableError(
         isRTL 
-          ? 'پاسخی وارد نشده است. راه‌حل: در کادر متنی بنویسید، دکمه میکروفون را بزنید، یا یکی از گزینه‌های چندگزینه‌ای را لمس کنید.'
-          : 'No answer provided. Fix: Type your answer, speak using the microphone, or tap one of the choices below.'
+          ? 'پاسخی وارد نشده است. راه‌حل: کلمه را در کادر متنی بنویسید، با میکروفون تلفظ کنید یا از سرنخ و حروف کمکی استفاده کنید.'
+          : 'No answer provided. Fix: Type your answer, speak using the microphone, or use the letter clues.'
       );
       return;
     }
@@ -413,16 +429,32 @@ const SinglePlayerScreen: React.FC<Props> = ({
       setStreak(newStreak);
       if (newStreak > bestStreak) setBestStreak(newStreak);
 
+      // --- GAME FEEL LAYERS 1, 2, 3 ---
+      // Layer 1 & 2: Score Pop + Combo Audio + Particle Sparks + Screen Shake
+      feedbackDirector.triggerScoreGained({
+        points,
+        combo: newStreak,
+        label: newStreak > 1 ? `+${points} ×${newStreak}` : `+${points} PTS`
+      });
+
       // Record fastest answer time for personal records
       const timeSpent = Math.max(0.5, Math.round(((Date.now() - startTimeRef.current) / 1000) * 10) / 10);
       if (timeSpent < fastestAnswerRef.current) {
         fastestAnswerRef.current = timeSpent;
       }
 
-      // Check if player beat their personal high score during the game
+      // Layer 3: Poetic In-World Fantasy Toast for Milestones & Records (Non-intrusive)
       if (newScore > personalRecords.highestScore && !isNewRecordAlert && personalRecords.highestScore > 0) {
         setIsNewRecordAlert(true);
-        sound.playSuccess();
+        feedbackDirector.triggerLeaderboardDelta({
+          type: 'personal_best',
+          subText: `ثبت رکورد نو: ${newScore} امتیاز`
+        });
+      } else if (newStreak === 3 || newStreak === 5 || newStreak === 10) {
+        feedbackDirector.triggerLeaderboardDelta({
+          type: 'threshold',
+          subText: `تسلط بر ${newStreak} کلمه پیاپی 🔥`
+        });
       }
 
       // Record result
@@ -446,12 +478,6 @@ const SinglePlayerScreen: React.FC<Props> = ({
 
   const handleCheckAnswer = () => {
     submitAnswer(userInput);
-  };
-
-  const handleOptionSelect = (choice: string) => {
-    if (evaluation?.isCorrect) return;
-    sound.playClick();
-    submitAnswer(choice);
   };
 
   const handleTryAgain = () => {
@@ -599,20 +625,12 @@ const SinglePlayerScreen: React.FC<Props> = ({
             <span className="text-[10px] text-[var(--mute)]">PTS</span>
           </div>
 
-          {/* Sound Toggle */}
-          <button
-            type="button"
-            onClick={() => {
-              const currentMuted = sound.getMuted();
-              sound.setMuted(!currentMuted);
-              sound.playClick();
-            }}
-            className="ib"
-            aria-label={isRTL ? 'قطع و وصل صدا' : 'Toggle Sound'}
-            title={isRTL ? 'قطع و وصل صدا' : 'Toggle Sound'}
-          >
-            {sound.getMuted() ? <VolumeX size={18} /> : <Volume2 size={18} />}
-          </button>
+          {/* Sound Toggle Button */}
+          <SoundHeaderButton 
+            variant="icon-only" 
+            language={isRTL ? 'fa' : 'en'} 
+            className="w-9 h-9 p-0" 
+          />
         </div>
       </header>
 
@@ -730,17 +748,17 @@ const SinglePlayerScreen: React.FC<Props> = ({
               <p className="text-sm font-bold text-[var(--ink)] text-center">
                 {isRTL ? 'گوش دهید و کلمه شنیده‌شده را بگویید یا بنویسید' : 'Listen and repeat or type what you hear'}
               </p>
-              {!showOptionsHint && quizChoices.length > 1 && (
+              {!showHintSection && (
                 <button
                   type="button"
                   onClick={() => {
                     sound.playToggle();
-                    setShowOptionsHint(true);
+                    setShowHintSection(true);
                   }}
                   className="mt-2 text-xs font-bold text-[var(--lapis)] hover:underline flex items-center gap-1.5 bg-[var(--lapis-soft)] px-3.5 py-1.5 rounded-full cursor-pointer transition-transform active:scale-95 shadow-2xs"
                 >
                   <Lightbulb size={13} className="text-[var(--saffron)]" />
-                  <span>{isRTL ? '💡 هینت (نمایش گزینه‌ها)' : '💡 Hint (Show Options)'}</span>
+                  <span>{isRTL ? '💡 سرنخ و حروف کمکی' : '💡 Clue & Letter Hints'}</span>
                 </button>
               )}
             </div>
@@ -765,17 +783,17 @@ const SinglePlayerScreen: React.FC<Props> = ({
                   {currentCard.targetText}
                 </div>
               ) : (
-                !showOptionsHint && quizChoices.length > 1 && (
+                !showHintSection && (
                   <button
                     type="button"
                     onClick={() => {
                       sound.playToggle();
-                      setShowOptionsHint(true);
+                      setShowHintSection(true);
                     }}
                     className="mt-3 text-xs font-bold text-[var(--lapis)] hover:underline flex items-center gap-1.5 bg-[var(--lapis-soft)] px-3.5 py-1.5 rounded-full cursor-pointer transition-transform active:scale-95 shadow-2xs"
                   >
                     <Lightbulb size={13} className="text-[var(--saffron)]" />
-                    <span>{isRTL ? '💡 هینت (نمایش گزینه‌ها)' : '💡 Hint (Show Options)'}</span>
+                    <span>{isRTL ? '💡 سرنخ و حروف کمکی' : '💡 Clue & Letter Hints'}</span>
                   </button>
                 )
               )}
@@ -801,17 +819,17 @@ const SinglePlayerScreen: React.FC<Props> = ({
                   {currentCard.translation}
                 </div>
               ) : (
-                !showOptionsHint && quizChoices.length > 1 && (
+                !showHintSection && (
                   <button
                     type="button"
                     onClick={() => {
                       sound.playToggle();
-                      setShowOptionsHint(true);
+                      setShowHintSection(true);
                     }}
                     className="mt-3 text-xs font-bold text-[var(--lapis)] hover:underline flex items-center gap-1.5 bg-[var(--lapis-soft)] px-3.5 py-1.5 rounded-full cursor-pointer transition-transform active:scale-95 shadow-2xs"
                   >
                     <Lightbulb size={13} className="text-[var(--saffron)]" />
-                    <span>{isRTL ? '💡 هینت (نمایش گزینه‌ها)' : '💡 Hint (Show Options)'}</span>
+                    <span>{isRTL ? '💡 سرنخ و حروف کمکی' : '💡 Clue & Letter Hints'}</span>
                   </button>
                 )
               )}
@@ -910,74 +928,144 @@ const SinglePlayerScreen: React.FC<Props> = ({
 
       {/* 5. Input Section: 4 Interactive Choices, Mic button and Text Input */}
       <div className="space-y-2 shrink-0 font-ui mt-1">
-        {/* 4 Interactive Multiple-Choice Cards revealed as Hint */}
-        {quizChoices.length > 1 && !evaluation?.isCorrect && (
+        {/* Smart Progressive Non-Choice Clue Section (Replaces easy multiple-choice with word structure & anagrams) */}
+        {!evaluation?.isCorrect && targetAnswerForHint && (
           <div className="pt-0.5">
-            {!showOptionsHint ? (
+            {!showHintSection ? (
               <button
                 type="button"
                 onClick={() => {
                   sound.playToggle();
-                  setShowOptionsHint(true);
+                  setShowHintSection(true);
                 }}
                 className="w-full py-2.5 px-3 rounded-xl border border-dashed border-[var(--lapis)]/40 hover:border-[var(--lapis)] bg-[var(--lapis-soft)]/50 hover:bg-[var(--lapis-soft)] text-[var(--lapis)] text-xs font-bold flex items-center justify-center gap-2 transition-all active:scale-[0.99] cursor-pointer shadow-2xs"
               >
                 <Lightbulb size={15} className="text-[var(--saffron)]" />
-                <span>{isRTL ? '💡 نیاز به راهنما دارید؟ نمایش ۴ گزینه (هینت)' : '💡 Need a hint? Show 4 Choices'}</span>
+                <span>{isRTL ? '💡 سرنخ و حروف کمکی (بدون گزینه حاضری)' : '💡 Clue & Letter Hints (No Choices)'}</span>
                 <ChevronDown size={14} />
               </button>
             ) : (
-              <div className="animate-fadeIn space-y-2 bg-[var(--panel)] p-3 rounded-2xl border border-[var(--line)] shadow-xs">
+              <div className="animate-fadeIn space-y-2.5 bg-[var(--panel)] p-3 rounded-2xl border border-[var(--line)] shadow-xs">
+                {/* Header */}
                 <div className="text-[11px] font-bold text-[var(--mute)] px-0.5 flex items-center justify-between">
                   <span className="flex items-center gap-1.5 text-[var(--lapis)] font-black">
                     <Lightbulb size={14} className="text-[var(--saffron)]" />
-                    <span>{isRTL ? 'راهنما فعال شد: گزینه صحیح را انتخاب کنید' : 'Hint Active: Tap the correct option'}</span>
+                    <span>{isRTL ? 'راهنمای ساختار و حروف (برای تقویت ذهن)' : 'Structure & Letter Clues'}</span>
                   </span>
                   <button
                     type="button"
                     onClick={() => {
                       sound.playToggle();
-                      setShowOptionsHint(false);
+                      setShowHintSection(false);
                     }}
                     className="text-[10px] font-bold text-[var(--mute)] hover:text-[var(--ink)] flex items-center gap-1 py-1 px-2 rounded-lg bg-[var(--bg)] border border-[var(--line)] cursor-pointer hover:bg-[var(--line)]/40 transition-colors"
-                    title={isRTL ? 'بستن گزینه‌ها' : 'Hide choices'}
+                    title={isRTL ? 'بستن راهنما' : 'Hide hint'}
                   >
-                    <span>{isRTL ? 'مخفی‌سازی گزینه‌ها' : 'Hide'}</span>
+                    <span>{isRTL ? 'مخفی‌سازی' : 'Hide'}</span>
                     <ChevronUp size={12} />
                   </button>
                 </div>
 
-                {/* Educational clue if card has one */}
+                {/* Educational / Semantic Clue from card */}
                 {currentCard?.hint && (
-                  <div className="text-[11px] font-bold text-[var(--ink)] bg-[var(--saffron)]/15 border border-[var(--saffron)]/30 rounded-xl px-2.5 py-1.5 flex items-center gap-1.5 leading-relaxed">
-                    <span className="shrink-0 text-xs">💡</span>
-                    <span>{currentCard.hint}</span>
+                  <div className="text-xs font-bold text-[var(--ink)] bg-[var(--saffron)]/15 border border-[var(--saffron)]/30 rounded-xl px-2.5 py-1.5 flex items-start gap-1.5 leading-relaxed">
+                    <span className="shrink-0 text-sm mt-0.5">💡</span>
+                    <div>
+                      <span className="text-[10px] text-[var(--mute)] block">{isRTL ? 'سرنخ مفهومی:' : 'Concept Clue:'}</span>
+                      <span>{currentCard.hint}</span>
+                    </div>
                   </div>
                 )}
 
-                {/* The 4 Choice Buttons */}
-                <div className="grid grid-cols-2 gap-2">
-                  {quizChoices.map((choice, idx) => {
-                    const letters = isRTL ? ['الف', 'ب', 'ج', 'د'] : ['A', 'B', 'C', 'D'];
-                    const letter = letters[idx % letters.length];
-                    return (
+                {/* 1. Letter Slots / Masked Word Clue */}
+                <div className="bg-[var(--bg)] p-2.5 rounded-xl border border-[var(--line)] space-y-1.5">
+                  <div className="flex items-center justify-between text-[11px] font-bold">
+                    <span className="text-[var(--mute)]">
+                      {isRTL 
+                        ? `ساختار پاسخ (${totalLettersCount} حرف)`
+                        : `Word Structure (${totalLettersCount} letters)`}
+                    </span>
+                    {revealedLettersCount < totalLettersCount - 1 && (
                       <button
-                        key={`${choice}-${idx}`}
                         type="button"
-                        onClick={() => handleOptionSelect(choice)}
-                        className="p-2.5 rounded-xl border border-[var(--line)] hover:border-[var(--lapis)] bg-[var(--bg)] hover:bg-[var(--lapis-soft)] text-[var(--ink)] text-xs sm:text-sm font-bold flex items-center gap-2 text-start transition-all shadow-2xs active:scale-[0.98] cursor-pointer min-h-[48px] overflow-hidden"
-                        title={choice}
+                        onClick={handleRevealMoreLetter}
+                        className="text-[10px] font-bold text-[var(--teal)] hover:underline flex items-center gap-1 bg-[var(--teal)]/10 px-2 py-0.5 rounded-md border border-[var(--teal)]/20 active:scale-95 transition-all cursor-pointer"
                       >
-                        <span className="w-6 h-6 rounded-lg bg-[var(--lapis-soft)] text-[var(--lapis)] font-black text-xs flex items-center justify-center shrink-0">
-                          {letter}
-                        </span>
-                        <span className="line-clamp-2 break-words leading-tight flex-1">
-                          {choice}
-                        </span>
+                        <KeyRound size={11} />
+                        <span>{isRTL ? '+۱ حرف کمکی' : '+1 Letter'}</span>
                       </button>
-                    );
-                  })}
+                    )}
+                  </div>
+
+                  {/* Render Masked Words & Letter Slots */}
+                  <div 
+                    dir={isRtlLang(settings.displayMode === 'translate_to_native' ? (currentCard?.nativeLanguage || 'fa') : (currentCard?.targetLanguage || 'en-US')) ? 'rtl' : 'ltr'}
+                    className="flex flex-wrap items-center justify-center gap-1.5 py-1 select-none"
+                  >
+                    {(() => {
+                      let globalLetterIdx = 0;
+                      return targetAnswerForHint.split(' ').map((word, wIdx) => (
+                        <div key={`word-${wIdx}`} className="flex items-center gap-1 mx-1">
+                          {word.split('').map((char: string, cIdx: number) => {
+                            const isNonLetter = !/\p{L}/u.test(char);
+                            if (isNonLetter) {
+                              return (
+                                <span key={`char-${wIdx}-${cIdx}`} className="text-sm font-bold text-[var(--mute)] px-0.5">
+                                  {char}
+                                </span>
+                              );
+                            }
+                            const currentIdx = globalLetterIdx++;
+                            const isRevealedChar = currentIdx === 0 || currentIdx < revealedLettersCount;
+                            return (
+                              <span
+                                key={`slot-${wIdx}-${cIdx}`}
+                                className={`w-6 h-7 sm:w-7 sm:h-8 rounded-lg flex items-center justify-center text-xs sm:text-sm font-black transition-all ${
+                                  isRevealedChar
+                                    ? 'bg-[var(--teal)]/15 text-[var(--teal)] border border-[var(--teal)]/40 shadow-2xs'
+                                    : 'bg-[var(--panel)] text-transparent border-b-2 border-[var(--mute)]'
+                                }`}
+                              >
+                                {isRevealedChar ? char : '_'}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      ));
+                    })()}
+                  </div>
                 </div>
+
+                {/* 2. Scrambled Letters Pool (Anagram clue - gives user the pieces without giving away the answer) */}
+                {scrambledLetters.length > 0 && (
+                  <div className="bg-[var(--bg)] p-2.5 rounded-xl border border-[var(--line)] space-y-1.5">
+                    <div className="flex items-center justify-between text-[11px] font-bold text-[var(--mute)]">
+                      <span>{isRTL ? 'حروف تشکیل‌دهنده (درهم‌ریخته • برای افزودن لمس کنید):' : 'Scrambled Letters (Tap to add):'}</span>
+                      {userInput.length > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => setUserInput(prev => prev.slice(0, -1))}
+                          className="text-[10px] text-[var(--vermilion)] hover:underline flex items-center gap-0.5 cursor-pointer font-bold"
+                        >
+                          <span>{isRTL ? '⌫ پاک‌کردن حرف' : '⌫ Backspace'}</span>
+                        </button>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap items-center justify-center gap-1.5 py-1">
+                      {scrambledLetters.map((letter, lIdx) => (
+                        <button
+                          key={`scr-${lIdx}-${letter}`}
+                          type="button"
+                          onClick={() => handleAddLetterToInput(letter)}
+                          className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[var(--panel)] hover:bg-[var(--lapis-soft)] text-[var(--ink)] border border-[var(--line)] hover:border-[var(--lapis)] text-xs sm:text-sm font-black flex items-center justify-center transition-transform active:scale-90 cursor-pointer shadow-2xs"
+                          title={letter}
+                        >
+                          {letter}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -1046,17 +1134,17 @@ const SinglePlayerScreen: React.FC<Props> = ({
             <span>{isRTL ? 'رد کردن این کارت ⏭️' : 'Skip Card ⏭️'}</span>
           </button>
 
-          {!showOptionsHint && quizChoices.length > 1 && !evaluation?.isCorrect && (
+          {!showHintSection && !evaluation?.isCorrect && (
             <button
               type="button"
               onClick={() => {
                 sound.playToggle();
-                setShowOptionsHint(true);
+                setShowHintSection(true);
               }}
-              className="text-[var(--lapis)] hover:underline flex items-center gap-1 py-1 cursor-pointer"
+              className="text-[var(--lapis)] hover:underline flex items-center gap-1 py-1 cursor-pointer font-bold"
             >
               <Lightbulb size={13} className="text-[var(--saffron)]" />
-              <span>{isRTL ? 'راهنما (هینت)' : 'Hint'}</span>
+              <span>{isRTL ? 'سرنخ و حروف کمکی 💡' : 'Clue & Hints 💡'}</span>
             </button>
           )}
         </div>

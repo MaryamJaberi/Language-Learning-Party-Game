@@ -4,6 +4,7 @@ import { sound } from '../soundManager';
 import { getRandomCharacters } from '../characters';
 import { tUI, isRtlLang } from '../ui';
 import { CEFR_LEVELS } from '../constants';
+import { SoundHeaderButton } from '../components/SoundHeaderButton';
 import { ArrowLeft, ArrowRight, Check, Search, X, ChevronDown, ChevronUp, Settings, Award } from 'lucide-react';
 
 interface Props {
@@ -547,29 +548,14 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
           </button>
 
           {/* Sound Toggle Button */}
-          <button 
-            type="button"
-            id="soundBtn" 
-            className="ib" 
-            aria-pressed={!isSoundMuted} 
-            aria-label={isSoundMuted ? (t.soundMuted || 'صدای بازی غیرفعال') : (t.soundActive || 'صدای بازی فعال')}
-            title={isSoundMuted ? (t.soundMuted || 'فعال‌سازی صدا') : (t.soundActive || 'قطع صدا')}
-            onClick={toggleSound}
-          >
-            <svg viewBox="0 0 24 24">
-              {!isSoundMuted ? (
-                <>
-                  <path d="M4 9v6h4l5 4V5L8 9H4z" />
-                  <path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" />
-                </>
-              ) : (
-                <>
-                  <path d="M4 9v6h4l5 4V5L8 9H4z" />
-                  <path d="M17 9l5 6M22 9l-5 6" />
-                </>
-              )}
-            </svg>
-          </button>
+          <SoundHeaderButton 
+            variant="icon-only" 
+            language={settings.language} 
+            onToggle={(muted) => {
+              setIsSoundMuted(muted);
+              updateSettings('soundEnabled', !muted);
+            }} 
+          />
 
           {/* UI Language Dropdown Button */}
           <button 

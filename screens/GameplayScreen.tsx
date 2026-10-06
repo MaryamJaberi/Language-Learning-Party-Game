@@ -9,6 +9,7 @@ import Modal from '../components/Modal';
 import EndGameScreen from './EndGameScreen';
 import { TeamMascot } from '../components/Mascots';
 import { sound } from '../soundManager';
+import { feedbackDirector } from '../feedbackDirector';
 import { FlagIcon } from '../components/FlagIcon';
 import { 
   Zap, 
@@ -505,17 +506,35 @@ const GameplayScreen: React.FC<Props> = ({
           </button>
 
           <button 
+            type="button"
             aria-label="Sound Toggle"
             onClick={() => {
               const currentMuted = settings.soundEnabled === false;
-              sound.setMuted(!currentMuted);
+              const nextMuted = !currentMuted;
+              sound.setMuted(!nextMuted);
               if (onUpdateSettings) {
-                onUpdateSettings({ ...settings, soundEnabled: currentMuted });
+                onUpdateSettings({ ...settings, soundEnabled: nextMuted });
               }
             }}
-            className="w-8 h-8 rounded-xl border border-[var(--line)] bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] flex items-center justify-center transition-all active:scale-95 shadow-xs"
+            style={{
+              backgroundColor: settings.soundEnabled === false ? '#f43f5e' : undefined,
+              borderColor: settings.soundEnabled === false ? '#e11d48' : undefined,
+              color: settings.soundEnabled === false ? '#ffffff' : undefined,
+              opacity: 1,
+              visibility: 'visible',
+              display: 'inline-flex'
+            }}
+            className={`w-8 h-8 rounded-xl border flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer select-none ${
+              settings.soundEnabled === false
+                ? '!bg-rose-500 !text-white !border-2 !border-rose-600 dark:!bg-rose-600 shadow-rose-500/20 shadow-md ring-2 ring-rose-400/30'
+                : 'bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border-[var(--line)]'
+            }`}
           >
-            {settings.soundEnabled !== false ? <Volume2 size={14} /> : <VolumeX size={14} />}
+            {settings.soundEnabled !== false ? (
+              <Volume2 size={15} className="text-[var(--ink)] shrink-0" strokeWidth={2} />
+            ) : (
+              <VolumeX size={15} className="!text-white shrink-0 stroke-white" strokeWidth={2.5} style={{ color: '#ffffff', stroke: '#ffffff', display: 'block' }} />
+            )}
           </button>
 
           <button 
