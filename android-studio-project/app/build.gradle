@@ -3,15 +3,15 @@ plugins {
 }
 
 android {
-    namespace 'com.dour.languagegame'
-    compileSdk 34
+    namespace 'com.solonovate.dour'
+    compileSdk 36
 
     defaultConfig {
-        applicationId "com.dour.languagegame"
+        applicationId "com.solonovate.dour"
         minSdk 21
-        targetSdk 34
-        versionCode 10001
-        versionName "1.0.1"
+        targetSdk 36
+        versionCode 10003
+        versionName "1.0.3"
     }
 
     signingConfigs {

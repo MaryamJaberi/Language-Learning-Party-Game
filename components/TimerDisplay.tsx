@@ -51,7 +51,7 @@ const TimerDisplay: React.FC<Props> = ({
           </span>
         )}
 
-        <div className={`px-4 py-1.5 bg-[var(--panel)] border border-[var(--line)] rounded-2xl shadow-xs flex items-center justify-center gap-2 ${
+        <div className={`px-4 py-1.5 bg-[var(--panel)] border border-[var(--line)] rounded-2xl shadow-xs flex items-center justify-center gap-2 relative ${
           isPanic ? 'ring-2 ring-red-500 animate-pulse' : ''
         }`}>
           <NeonClock size={18} color={isPanic ? '#EF4444' : '#12B5A4'} />
@@ -67,6 +67,8 @@ const TimerDisplay: React.FC<Props> = ({
               </>
             )}
           </div>
+          {/* Subtle Arcade Stage Indicator Dot */}
+          <span className="w-1.5 h-1.5 rounded-full bg-[var(--turq)] opacity-60 animate-ping hidden sm:inline-block" />
         </div>
       </div>
 

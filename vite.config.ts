@@ -10,8 +10,32 @@ export default defineConfig(({ mode }) => {
       server: {
         port: 3000,
         host: '0.0.0.0',
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
       },
       plugins: [
+        {
+          name: 'downloads-header-plugin',
+          configureServer(server) {
+            server.middlewares.use((req, res, next) => {
+              if (req.url && req.url.includes('/downloads/')) {
+                const filename = req.url.split('/').pop()?.split('?')[0];
+                if (filename?.endsWith('.aab')) {
+                  res.setHeader('Content-Type', 'application/octet-stream');
+                  res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+                } else if (filename?.endsWith('.apk')) {
+                  res.setHeader('Content-Type', 'application/vnd.android.package-archive');
+                  res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+                } else if (filename?.endsWith('.zip')) {
+                  res.setHeader('Content-Type', 'application/zip');
+                  res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+                }
+              }
+              next();
+            });
+          }
+        },
         react(),
         VitePWA({
           registerType: 'autoUpdate',

@@ -1,4 +1,4 @@
-package com.dour.languagegame;
+package com.solonovate.dour;
 
 import android.app.Activity;
 import android.os.Bundle;

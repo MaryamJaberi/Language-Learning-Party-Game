@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Language, LeaderboardEntry, PersonalRecords, GameHistoryEntry } from '../types';
 import { getPersonalRecords, fetchLeaderboard } from '../contentEngine';
-import { auth, signInWithGoogle, logOut, fetchUserMatchHistory } from '../firebase';
+import { auth, signInWithGoogle, logOut, fetchUserMatchHistory, deleteUserAccountAndData } from '../firebase';
 import { User } from 'firebase/auth';
 import { FlagIcon } from './FlagIcon';
 import { sound } from '../soundManager';
 import { usePWAInstall } from '../usePWAInstall';
 import { isRtlLang } from '../ui';
+import { downloadFileWithBlob } from '../utils/downloadHelper';
 import { 
   Trophy, 
   Flame, 
@@ -29,7 +30,13 @@ import {
   Users,
   AlertCircle,
   HardDrive,
-  Cloud
+  Cloud,
+  Loader2,
+  Trash2,
+  FileDown,
+  Lock,
+  ExternalLink,
+  ShieldAlert
 } from 'lucide-react';
 
 interface Props {
@@ -39,7 +46,7 @@ interface Props {
   currentUser: User | null;
   onAuthChange?: (user: User | null) => void;
   onOpenInstallModal?: () => void;
-  initialTab?: 'history' | 'records' | 'leaderboard';
+  initialTab?: 'history' | 'records' | 'leaderboard' | 'privacy';
 }
 
 export const UserProfileModal: React.FC<Props> = ({
@@ -51,12 +58,18 @@ export const UserProfileModal: React.FC<Props> = ({
   onOpenInstallModal,
   initialTab = 'history'
 }) => {
-  const [activeTab, setActiveTab] = useState<'history' | 'records' | 'leaderboard'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'history' | 'records' | 'leaderboard' | 'privacy'>(initialTab);
   const [records, setRecords] = useState<PersonalRecords>(getPersonalRecords());
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [isLoadingLeaderboard, setIsLoadingLeaderboard] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [downloadingFile, setDownloadingFile] = useState<string | null>(null);
+  const [downloadMsg, setDownloadMsg] = useState<string | null>(null);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deleteSuccessMsg, setDeleteSuccessMsg] = useState<string | null>(null);
+  const [exportMsg, setExportMsg] = useState<string | null>(null);
 
   // History state
   const [localHistory, setLocalHistory] = useState<GameHistoryEntry[]>([]);
@@ -155,6 +168,59 @@ export const UserProfileModal: React.FC<Props> = ({
       setCloudHistory([]);
     } catch (err) {
       console.error('Logout error:', err);
+    }
+  };
+
+  // Permanently Delete Account and Data (Google Play Policy)
+  const handleDeleteAccount = async () => {
+    if (!currentUser) return;
+    setIsDeletingAccount(true);
+    setLoginError(null);
+    try {
+      await deleteUserAccountAndData(currentUser.uid);
+      setDeleteSuccessMsg(isRTL ? 'حساب کاربری و کلیه داده‌های شما با موفقیت به طور کامل حذف شد.' : 'Your account and all associated cloud data were permanently deleted.');
+      if (onAuthChange) onAuthChange(null);
+      setTimeout(() => {
+        onClose();
+      }, 2500);
+    } catch (err: any) {
+      console.error('Account deletion error:', err);
+      setLoginError(err?.message || (isRTL ? 'خطا در حذف حساب. به دلیل امنیت، لطفاً یک‌بار خارج شده و مجدداً وارد شوید سپس امتحان کنید.' : 'Error deleting account. For security, please sign in again and retry.'));
+    } finally {
+      setIsDeletingAccount(false);
+      setDeleteConfirmOpen(false);
+    }
+  };
+
+  // Export User Data as JSON (Data Portability & GDPR compliance)
+  const handleExportData = () => {
+    try {
+      const dataToExport = {
+        app: 'DOŪR (دور)',
+        packageId: 'com.solonovate.dour',
+        exportDate: new Date().toISOString(),
+        user: currentUser ? {
+          uid: currentUser.uid,
+          email: currentUser.email,
+          displayName: currentUser.displayName,
+        } : 'guest',
+        personalRecords: records,
+        matchHistory: localHistory,
+        cloudMatchesCount: cloudHistory.length,
+      };
+      const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `dour-user-data-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setExportMsg(isRTL ? 'فایل حاوی تمام داده‌های شما دانلود شد.' : 'Your data was exported successfully.');
+      setTimeout(() => setExportMsg(null), 3000);
+    } catch (e) {
+      console.error('Export error:', e);
     }
   };
 
@@ -324,7 +390,22 @@ export const UserProfileModal: React.FC<Props> = ({
             }`}
           >
             <Trophy size={14} />
-            <span>{isRTL ? 'رده‌بندی' : 'Leaderboard'}</span>
+            <span>{isRTL ? 'رده‌بندی' : 'Ranks'}</span>
+          </button>
+
+          <button
+            onClick={() => {
+              sound.playClick();
+              setActiveTab('privacy');
+            }}
+            className={`flex-1 py-2 rounded-[12px] text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+              activeTab === 'privacy'
+                ? 'bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] shadow-[var(--shadow-sm)]'
+                : 'text-[var(--mute)] hover:bg-[var(--panel)]/50 border border-transparent'
+            }`}
+          >
+            <ShieldCheck size={14} />
+            <span>{isRTL ? 'امنیت و داده‌ها' : 'Privacy'}</span>
           </button>
         </div>
 
@@ -550,6 +631,146 @@ export const UserProfileModal: React.FC<Props> = ({
             </div>
           )}
 
+          {/* TAB 4: DATA SAFETY & PRIVACY (Google Play Policy Compliance) */}
+          {activeTab === 'privacy' && (
+            <div className="space-y-3 text-start">
+              {/* Success / Alert Toasts */}
+              {deleteSuccessMsg && (
+                <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs font-bold flex items-center gap-2">
+                  <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                  <span>{deleteSuccessMsg}</span>
+                </div>
+              )}
+              {exportMsg && (
+                <div className="p-3 rounded-2xl bg-blue-50 border border-blue-300 text-blue-800 text-xs font-bold flex items-center gap-2">
+                  <CheckCircle2 size={16} className="text-blue-600 shrink-0" />
+                  <span>{exportMsg}</span>
+                </div>
+              )}
+
+              {/* Data Safety Summary Card */}
+              <div className="bg-[var(--bg)] p-3.5 rounded-2xl border border-[var(--line)] space-y-2.5">
+                <div className="flex items-center gap-2 text-xs font-bold text-[var(--ink)]">
+                  <ShieldCheck size={16} className="text-[var(--teal)]" />
+                  <span>{isRTL ? 'شفافیت داده‌ها و امنیت گوگل‌پلی' : 'Google Play Data Safety'}</span>
+                </div>
+
+                <div className="space-y-2 text-[11px] text-[var(--mute)] leading-relaxed">
+                  <div className="flex items-start gap-2 bg-[var(--panel)] p-2 rounded-xl border border-[var(--line)]">
+                    <Lock size={14} className="text-[var(--lapis)] shrink-0 mt-0.5" />
+                    <div>
+                      <strong className="text-[var(--ink)] block">{isRTL ? 'رمزنگاری کامل داده‌ها (HTTPS/TLS)' : 'Encryption in Transit'}</strong>
+                      {isRTL ? 'کلیه ارتباطات شبکه رمزگذاری شده و با قوانین امنیتی فایربیس محافظت می‌شوند.' : 'All data transferred between your device and Google cloud is encrypted.'}
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2 bg-[var(--panel)] p-2 rounded-xl border border-[var(--line)]">
+                    <ShieldCheck size={14} className="text-[var(--turq)] shrink-0 mt-0.5" />
+                    <div>
+                      <strong className="text-[var(--ink)] block">{isRTL ? 'پردازش صوتی محلی (بدون ضبط صدا)' : 'On-Device Audio Only'}</strong>
+                      {isRTL ? 'میکروفون تنها برای تشخیص زنده تلفظ روی گوشی استفاده شده و هیچ صدایی به سرور ارسال نمی‌شود.' : 'Microphone audio is processed strictly on-device in real-time. No audio is recorded or stored.'}
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2 bg-[var(--panel)] p-2 rounded-xl border border-[var(--line)]">
+                    <CheckCircle2 size={14} className="text-amber-500 shrink-0 mt-0.5" />
+                    <div>
+                      <strong className="text-[var(--ink)] block">{isRTL ? 'عدم فروش یا اشتراک داده' : 'No 3rd-Party Data Selling'}</strong>
+                      {isRTL ? 'اطلاعات شما با هیچ شبکه تبلیغاتی یا بازاریابی به اشتراک گذاشته نمی‌شود.' : 'Your data is never sold, shared, or monetized with advertising networks.'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Data Export (Data Portability) */}
+              <div className="bg-[var(--bg)] p-3 rounded-2xl border border-[var(--line)] flex items-center justify-between">
+                <div>
+                  <h4 className="text-xs font-bold text-[var(--ink)]">
+                    {isRTL ? 'استخراج و دانلود داده‌های من' : 'Export My Data'}
+                  </h4>
+                  <p className="text-[10px] text-[var(--mute)]">
+                    {isRTL ? 'دریافت نسخه JSON از سوابق و رکوردهای شما' : 'Download JSON copy of your records & stats'}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleExportData}
+                  className="px-3 py-1.5 bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all"
+                >
+                  <FileDown size={14} />
+                  <span>{isRTL ? 'دانلود داده‌ها' : 'Export'}</span>
+                </button>
+              </div>
+
+              {/* Account Deletion (Google Play Mandatory) */}
+              {currentUser ? (
+                <div className="bg-rose-50 dark:bg-rose-950/20 p-3.5 rounded-2xl border border-rose-200 dark:border-rose-900/50 space-y-2">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-rose-700 dark:text-rose-400">
+                    <ShieldAlert size={15} />
+                    <span>{isRTL ? 'حذف دائمی حساب کاربری و داده‌ها' : 'Permanent Account & Data Deletion'}</span>
+                  </div>
+                  <p className="text-[11px] text-rose-600/90 dark:text-rose-400/80 leading-relaxed font-medium">
+                    {isRTL 
+                      ? 'طبق قوانین گوگل‌پلی، شما در هر زمان می‌توانید حساب کاربری و تمامی سوابق و رکوردهای ثبت‌شده خود را برای همیشه حذف نمایید.' 
+                      : 'Per Google Play policy, you can permanently delete your account and all associated cloud data at any time.'}
+                  </p>
+
+                  {!deleteConfirmOpen ? (
+                    <button
+                      type="button"
+                      onClick={() => setDeleteConfirmOpen(true)}
+                      className="w-full py-2 px-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-2xs active:scale-95 transition-all"
+                    >
+                      <Trash2 size={14} />
+                      <span>{isRTL ? 'درخواست حذف دائمی حساب' : 'Delete Account & All Data'}</span>
+                    </button>
+                  ) : (
+                    <div className="p-3 bg-white dark:bg-zinc-900 rounded-xl border border-rose-300 space-y-2">
+                      <p className="text-xs font-bold text-rose-700">
+                        {isRTL ? 'آیا کاملاً مطمئن هستید؟ این عمل غیرقابل بازگشت است و تمام رکوردهای ابری شما پاک خواهند شد.' : 'Are you sure? This action is permanent and cannot be undone.'}
+                      </p>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          disabled={isDeletingAccount}
+                          onClick={handleDeleteAccount}
+                          className="flex-1 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1 disabled:opacity-50"
+                        >
+                          {isDeletingAccount ? <Loader2 size={13} className="animate-spin" /> : <Trash2 size={13} />}
+                          <span>{isRTL ? 'بله، حذف قطعی' : 'Yes, Delete Permanently'}</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDeleteConfirmOpen(false)}
+                          className="px-3 py-1.5 bg-gray-100 dark:bg-zinc-800 text-[var(--ink)] rounded-lg text-xs font-bold"
+                        >
+                          {isRTL ? 'انصراف' : 'Cancel'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="bg-[var(--bg)] p-3 rounded-2xl border border-[var(--line)] text-center text-xs text-[var(--mute)]">
+                  {isRTL ? 'شما به عنوان کاربر مهمان بازی می‌کنید و حسابی در سرور ثبت نشده است.' : 'You are currently playing as a guest with no cloud account.'}
+                </div>
+              )}
+
+              {/* Web Policy & Deletion Link */}
+              <div className="pt-2 text-center">
+                <a
+                  href="./privacy.html#delete-account"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-[var(--lapis)] hover:underline inline-flex items-center gap-1 font-bold"
+                >
+                  <span>{isRTL ? 'مشاهده شرایط حذف از وب و سیاست کامل حریم خصوصی' : 'Web Data Deletion Form & Full Privacy Policy'}</span>
+                  <ExternalLink size={12} />
+                </a>
+              </div>
+            </div>
+          )}
+
           {/* MOBILE INSTALL AT THE BOTTOM OF THE LIST */}
           <div className="mt-4 pt-3 border-t border-[var(--line)] space-y-2 shrink-0 text-start">
             <div className="flex items-center justify-between">
@@ -576,15 +797,71 @@ export const UserProfileModal: React.FC<Props> = ({
                 </div>
               ) : (
                 <div className="flex flex-col gap-2">
-                  <a
-                    href="./downloads/dor-zaban-v1.0.apk"
-                    download="dor-zaban-v1.0.apk"
-                    onClick={() => sound.playClick()}
-                    className="w-full py-2.5 px-3 bg-[#2347C5] hover:bg-[#1a38a0] text-white rounded-[12px] font-bold text-xs flex items-center justify-center gap-2 shadow-[var(--shadow-sm)] active:translate-y-0.5 transition-all text-center no-underline"
+                  {/* Download Status Toast if active */}
+                  {downloadMsg && (
+                    <div className="p-2 rounded-xl bg-[var(--lapis-soft)] border border-[var(--lapis)]/30 text-[var(--lapis)] text-[11px] font-bold flex items-center gap-1.5 animate-fadeIn">
+                      <CheckCircle2 size={14} className="shrink-0 text-[var(--turq)]" />
+                      <span>{downloadMsg}</span>
+                    </div>
+                  )}
+
+                  {/* Google Play AAB Bundle */}
+                  <button
+                    type="button"
+                    disabled={downloadingFile === 'dor-zaban-v1.0.aab'}
+                    onClick={async () => {
+                      sound.playClick();
+                      setDownloadingFile('dor-zaban-v1.0.aab');
+                      setDownloadMsg(isRTL ? 'در حال دریافت مستقیم فایل AAB...' : 'Fetching AAB...');
+                      const res = await downloadFileWithBlob('./downloads/dor-zaban-v1.0.aab', 'dor-zaban-v1.0.aab', (s, msg) => {
+                        if (msg) setDownloadMsg(msg);
+                      });
+                      setDownloadingFile(null);
+                      if (!res.success && res.error) setDownloadMsg(res.error);
+                    }}
+                    className="w-full py-2.5 px-3 bg-[var(--lapis)] hover:bg-[#1a38a0] text-white rounded-[12px] font-bold text-xs flex items-center justify-center gap-2 shadow-[var(--shadow-sm)] active:translate-y-0.5 transition-all text-center cursor-pointer disabled:opacity-75"
                   >
-                    <Download size={15} />
-                    <span>{isRTL ? 'دانلود مستقیم فایل نصبی APK (اندروید)' : 'Download Android APK (1.2 MB)'}</span>
-                  </a>
+                    {downloadingFile === 'dor-zaban-v1.0.aab' ? (
+                      <>
+                        <Loader2 size={15} className="animate-spin" />
+                        <span>{isRTL ? 'در حال دریافت فایل AAB...' : 'Downloading AAB...'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Download size={15} />
+                        <span>{isRTL ? 'دانلود مستقیم فایل AAB مخصوص Google Play (۲.۲ مگابایت)' : 'Download Google Play AAB (2.2 MB)'}</span>
+                      </>
+                    )}
+                  </button>
+
+                  {/* Direct APK */}
+                  <button
+                    type="button"
+                    disabled={downloadingFile === 'dor-zaban-v1.0.apk'}
+                    onClick={async () => {
+                      sound.playClick();
+                      setDownloadingFile('dor-zaban-v1.0.apk');
+                      setDownloadMsg(isRTL ? 'در حال دریافت مستقیم فایل APK...' : 'Fetching APK...');
+                      const res = await downloadFileWithBlob('./downloads/dor-zaban-v1.0.apk', 'dor-zaban-v1.0.apk', (s, msg) => {
+                        if (msg) setDownloadMsg(msg);
+                      });
+                      setDownloadingFile(null);
+                      if (!res.success && res.error) setDownloadMsg(res.error);
+                    }}
+                    className="w-full py-2 px-3 bg-[var(--turq)] hover:bg-[#0fa091] text-white rounded-[12px] font-bold text-xs flex items-center justify-center gap-2 shadow-[var(--shadow-sm)] active:translate-y-0.5 transition-all text-center cursor-pointer disabled:opacity-75"
+                  >
+                    {downloadingFile === 'dor-zaban-v1.0.apk' ? (
+                      <>
+                        <Loader2 size={15} className="animate-spin" />
+                        <span>{isRTL ? 'در حال دریافت فایل APK...' : 'Downloading APK...'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Download size={15} />
+                        <span>{isRTL ? 'دانلود مستقیم فایل نصبی APK اندروید (۵.۸ مگابایت)' : 'Download Android APK (5.8 MB)'}</span>
+                      </>
+                    )}
+                  </button>
 
                   <button
                     type="button"
@@ -596,10 +873,10 @@ export const UserProfileModal: React.FC<Props> = ({
                         await install();
                       }
                     }}
-                    className="w-full py-2 px-3 bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] rounded-[12px] font-bold text-xs flex items-center justify-center gap-2 shadow-[var(--shadow-sm)] active:translate-y-0.5 transition-all"
+                    className="w-full py-2 px-3 bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] rounded-[12px] font-bold text-xs flex items-center justify-center gap-2 shadow-[var(--shadow-sm)] active:translate-y-0.5 transition-all cursor-pointer"
                   >
                     <Smartphone size={15} />
-                    <span>{isRTL ? 'نصب مستقیم روی گوشی (PWA و پکیج گوگل‌پلی)' : 'Install on Mobile Device (PWA & Play Store)'}</span>
+                    <span>{isRTL ? 'سایر گزینه‌ها (PWA، راهنمای گوگل‌پلی و سورس)' : 'More Options (PWA, Play Store & Source)'}</span>
                   </button>
                 </div>
               )}
@@ -610,7 +887,15 @@ export const UserProfileModal: React.FC<Props> = ({
 
         {/* Footer */}
         <div className="p-3 bg-[var(--panel)] border-t border-[var(--line)] flex items-center justify-between text-[11px] text-[var(--mute)] font-medium">
-          <span>{isRTL ? 'حساب کاربری و سوابق' : 'Account & Records'}</span>
+          <a
+            href="./privacy.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[var(--lapis)] hover:underline flex items-center gap-1 font-semibold"
+          >
+            <ShieldCheck size={13} />
+            <span>{isRTL ? 'حریم خصوصی' : 'Privacy Policy'}</span>
+          </a>
           <button 
             onClick={onClose}
             className="px-3.5 py-1 rounded-[8px] bg-[var(--bg)] hover:bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] font-bold active:translate-y-0.5 transition-all"

@@ -3,7 +3,7 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.dour.languagegame",
+      "package_name": "com.solonovate.dour",
       "sha256_cert_fingerprints": [
         "90:9C:E3:3D:4C:CD:19:18:58:F6:7C:DB:73:A5:81:67:BC:02:63:A4:E5:C1:B1:3E:E5:12:BF:E2:6C:32:89:9A"
       ]

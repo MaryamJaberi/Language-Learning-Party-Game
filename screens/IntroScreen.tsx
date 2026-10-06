@@ -11,6 +11,7 @@ import { SUPPORTED_LANGUAGES } from '../constants';
 import { LanguagePickerModal } from '../components/LanguagePickerModal';
 import { UserProfileModal } from '../components/UserProfileModal';
 import { SoundHeaderButton } from '../components/SoundHeaderButton';
+import ArcadeBackground from '../components/ArcadeBackground';
 import { 
   Gamepad2, 
   Trophy, 
@@ -171,7 +172,9 @@ const IntroScreen: React.FC<Props> = ({
   };
 
   return (
-    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full min-h-0 flex-1 flex flex-col items-center justify-between p-3.5 sm:p-4 text-center select-none overflow-y-auto overscroll-contain bg-[var(--bg)] text-[var(--ink)] font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full min-h-0 flex-1 flex flex-col items-center justify-between p-3.5 sm:p-4 text-center select-none overflow-y-auto overscroll-contain bg-[var(--bg)] text-[var(--ink)] font-ui relative" dir={isRTL ? 'rtl' : 'ltr'}>
+      {/* Retro Arcade Ambient Background (Exclusive to Intro Page) */}
+      <ArcadeBackground />
       
       {/* Top Bar: Language Picker Pill on one side, Sound, Help & Profile on the other */}
       <div className="w-full max-w-sm sm:max-w-md flex items-center justify-between px-1 mb-2 shrink-0 gap-2">
@@ -242,12 +245,15 @@ const IntroScreen: React.FC<Props> = ({
       {/* Hero Modern Card Area (Aligned with HTML design system) */}
       <div className="relative w-full max-w-sm mx-auto my-auto shrink-0">
         <div className="panel p-5 sm:p-6 text-start flex flex-col justify-between min-h-[230px] sm:min-h-[250px] rounded-[24px] shadow-sm">
-          {/* Top Label */}
+          {/* Top Label with Subtle Arcade Accent */}
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold tracking-wider text-[var(--lapis)] uppercase font-ui">
-              {t.vocabParty}
+            <span className="text-[11px] font-bold tracking-wider text-[var(--lapis)] uppercase font-ui flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--turq)] animate-pulse inline-block" />
+              <span>{t.vocabParty}</span>
             </span>
-            <span className="px-2.5 py-0.5 bg-[var(--lapis-soft)] text-[var(--lapis)] text-[10.5px] font-bold rounded-full font-ui flex items-center gap-1">
+            <span className="px-2.5 py-0.5 bg-[var(--lapis-soft)] text-[var(--lapis)] text-[10.5px] font-bold rounded-full font-ui flex items-center gap-1.5 border border-[var(--lapis)]/15">
+              <span className="font-mono text-[9px] text-[var(--turq)] font-black tracking-wider">★ 1UP</span>
+              <span className="opacity-40">|</span>
               <Sparkles size={11} />
               <span>{t.multiLingual}</span>
             </span>

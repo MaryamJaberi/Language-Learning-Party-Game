@@ -1090,8 +1090,8 @@ const SinglePlayerScreen: React.FC<Props> = ({
 
             <p className="text-xs text-[var(--mute)] mb-4 leading-relaxed">
               {isRTL 
-                ? 'برای بررسی و امتیازدهی به تلفظ شما، دسترسی به میکروفون مرورگر لازم است.'
-                : 'To score your pronunciation, microphone access is required.'}
+                ? 'برای بررسی زنده تلفظ، به دسترسی میکروفون نیاز است. پردازش صدا کاملاً به صورت محلی بر روی دستگاه انجام می‌شود و هیچ فایلی ضبط یا در سرور ذخیره نمی‌شود.'
+                : 'To score your pronunciation, microphone access is required. Audio is processed strictly on-device in real-time. No voice data is recorded or stored on servers.'}
             </p>
 
             {micPermissionError && (

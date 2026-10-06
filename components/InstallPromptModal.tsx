@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Language } from '../types';
 import { sound } from '../soundManager';
 import { isRtlLang, tUI } from '../ui';
+import { downloadFileWithBlob } from '../utils/downloadHelper';
 import { 
   Download, 
   Smartphone, 
@@ -15,7 +16,9 @@ import {
   X, 
   ArrowUpRight,
   ShieldCheck,
-  WifiOff
+  WifiOff,
+  Loader2,
+  AlertTriangle
 } from 'lucide-react';
 
 interface Props {
@@ -33,12 +36,31 @@ export const InstallPromptModal: React.FC<Props> = ({
   deferredPrompt,
   onInstalled
 }) => {
-  const [activeTab, setActiveTab] = useState<'apk' | 'android' | 'ios'>('android');
+  const [activeTab, setActiveTab] = useState<'apk' | 'android' | 'ios'>('apk');
   const [isInstalling, setIsInstalling] = useState(false);
   const [isInstalledSuccess, setIsInstalledSuccess] = useState(false);
+  const [downloadingFile, setDownloadingFile] = useState<string | null>(null);
+  const [downloadStatus, setDownloadStatus] = useState<string | null>(null);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
 
   const isRTL = isRtlLang(language);
   const t = tUI(language);
+
+  const handleDownload = async (url: string, filename: string) => {
+    sound.playClick();
+    setDownloadingFile(filename);
+    setDownloadError(null);
+    setDownloadStatus(isRTL ? 'در حال دریافت مستقیم و بدون نقص فایل...' : 'Fetching binary file...');
+
+    const res = await downloadFileWithBlob(url, filename, (status, msg) => {
+      if (msg) setDownloadStatus(msg);
+    });
+
+    setDownloadingFile(null);
+    if (!res.success) {
+      setDownloadError(res.error || (isRTL ? 'خطا در دریافت فایل' : 'Download failed'));
+    }
+  };
 
   // Detect iOS by userAgent
   useEffect(() => {
@@ -159,88 +181,140 @@ export const InstallPromptModal: React.FC<Props> = ({
           {activeTab === 'apk' && (
             <div className="space-y-3 text-start">
               
-              {/* Card 1: Direct APK Download */}
-              <div className="bg-[var(--bg)] p-3.5 rounded-[16px] border border-[var(--line)] shadow-[var(--shadow-sm)] space-y-2">
+              {/* Download Feedback Banner */}
+              {downloadStatus && (
+                <div className="p-2.5 rounded-xl bg-[var(--lapis-soft)] border border-[var(--lapis)]/30 text-[var(--lapis)] text-xs font-bold flex items-center gap-2 animate-fadeIn">
+                  <CheckCircle2 size={16} className="shrink-0 text-[var(--turq)]" />
+                  <span>{downloadStatus}</span>
+                </div>
+              )}
+              {downloadError && (
+                <div className="p-2.5 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-800 text-red-600 dark:text-red-300 text-xs font-bold flex items-center gap-2 animate-fadeIn">
+                  <AlertTriangle size={16} className="shrink-0" />
+                  <span>{downloadError}</span>
+                </div>
+              )}
+
+              {/* Card 1: Direct AAB Bundle Download for Google Play (Requested by User) */}
+              <div className="bg-[var(--bg)] p-3.5 rounded-[16px] border-2 border-[var(--lapis)] shadow-[var(--shadow-sm)] space-y-2 relative overflow-hidden">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-[8px] bg-[var(--teal)] text-white flex items-center justify-center font-bold">
-                      <Download size={18} />
+                    <div className="w-8 h-8 rounded-[8px] bg-[var(--lapis)] text-white flex items-center justify-center font-bold">
+                      <Sparkles size={18} />
                     </div>
                     <div>
-                      <h4 className="text-xs font-black text-[var(--ink)]">
-                        {isRTL ? 'دانلود مستقیم فایل نصبی APK' : 'Download Signed Android APK'}
+                      <h4 className="text-xs font-black text-[var(--ink)] flex items-center gap-1.5">
+                        <span>{isRTL ? 'دانلود مستقیم فایل AAB (مخصوص گوگل پلی)' : 'Download Google Play AAB (.aab)'}</span>
+                        <span className="text-[9px] bg-[var(--lapis-soft)] text-[var(--lapis)] font-black px-1.5 py-0.5 rounded-full">Google Play</span>
                       </h4>
                       <span className="text-[10px] text-[var(--mute)] font-medium">
-                        {isRTL ? 'حجم: ۱.۲ مگابایت • نسخه ۱.۰.۱ • کاملاً آفلاین' : 'Size: 1.2 MB • v1.0.1 • 100% Offline'}
+                        {isRTL ? 'فرمت Android App Bundle (.aab) • حجم ۲.۲ مگابایت • نسخه ۱.۰.۳' : 'Format: Android App Bundle (.aab) • Size: 2.2 MB • v1.0.3'}
                       </span>
                     </div>
                   </div>
-                  <span className="text-[9.5px] font-bold text-[var(--teal)] bg-emerald-50 px-2 py-0.5 rounded-[6px] border border-[var(--teal)]">
-                    {isRTL ? 'آماده نصب ✓' : 'Signed v1-v3 ✓'}
+                  <span className="text-[9.5px] font-bold text-[var(--lapis)] bg-blue-50 dark:bg-blue-950/40 px-2 py-0.5 rounded-[6px] border border-[var(--lapis)]">
+                    {isRTL ? 'آماده آپلود ✓' : 'Play Store Ready ✓'}
                   </span>
                 </div>
 
                 <p className="text-[11px] text-[var(--mute)] leading-relaxed font-medium">
                   {isRTL 
-                    ? 'فایل نصبی استاندارد اندروید، امضا شده با کلید اختصاصی. مناسب برای تست مستقیم روی انواع گوشی‌های اندروید یا انتشار در کافه‌بازار و مایکت.'
-                    : 'Standard Android APK signed with production keystore. Ready for direct installation on any Android phone or alternative app stores.'}
+                    ? 'فایل رسمی باندل اندروید (.aab) جهت بارگذاری مستقیم در پنل Google Play Console (بخش Releases -> Production). دانلود به صورت باینری کامل و بدون خطا انجام می‌شود.'
+                    : 'Official Android App Bundle (.aab) ready for direct upload to Google Play Console under Releases -> Production. Downloads with full binary integrity.'}
                 </p>
 
-                <a
-                  href="./downloads/dor-zaban-v1.0.apk"
-                  download="dor-zaban-v1.0.apk"
-                  onClick={() => sound.playClick()}
-                  className="w-full py-2.5 px-3 bg-[#2347C5] hover:bg-[#1a38a0] text-white rounded-[12px] font-bold text-xs flex items-center justify-center gap-2 shadow-[var(--shadow-sm)] active:translate-y-0.5 transition-all text-center no-underline"
+                <div className="text-[10.5px] text-[var(--mute)] space-y-0.5 font-mono bg-[var(--panel)] p-2 rounded-[10px] border border-[var(--line)]">
+                  <div><strong>Package:</strong> <code className="text-[var(--lapis)]">com.solonovate.dour</code></div>
+                  <div><strong>Version:</strong> 1.0.3 (VersionCode: 10003) • Target SDK: 36</div>
+                </div>
+
+                <button
+                  type="button"
+                  disabled={downloadingFile === 'dor-zaban-v1.0.aab'}
+                  onClick={() => handleDownload('./downloads/dor-zaban-v1.0.aab', 'dor-zaban-v1.0.aab')}
+                  className="w-full py-2.5 px-3 bg-[var(--lapis)] hover:bg-[#1a38a0] text-white rounded-[12px] font-bold text-xs flex items-center justify-center gap-2 shadow-sm active:translate-y-0.5 transition-all text-center cursor-pointer disabled:opacity-75"
                 >
-                  <Download size={16} />
-                  <span>{isRTL ? 'دانلود فایل APK (کلیک کنید)' : 'Download APK (1.2 MB)'}</span>
-                </a>
+                  {downloadingFile === 'dor-zaban-v1.0.aab' ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      <span>{isRTL ? 'در حال دریافت فایل AAB...' : 'Downloading AAB...'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Download size={16} />
+                      <span>{isRTL ? 'دانلود فایل AAB گوگل پلی (۲.۲ مگابایت)' : 'Download AAB File (2.2 MB)'}</span>
+                    </>
+                  )}
+                </button>
               </div>
 
-              {/* Card 2: Google Play Submission Bundle */}
-              <div className="bg-[var(--bg)] p-3.5 rounded-[16px] border border-[var(--line)] space-y-2">
+              {/* Card 2: Direct APK Download for Testing / CafeBazaar / Myket */}
+              <div className="bg-[var(--bg)] p-3.5 rounded-[16px] border border-[var(--line)] shadow-[var(--shadow-sm)] space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-[8px] bg-[var(--saffron)] text-[var(--ink)] flex items-center justify-center font-bold">
-                      <Sparkles size={18} />
+                    <div className="w-8 h-8 rounded-[8px] bg-[var(--turq)] text-white flex items-center justify-center font-bold">
+                      <Download size={18} />
                     </div>
                     <div>
                       <h4 className="text-xs font-black text-[var(--ink)]">
-                        {isRTL ? 'پکیج انتشار در Google Play Console' : 'Google Play Submission Package (ZIP)'}
+                        {isRTL ? 'دانلود مستقیم فایل نصبی APK (تست روی گوشی)' : 'Download Signed Android APK (.apk)'}
                       </h4>
                       <span className="text-[10px] text-[var(--mute)] font-medium">
-                        {isRTL ? 'شامل کلید Keystore، سورس Android Studio، فایل AAB و راهنما' : 'Includes Keystore, Android Studio project, AAB & Guide'}
+                        {isRTL ? 'حجم: ۵.۸ مگابایت • نسخه ۱.۰.۱ • کاملاً آفلاین' : 'Size: 5.8 MB • v1.0.1 • 100% Offline'}
                       </span>
                     </div>
                   </div>
-                  <span className="text-[9.5px] font-bold text-[#2347C5] bg-blue-50 px-2 py-0.5 rounded-[6px] border border-[#2347C5]">
-                    {isRTL ? 'ویژه گوگل‌پلی' : 'Play Store Ready'}
+                  <span className="text-[9.5px] font-bold text-[var(--turq)] bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-[6px] border border-[var(--turq)]">
+                    {isRTL ? 'آماده نصب روی گوشی ✓' : 'Direct Install ✓'}
                   </span>
                 </div>
 
-                {/* Important Notice about AAB vs APK for Google Play */}
-                <div className="p-2.5 bg-[var(--panel)] rounded-[10px] border border-[var(--line)] text-[10.5px] leading-relaxed text-[var(--ink)]">
-                  <span className="font-bold text-[var(--vermilion)]">⚠️ {isRTL ? 'نکته الزامی گوگل پلی:' : 'Google Play Requirement:'} </span>
+                <p className="text-[11px] text-[var(--mute)] leading-relaxed font-medium">
                   {isRTL 
-                    ? 'گوگل پلی برای برنامه‌های جدید فایل APK را قبول نمی‌کند و حتماً فرمت Android App Bundle (.aab) را می‌خواهد. این پکیج شامل سورس کامل اندروید استودیو با دستور یک‌کلیکی ./gradlew bundleRelease برای ساخت فایل AAB است.'
-                    : 'Google Play strictly requires Android App Bundle (.aab) format for new app submissions. This bundle includes the full Android Studio project ready to build the .aab with 1 click.'}
-                </div>
+                    ? 'فایل نصبی مستقیم APK برای نصب روی گوشی‌های واقعی اندروید یا انتشار در کافه‌بازار و مایکت.'
+                    : 'Standard signed APK for direct testing on real Android phones or publishing on local app stores.'}
+                </p>
 
-                <div className="text-[10.5px] text-[var(--mute)] space-y-1 font-medium bg-[var(--panel)] p-2.5 rounded-[10px] border border-[var(--line)]">
-                  <div><strong>Package ID:</strong> <code className="text-[#2347C5]">com.dour.languagegame</code></div>
-                  <div><strong>Version:</strong> 1.0.1 (VersionCode: 10001) • Target SDK: 34 (Android 14)</div>
-                  <div><strong>AssetLinks:</strong> <code className="text-[var(--teal)]">/.well-known/assetlinks.json</code> فعال است</div>
-                </div>
-
-                <a
-                  href="./downloads/dor-zaban-google-play-package.zip"
-                  download="dor-zaban-google-play-package.zip"
-                  onClick={() => sound.playClick()}
-                  className="w-full py-2.5 px-3 bg-[var(--teal)] hover:bg-[#0fa091] text-white rounded-[12px] font-bold text-xs flex items-center justify-center gap-2 shadow-[var(--shadow-sm)] active:translate-y-0.5 transition-all text-center no-underline"
+                <button
+                  type="button"
+                  disabled={downloadingFile === 'dor-zaban-v1.0.apk'}
+                  onClick={() => handleDownload('./downloads/dor-zaban-v1.0.apk', 'dor-zaban-v1.0.apk')}
+                  className="w-full py-2.5 px-3 bg-[var(--turq)] hover:bg-[#0fa091] text-white rounded-[12px] font-bold text-xs flex items-center justify-center gap-2 shadow-[var(--shadow-sm)] active:translate-y-0.5 transition-all text-center cursor-pointer disabled:opacity-75"
                 >
-                  <Download size={16} />
-                  <span>{isRTL ? 'دانلود پکیج کامل گوگل پلی (ZIP - ۲.۳ مگابایت)' : 'Download Full Play Store Package (ZIP - 2.3 MB)'}</span>
-                </a>
+                  {downloadingFile === 'dor-zaban-v1.0.apk' ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      <span>{isRTL ? 'در حال دریافت فایل APK...' : 'Downloading APK...'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Download size={16} />
+                      <span>{isRTL ? 'دانلود فایل APK نصبی (۵.۸ مگابایت)' : 'Download APK File (5.8 MB)'}</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Card 3: Full Google Play Source Bundle (ZIP) */}
+              <div className="bg-[var(--bg)] p-3 rounded-[14px] border border-[var(--line)] space-y-1.5 opacity-90 hover:opacity-100 transition-opacity">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-bold text-[var(--ink)]">
+                    {isRTL ? 'سورس کامل Android Studio و کلید Keystore' : 'Full Android Studio Project & Keystore (ZIP)'}
+                  </h4>
+                  <button
+                    type="button"
+                    disabled={downloadingFile === 'dor-zaban-google-play-package.zip'}
+                    onClick={() => handleDownload('./downloads/dor-zaban-google-play-package.zip', 'dor-zaban-google-play-package.zip')}
+                    className="text-[11px] text-[var(--lapis)] font-bold hover:underline flex items-center gap-1 cursor-pointer disabled:opacity-75"
+                  >
+                    {downloadingFile === 'dor-zaban-google-play-package.zip' ? (
+                      <Loader2 size={13} className="animate-spin" />
+                    ) : (
+                      <Download size={13} />
+                    )}
+                    <span>{isRTL ? 'دانلود سورس (ZIP)' : 'Download ZIP'}</span>
+                  </button>
+                </div>
               </div>
 
             </div>

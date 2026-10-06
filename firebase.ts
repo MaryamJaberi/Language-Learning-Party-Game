@@ -5,6 +5,7 @@ import {
   GoogleAuthProvider, 
   signOut, 
   onAuthStateChanged,
+  deleteUser,
   User 
 } from 'firebase/auth';
 import { 
@@ -12,6 +13,7 @@ import {
   doc, 
   setDoc, 
   getDoc, 
+  deleteDoc,
   collection, 
   getDocs, 
   query, 
@@ -155,5 +157,38 @@ export const fetchSettingsFromCloud = async (userId: string): Promise<GameSettin
   } catch (error) {
     console.error('Error fetching settings from cloud:', error);
     return null;
+  }
+};
+
+// Permanently delete user account and cloud data (Google Play Policy Compliance)
+export const deleteUserAccountAndData = async (userId: string): Promise<boolean> => {
+  try {
+    // 1. Delete all matches in subcollection
+    const matchesCol = collection(db, 'users', userId, 'matches');
+    const matchesSnap = await getDocs(matchesCol);
+    const deletePromises = matchesSnap.docs.map(docSnap => deleteDoc(doc(db, 'users', userId, 'matches', docSnap.id)));
+    await Promise.all(deletePromises);
+
+    // 2. Delete user profile document
+    await deleteDoc(doc(db, 'users', userId));
+
+    // 3. Clear local storage records
+    try {
+      localStorage.removeItem('dour_match_history');
+      localStorage.removeItem('dour_personal_records');
+      localStorage.removeItem('dour_game_settings');
+    } catch (e) {
+      console.warn('Local storage clear notice:', e);
+    }
+
+    // 4. Delete the Firebase Auth User
+    if (auth.currentUser && auth.currentUser.uid === userId) {
+      await deleteUser(auth.currentUser);
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Error deleting account and data:', error);
+    throw error;
   }
 };

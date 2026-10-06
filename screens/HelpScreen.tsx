@@ -3,7 +3,7 @@ import { Language } from '../types';
 import { tUI, isRtlLang } from '../ui';
 import { TeamMascot } from '../components/Mascots';
 import { sound } from '../soundManager';
-import { BookOpen, HelpCircle, Sparkles, Zap, ArrowRight, ArrowLeft, ChevronUp } from 'lucide-react';
+import { BookOpen, HelpCircle, Sparkles, Zap, ArrowRight, ArrowLeft, ChevronUp, ShieldCheck, ExternalLink } from 'lucide-react';
 import { useGoogleScrollBars } from '../useGoogleScrollBars';
 
 interface Props {
@@ -143,6 +143,28 @@ const HelpScreen: React.FC<Props> = ({ language, onClose, initialSection }) => {
             </p>
           </section>
         ))}
+
+        {/* Privacy Policy Card */}
+        <section className="bg-[var(--panel)] p-3.5 rounded-2xl border border-[var(--line)] shadow-xs relative overflow-hidden">
+          <div className="bg-[var(--turq)] inline-flex items-center gap-1.5 font-bold text-white px-2.5 py-1 text-xs rounded-xl shadow-xs mb-2">
+            <ShieldCheck size={13} className="text-white" />
+            <span>{isRTL ? 'حریم خصوصی و امنیت' : 'Privacy & Security'}</span>
+          </div>
+          <p className="text-xs font-medium text-[var(--ink)] leading-relaxed bg-[var(--bg)] p-3 border border-[var(--line)] rounded-xl mb-2.5">
+            {isRTL 
+              ? 'اطلاعات شما با بالاترین استانداردهای امنیتی محافظت می‌شود. هیچ صدای ضبط‌شده‌ای در سرور ذخیره نمی‌شود و اطلاعات با هیچ شخص ثالثی فروخته یا به اشتراک گذاشته نمی‌شود.' 
+              : 'Your data is protected with enterprise security standards. No voice recordings are stored on servers and personal data is never sold or shared.'}
+          </p>
+          <a
+            href="./privacy.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full py-2 px-3 bg-[var(--lapis-soft)] text-[var(--lapis)] hover:bg-[var(--lapis)] hover:text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all text-center"
+          >
+            <span>{isRTL ? 'مشاهده متن کامل سیاست حریم خصوصی' : 'Read Full Privacy Policy'}</span>
+            <ExternalLink size={13} />
+          </a>
+        </section>
       </div>
 
       {/* Floating reveal trigger when bars are hidden */}
