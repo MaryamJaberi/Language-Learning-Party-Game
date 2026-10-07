@@ -12,6 +12,7 @@ import { LanguagePickerModal } from '../components/LanguagePickerModal';
 import { UserProfileModal } from '../components/UserProfileModal';
 import { SoundHeaderButton } from '../components/SoundHeaderButton';
 import ArcadeBackground from '../components/ArcadeBackground';
+import QuickHowToPlayModal from '../components/QuickHowToPlayModal';
 import { 
   Gamepad2, 
   Trophy, 
@@ -80,6 +81,9 @@ const IntroScreen: React.FC<Props> = ({
   const [isHistoryLoginModalOpen, setIsHistoryLoginModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [profileInitialTab, setProfileInitialTab] = useState<'records' | 'leaderboard'>('records');
+  const [isQuickGuideOpen, setIsQuickGuideOpen] = useState(() => {
+    return !localStorage.getItem('dor_intro_guide_seen');
+  });
 
   const currentLangInfo = SUPPORTED_LANGUAGES.find(l => l.code === language) || SUPPORTED_LANGUAGES[0];
   const currentCefr = settings?.cefrLevel || 'all';
@@ -219,7 +223,7 @@ const IntroScreen: React.FC<Props> = ({
             id="header-guide-btn"
             onClick={() => {
               sound.playClick();
-              onOpenHelp?.();
+              setIsQuickGuideOpen(true);
             }}
             aria-label={t.guide || 'راهنما'}
             className="ib"
@@ -279,6 +283,19 @@ const IntroScreen: React.FC<Props> = ({
 
       {/* Interactive Action Buttons */}
       <div className="w-full max-w-sm sm:max-w-md space-y-2.5 my-auto shrink-0">
+        {/* Quick How-To-Play Button */}
+        <button
+          type="button"
+          onClick={() => {
+            sound.playClick();
+            setIsQuickGuideOpen(true);
+          }}
+          className="w-full py-2 px-3 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] border border-[var(--line)] text-xs font-black text-[var(--ink)] flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-98 transition-all"
+        >
+          <BookOpen size={14} className="text-[var(--lapis)]" />
+          <span>{isRTL ? '📖 نحوه بازی دور (خلاصه و مفید)' : '📖 How to Play (Quick Guide)'}</span>
+        </button>
+
         {/* Primary Action: Start Game Button */}
         <div className="flex flex-col gap-2.5">
           <button 
@@ -642,6 +659,13 @@ const IntroScreen: React.FC<Props> = ({
           </div>
         </div>
       )}
+
+      {/* Quick How-To-Play Modal */}
+      <QuickHowToPlayModal
+        isOpen={isQuickGuideOpen}
+        onClose={() => setIsQuickGuideOpen(false)}
+        isRTL={isRTL}
+      />
     </div>
   );
 };

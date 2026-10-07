@@ -16,6 +16,7 @@ import { evaluateAnswer, EvaluationResult } from '../answerEvaluator';
 import { markCardsAsSeen, saveWeakCards, getPersonalRecords, updatePersonalRecords } from '../contentEngine';
 import { feedbackDirector } from '../feedbackDirector';
 import { SoundHeaderButton } from '../components/SoundHeaderButton';
+import ExitConfirmModal from '../components/ExitConfirmModal';
 import { 
   Mic, 
   MicOff, 
@@ -110,6 +111,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
   const [micPermissionError, setMicPermissionError] = useState<string | null>(null);
   const [isRequestingMic, setIsRequestingMic] = useState(false);
   const [actionableError, setActionableError] = useState<string | null>(null);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
   
   // Game progress & evaluation state
   const [evaluation, setEvaluation] = useState<EvaluationResult | null>(null);
@@ -593,7 +595,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
             type="button"
             onClick={() => {
               sound.playClick();
-              onExit();
+              setShowExitConfirm(true);
             }}
             className="ib"
             aria-label={t.exit || 'خروج'}
@@ -1210,6 +1212,18 @@ const SinglePlayerScreen: React.FC<Props> = ({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Exit Confirmation Modal */}
+      {showExitConfirm && (
+        <ExitConfirmModal
+          isRTL={isRTL}
+          onCancel={() => setShowExitConfirm(false)}
+          onConfirm={() => {
+            setShowExitConfirm(false);
+            onExit();
+          }}
+        />
       )}
     </div>
   );

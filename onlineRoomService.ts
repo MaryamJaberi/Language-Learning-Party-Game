@@ -20,7 +20,11 @@ import {
   Team, 
   LanguageCard, 
   PlayedCardRecord, 
-  RoomReaction 
+  RoomReaction,
+  OnlineDuelRoom,
+  OnlineDuelPlayer,
+  Language,
+  CEFRLevel
 } from './types';
 import { buildSessionCardPool } from './cardsData';
 import { getRandomCharacters } from './characters';
@@ -453,3 +457,295 @@ export const syncRoomTimer = async (
     updatedAt: new Date().toISOString()
   });
 };
+
+// ========================================================
+// 1v1 REAL-TIME ONLINE DUEL ACROSS 2 SEPARATE PHONES
+// ========================================================
+
+/**
+ * Host creates a 1v1 Duel Room for play across 2 separate phones
+ */
+export const createOnlineDuelRoom = async (
+  hostName: string,
+  hostAvatar: string,
+  targetLanguage: Language,
+  nativeLanguage: Language,
+  cefrLevel: CEFRLevel,
+  winningScore: number,
+  cards: LanguageCard[],
+  sabotageEnabled: boolean = true
+): Promise<OnlineDuelRoom> => {
+  const roomId = 'duel_' + Math.random().toString(36).substring(2, 9);
+  const roomCode = generateRoomCode();
+  const hostId = getDeviceId();
+
+  const duelRoom: OnlineDuelRoom = {
+    roomId,
+    roomCode,
+    status: 'waiting',
+    targetLanguage,
+    nativeLanguage,
+    cefrLevel,
+    winningScore,
+    sabotageEnabled,
+    player1: {
+      id: hostId,
+      name: hostName || 'Player 1',
+      avatar: hostAvatar || '🦊',
+      score: 0,
+      streak: 0,
+      sabotageUsed: false,
+      isLocked: false
+    },
+    cards,
+    cardIndex: 0,
+    roundWinner: null,
+    reactionDiffMs: null,
+    matchWinner: null,
+    sabotageTarget: null,
+    updatedAt: new Date().toISOString()
+  };
+
+  await setDoc(doc(db, 'rooms', roomId), duelRoom);
+  return duelRoom;
+};
+
+/**
+ * Guest joins the 1v1 Duel Room from their phone using the 4-6 char code
+ */
+export const joinOnlineDuelRoom = async (
+  roomCode: string,
+  guestName: string,
+  guestAvatar: string
+): Promise<{ room: OnlineDuelRoom; myPlayerRole: 'p1' | 'p2' } | { error: string }> => {
+  const cleanCode = roomCode.trim().toUpperCase();
+  const q = query(collection(db, 'rooms'), where('roomCode', '==', cleanCode));
+  const snap = await getDocs(q);
+
+  if (snap.empty) {
+    return { error: 'اتاقی با این کد یافت نشد. لطفاً کد را بررسی کنید.' };
+  }
+
+  const roomDoc = snap.docs[0];
+  const room = roomDoc.data() as OnlineDuelRoom;
+  const myId = getDeviceId();
+
+  if (room.player1.id === myId) {
+    return { room, myPlayerRole: 'p1' };
+  }
+
+  if (room.player2 && room.player2.id === myId) {
+    return { room, myPlayerRole: 'p2' };
+  }
+
+  if (room.player2 && room.player2.id !== myId) {
+    return { error: 'این اتاق تکمیل شده است (ظرفیت دوئل ۲ نفر است).' };
+  }
+
+  const player2: OnlineDuelPlayer = {
+    id: myId,
+    name: guestName || 'Player 2',
+    avatar: guestAvatar || '🦁',
+    score: 0,
+    streak: 0,
+    sabotageUsed: false,
+    isLocked: false
+  };
+
+  const updatedRoom: OnlineDuelRoom = {
+    ...room,
+    player2,
+    status: 'playing',
+    updatedAt: new Date().toISOString()
+  };
+
+  await updateDoc(doc(db, 'rooms', room.roomId), {
+    player2,
+    status: 'playing',
+    updatedAt: new Date().toISOString()
+  });
+
+  return { room: updatedRoom, myPlayerRole: 'p2' };
+};
+
+/**
+ * Submit an answer in real-time in the Online Duel
+ */
+export const submitOnlineDuelAnswer = async (
+  roomId: string,
+  playerRole: 'p1' | 'p2',
+  isCorrect: boolean,
+  reactionMs: number
+) => {
+  const roomRef = doc(db, 'rooms', roomId);
+  const snap = await getDoc(roomRef);
+  if (!snap.exists()) return;
+
+  const room = snap.data() as OnlineDuelRoom;
+  if (room.status !== 'playing' || room.roundWinner || room.matchWinner) return;
+
+  const now = Date.now();
+
+  if (!isCorrect) {
+    // Lock out the failing player for 1400ms
+    const updatePayload: any = { updatedAt: new Date().toISOString() };
+    if (playerRole === 'p1') {
+      updatePayload['player1.isLocked'] = true;
+    } else {
+      updatePayload['player2.isLocked'] = true;
+    }
+    await updateDoc(roomRef, updatePayload);
+    setTimeout(async () => {
+      try {
+        const unlockPayload: any = { updatedAt: new Date().toISOString() };
+        if (playerRole === 'p1') unlockPayload['player1.isLocked'] = false;
+        else unlockPayload['player2.isLocked'] = false;
+        await updateDoc(roomRef, unlockPayload);
+      } catch (e) {}
+    }, 1400);
+    return;
+  }
+
+  // CORRECT ANSWER!
+  const isP1 = playerRole === 'p1';
+  const player = isP1 ? room.player1 : room.player2;
+  if (!player) return;
+
+  const newStreak = player.streak + 1;
+  const addedPoints = newStreak >= 2 ? 2 : 1;
+  const newScore = player.score + addedPoints;
+  const isMatchWon = newScore >= room.winningScore;
+
+  const updatePayload: any = {
+    roundWinner: playerRole,
+    reactionDiffMs: reactionMs,
+    matchWinner: isMatchWon ? playerRole : null,
+    status: isMatchWon ? 'finished' : 'playing',
+    updatedAt: new Date().toISOString()
+  };
+
+  if (isP1) {
+    updatePayload['player1.score'] = newScore;
+    updatePayload['player1.streak'] = newStreak;
+    if (room.player2) updatePayload['player2.streak'] = 0;
+  } else {
+    updatePayload['player2.score'] = newScore;
+    updatePayload['player2.streak'] = newStreak;
+    updatePayload['player1.streak'] = 0;
+  }
+
+  await updateDoc(roomRef, updatePayload);
+
+  // Advance to next card after 1.3s if match not over
+  if (!isMatchWon) {
+    setTimeout(async () => {
+      try {
+        const latestSnap = await getDoc(roomRef);
+        if (latestSnap.exists()) {
+          const latest = latestSnap.data() as OnlineDuelRoom;
+          if (latest.status === 'playing') {
+            await updateDoc(roomRef, {
+              cardIndex: latest.cardIndex + 1,
+              roundWinner: null,
+              reactionDiffMs: null,
+              updatedAt: new Date().toISOString()
+            });
+          }
+        }
+      } catch (e) {}
+    }, 1300);
+  }
+};
+
+/**
+ * Trigger online sabotage shock against opponent
+ */
+export const triggerOnlineDuelSabotage = async (
+  roomId: string,
+  byPlayerRole: 'p1' | 'p2'
+) => {
+  const roomRef = doc(db, 'rooms', roomId);
+  const snap = await getDoc(roomRef);
+  if (!snap.exists()) return;
+
+  const room = snap.data() as OnlineDuelRoom;
+  if (!room.sabotageEnabled) return;
+
+  const targetRole = byPlayerRole === 'p1' ? 'p2' : 'p1';
+  const updatePayload: any = {
+    sabotageTarget: targetRole,
+    updatedAt: new Date().toISOString()
+  };
+
+  if (byPlayerRole === 'p1') {
+    if (room.player1.sabotageUsed) return;
+    updatePayload['player1.sabotageUsed'] = true;
+  } else {
+    if (room.player2?.sabotageUsed) return;
+    updatePayload['player2.sabotageUsed'] = true;
+  }
+
+  await updateDoc(roomRef, updatePayload);
+
+  // Clear dizzy shock after 1200ms
+  setTimeout(async () => {
+    try {
+      await updateDoc(roomRef, {
+        sabotageTarget: null,
+        updatedAt: new Date().toISOString()
+      });
+    } catch (e) {}
+  }, 1200);
+};
+
+/**
+ * Rematch an online duel
+ */
+export const rematchOnlineDuel = async (roomId: string) => {
+  const roomRef = doc(db, 'rooms', roomId);
+  const snap = await getDoc(roomRef);
+  if (!snap.exists()) return;
+
+  await updateDoc(roomRef, {
+    status: 'playing',
+    'player1.score': 0,
+    'player1.streak': 0,
+    'player1.sabotageUsed': false,
+    'player1.isLocked': false,
+    'player2.score': 0,
+    'player2.streak': 0,
+    'player2.sabotageUsed': false,
+    'player2.isLocked': false,
+    cardIndex: 0,
+    roundWinner: null,
+    matchWinner: null,
+    reactionDiffMs: null,
+    sabotageTarget: null,
+    updatedAt: new Date().toISOString()
+  });
+};
+
+/**
+ * Subscribe in real-time to a 1v1 Online Duel Room
+ */
+export const subscribeToOnlineDuelRoom = (
+  roomId: string,
+  onUpdate: (room: OnlineDuelRoom | null) => void,
+  onError?: (err: Error) => void
+) => {
+  const roomRef = doc(db, 'rooms', roomId);
+  return onSnapshot(
+    roomRef,
+    (snapshot) => {
+      if (snapshot.exists()) {
+        onUpdate(snapshot.data() as OnlineDuelRoom);
+      } else {
+        onUpdate(null);
+      }
+    },
+    (error) => {
+      onError?.(error);
+    }
+  );
+};
+

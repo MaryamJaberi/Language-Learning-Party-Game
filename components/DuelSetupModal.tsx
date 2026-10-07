@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Swords, X, Play, RotateCw, Users, Sparkles, Trophy } from 'lucide-react';
+import { Swords, X, Play, RotateCw, Users, Sparkles, Trophy, Smartphone, Wifi, Globe, KeyRound } from 'lucide-react';
 import { Language, CEFRLevel } from '../types';
-import { SUPPORTED_LANGUAGES, PLAYER_AVATARS } from '../constants';
+import { SUPPORTED_LANGUAGES, ARCADE_AVATARS, ARCADE_CHARACTERS } from '../constants';
 import { sound } from '../soundManager';
 
 export interface DuelSettings {
@@ -21,6 +21,7 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   onStartDuel: (settings: DuelSettings) => void;
+  onStartOnlineDuel?: (roomCode?: string) => void;
   currentLanguage: Language;
   uiLanguage?: Language;
   isRTL?: boolean;
@@ -30,6 +31,7 @@ export const DuelSetupModal: React.FC<Props> = ({
   isOpen,
   onClose,
   onStartDuel,
+  onStartOnlineDuel,
   currentLanguage,
   uiLanguage = 'fa',
   isRTL = true
@@ -38,10 +40,14 @@ export const DuelSetupModal: React.FC<Props> = ({
   const defaultP1 = isEn ? 'Player 1 (Blue)' : 'بازیکن ۱ (آبی)';
   const defaultP2 = isEn ? 'Player 2 (Red)' : 'بازیکن ۲ (قرمز)';
 
+  // Device Mode: 'single_phone' (Shared Screen) vs 'two_phones' (Online 2 Phones)
+  const [deviceMode, setDeviceMode] = useState<'single_phone' | 'two_phones'>('single_phone');
+  const [onlineRoomCodeInput, setOnlineRoomCodeInput] = useState<string>('');
+
   const [player1Name, setPlayer1Name] = useState(defaultP1);
-  const [player1Avatar, setPlayer1Avatar] = useState('🦊');
+  const [player1Avatar, setPlayer1Avatar] = useState('🕹️');
   const [player2Name, setPlayer2Name] = useState(defaultP2);
-  const [player2Avatar, setPlayer2Avatar] = useState('🦁');
+  const [player2Avatar, setPlayer2Avatar] = useState('👾');
   const [targetLanguage, setTargetLanguage] = useState<Language>(currentLanguage || 'nl');
   const [cefrLevel, setCefrLevel] = useState<CEFRLevel>('A1');
   const [winningScore, setWinningScore] = useState<number>(5);
@@ -96,7 +102,7 @@ export const DuelSetupModal: React.FC<Props> = ({
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-black text-[var(--ink)]">
-                {isRTL ? 'دوئل سرعتی دونفره روی یک گوشی' : '1v1 Shared-Screen Duel'}
+                {isRTL ? 'دوئل سرعتی دونفره (آرکید)' : '1v1 Fast Reflex Arcade Duel'}
               </h2>
               <span className="text-[11px] font-bold text-[var(--mute)]">
                 {isRTL ? 'هرکی زودتر جواب بده امتیاز رو می‌گیره!' : 'Fastest reflex wins the round!'}
@@ -114,15 +120,98 @@ export const DuelSetupModal: React.FC<Props> = ({
 
         {/* Form Body */}
         <div className="p-4 space-y-4 overflow-y-auto flex-1">
-          {/* Players Card Configuration */}
+          {/* DEVICE MODE SELECTOR (1 Phone vs 2 Phones) */}
+          <div className="bg-[var(--bg)] p-1 rounded-2xl border border-[var(--line)] grid grid-cols-2 gap-1">
+            <button
+              type="button"
+              onClick={() => { sound.playClick(); setDeviceMode('single_phone'); }}
+              className={`py-2 px-2.5 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                deviceMode === 'single_phone'
+                  ? 'bg-[var(--lapis)] text-white shadow-xs'
+                  : 'text-[var(--mute)] hover:text-[var(--ink)]'
+              }`}
+            >
+              <Smartphone size={15} />
+              <span>{isRTL ? '📱 روی یک گوشی' : '📱 On 1 Phone'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => { sound.playClick(); setDeviceMode('two_phones'); }}
+              className={`py-2 px-2.5 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                deviceMode === 'two_phones'
+                  ? 'bg-gradient-to-r from-[#2347C5] to-[#E0533C] text-white shadow-xs'
+                  : 'text-[var(--mute)] hover:text-[var(--ink)]'
+              }`}
+            >
+              <Wifi size={15} />
+              <span>{isRTL ? '📲 روی دو گوشی' : '📲 On 2 Phones'}</span>
+            </button>
+          </div>
+
+          {/* TWO PHONES (ONLINE 1v1 DUEL) SECTION */}
+          {deviceMode === 'two_phones' && (
+            <div className="p-3.5 bg-gradient-to-br from-blue-50/80 to-red-50/80 dark:from-blue-950/30 dark:to-red-950/30 border-2 border-[var(--lapis)]/40 rounded-2xl space-y-3">
+              <div className="flex items-center gap-2">
+                <Globe size={16} className="text-[var(--lapis)]" />
+                <h4 className="text-xs font-black text-[var(--ink)]">
+                  {isRTL ? 'مسابقه زنده دونفره روی دو گوشی جداگانه' : 'Live 1v1 Duel on 2 Separate Phones'}
+                </h4>
+              </div>
+              <p className="text-[11px] text-[var(--mute)] leading-relaxed">
+                {isRTL 
+                  ? 'هر بازیکن روی گوشی خودش بازی می‌کند؛ کارت‌ها و پاسخ‌ها هم‌زمان و زنده در هر دو گوشی همگام می‌شوند!'
+                  : 'Each player plays on their own device. Cards, reflexes, and scores sync in real-time!'}
+              </p>
+
+              <div className="space-y-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playClick();
+                    onClose();
+                    onStartOnlineDuel?.();
+                  }}
+                  className="w-full py-2.5 px-3 bg-[var(--lapis)] hover:bg-[#1a38a0] text-white text-xs font-black rounded-xl flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+                >
+                  <Wifi size={14} />
+                  <span>{isRTL ? '👑 ایجاد اتاق دوئل آنلاین (میزبان)' : '👑 Host Online Duel Room'}</span>
+                </button>
+
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={onlineRoomCodeInput}
+                    onChange={e => setOnlineRoomCodeInput(e.target.value.toUpperCase())}
+                    placeholder={isRTL ? 'کد اتاق حریف (مثلاً D28)' : 'Room Code (e.g. D28)'}
+                    className="flex-1 text-xs font-black px-3 py-2 rounded-xl bg-[var(--panel)] border border-[var(--line)] text-[var(--ink)] outline-none uppercase"
+                  />
+                  <button
+                    type="button"
+                    disabled={!onlineRoomCodeInput.trim()}
+                    onClick={() => {
+                      sound.playClick();
+                      onClose();
+                      onStartOnlineDuel?.(onlineRoomCodeInput.trim());
+                    }}
+                    className="py-2 px-3 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-xs font-black rounded-xl flex items-center justify-center gap-1 cursor-pointer"
+                  >
+                    <KeyRound size={14} />
+                    <span>{isRTL ? 'ورود' : 'Join'}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Players Card Configuration (Used for 1 phone and setup) */}
           <div className="grid grid-cols-2 gap-3">
             {/* Player 1 (Blue) */}
             <div className="p-3 bg-blue-50/60 dark:bg-blue-950/20 border-2 border-[#2347C5]/40 rounded-2xl space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-black text-[#2347C5]">
-                  {isRTL ? 'بازیکن ۱ (پایین)' : 'Player 1 (Bottom)'}
+                  {isRTL ? 'بازیکن ۱ (پایین / آبی)' : 'Player 1 (Bottom / Blue)'}
                 </span>
-                <span className="text-xl">{player1Avatar}</span>
+                <span className="text-xl drop-shadow-sm">{player1Avatar}</span>
               </div>
               <input
                 type="text"
@@ -132,15 +221,20 @@ export const DuelSetupModal: React.FC<Props> = ({
                 className="w-full text-xs font-bold px-2 py-1.5 rounded-xl bg-[var(--panel)] border border-[var(--line)] text-[var(--ink)] outline-none"
                 placeholder={isRTL ? 'نام بازیکن ۱' : 'Player 1'}
               />
-              <div className="flex gap-1 overflow-x-auto py-1">
-                {PLAYER_AVATARS.slice(0, 4).map(av => (
+              <div className="flex gap-1 overflow-x-auto py-1 scrollbar-none">
+                {ARCADE_CHARACTERS.slice(0, 10).map(c => (
                   <button
-                    key={`p1-${av}`}
+                    key={`p1-${c.emoji}`}
                     type="button"
-                    onClick={() => { sound.playClick(); setPlayer1Avatar(av); }}
-                    className={`w-7 h-7 rounded-lg text-sm flex items-center justify-center cursor-pointer transition-transform ${player1Avatar === av ? 'bg-[#2347C5] text-white scale-110' : 'bg-[var(--panel)]'}`}
+                    title={isRTL ? c.nameFa : c.nameEn}
+                    onClick={() => { sound.playClick(); setPlayer1Avatar(c.emoji); }}
+                    className={`w-7 h-7 rounded-lg text-sm flex items-center justify-center cursor-pointer transition-transform ${
+                      player1Avatar === c.emoji 
+                        ? 'bg-[#2347C5] text-white scale-110 shadow-[0_0_8px_rgba(35,71,197,0.5)]' 
+                        : 'bg-[var(--panel)] hover:bg-[var(--bg)]'
+                    }`}
                   >
-                    {av}
+                    {c.emoji}
                   </button>
                 ))}
               </div>
@@ -150,9 +244,9 @@ export const DuelSetupModal: React.FC<Props> = ({
             <div className="p-3 bg-red-50/60 dark:bg-red-950/20 border-2 border-[#E0533C]/40 rounded-2xl space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-black text-[#E0533C]">
-                  {isRTL ? 'بازیکن ۲ (بالا)' : 'Player 2 (Top)'}
+                  {isRTL ? 'بازیکن ۲ (بالا / قرمز)' : 'Player 2 (Top / Red)'}
                 </span>
-                <span className="text-xl">{player2Avatar}</span>
+                <span className="text-xl drop-shadow-sm">{player2Avatar}</span>
               </div>
               <input
                 type="text"
@@ -162,15 +256,20 @@ export const DuelSetupModal: React.FC<Props> = ({
                 className="w-full text-xs font-bold px-2 py-1.5 rounded-xl bg-[var(--panel)] border border-[var(--line)] text-[var(--ink)] outline-none"
                 placeholder={isRTL ? 'نام بازیکن ۲' : 'Player 2'}
               />
-              <div className="flex gap-1 overflow-x-auto py-1">
-                {PLAYER_AVATARS.slice(4, 8).map(av => (
+              <div className="flex gap-1 overflow-x-auto py-1 scrollbar-none">
+                {ARCADE_CHARACTERS.slice(6, 16).map(c => (
                   <button
-                    key={`p2-${av}`}
+                    key={`p2-${c.emoji}`}
                     type="button"
-                    onClick={() => { sound.playClick(); setPlayer2Avatar(av); }}
-                    className={`w-7 h-7 rounded-lg text-sm flex items-center justify-center cursor-pointer transition-transform ${player2Avatar === av ? 'bg-[#E0533C] text-white scale-110' : 'bg-[var(--panel)]'}`}
+                    title={isRTL ? c.nameFa : c.nameEn}
+                    onClick={() => { sound.playClick(); setPlayer2Avatar(c.emoji); }}
+                    className={`w-7 h-7 rounded-lg text-sm flex items-center justify-center cursor-pointer transition-transform ${
+                      player2Avatar === c.emoji 
+                        ? 'bg-[#E0533C] text-white scale-110 shadow-[0_0_8px_rgba(224,83,60,0.5)]' 
+                        : 'bg-[var(--panel)] hover:bg-[var(--bg)]'
+                    }`}
                   >
-                    {av}
+                    {c.emoji}
                   </button>
                 ))}
               </div>
@@ -315,11 +414,28 @@ export const DuelSetupModal: React.FC<Props> = ({
           </button>
           <button
             type="button"
-            onClick={handleStart}
+            onClick={() => {
+              if (deviceMode === 'two_phones') {
+                sound.playClick();
+                onClose();
+                onStartOnlineDuel?.(onlineRoomCodeInput.trim() || undefined);
+              } else {
+                handleStart();
+              }
+            }}
             className="w-2/3 py-3 rounded-xl bg-gradient-to-r from-[#2347C5] to-[#E0533C] text-white text-sm font-black flex items-center justify-center gap-2 shadow-lg active:scale-98 transition-transform cursor-pointer"
           >
-            <Play size={18} fill="currentColor" />
-            <span>{isRTL ? 'شروع دوئل سرعتی ⚔️' : 'Start Duel ⚔️'}</span>
+            {deviceMode === 'two_phones' ? (
+              <>
+                <Wifi size={18} />
+                <span>{isRTL ? 'شروع دوئل روی ۲ گوشی 📲' : 'Start 2-Phones Duel 📲'}</span>
+              </>
+            ) : (
+              <>
+                <Play size={18} fill="currentColor" />
+                <span>{isRTL ? 'شروع دوئل روی ۱ گوشی 📱' : 'Start 1-Phone Duel 📱'}</span>
+              </>
+            )}
           </button>
         </div>
       </div>

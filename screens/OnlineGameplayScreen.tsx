@@ -15,6 +15,7 @@ import {
 } from '../onlineRoomService';
 import ShareScorecardModal from '../components/ShareScorecardModal';
 import { FlagIcon } from '../components/FlagIcon';
+import ExitConfirmModal from '../components/ExitConfirmModal';
 import { 
   Check, 
   X, 
@@ -52,6 +53,7 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
 
   const [room, setRoom] = useState<OnlineRoomState>(initialRoom);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [floatingEmojis, setFloatingEmojis] = useState<Array<{ id: string; emoji: string; sender: string }>>([]);
 
   const isHost = room.hostId === myDeviceId;
@@ -218,9 +220,22 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
           <span>{language === 'fa' ? `راند ${room.currentRound} از ${room.settings.roundsCount || 3}` : `Round ${room.currentRound} of ${room.settings.roundsCount || 3}`}</span>
         </div>
 
-        {/* Room Code */}
-        <div className="bg-[var(--panel)] text-[var(--ink)] px-2.5 py-1.5 rounded-[12px] text-[11px] font-mono font-bold border border-[var(--line)] shadow-[var(--shadow-sm)]">
-          #{room.code}
+        {/* Room Code & Exit Button */}
+        <div className="flex items-center gap-1.5">
+          <div className="bg-[var(--panel)] text-[var(--ink)] px-2.5 py-1.5 rounded-[12px] text-[11px] font-mono font-bold border border-[var(--line)] shadow-[var(--shadow-sm)]">
+            #{room.code}
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              sound.playClick();
+              setShowExitConfirm(true);
+            }}
+            className="w-8 h-8 rounded-xl bg-[var(--panel)] border border-[var(--line)] text-rose-500 hover:bg-rose-500/10 flex items-center justify-center cursor-pointer transition-colors"
+            title={language === 'fa' ? 'خروج از بازی' : 'Exit Game'}
+          >
+            <ArrowLeft size={16} className={isRTL ? 'rotate-180' : ''} />
+          </button>
         </div>
       </div>
 
@@ -283,7 +298,10 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
             </button>
 
             <button
-              onClick={onExit}
+              onClick={() => {
+                sound.playClick();
+                setShowExitConfirm(true);
+              }}
               className="w-full py-2 bg-[var(--bg)] hover:bg-[var(--panel)] text-[var(--ink)] rounded-[12px] font-bold text-xs border border-[var(--line)] shadow-[var(--shadow-sm)] active:translate-y-0.5 transition-all"
             >
               {language === 'fa' ? 'خروج به صفحه اصلی' : 'Exit to Main Menu'}
@@ -448,6 +466,18 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
         playedCards={room.playedCards || []}
         language={language}
       />
+
+      {/* Exit Confirmation Modal */}
+      {showExitConfirm && (
+        <ExitConfirmModal
+          isRTL={isRTL}
+          onCancel={() => setShowExitConfirm(false)}
+          onConfirm={() => {
+            setShowExitConfirm(false);
+            onExit();
+          }}
+        />
+      )}
 
     </div>
   );

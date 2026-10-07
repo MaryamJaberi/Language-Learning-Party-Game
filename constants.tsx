@@ -45,6 +45,35 @@ export const COLORS_MAP: Record<TeamColor, { bg: string, text: string, hex: stri
 
 export const PLAYER_AVATARS = ['🦊', '🦁', '🐼', '🐨', '🐯', '🐰', '🐸', '🐵'];
 
+export interface ArcadeAvatarMeta {
+  emoji: string;
+  nameFa: string;
+  nameEn: string;
+  badgeColor: string;
+  glow: string;
+}
+
+export const ARCADE_CHARACTERS: ArcadeAvatarMeta[] = [
+  { emoji: '🕹️', nameFa: 'دسته آرکید', nameEn: 'Retro Joystick', badgeColor: '#2347C5', glow: 'rgba(35, 71, 197, 0.4)' },
+  { emoji: '👾', nameFa: 'مهاجم فضایی', nameEn: 'Space Invader', badgeColor: '#9333EA', glow: 'rgba(147, 51, 234, 0.4)' },
+  { emoji: '🥷', nameFa: 'نینجا سایبری', nameEn: 'Cyber Ninja', badgeColor: '#E0533C', glow: 'rgba(224, 83, 60, 0.4)' },
+  { emoji: '🤖', nameFa: 'ربات سایبورگ', nameEn: 'Cyborg Bot', badgeColor: '#00F0FF', glow: 'rgba(0, 240, 255, 0.4)' },
+  { emoji: '⚡', nameFa: 'صاعقه نئونی', nameEn: 'Neon Bolt', badgeColor: '#FFE600', glow: 'rgba(255, 230, 0, 0.4)' },
+  { emoji: '🐉', nameFa: 'اژدهای آتشین', nameEn: 'Fire Dragon', badgeColor: '#FF1058', glow: 'rgba(255, 16, 88, 0.4)' },
+  { emoji: '🥊', nameFa: 'مشت‌زن آرکید', nameEn: 'Arcade Brawler', badgeColor: '#F97316', glow: 'rgba(249, 115, 22, 0.4)' },
+  { emoji: '🛸', nameFa: 'سفینه کیهانی', nameEn: 'UFO Explorer', badgeColor: '#12B5A4', glow: 'rgba(18, 181, 164, 0.4)' },
+  { emoji: '👑', nameFa: 'پادشاه پیکسل', nameEn: 'Pixel Monarch', badgeColor: '#F59E0B', glow: 'rgba(245, 158, 11, 0.4)' },
+  { emoji: '🦊', nameFa: 'روباه توربو', nameEn: 'Turbo Fox', badgeColor: '#EA580C', glow: 'rgba(234, 88, 12, 0.4)' },
+  { emoji: '🦁', nameFa: 'شیر طلایی', nameEn: 'Golden Lion', badgeColor: '#EAB308', glow: 'rgba(234, 179, 8, 0.4)' },
+  { emoji: '🐯', nameFa: 'ببر سرعتی', nameEn: 'Speed Tiger', badgeColor: '#D97706', glow: 'rgba(217, 119, 6, 0.4)' },
+  { emoji: '🐼', nameFa: 'پاندای کونگ‌فو', nameEn: 'Kung-Fu Panda', badgeColor: '#64748B', glow: 'rgba(100, 116, 139, 0.4)' },
+  { emoji: '🐰', nameFa: 'خرگوش جت', nameEn: 'Jet Bunny', badgeColor: '#EC4899', glow: 'rgba(236, 72, 153, 0.4)' },
+  { emoji: '🐸', nameFa: 'قورباغه جهنده', nameEn: 'Super Frog', badgeColor: '#22C55E', glow: 'rgba(34, 197, 94, 0.4)' },
+  { emoji: '🐱', nameFa: 'گربه نئون', nameEn: 'Neon Cat', badgeColor: '#A855F7', glow: 'rgba(168, 85, 247, 0.4)' }
+];
+
+export const ARCADE_AVATARS = ARCADE_CHARACTERS.map(c => c.emoji);
+
 export const TEAM_HEX_COLORS: Record<TeamColor, string> = {
   [TeamColor.Blue]: '#2347C5',
   [TeamColor.Red]: '#E0533C',

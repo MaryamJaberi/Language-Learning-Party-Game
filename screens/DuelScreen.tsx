@@ -11,13 +11,17 @@ import {
   ShieldAlert, 
   Check, 
   X as XIcon,
-  Sparkles
+  Sparkles,
+  AlertTriangle,
+  HelpCircle,
+  Gamepad2
 } from 'lucide-react';
 import { LanguageCard, Language } from '../types';
 import { DuelSettings } from '../components/DuelSetupModal';
 import { sound } from '../soundManager';
 import { feedbackDirector } from '../feedbackDirector';
 import { FlagIcon } from '../components/FlagIcon';
+import { generateChallengingReflexOptions } from '../utils/testQuestionEngine';
 
 interface Props {
   settings: DuelSettings;
@@ -58,6 +62,12 @@ export const DuelScreen: React.FC<Props> = ({
   // Orientation toggle (face-to-face 180° vs side-by-side 0°)
   const [isFaceToFace, setIsFaceToFace] = useState<boolean>(settings.faceToFaceRotation);
 
+  // Modals
+  const [showExitModal, setShowExitModal] = useState<boolean>(false);
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    return !localStorage.getItem('dor_duel_tutorial_seen');
+  });
+
   // Timing
   const cardStartTimeRef = useRef<number>(Date.now());
   const roundTimerRef = useRef<number | null>(null);
@@ -67,24 +77,11 @@ export const DuelScreen: React.FC<Props> = ({
     return cards[cardIndex % cards.length];
   }, [cards, cardIndex]);
 
-  // Generate 4 randomized reflex options for current card
+  // Generate 4 pedagogically challenging, grammatically parallel reflex options
   const roundChoices = useMemo(() => {
     if (!currentCard || cards.length === 0) return [];
-    const correct = currentCard.targetText;
-    const others = cards.filter(c => c.id !== currentCard.id);
-    const shuffledOthers = [...others].sort(() => Math.random() - 0.5);
-    const distractors = new Set<string>();
-
-    for (const c of shuffledOthers) {
-      if (c.targetText && c.targetText !== correct && !distractors.has(c.targetText)) {
-        distractors.add(c.targetText);
-        if (distractors.size === 3) break;
-      }
-    }
-
-    const all = [correct, ...Array.from(distractors)];
-    return all.sort(() => Math.random() - 0.5);
-  }, [currentCard?.id, cards]);
+    return generateChallengingReflexOptions(currentCard, cards, settings.targetLanguage);
+  }, [currentCard?.id, cards, settings.targetLanguage]);
 
   // Reset round on card change
   useEffect(() => {
@@ -340,7 +337,7 @@ export const DuelScreen: React.FC<Props> = ({
             </h2>
           </div>
 
-          {/* Right Action: Sound & Exit */}
+          {/* Right Action: Sound, Guide & Exit */}
           <div className="flex items-center gap-1">
             <button
               type="button"
@@ -355,9 +352,23 @@ export const DuelScreen: React.FC<Props> = ({
             </button>
             <button
               type="button"
-              onClick={onExit}
-              className="w-7 h-7 rounded-lg bg-[var(--bg)] hover:bg-rose-100 text-rose-500 flex items-center justify-center transition-colors cursor-pointer"
-              title={isRTL ? 'خروج' : 'Exit'}
+              onClick={() => {
+                sound.playClick();
+                setShowTutorial(true);
+              }}
+              className="w-7 h-7 rounded-lg bg-[var(--bg)] hover:bg-[var(--line)] text-[var(--mute)] hover:text-[var(--ink)] flex items-center justify-center transition-colors cursor-pointer"
+              title={isRTL ? 'راهنمای سریع بازی' : 'Quick Guide'}
+            >
+              <HelpCircle size={14} />
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                sound.playClick();
+                setShowExitModal(true);
+              }}
+              className="w-7 h-7 rounded-lg bg-[var(--bg)] hover:bg-rose-100 dark:hover:bg-rose-950/40 text-rose-500 flex items-center justify-center transition-colors cursor-pointer"
+              title={isRTL ? 'خروج از بازی' : 'Exit'}
             >
               <ArrowLeft size={14} />
             </button>
@@ -498,12 +509,161 @@ export const DuelScreen: React.FC<Props> = ({
 
               <button
                 type="button"
-                onClick={onExit}
+                onClick={() => {
+                  sound.playClick();
+                  setShowExitModal(true);
+                }}
                 className="w-full py-2.5 rounded-xl border border-[var(--line)] text-xs font-bold text-[var(--mute)] hover:text-[var(--ink)] cursor-pointer"
               >
                 {isRTL ? 'بازگشت به منوی اصلی' : 'Back to Menu'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* 5. EXIT CONFIRMATION MODAL ("مطمئنی؟") */}
+      {/* ======================================================== */}
+      {showExitModal && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-fade-in font-ui"
+          dir={isRTL ? 'rtl' : 'ltr'}
+          onClick={() => setShowExitModal(false)}
+        >
+          <div 
+            className="w-full max-w-xs bg-[var(--panel)] border-2 border-rose-500/40 rounded-[24px] p-5 shadow-2xl text-[var(--ink)] space-y-4 text-center"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="w-12 h-12 rounded-2xl bg-rose-500/15 text-rose-500 flex items-center justify-center mx-auto">
+              <AlertTriangle size={26} />
+            </div>
+
+            <div>
+              <h3 className="text-base font-black text-[var(--ink)]">
+                {isRTL ? 'مطمئنی می‌خوای از مسابقه خارج بشی؟' : 'Are you sure you want to quit?'}
+              </h3>
+              <p className="text-xs text-[var(--mute)] mt-1.5 leading-relaxed">
+                {isRTL 
+                  ? 'اگر الان خارج بشی، امتیازات این دوئل لغو خواهد شد.' 
+                  : 'If you leave now, the current match progress will be lost.'}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playClick();
+                  setShowExitModal(false);
+                }}
+                className="py-2.5 rounded-xl border border-[var(--line)] text-xs font-bold hover:bg-[var(--bg)] cursor-pointer"
+              >
+                {isRTL ? 'ادامه بازی' : 'Keep Playing'}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playElimination();
+                  setShowExitModal(false);
+                  onExit();
+                }}
+                className="py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-xs font-black shadow-md cursor-pointer"
+              >
+                {isRTL ? 'بله، خروج' : 'Yes, Quit'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* 6. BRIEF HOW-TO-PLAY GUIDE OVERLAY ("خلاصه و مختصر و مفید") */}
+      {/* ======================================================== */}
+      {showTutorial && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-xs animate-fade-in font-ui"
+          dir={isRTL ? 'rtl' : 'ltr'}
+          onClick={() => {
+            localStorage.setItem('dor_duel_tutorial_seen', 'true');
+            setShowTutorial(false);
+          }}
+        >
+          <div 
+            className="w-full max-w-sm bg-[var(--panel)] border-2 border-[var(--turq)]/50 rounded-[24px] p-5 shadow-2xl text-[var(--ink)] space-y-4 text-start relative overflow-hidden"
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center gap-2.5 pb-2 border-b border-[var(--line)]">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#2347C5] to-[#E0533C] text-white flex items-center justify-center shadow-md shrink-0">
+                <Gamepad2 size={22} className="animate-pulse" />
+              </div>
+              <div>
+                <h3 className="text-sm sm:text-base font-black text-[var(--ink)]">
+                  {isRTL ? 'راهنمای سریع دوئل سرعتی ⚔️' : '1v1 Duel Quick Guide ⚔️'}
+                </h3>
+                <span className="text-[11px] font-bold text-[var(--mute)]">
+                  {isRTL ? 'خلاصه و مفید در ۴ نکته' : 'Concise 4-step rules'}
+                </span>
+              </div>
+            </div>
+
+            {/* Concise Bullet Rules */}
+            <div className="space-y-2.5 text-xs">
+              <div className="flex items-start gap-2.5 p-2 rounded-xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-500/20">
+                <span className="text-lg shrink-0">⚡</span>
+                <div>
+                  <strong className="text-[var(--ink)] block">{isRTL ? 'سریع‌ترین رفلکس:' : 'Fastest Reflex Wins:'}</strong>
+                  <span className="text-[var(--mute)] text-[11px]">
+                    {isRTL ? 'هر دو به کلمه یا جمله وسط صفحه نگاه کنید؛ هرکس زودتر گزینه درست رو لمس کنه امتیاز می‌گیره!' : 'Look at the center word together; tap the correct match first to claim the point!'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-2.5 p-2 rounded-xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-500/20">
+                <span className="text-lg shrink-0">❄️</span>
+                <div>
+                  <strong className="text-[var(--ink)] block">{isRTL ? 'جریمه خطای لمس:' : 'Mistake Penalty:'}</strong>
+                  <span className="text-[var(--mute)] text-[11px]">
+                    {isRTL ? 'لمس گزینه غلط باعث قفل و فریز شدن ۱.۴ ثانیه‌ای شما میشه، پس با دقت انتخاب کن!' : 'Wrong tap locks you out for 1.4 seconds. Accuracy matters!'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-2.5 p-2 rounded-xl bg-purple-50/50 dark:bg-purple-950/20 border border-purple-500/20">
+                <span className="text-lg shrink-0">🌀</span>
+                <div>
+                  <strong className="text-[var(--ink)] block">{isRTL ? 'شوک خرابکاری:' : 'Sabotage Shock:'}</strong>
+                  <span className="text-[var(--mute)] text-[11px]">
+                    {isRTL ? 'یک‌بار در بازی می‌تونی با دکمه شوک، صفحه حریف رو موقتاً گیج و تار کنی!' : 'Use your shock power-up once per match to blur the opponent’s view!'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-2.5 p-2 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-500/20">
+                <span className="text-lg shrink-0">🏆</span>
+                <div>
+                  <strong className="text-[var(--ink)] block">{isRTL ? 'هدف مسابقه:' : 'Victory Goal:'}</strong>
+                  <span className="text-[var(--mute)] text-[11px]">
+                    {isRTL ? `هرکس زودتر به امتیاز ${settings.winningScore} برسه برنده کاپ طلایی دوئل میشه!` : `First player to reach ${settings.winningScore} points wins the championship!`}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Action CTA */}
+            <button
+              type="button"
+              onClick={() => {
+                sound.playStartGame();
+                localStorage.setItem('dor_duel_tutorial_seen', 'true');
+                setShowTutorial(false);
+              }}
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-[#2347C5] to-[#E0533C] text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg active:scale-98 transition-transform cursor-pointer"
+            >
+              <Check size={16} />
+              <span>{isRTL ? 'فهمیدم! بزن بریم مسابقه 🚀' : "Got it! Let's Duel 🚀"}</span>
+            </button>
           </div>
         </div>
       )}

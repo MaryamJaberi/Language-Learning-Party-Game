@@ -11,7 +11,8 @@ import {
   PlayedCardRecord, 
   OnlineRoomState,
   SinglePlayerSettings,
-  SinglePlayerSessionReport
+  SinglePlayerSessionReport,
+  OnlineDuelRoom
 } from './types';
 import { buildSessionCardPool } from './cardsData';
 import { getUniqueCardsForSession } from './contentEngine';
@@ -29,6 +30,8 @@ import OnlineGameplayScreen from './screens/OnlineGameplayScreen';
 import SinglePlayerScreen from './screens/SinglePlayerScreen';
 import SinglePlayerReportScreen from './screens/SinglePlayerReportScreen';
 import DuelScreen from './screens/DuelScreen';
+import OnlineDuelScreen from './screens/OnlineDuelScreen';
+import ArcadeBackground from './components/ArcadeBackground';
 import SinglePlayerSetupModal from './components/SinglePlayerSetupModal';
 import { DuelSetupModal, DuelSettings } from './components/DuelSetupModal';
 import LeaderboardModal from './components/LeaderboardModal';
@@ -37,6 +40,7 @@ import FeedbackOverlay from './components/FeedbackOverlay';
 import { feedbackDirector } from './feedbackDirector';
 import { sound } from './soundManager';
 import { auth, saveMatchToCloud, syncSettingsToCloud } from './firebase';
+import { createOnlineDuelRoom, joinOnlineDuelRoom } from './onlineRoomService';
 import { onAuthStateChanged } from 'firebase/auth';
 import { getRandomCharacters } from './characters';
 import { isRtlLang } from './ui';
@@ -68,7 +72,7 @@ const DEFAULT_SETTINGS: GameSettings = {
   powerCardsEnabled: true
 };
 
-type ScreenType = 'INTRO' | 'LANGUAGE_SELECT' | 'CATEGORIES' | 'SETUP' | 'PLAYERS' | 'SEATING_CONFIRM' | 'GAME' | 'HISTORY' | 'HELP' | 'ONLINE_LOBBY' | 'ONLINE_GAME' | 'SINGLE_PLAYER' | 'SINGLE_REPORT' | 'DUEL_GAME';
+type ScreenType = 'INTRO' | 'LANGUAGE_SELECT' | 'CATEGORIES' | 'SETUP' | 'PLAYERS' | 'SEATING_CONFIRM' | 'GAME' | 'HISTORY' | 'HELP' | 'ONLINE_LOBBY' | 'ONLINE_GAME' | 'SINGLE_PLAYER' | 'SINGLE_REPORT' | 'DUEL_GAME' | 'ONLINE_DUEL';
 
 const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('INTRO');
@@ -81,6 +85,10 @@ const App: React.FC = () => {
   const [isDuelSetupOpen, setIsDuelSetupOpen] = useState(false);
   const [duelSettings, setDuelSettings] = useState<DuelSettings | null>(null);
   const [duelCards, setDuelCards] = useState<LanguageCard[]>([]);
+
+  // Online 2-Phones Duel State
+  const [onlineDuelRoom, setOnlineDuelRoom] = useState<OnlineDuelRoom | null>(null);
+  const [onlineDuelMyRole, setOnlineDuelMyRole] = useState<'p1' | 'p2'>('p1');
 
   // Single-Player State
   const [isSingleSetupOpen, setIsSingleSetupOpen] = useState(false);
@@ -583,6 +591,62 @@ const App: React.FC = () => {
     setCurrentScreen('DUEL_GAME');
   };
 
+  const handleStartOnlineDuel = async (roomCode?: string) => {
+    try {
+      if (roomCode) {
+        const joinResult = await joinOnlineDuelRoom(
+          roomCode,
+          settings.playerName || (isRtlLang(settings.language) ? 'بازیکن ۲' : 'Player 2'),
+          '👾'
+        );
+        if ('error' in joinResult) {
+          alert(joinResult.error);
+          return;
+        }
+        setOnlineDuelRoom(joinResult.room);
+        setOnlineDuelMyRole(joinResult.myPlayerRole);
+        setCurrentScreen('ONLINE_DUEL');
+      } else {
+        const targetLang = settings.targetLanguages?.[0] || 'nl';
+        const effectiveNative = isRtlLang(settings.language) ? 'fa' : 'en';
+        const cards = getUniqueCardsForSession(
+          targetLang,
+          effectiveNative,
+          'A1',
+          settings.selectedCategories,
+          30,
+          false
+        );
+        const pool = cards.length > 0 ? cards : buildSessionCardPool({
+          ...settings,
+          targetLanguages: [targetLang],
+          nativeLanguage: effectiveNative,
+          cefrLevel: 'A1',
+          difficulty: 'all',
+          roundsCount: 3,
+          roundDuration: 60
+        });
+
+        const room = await createOnlineDuelRoom(
+          settings.playerName || (isRtlLang(settings.language) ? 'میزبان' : 'Host'),
+          '🕹️',
+          targetLang,
+          effectiveNative,
+          'A1',
+          5,
+          pool,
+          true
+        );
+        setOnlineDuelRoom(room);
+        setOnlineDuelMyRole('p1');
+        setCurrentScreen('ONLINE_DUEL');
+      }
+    } catch (e: any) {
+      console.error('Error starting online duel:', e);
+      alert(isRtlLang(settings.language) ? 'خطا در برقراری ارتباط با سرور آنلاین' : 'Failed to connect to online room');
+    }
+  };
+
   return (
     <main 
       className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto flex flex-col relative bg-[var(--bg)] text-[var(--ink)] min-h-0 flex-1 min-h-screen overflow-x-hidden overflow-y-auto" 
@@ -596,6 +660,9 @@ const App: React.FC = () => {
     >
       {/* Decoupled Game Feel & Juice Feedback Overlay (Layers 1, 2, 3) */}
       <FeedbackOverlay />
+
+      {/* Global Retro Arcade Ambient Background */}
+      <ArcadeBackground />
       
       {/* Offline PWA Connectivity Indicator */}
       <OfflineIndicator language={settings.language} />
@@ -783,6 +850,20 @@ const App: React.FC = () => {
         />
       )}
 
+      {/* 13. TWO-PLAYER REAL-TIME ONLINE DUEL ACROSS 2 PHONES */}
+      {currentScreen === 'ONLINE_DUEL' && onlineDuelRoom && (
+        <OnlineDuelScreen
+          initialRoom={onlineDuelRoom}
+          myRole={onlineDuelMyRole}
+          uiLanguage={settings.language}
+          onExit={() => {
+            setOnlineDuelRoom(null);
+            setCurrentScreen('INTRO');
+          }}
+          isRTL={isRtlLang(settings.language)}
+        />
+      )}
+
       {/* MODALS */}
       <SinglePlayerSetupModal
         isOpen={isSingleSetupOpen}
@@ -796,6 +877,7 @@ const App: React.FC = () => {
         isOpen={isDuelSetupOpen}
         onClose={() => setIsDuelSetupOpen(false)}
         onStartDuel={handleStartDuel}
+        onStartOnlineDuel={handleStartOnlineDuel}
         currentLanguage={settings.targetLanguages?.[0] || 'nl'}
         uiLanguage={settings.language}
         isRTL={isRtlLang(settings.language)}

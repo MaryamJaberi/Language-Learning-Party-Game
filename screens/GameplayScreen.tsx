@@ -11,6 +11,7 @@ import { TeamMascot } from '../components/Mascots';
 import { sound } from '../soundManager';
 import { feedbackDirector } from '../feedbackDirector';
 import { FlagIcon } from '../components/FlagIcon';
+import ExitConfirmModal from '../components/ExitConfirmModal';
 import { 
   Zap, 
   Volume2, 
@@ -125,6 +126,7 @@ const GameplayScreen: React.FC<Props> = ({
   const [cardStartTime, setCardStartTime] = useState<number>(Date.now());
   const [powerCardsUsed, setPowerCardsUsed] = useState<string[]>([]);
   const [bonusNotification, setBonusNotification] = useState<string | null>(null);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
 
   const vibrate = (ms: number | number[]) => {
     if ('vibrate' in navigator) {
@@ -968,7 +970,7 @@ const GameplayScreen: React.FC<Props> = ({
                 type="button"
                 onClick={() => {
                   sound.playClick();
-                  onExit();
+                  setShowExitConfirm(true);
                 }}
                 className="pixel-btn pixel-btn-dark flex-1 py-2.5 text-xs font-black uppercase"
               >
@@ -977,6 +979,18 @@ const GameplayScreen: React.FC<Props> = ({
             </div>
           </div>
         </Modal>
+      )}
+
+      {/* EXIT CONFIRMATION MODAL */}
+      {showExitConfirm && (
+        <ExitConfirmModal
+          isRTL={isRTL}
+          onCancel={() => setShowExitConfirm(false)}
+          onConfirm={() => {
+            setShowExitConfirm(false);
+            onExit();
+          }}
+        />
       )}
 
       {/* TEAM ELIMINATED MODAL */}

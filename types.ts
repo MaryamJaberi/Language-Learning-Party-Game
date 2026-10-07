@@ -267,3 +267,34 @@ export interface PersonalRecords {
   totalRoundsCompleted: number;
   lastUpdated: string;
 }
+
+export interface OnlineDuelPlayer {
+  id: string;
+  name: string;
+  avatar: string;
+  score: number;
+  streak: number;
+  sabotageUsed: boolean;
+  isLocked: boolean;
+  lastAnswerAt?: number;
+}
+
+export interface OnlineDuelRoom {
+  roomId: string;
+  roomCode: string;
+  status: 'waiting' | 'playing' | 'finished';
+  targetLanguage: Language;
+  nativeLanguage: Language;
+  cefrLevel: CEFRLevel;
+  winningScore: number;
+  sabotageEnabled: boolean;
+  player1: OnlineDuelPlayer;
+  player2?: OnlineDuelPlayer;
+  cards: LanguageCard[];
+  cardIndex: number;
+  roundWinner?: 'p1' | 'p2' | null;
+  reactionDiffMs?: number | null;
+  matchWinner?: 'p1' | 'p2' | null;
+  sabotageTarget?: 'p1' | 'p2' | null;
+  updatedAt?: string;
+}
