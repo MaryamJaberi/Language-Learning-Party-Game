@@ -479,7 +479,7 @@ const GameplayScreen: React.FC<Props> = ({
   }
 
   return (
-    <div className="w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto h-full min-h-0 flex-1 flex flex-col justify-between p-2.5 sm:p-4 select-none relative overflow-y-auto overscroll-contain bg-[var(--bg)] text-[var(--ink)] font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full min-h-0 flex-1 flex flex-col justify-between p-2.5 sm:p-3.5 select-none relative overflow-y-auto overscroll-contain bg-[var(--bg)] text-[var(--ink)] font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
       
       {/* Turn Change Flash Banner */}
       {turnFlash && (

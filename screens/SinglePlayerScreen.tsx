@@ -605,7 +605,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
 
   return (
     <div 
-      className="app w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto min-h-screen px-3 sm:px-5 pb-12 font-ui relative flex flex-col justify-between"
+      className="app w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto min-h-screen px-3 sm:px-4 pb-12 font-ui relative flex flex-col justify-between"
       dir={isRTL ? 'rtl' : 'ltr'}
     >
       {/* 1. Header (sticky, always visible matching HTML design) */}

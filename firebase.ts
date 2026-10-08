@@ -161,18 +161,16 @@ export const fetchSettingsFromCloud = async (userId: string): Promise<GameSettin
 };
 
 // Permanently delete user account and cloud data (Google Play Policy Compliance)
-export const deleteUserAccountAndData = async (userId?: string): Promise<boolean> => {
-  const targetUid = userId || auth.currentUser?.uid;
-  if (!targetUid) return false;
+export const deleteUserAccountAndData = async (userId: string): Promise<boolean> => {
   try {
     // 1. Delete all matches in subcollection
-    const matchesCol = collection(db, 'users', targetUid, 'matches');
+    const matchesCol = collection(db, 'users', userId, 'matches');
     const matchesSnap = await getDocs(matchesCol);
-    const deletePromises = matchesSnap.docs.map(docSnap => deleteDoc(doc(db, 'users', targetUid, 'matches', docSnap.id)));
+    const deletePromises = matchesSnap.docs.map(docSnap => deleteDoc(doc(db, 'users', userId, 'matches', docSnap.id)));
     await Promise.all(deletePromises);
 
     // 2. Delete user profile document
-    await deleteDoc(doc(db, 'users', targetUid));
+    await deleteDoc(doc(db, 'users', userId));
 
     // 3. Clear local storage records
     try {
@@ -184,7 +182,7 @@ export const deleteUserAccountAndData = async (userId?: string): Promise<boolean
     }
 
     // 4. Delete the Firebase Auth User
-    if (auth.currentUser && auth.currentUser.uid === targetUid) {
+    if (auth.currentUser && auth.currentUser.uid === userId) {
       await deleteUser(auth.currentUser);
     }
 

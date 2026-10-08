@@ -109,20 +109,18 @@ export const DuelScreen: React.FC<Props> = ({
       setReactionDiffMs(elapsedMs);
       sound.playCorrect();
 
-      const challengeBonus = currentCard.isChallenge ? (currentCard.challengeBonus || 1) : 0;
-
       if (player === 'p1') {
         const streak = p1Streak + 1;
         setP1Streak(streak);
         setP2Streak(0);
-        const added = (streak >= 2 ? 2 : 1) + challengeBonus;
+        const added = streak >= 2 ? 2 : 1;
         const newScore = p1Score + added;
         setP1Score(newScore);
 
         feedbackDirector.triggerScoreGained({
           points: added * 10,
           combo: streak,
-          label: currentCard.isChallenge ? `${settings.player1Name} ⭐ چالش` : `${settings.player1Name} ⚡`
+          label: `${settings.player1Name} ⚡`
         });
 
         if (newScore >= settings.winningScore) {
@@ -134,14 +132,14 @@ export const DuelScreen: React.FC<Props> = ({
         const streak = p2Streak + 1;
         setP2Streak(streak);
         setP1Streak(0);
-        const added = (streak >= 2 ? 2 : 1) + challengeBonus;
+        const added = streak >= 2 ? 2 : 1;
         const newScore = p2Score + added;
         setP2Score(newScore);
 
         feedbackDirector.triggerScoreGained({
           points: added * 10,
           combo: streak,
-          label: currentCard.isChallenge ? `${settings.player2Name} ⭐ چالش` : `${settings.player2Name} ⚡`
+          label: `${settings.player2Name} ⚡`
         });
 
         if (newScore >= settings.winningScore) {
@@ -157,30 +155,15 @@ export const DuelScreen: React.FC<Props> = ({
       }, 1300);
 
     } else {
-      // WRONG answer
+      // WRONG: Lockout penalty for this player!
       sound.playElimination();
       recordMistake(currentCard, selectedText, 'duel');
-
-      // If Challenge card: ZERO penalty, no harsh lockout, repeat later!
-      if (currentCard.isChallenge) {
-        cards.push({ ...currentCard });
-        // Slight tap feedback without long freeze
-        if (player === 'p1') {
-          setIsLockedP1(true);
-          setTimeout(() => setIsLockedP1(false), 500);
-        } else {
-          setIsLockedP2(true);
-          setTimeout(() => setIsLockedP2(false), 500);
-        }
+      if (player === 'p1') {
+        setIsLockedP1(true);
+        setTimeout(() => setIsLockedP1(false), 1400);
       } else {
-        // Normal card lockout penalty
-        if (player === 'p1') {
-          setIsLockedP1(true);
-          setTimeout(() => setIsLockedP1(false), 1400);
-        } else {
-          setIsLockedP2(true);
-          setTimeout(() => setIsLockedP2(false), 1400);
-        }
+        setIsLockedP2(true);
+        setTimeout(() => setIsLockedP2(false), 1400);
       }
     }
   };
@@ -348,11 +331,6 @@ export const DuelScreen: React.FC<Props> = ({
               <span className="text-[9px] font-black bg-[var(--turq)]/15 text-[var(--turq)] px-1.5 py-0.2 rounded-md">
                 {currentCard.cefrLevel}
               </span>
-              {currentCard.isChallenge && (
-                <span className="text-[9px] font-black bg-amber-500/20 text-amber-600 border border-amber-500/30 px-1.5 py-0.2 rounded-md animate-pulse">
-                  ⭐ {isRTL ? 'چالش (+امتیاز)' : 'Challenge'}
-                </span>
-              )}
             </div>
             <h2 className="text-base sm:text-lg font-black text-[var(--ink)] leading-tight tracking-tight">
               {currentCard.translation}
