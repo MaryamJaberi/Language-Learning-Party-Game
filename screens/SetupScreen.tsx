@@ -497,7 +497,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
   ];
 
   return (
-    <div className="app w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto min-h-full px-3 sm:px-4 pb-28 font-ui relative" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="app w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto min-h-full px-3 sm:px-5 pb-28 font-ui relative" dir={isRTL ? 'rtl' : 'ltr'}>
       
       {/* HEADER: Back Button, Title & Circular Action Buttons (M3 Top App Bar) */}
       <header className="sticky top-0 z-20 bg-[var(--bg)]/90 backdrop-blur-md flex items-center justify-between py-3 px-1 border-b border-[var(--line)]/50">

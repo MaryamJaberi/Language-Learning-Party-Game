@@ -52,6 +52,8 @@ export interface LanguageCard {
   points: number; // 1, 2, 3, or 4
   isGolden?: boolean; // Golden card (2x points bonus!)
   isReverse?: boolean; // Reverse translation flag
+  isChallenge?: boolean; // Challenge card (30% learning curve, bonus points, 0 penalty on fail/skip)
+  challengeBonus?: number; // Extra bonus points for answering challenge card
 }
 
 export interface Player {

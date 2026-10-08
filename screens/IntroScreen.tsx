@@ -178,12 +178,12 @@ const IntroScreen: React.FC<Props> = ({
   };
 
   return (
-    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full min-h-0 flex-1 flex flex-col items-center justify-between p-3.5 sm:p-4 text-center select-none overflow-y-auto overscroll-contain bg-[var(--bg)] text-[var(--ink)] font-ui relative" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto h-full min-h-0 flex-1 flex flex-col items-center justify-between p-3.5 sm:p-5 text-center select-none overflow-y-auto overscroll-contain bg-[var(--bg)] text-[var(--ink)] font-ui relative" dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Retro Arcade Ambient Background (Exclusive to Intro Page) */}
       <ArcadeBackground />
       
       {/* Top Bar: Material 3 Top App Bar (44x44dp Touch Targets, Symmetrical Spacing) */}
-      <div className="w-full max-w-sm sm:max-w-md flex items-center justify-between px-1 mb-3 shrink-0 gap-3">
+      <div className="w-full max-w-md sm:max-w-xl flex items-center justify-between px-1 mb-3 shrink-0 gap-3">
         {/* Language button: Flag icon (M3 Outlined/Tonal Circular Action) */}
         <button
           id="header-language-btn"
@@ -299,8 +299,8 @@ const IntroScreen: React.FC<Props> = ({
             <span>{t.startNewGame || t.newGame || (isRTL ? 'شروع بازی جدید' : 'Start New Game')}</span>
           </button>
 
-          {/* Secondary Game Modes: Single player, 2-Player Duel & Online room (M3 3-Card Grid) */}
-          <div className="grid grid-cols-3 gap-2.5">
+          {/* Secondary Game Modes: Single player, Leitner Box, 2-Player Duel & Online room (M3 Responsive Grid) */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
             {/* 1. Single Player Mode */}
             <button
               type="button"
@@ -322,7 +322,28 @@ const IntroScreen: React.FC<Props> = ({
               </span>
             </button>
 
-            {/* 2. Two-Player 1v1 Shared Screen Duel Mode */}
+            {/* 2. Leitner Box (5-Box Spaced Repetition) */}
+            <button
+              type="button"
+              id="intro-leitner-btn"
+              onClick={() => {
+                sound.playClick();
+                onOpenLeitner?.();
+              }}
+              className="p-3 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs active:scale-[0.97] transition-all flex flex-col items-center justify-center gap-1.5 font-ui cursor-pointer group"
+            >
+              <div className="w-9 h-9 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Box size={18} />
+              </div>
+              <span className="font-extrabold text-xs text-[var(--ink)] leading-tight truncate w-full">
+                {isRTL ? 'جعبه لایتنر 📦' : 'Leitner Box 📦'}
+              </span>
+              <span className="text-[10px] text-amber-600 dark:text-amber-400 font-semibold leading-none truncate w-full">
+                {isRTL ? 'مرور ۵ خانه' : 'Spaced Memory'}
+              </span>
+            </button>
+
+            {/* 3. Two-Player 1v1 Shared Screen Duel Mode */}
             <button
               type="button"
               id="intro-duel-btn"
@@ -343,7 +364,7 @@ const IntroScreen: React.FC<Props> = ({
               </span>
             </button>
 
-            {/* 3. Online Multiplayer Mode */}
+            {/* 4. Online Multiplayer Mode */}
             <button
               type="button"
               id="intro-online-btn"

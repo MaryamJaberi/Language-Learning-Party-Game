@@ -230,6 +230,10 @@ export function getDueLeitnerCards(state: LeitnerState): Array<{
         break;
     }
 
+    if (item.card.isChallenge) {
+      entertainingQuestion = `⭐ [کارت چالش +یادگیری - بدون جریمه]: ` + entertainingQuestion;
+    }
+
     return {
       item,
       entertainingQuestion,
@@ -272,7 +276,16 @@ export function recordLeitnerCardReview(
     saveLeitnerState(state);
     return { promotedToBox: nextBox + 1, isMastered: nextBox === 4 };
   } else {
-    // Demote back to Box 0 (House 1)
+    // If it's a Challenge Card (30% learning curve), 0 negative penalty!
+    // It is protected from dropping to Box 0 and repeats without demotion.
+    if (item.card?.isChallenge) {
+      // Kept in current box with 0 penalty, scheduled for immediate/today repetition
+      item.nextReviewDate = today;
+      saveLeitnerState(state);
+      return { promotedToBox: item.boxIndex + 1, isMastered: false, isChallengeProtected: true } as any;
+    }
+
+    // Normal Mastery card: Demote back to Box 0 (House 1) for spaced re-learning
     item.boxIndex = 0;
     item.nextReviewDate = addDaysToDateString(today, 1);
     saveLeitnerState(state);

@@ -108,6 +108,8 @@ export const LeitnerScreen: React.FC<Props> = ({
 
     if (selectedText) setSelectedAnswer(selectedText);
 
+    const isChallengeCard = !!currentDueItem.item.card?.isChallenge;
+
     if (isCorrect) {
       sound.playCorrect();
       setReviewResult('success');
@@ -134,7 +136,7 @@ export const LeitnerScreen: React.FC<Props> = ({
 
   return (
     <div 
-      className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto min-h-screen px-3 sm:px-4 py-4 font-ui flex flex-col justify-between select-none relative"
+      className="w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto min-h-screen px-3 sm:px-5 py-4 font-ui flex flex-col justify-between select-none relative"
       dir={isRTL ? 'rtl' : 'ltr'}
     >
       {/* Top Header */}
@@ -270,6 +272,18 @@ export const LeitnerScreen: React.FC<Props> = ({
                   {isRTL ? `کارت ${activeCardIndex + 1} از ${dueQuestions.length}` : `Card ${activeCardIndex + 1} of ${dueQuestions.length}`}
                 </span>
               </div>
+
+              {/* Challenge Card Indicator Banner (70/30 Pedagogical Rule - zero penalty, bonus points) */}
+              {currentDueItem.item.card.isChallenge && (
+                <div className="p-2 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-700 dark:text-amber-400 text-xs font-black flex items-center justify-center gap-1.5 animate-pulse">
+                  <Sparkles size={14} className="shrink-0" />
+                  <span>
+                    {isRTL 
+                      ? '⭐ کارت چالش یادگیری: امتیاز تشویقی دارد و در صورت اشتباه بدون افت خانه تکرار می‌شود!' 
+                      : '⭐ Learning Challenge Card: Bonus points, zero penalty on mistakes, repeats for mastery!'}
+                  </span>
+                </div>
+              )}
 
               {/* Entertaining Alternative Question Prompt */}
               <div className="p-2.5 bg-[var(--bg)] rounded-xl border border-[var(--line)] text-xs font-black text-[var(--lapis)]">

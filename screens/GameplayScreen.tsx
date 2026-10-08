@@ -12,6 +12,7 @@ import { sound } from '../soundManager';
 import { feedbackDirector } from '../feedbackDirector';
 import { FlagIcon } from '../components/FlagIcon';
 import ExitConfirmModal from '../components/ExitConfirmModal';
+import { recordMistake } from '../mistakeReviewService';
 import { 
   Zap, 
   Volume2, 
@@ -70,6 +71,7 @@ interface Props {
   onOpenHelp?: () => void;
   playedCards?: PlayedCardRecord[];
   setPlayedCards?: React.Dispatch<React.SetStateAction<PlayedCardRecord[]>>;
+  onRequeueCard?: (card: LanguageCard) => void;
 }
 
 const GameplayScreen: React.FC<Props> = ({ 
@@ -95,7 +97,8 @@ const GameplayScreen: React.FC<Props> = ({
   onExit, 
   onOpenHelp,
   playedCards = [],
-  setPlayedCards
+  setPlayedCards,
+  onRequeueCard
 }) => {
   const language = settings.language;
   const t = TRANSLATIONS[language] || TRANSLATIONS.fa;
@@ -298,10 +301,17 @@ const GameplayScreen: React.FC<Props> = ({
     const isSpeedBonus = timeSpent < 6;
     let basePoints = currentCard?.points || 1;
     if (currentCard?.isGolden) basePoints *= 2;
+    if (currentCard?.isChallenge) basePoints += (currentCard.challengeBonus || 2);
     if (isSpeedBonus) basePoints += 1;
 
     // Bonus notification banner
-    if (currentCard?.isGolden || isSpeedBonus || streakCount >= 2) {
+    if (currentCard?.isChallenge) {
+      const note = isRTL 
+        ? '⭐ آفرین! پاسخ عالی به کارت چالش (+۲ امتیاز تشویقی)' 
+        : '⭐ Great job! Challenge card answered (+2 Bonus PTS)';
+      setBonusNotification(note);
+      setTimeout(() => setBonusNotification(null), 2000);
+    } else if (currentCard?.isGolden || isSpeedBonus || streakCount >= 2) {
       const note = currentCard?.isGolden 
         ? '🌟 کارت طلایی! (۲ برابر امتیاز)' 
         : isSpeedBonus ? '⚡ پاداش سرعت! (+۱ امتیاز)' : `🔥 کمبو ${streakCount + 1}!`;
@@ -363,6 +373,24 @@ const GameplayScreen: React.FC<Props> = ({
 
     const activePlayer = players[activePlayerIndex];
     setStreakCount(0);
+
+    if (currentCard) {
+      if (currentCard.isChallenge) {
+        const note = isRTL 
+          ? '🛡️ کارت چالش بدون امتیاز منفی رد شد! (برای یادگیری و تکرار ذخیره شد)' 
+          : '🛡️ Challenge card skipped with 0 penalty! (Saved for review)';
+        setBonusNotification(note);
+        setTimeout(() => setBonusNotification(null), 2500);
+      }
+
+      // Re-queue card to repeat later so users master it!
+      if (onRequeueCard) {
+        onRequeueCard(currentCard);
+      }
+
+      // Record in mistake bank for review
+      recordMistake(currentCard, '(رد شده / کارت چالش)', 'party');
+    }
 
     if (currentCard && setPlayedCards) {
       setPlayedCards(prev => [
@@ -451,7 +479,7 @@ const GameplayScreen: React.FC<Props> = ({
   }
 
   return (
-    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full min-h-0 flex-1 flex flex-col justify-between p-2.5 sm:p-3.5 select-none relative overflow-y-auto overscroll-contain bg-[var(--bg)] text-[var(--ink)] font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto h-full min-h-0 flex-1 flex flex-col justify-between p-2.5 sm:p-4 select-none relative overflow-y-auto overscroll-contain bg-[var(--bg)] text-[var(--ink)] font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
       
       {/* Turn Change Flash Banner */}
       {turnFlash && (
@@ -617,6 +645,19 @@ const GameplayScreen: React.FC<Props> = ({
             </div>
 
           </div>
+
+          {/* 70/30 Pedagogical Rule: Challenge Card Badge (Bonus pts, No penalty on skip/fail) */}
+          {currentCard?.isChallenge && (
+            <div className="w-full my-1 px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-400/50 text-amber-800 dark:text-amber-200 text-xs font-bold flex items-center justify-between shrink-0 shadow-xs">
+              <div className="flex items-center gap-1.5">
+                <Sparkles size={14} className="text-amber-500 shrink-0" />
+                <span>{isRTL ? '⭐ کارت چالش (+یادگیری)' : '⭐ Challenge Card (+Learning)'}</span>
+              </div>
+              <span className="text-[10px] text-emerald-700 dark:text-emerald-300 font-semibold">
+                {isRTL ? '۲+ امتیاز تشویقی • بدون جریمه' : '+2 Bonus • No Penalty'}
+              </span>
+            </div>
+          )}
 
           {/* Center Card Content Area - Clean, Focused, High Legibility */}
           <div className="flex-1 flex flex-col items-center justify-center py-1 text-center font-ui">

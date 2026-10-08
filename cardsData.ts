@@ -1224,8 +1224,48 @@ export function buildSessionCardPool(
       roundIdx++;
     }
 
-    return interleaved.length > 0 ? interleaved : [...transformedPool].sort(() => Math.random() - 0.5);
+    const finalCards = interleaved.length > 0 ? interleaved : [...transformedPool].sort(() => Math.random() - 0.5);
+    return tagPedagogicalRatio(finalCards, cefrLevel);
   }
 
-  return [...transformedPool].sort(() => Math.random() - 0.5);
+  const finalCards = [...transformedPool].sort(() => Math.random() - 0.5);
+  return tagPedagogicalRatio(finalCards, cefrLevel);
 }
+
+/**
+ * Enforces the 70/30 Pedagogical Ratio:
+ * - At least 70% of cards are Mastery level (matching chosen CEFR level).
+ * - Up to 30% (around 25-28%) are Challenge Cards (isChallenge: true, challengeBonus: 2).
+ * - Correct answer awards +2 bonus points; skips/fails have 0 negative points (no penalty!).
+ */
+export function tagPedagogicalRatio(cards: LanguageCard[], targetLevel: CEFRLevel = 'A1'): LanguageCard[] {
+  if (!cards || cards.length === 0) return cards;
+
+  // Strict pedagogical ratio: challenge cards are <= 30% of total
+  const challengeCount = Math.max(1, Math.min(Math.floor(cards.length * 0.28), Math.ceil(cards.length * 0.30)));
+
+  // Identify cards that are candidates for challenge (higher difficulty or next level)
+  const candidateScores = cards.map((c, index) => {
+    let score = 0;
+    if (c.difficulty === 'hard') score += 4;
+    else if (c.difficulty === 'medium') score += 2;
+    if (c.points >= 3) score += 3;
+    if (targetLevel !== 'all' && c.cefrLevel !== targetLevel) score += 5;
+    // Slight jitter to prevent deterministic choice
+    score += (index % 5) * 0.5;
+    return { id: c.id, score };
+  });
+
+  candidateScores.sort((a, b) => b.score - a.score);
+  const challengeIdSet = new Set(candidateScores.slice(0, challengeCount).map(c => c.id));
+
+  return cards.map(card => {
+    const isChal = challengeIdSet.has(card.id);
+    return {
+      ...card,
+      isChallenge: isChal,
+      challengeBonus: isChal ? 2 : undefined
+    };
+  });
+}
+

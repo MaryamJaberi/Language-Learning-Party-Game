@@ -1,5 +1,5 @@
 import { LanguageCard, Language, CEFRLevel, LeaderboardEntry, WeakCardItem, PersonalRecords } from './types';
-import { CURATED_LANGUAGE_CARDS, CURATED_EN_TRANSLATIONS } from './cardsData';
+import { CURATED_LANGUAGE_CARDS, CURATED_EN_TRANSLATIONS, tagPedagogicalRatio } from './cardsData';
 import { cardsFromPhraseBank } from './phraseBank';
 import { getC1CardsForSession } from './c1SentencesData';
 import { buildCardsFromConcepts, UNIVERSAL_CONCEPTS, getPromptForCard } from './multiLangDictionary';
@@ -363,8 +363,9 @@ export function getUniqueCardsForSession(
     }
   }
 
-  // Shuffle final selection
-  return finalSelection.sort(() => Math.random() - 0.5);
+  // Shuffle final selection and apply 70/30 Pedagogical Ratio
+  const shuffled = finalSelection.sort(() => Math.random() - 0.5);
+  return tagPedagogicalRatio(shuffled, cefrLevel);
 }
 
 /**

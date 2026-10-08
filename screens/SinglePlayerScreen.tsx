@@ -99,7 +99,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
   const t = tUI(uiLanguage);
   const isRTL = isRtlLang(uiLanguage);
 
-  const [cards] = useState<LanguageCard[]>(initialCards);
+  const [cards, setCards] = useState<LanguageCard[]>(initialCards);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [settings, setSettings] = useState<SinglePlayerSettings>(initialSettings);
   
@@ -436,7 +436,8 @@ const SinglePlayerScreen: React.FC<Props> = ({
     if (evalResult.isCorrect) {
       sound.playCorrect();
       recordMistakeSuccess(currentCard.id);
-      const points = evalResult.pointsAwarded;
+      const challengeBonus = currentCard.isChallenge ? (currentCard.challengeBonus || 2) : 0;
+      const points = evalResult.pointsAwarded + challengeBonus;
       const newScore = totalScore + points;
       setTotalScore(newScore);
       const newStreak = streak + 1;
@@ -448,7 +449,9 @@ const SinglePlayerScreen: React.FC<Props> = ({
       feedbackDirector.triggerScoreGained({
         points,
         combo: newStreak,
-        label: newStreak > 1 ? `+${points} ×${newStreak}` : `+${points} PTS`
+        label: currentCard.isChallenge 
+          ? `+${points} ⭐ چالش` 
+          : newStreak > 1 ? `+${points} ×${newStreak}` : `+${points} PTS`
       });
 
       // Record fastest answer time for personal records
@@ -520,6 +523,9 @@ const SinglePlayerScreen: React.FC<Props> = ({
         aiFeedback: 'Card skipped'
       };
       setResults(prev => [...prev, resEntry]);
+
+      // Re-queue missed card to repeat later so user masters it (70/30 Pedagogical Rule)
+      setCards(prev => [...prev, { ...currentCard }]);
     }
 
     if (currentIndex + 1 < cards.length) {
@@ -599,7 +605,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
 
   return (
     <div 
-      className="app w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto min-h-screen px-3 sm:px-4 pb-12 font-ui relative flex flex-col justify-between"
+      className="app w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto min-h-screen px-3 sm:px-5 pb-12 font-ui relative flex flex-col justify-between"
       dir={isRTL ? 'rtl' : 'ltr'}
     >
       {/* 1. Header (sticky, always visible matching HTML design) */}
@@ -752,6 +758,19 @@ const SinglePlayerScreen: React.FC<Props> = ({
             <Volume2 size={16} />
           </button>
         </div>
+
+        {/* 70/30 Pedagogical Rule: Challenge Card Banner */}
+        {currentCard.isChallenge && (
+          <div className="mb-2 px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-400/50 text-amber-800 dark:text-amber-200 text-xs font-bold flex items-center justify-between shrink-0 shadow-xs">
+            <div className="flex items-center gap-1.5">
+              <Sparkles size={14} className="text-amber-500 shrink-0" />
+              <span>{isRTL ? '⭐ کارت چالش (+یادگیری)' : '⭐ Challenge Card (+Learning)'}</span>
+            </div>
+            <span className="text-[10px] text-emerald-700 dark:text-emerald-300 font-semibold">
+              {isRTL ? '۲+ امتیاز تشویقی • بدون کسر امتیاز' : '+2 Bonus • No Penalty'}
+            </span>
+          </div>
+        )}
 
         {/* Center Card Content Area */}
         <div className="flex-1 flex flex-col items-center justify-center py-2">

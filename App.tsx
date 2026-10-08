@@ -31,6 +31,7 @@ import SinglePlayerScreen from './screens/SinglePlayerScreen';
 import SinglePlayerReportScreen from './screens/SinglePlayerReportScreen';
 import DuelScreen from './screens/DuelScreen';
 import OnlineDuelScreen from './screens/OnlineDuelScreen';
+import { LeitnerScreen } from './screens/LeitnerScreen';
 import ArcadeBackground from './components/ArcadeBackground';
 import SinglePlayerSetupModal from './components/SinglePlayerSetupModal';
 import { DuelSetupModal, DuelSettings } from './components/DuelSetupModal';
@@ -346,6 +347,13 @@ const App: React.FC = () => {
       return currentPtr + 1;
     });
   }, [sessionCardPool]);
+
+  /**
+   * Re-queue missed card so it repeats for players to master it (70/30 Pedagogical Rule)
+   */
+  const handleRequeueCard = useCallback((card: LanguageCard) => {
+    setSessionCardPool(prev => [...prev, card]);
+  }, []);
 
   /**
    * Prepares Teams, Seating, and Multi-Language Card Pool, then shows SEATING_CONFIRM
@@ -666,7 +674,7 @@ const App: React.FC = () => {
 
   return (
     <main 
-      className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto flex flex-col relative bg-[var(--bg)] text-[var(--ink)] min-h-0 flex-1 min-h-screen overflow-x-hidden overflow-y-auto" 
+      className="w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-4xl mx-auto flex flex-col relative bg-[var(--bg)] text-[var(--ink)] min-h-0 flex-1 min-h-screen overflow-x-hidden overflow-y-auto" 
       style={{ 
         height: '100%', 
         maxHeight: '100dvh',
@@ -695,6 +703,7 @@ const App: React.FC = () => {
           onOpenSinglePlayer={handleOpenSinglePlayer}
           onOpenDuel={handleOpenDuel}
           onOpenOnline={() => setCurrentScreen('ONLINE_LOBBY')}
+          onOpenLeitner={() => setCurrentScreen('LEITNER')}
           onOpenHistory={() => setCurrentScreen('HISTORY')}
           onOpenHelp={() => openHelp('intro')}
         />
@@ -810,6 +819,7 @@ const App: React.FC = () => {
           onOpenHelp={() => openHelp('rules')}
           playedCards={playedCards}
           setPlayedCards={setPlayedCards}
+          onRequeueCard={handleRequeueCard}
         />
       )}
 
@@ -877,6 +887,15 @@ const App: React.FC = () => {
             setOnlineDuelRoom(null);
             setCurrentScreen('INTRO');
           }}
+          isRTL={isRtlLang(settings.language)}
+        />
+      )}
+
+      {/* 14. 5-BOX LEITNER SPACED REPETITION SCREEN */}
+      {currentScreen === 'LEITNER' && (
+        <LeitnerScreen
+          language={settings.language}
+          onExit={() => setCurrentScreen('INTRO')}
           isRTL={isRtlLang(settings.language)}
         />
       )}
