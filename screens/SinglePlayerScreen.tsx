@@ -14,9 +14,11 @@ import { FlagIcon } from '../components/FlagIcon';
 import { SUPPORTED_LANGUAGES } from '../constants';
 import { evaluateAnswer, EvaluationResult } from '../answerEvaluator';
 import { markCardsAsSeen, saveWeakCards, getPersonalRecords, updatePersonalRecords } from '../contentEngine';
+import { recordMistake, recordMistakeSuccess } from '../mistakeReviewService';
 import { feedbackDirector } from '../feedbackDirector';
 import { SoundHeaderButton } from '../components/SoundHeaderButton';
 import ExitConfirmModal from '../components/ExitConfirmModal';
+import { generateChallengingReflexOptions } from '../utils/testQuestionEngine';
 import { 
   Mic, 
   MicOff, 
@@ -195,6 +197,15 @@ const SinglePlayerScreen: React.FC<Props> = ({
     sound.playClick();
     setUserInput(prev => prev + letter);
   };
+
+  // 4 Smart multiple-choice options powered by pedagogical test question engine
+  const quickQuizOptions = useMemo(() => {
+    if (!currentCard) return [];
+    const targetLang = settings.displayMode === 'translate_to_native'
+      ? (currentCard.nativeLanguage || 'fa')
+      : (currentCard.targetLanguage || 'nl');
+    return generateChallengingReflexOptions(currentCard, cards, targetLang);
+  }, [currentCard, cards, settings.displayMode]);
 
   // Initialize Speech Recognition
   useEffect(() => {
@@ -424,6 +435,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
 
     if (evalResult.isCorrect) {
       sound.playCorrect();
+      recordMistakeSuccess(currentCard.id);
       const points = evalResult.pointsAwarded;
       const newScore = totalScore + points;
       setTotalScore(newScore);
@@ -475,6 +487,8 @@ const SinglePlayerScreen: React.FC<Props> = ({
       sound.playPass();
       setStreak(0);
       setAttempts(prev => prev + 1);
+      // Persist mistake into Mistake Bank for review
+      recordMistake(currentCard, answer, 'single_player');
     }
   };
 
@@ -1073,6 +1087,27 @@ const SinglePlayerScreen: React.FC<Props> = ({
           </div>
         )}
         
+        {/* Quick Quiz 4 Options from testQuestionEngine */}
+        {quickQuizOptions.length > 0 && !evaluation && (
+          <div className="space-y-1.5 my-1.5">
+            <div className="text-[11px] font-bold text-[var(--mute)] text-center">
+              {isRTL ? 'یا پاسخ را مستقیماً از ۴ گزینه زیر لمس کنید:' : 'Or tap an answer directly from the 4 options below:'}
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {quickQuizOptions.map((opt, oIdx) => (
+                <button
+                  key={`quick-opt-${oIdx}-${opt}`}
+                  type="button"
+                  onClick={() => submitAnswer(opt)}
+                  className="p-2.5 rounded-xl bg-[var(--panel)] hover:bg-[var(--lapis-soft)] border border-[var(--line)] hover:border-[var(--lapis)] text-xs sm:text-sm font-bold text-[var(--ink)] text-center transition-all active:scale-95 cursor-pointer shadow-xs"
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Large Speaking Mic Button */}
         {speechSupported ? (
           <div>

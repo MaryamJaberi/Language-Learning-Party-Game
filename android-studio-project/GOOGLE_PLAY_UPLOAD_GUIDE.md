@@ -22,6 +22,9 @@
    - **Privacy Policy**: آدرس صفحه قوانین و حریم خصوصی را قرار دهید (یا از فایل‌های آماده استفاده کنید).
    - **App Access**: All functionality is available without special access.
    - **Ads**: No, my app does not contain ads.
+   - **Advertising ID (شناسه تبلیغاتی گوگل - الزامی اندروید ۱۳ به بالا)**:
+     - به سوال «Does your app use advertising ID?» پاسخ **No** دهید.
+     - برنامه «دور: زبان» هیچ‌گونه تبلیغاتی ندارد و دسترسی AD_ID در فایل مانیفست به طور صریح غیرفعال و مسدود شده است (`tools:node="remove"`).
    - **Content rating**: به سوالات پاسخ دهید (بازی کلمات خانوادگی = بدون خشونت و برای همه سنین).
    - **Target audience**: مناسب برای سنین مختلف (Everyone).
    - **Select an app category**: Game -> Word / Educational.

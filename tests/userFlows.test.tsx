@@ -195,6 +195,12 @@ describe('Complete End-to-End User Flow Tests', () => {
     const exitBtn = screen.getByRole('button', { name: /خروج/i });
     fireEvent.click(exitBtn);
 
+    // Confirm exit if modal appears
+    const confirmExitBtn = screen.queryByRole('button', { name: /بله، خروج/i });
+    if (confirmExitBtn) {
+      fireEvent.click(confirmExitBtn);
+    }
+
     // Should be back on Intro
     expect(screen.getByText('شروع بازی جدید')).toBeInTheDocument();
   });

@@ -87,15 +87,16 @@ const HelpScreen: React.FC<Props> = ({ language, onClose, initialSection }) => {
         }`}
       >
         <div className="p-3 bg-[var(--panel)] border-b border-[var(--line)] flex items-center justify-between text-[var(--ink)] shadow-xs">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-[var(--bg)] border border-[var(--line)] flex items-center justify-center text-[var(--lapis)] shadow-xs">
-              <BookOpen size={16} />
+          <div className="flex items-center gap-2.5">
+            <div className="w-10 h-10 rounded-full bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center shadow-xs">
+              <BookOpen size={18} />
             </div>
             <h2 className="text-base sm:text-lg font-black font-display leading-tight">{help.title || t?.guide || 'راهنما'}</h2>
           </div>
           <button 
+            type="button"
             onClick={handleClose} 
-            className="w-8 h-8 flex items-center justify-center bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] font-bold rounded-xl active:scale-95 shadow-xs transition-all"
+            className="w-10 h-10 flex items-center justify-center bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 text-[var(--ink)] border border-[var(--line)] font-bold rounded-full active:scale-95 shadow-xs transition-all cursor-pointer"
             aria-label="Close"
           >
             ✕

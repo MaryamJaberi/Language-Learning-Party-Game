@@ -22,6 +22,7 @@ import { sound } from '../soundManager';
 import { feedbackDirector } from '../feedbackDirector';
 import { FlagIcon } from '../components/FlagIcon';
 import { generateChallengingReflexOptions } from '../utils/testQuestionEngine';
+import { recordMistake } from '../mistakeReviewService';
 
 interface Props {
   settings: DuelSettings;
@@ -64,9 +65,7 @@ export const DuelScreen: React.FC<Props> = ({
 
   // Modals
   const [showExitModal, setShowExitModal] = useState<boolean>(false);
-  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
-    return !localStorage.getItem('dor_duel_tutorial_seen');
-  });
+  const [showTutorial, setShowTutorial] = useState<boolean>(false);
 
   // Timing
   const cardStartTimeRef = useRef<number>(Date.now());
@@ -158,6 +157,7 @@ export const DuelScreen: React.FC<Props> = ({
     } else {
       // WRONG: Lockout penalty for this player!
       sound.playElimination();
+      recordMistake(currentCard, selectedText, 'duel');
       if (player === 'p1') {
         setIsLockedP1(true);
         setTimeout(() => setIsLockedP1(false), 1400);

@@ -298,3 +298,40 @@ export interface OnlineDuelRoom {
   sabotageTarget?: 'p1' | 'p2' | null;
   updatedAt?: string;
 }
+
+export interface MistakeRecord {
+  id: string;
+  cardId: string;
+  card: LanguageCard;
+  userWrongAnswer: string;
+  correctAnswer: string;
+  mode: 'single_player' | 'duel' | 'online_duel' | 'party' | 'leitner';
+  timestamp: string;
+  mistakeCount: number;
+  reviewedCount: number;
+  mastered: boolean;
+}
+
+export interface LeitnerCardItem {
+  id: string;
+  cardId: string;
+  card: LanguageCard;
+  boxIndex: number; // 0 to 4 representing Boxes 1 to 5
+  dateAdded: string;
+  lastReviewedDate: string; // YYYY-MM-DD
+  nextReviewDate: string;   // YYYY-MM-DD
+  reviewHistory: Array<{ date: string; success: boolean }>;
+}
+
+export interface LeitnerState {
+  targetLanguage: Language;
+  nativeLanguage: Language;
+  cefrLevel: CEFRLevel;
+  cards: LeitnerCardItem[];
+  lastVisitDate: string; // YYYY-MM-DD
+  consecutiveStreak: number;
+  totalCardsMastered: number;
+  notificationsEnabled: boolean;
+  preferredReminderHour: number; // e.g. 20 (8:00 PM)
+  missedDayWarningShown?: boolean;
+}

@@ -38,13 +38,14 @@
   --on-lapis: #0E1530;
 }
 
-/* User design system components */
+/* User design system components - Google Material Design 3 (m3.material.io) */
 .panel {
   background: var(--panel);
-  border-radius: 18px;
-  padding: 12px 14px;
+  border-radius: 24px;
+  padding: 16px 18px;
   margin-top: 12px;
   border: 1px solid var(--line);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
 }
 
 .lab {
@@ -418,19 +419,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
   border: 0;
-  border-radius: 16px;
+  border-radius: 9999px;
   background: var(--lapis);
   color: var(--on-lapis);
   font: inherit;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 900;
-  padding: 15px;
+  padding: 15px 24px;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(35, 71, 197, 0.35);
-  transition: transform 0.08s ease, filter 0.15s ease;
+  box-shadow: 0 4px 14px rgba(35, 71, 197, 0.28);
+  transition: transform 0.08s ease, filter 0.15s ease, box-shadow 0.15s ease;
 }
 .start-btn:active {
   transform: scale(0.98);
@@ -940,3 +941,13 @@ body {
 .pb-safe {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
+
+/* Material Design 3 Scrollbar Utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

@@ -491,7 +491,7 @@ const GameplayScreen: React.FC<Props> = ({
           </span>
         </div>
 
-        {/* Control Actions (Sound, Guide, Pause) */}
+        {/* Control Actions (Sound, Guide, Pause) - M3 Icon Buttons */}
         <div className="flex items-center gap-1.5">
           <button 
             aria-label="Toggle Seating Circle"
@@ -500,11 +500,11 @@ const GameplayScreen: React.FC<Props> = ({
               sound.playClick();
               setShowSeatingCircle(prev => !prev);
             }}
-            className={`w-8 h-8 rounded-xl border border-[var(--line)] flex items-center justify-center transition-all active:scale-95 shadow-xs ${
-              showSeatingCircle ? 'bg-[var(--turq)] text-white border-[var(--turq)]' : 'bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)]'
+            className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[var(--line)] flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer ${
+              showSeatingCircle ? 'bg-[var(--turq)] text-white border-[var(--turq)]' : 'bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 text-[var(--ink)]'
             }`}
           >
-            <Users size={14} />
+            <Users size={15} />
           </button>
 
           <button 
@@ -526,16 +526,16 @@ const GameplayScreen: React.FC<Props> = ({
               visibility: 'visible',
               display: 'inline-flex'
             }}
-            className={`w-8 h-8 rounded-xl border flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer select-none ${
+            className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full border flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer select-none ${
               settings.soundEnabled === false
                 ? '!bg-rose-500 !text-white !border-2 !border-rose-600 dark:!bg-rose-600 shadow-rose-500/20 shadow-md ring-2 ring-rose-400/30'
-                : 'bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border-[var(--line)]'
+                : 'bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 text-[var(--ink)] border-[var(--line)]'
             }`}
           >
             {settings.soundEnabled !== false ? (
-              <Volume2 size={15} className="text-[var(--ink)] shrink-0" strokeWidth={2} />
+              <Volume2 size={16} className="text-[var(--ink)] shrink-0" strokeWidth={2} />
             ) : (
-              <VolumeX size={15} className="!text-white shrink-0 stroke-white" strokeWidth={2.5} style={{ color: '#ffffff', stroke: '#ffffff', display: 'block' }} />
+              <VolumeX size={16} className="!text-white shrink-0 stroke-white" strokeWidth={2.5} style={{ color: '#ffffff', stroke: '#ffffff', display: 'block' }} />
             )}
           </button>
 
@@ -545,9 +545,9 @@ const GameplayScreen: React.FC<Props> = ({
               sound.playClick();
               onOpenHelp?.();
             }}
-            className="w-8 h-8 rounded-xl border border-[var(--line)] bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] flex items-center justify-center transition-all active:scale-95 shadow-xs"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[var(--line)] bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 text-[var(--ink)] flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer"
           >
-            <HelpCircle size={14} />
+            <HelpCircle size={16} />
           </button>
 
           <button 
@@ -556,9 +556,9 @@ const GameplayScreen: React.FC<Props> = ({
               sound.playClick();
               setGameStatus(GameStatus.Paused);
             }}
-            className="w-8 h-8 rounded-xl border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 flex items-center justify-center transition-all active:scale-95 shadow-xs"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/30 text-rose-600 dark:text-rose-400 hover:bg-red-100 flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer"
           >
-            <Pause size={14} />
+            <Pause size={16} />
           </button>
         </div>
 

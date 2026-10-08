@@ -12,7 +12,6 @@ import { LanguagePickerModal } from '../components/LanguagePickerModal';
 import { UserProfileModal } from '../components/UserProfileModal';
 import { SoundHeaderButton } from '../components/SoundHeaderButton';
 import ArcadeBackground from '../components/ArcadeBackground';
-import QuickHowToPlayModal from '../components/QuickHowToPlayModal';
 import { 
   Gamepad2, 
   Trophy, 
@@ -36,7 +35,8 @@ import {
   User as UserIcon,
   ChevronDown,
   Award,
-  Swords
+  Swords,
+  Box
 } from 'lucide-react';
 import { tUI, isRtlLang } from '../ui';
 import { GameSettings } from '../types';
@@ -51,6 +51,7 @@ interface Props {
   onOpenSinglePlayer: () => void;
   onOpenDuel?: () => void;
   onOpenOnline: () => void;
+  onOpenLeitner?: () => void;
   onOpenHistory: () => void;
   onOpenLeaderboard?: () => void;
   onOpenHelp?: () => void;
@@ -65,6 +66,7 @@ const IntroScreen: React.FC<Props> = ({
   onOpenSinglePlayer,
   onOpenDuel,
   onOpenOnline,
+  onOpenLeitner,
   onOpenHistory, 
   onOpenHelp 
 }) => {
@@ -81,9 +83,6 @@ const IntroScreen: React.FC<Props> = ({
   const [isHistoryLoginModalOpen, setIsHistoryLoginModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [profileInitialTab, setProfileInitialTab] = useState<'records' | 'leaderboard'>('records');
-  const [isQuickGuideOpen, setIsQuickGuideOpen] = useState(() => {
-    return !localStorage.getItem('dor_intro_guide_seen');
-  });
 
   const currentLangInfo = SUPPORTED_LANGUAGES.find(l => l.code === language) || SUPPORTED_LANGUAGES[0];
   const currentCefr = settings?.cefrLevel || 'all';
@@ -183,9 +182,9 @@ const IntroScreen: React.FC<Props> = ({
       {/* Retro Arcade Ambient Background (Exclusive to Intro Page) */}
       <ArcadeBackground />
       
-      {/* Top Bar: Language Picker Pill on one side, Sound, Help & Profile on the other */}
-      <div className="w-full max-w-sm sm:max-w-md flex items-center justify-between px-1 mb-2 shrink-0 gap-2">
-        {/* Language button: Flag icon only as requested ("نام زبان رو ننویس همون آیکون زبان کافیه") */}
+      {/* Top Bar: Material 3 Top App Bar (44x44dp Touch Targets, Symmetrical Spacing) */}
+      <div className="w-full max-w-sm sm:max-w-md flex items-center justify-between px-1 mb-3 shrink-0 gap-3">
+        {/* Language button: Flag icon (M3 Outlined/Tonal Circular Action) */}
         <button
           id="header-language-btn"
           data-testid="header-language-btn"
@@ -194,42 +193,30 @@ const IntroScreen: React.FC<Props> = ({
             sound.playClick();
             setIsLanguageModalOpen(true);
           }}
-          className="w-10 h-10 flex items-center justify-center bg-[var(--panel)] hover:bg-[var(--bg)] rounded-full border border-[var(--line)] shadow-xs text-xs font-bold text-[var(--ink)] active:scale-95 transition-all cursor-pointer shrink-0"
+          className="w-11 h-11 flex items-center justify-center bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full border border-[var(--line)] shadow-xs text-xs font-bold text-[var(--ink)] active:scale-95 transition-all cursor-pointer shrink-0"
           title={`${t.changeLanguage} (${currentLangInfo.nativeName || currentLangInfo.name})`}
-          aria-label={t.changeLanguage}
+          aria-label={t.changeLanguage || (isRTL ? 'تغییر زبان' : 'Change Language')}
         >
-          <FlagIcon language={language} size={20} />
+          <FlagIcon language={language} size={22} />
         </button>
 
-        {/* Top Controls: Mobile APK, Sound, Help & Profile */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* Mobile APK / Play Store Download Button */}
-          <button
-            id="header-install-btn"
-            type="button"
-            onClick={handleOpenInstall}
-            aria-label={isRTL ? 'دانلود APK اندروید و پکیج گوگل‌پلی' : 'Download Android APK & Play Store Package'}
-            className="ib"
-            title={isRTL ? 'دانلود APK اندروید و پکیج گوگل‌پلی' : 'Download Android APK & Play Store Package'}
-          >
-            <Download size={18} />
-          </button>
-
+        {/* Top Controls: Sound, Help & Profile (Consistent 44x44dp M3 Action Group) */}
+        <div className="flex items-center gap-2">
           {/* Sound Mute / Unmute Button */}
-          <SoundHeaderButton variant="icon-only" language={language} className="w-10 h-10 p-0 justify-center" />
+          <SoundHeaderButton variant="icon-only" language={language} className="w-11 h-11 p-0 justify-center rounded-full border border-[var(--line)] bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 shadow-xs active:scale-95 transition-all" />
 
           {/* Help / Guide button */}
           <button
             id="header-guide-btn"
             onClick={() => {
               sound.playClick();
-              setIsQuickGuideOpen(true);
+              onOpenHelp?.();
             }}
-            aria-label={t.guide || 'راهنما'}
-            className="ib"
-            title={t.gameRules}
+            aria-label={t.guide || (isRTL ? 'راهنما' : 'Guide')}
+            className="w-11 h-11 flex items-center justify-center bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 text-[var(--ink)] border border-[var(--line)] rounded-full shadow-xs active:scale-95 transition-all cursor-pointer"
+            title={t.gameRules || (isRTL ? 'راهنمای بازی' : 'Game Rules')}
           >
-            <BookOpen size={18} />
+            <BookOpen size={20} />
           </button>
 
           {/* User Profile button (Hosts History, Records & Leaderboard) */}
@@ -237,67 +224,68 @@ const IntroScreen: React.FC<Props> = ({
             id="header-profile-btn"
             onClick={handleHistoryClick}
             aria-label={isRTL ? 'پروفایل و لیدربرد و تاریخچه' : 'Profile, History & Leaderboard'}
-            className="ib"
+            className="w-11 h-11 flex items-center justify-center bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 text-[var(--ink)] border border-[var(--line)] rounded-full shadow-xs active:scale-95 transition-all cursor-pointer relative"
             title={isRTL ? 'پروفایل و لیدربرد و تاریخچه' : 'Profile, History & Leaderboard'}
           >
             {user?.photoURL ? (
-              <img src={user.photoURL} alt="avatar" className="w-5 h-5 rounded-full border border-[var(--line)] object-cover" referrerPolicy="no-referrer" />
+              <img src={user.photoURL} alt="avatar" className="w-7 h-7 rounded-full border border-[var(--line)] object-cover" referrerPolicy="no-referrer" />
             ) : (
-              <UserIcon size={18} />
+              <UserIcon size={20} />
+            )}
+            {/* Small status dot if logged in */}
+            {user && (
+              <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-[var(--panel)]" />
             )}
           </button>
         </div>
       </div>
 
-      {/* Hero Modern Card Area (Aligned with HTML design system) */}
-      <div className="relative w-full max-w-sm mx-auto my-auto shrink-0">
-        <div className="panel p-5 sm:p-6 text-start flex flex-col justify-between min-h-[230px] sm:min-h-[250px] rounded-[24px] shadow-sm">
-          {/* Top Label with Subtle Arcade Accent */}
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold tracking-wider text-[var(--lapis)] uppercase font-ui flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--turq)] animate-pulse inline-block" />
-              <span>{t.vocabParty}</span>
+      {/* Hero Modern Card Area (Material Design 3 Surface Container) */}
+      <div className="relative w-full max-w-sm sm:max-w-md mx-auto my-auto shrink-0">
+        <div className="bg-[var(--panel)] border border-[var(--line)] p-6 sm:p-7 text-center flex flex-col justify-between min-h-[240px] sm:min-h-[260px] rounded-[28px] shadow-sm transition-all">
+          {/* Top Chips Row */}
+          <div className="flex items-center justify-between gap-2">
+            <span className="px-3 py-1 rounded-full bg-[var(--lapis-soft)] text-[var(--lapis)] text-xs font-bold font-ui flex items-center gap-1.5 border border-[var(--lapis)]/15">
+              <Sparkles size={13} className="text-[var(--lapis)]" />
+              <span>{t.vocabParty || (isRTL ? 'بازی دورهمی واژگان' : 'Vocab Party')}</span>
             </span>
-            <span className="px-2.5 py-0.5 bg-[var(--lapis-soft)] text-[var(--lapis)] text-[10.5px] font-bold rounded-full font-ui flex items-center gap-1.5 border border-[var(--lapis)]/15">
-              <span className="font-mono text-[9px] text-[var(--turq)] font-black tracking-wider">★ 1UP</span>
-              <span className="opacity-40">|</span>
-              <Sparkles size={11} />
-              <span>{t.multiLingual}</span>
+            <span className="px-3 py-1 bg-[var(--bg)] text-[var(--mute)] text-xs font-bold rounded-full font-ui flex items-center gap-1.5 border border-[var(--line)]">
+              <Globe size={13} className="text-[var(--turq)]" />
+              <span>{t.multiLingual || (isRTL ? '۳۸+ زبان دنیا' : '38+ Languages')}</span>
             </span>
           </div>
 
-          {/* Main Titles */}
-          <div className="my-auto py-2">
-            <h1 className="text-5xl sm:text-6xl font-black text-[var(--ink)] leading-none tracking-tight font-display mb-1">
-              {t.title || 'Turn'}
+          {/* Interactive Mascot & Hero Titles */}
+          <div className="my-auto py-3 flex flex-col items-center">
+            {/* Mascot Character with bouncy party feel */}
+            <div 
+              onClick={handleMascotClick}
+              className="cursor-pointer transition-transform hover:scale-110 active:scale-90 inline-block relative mb-2 select-none"
+              title={isRTL ? 'برای شادی بزن روی کاراکتر!' : 'Tap mascot for party cheer!'}
+            >
+              <TeamMascot color="BLUE" size={60} className={mascotBounce ? 'animate-bounce' : ''} />
+              {partyEmote && (
+                <span className="absolute -top-3 -right-2 text-2xl animate-ping select-none">{partyEmote}</span>
+              )}
+            </div>
+
+            <h1 className="text-5xl sm:text-6xl font-black text-[var(--ink)] leading-none tracking-tight font-display mb-1.5">
+              {t.title || 'دور'}
             </h1>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-[var(--lapis)] leading-tight font-display mb-2">
-              {t.subtitle}
+            <h2 className="text-lg sm:text-xl font-black text-[var(--lapis)] leading-snug font-display mb-2">
+              {t.subtitle || (isRTL ? 'هیجان حدس کلمات و یادگیری زبان' : 'Word Guessing Party Game')}
             </h2>
-            <p className="text-[var(--mute)] text-xs sm:text-sm font-medium leading-relaxed font-ui">
-              {t.tagline}
+            <p className="text-[var(--mute)] text-xs sm:text-sm font-medium leading-relaxed font-ui max-w-xs mx-auto">
+              {t.tagline || (isRTL ? 'گوشی را دور میز بچرخانید، بدون گفتن کلمه ممنوعه هم‌تیمی خود را به جواب برسانید!' : 'Pass the phone, describe the word without forbidden clues!')}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Interactive Action Buttons */}
-      <div className="w-full max-w-sm sm:max-w-md space-y-2.5 my-auto shrink-0">
-        {/* Quick How-To-Play Button */}
-        <button
-          type="button"
-          onClick={() => {
-            sound.playClick();
-            setIsQuickGuideOpen(true);
-          }}
-          className="w-full py-2 px-3 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] border border-[var(--line)] text-xs font-black text-[var(--ink)] flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-98 transition-all"
-        >
-          <BookOpen size={14} className="text-[var(--lapis)]" />
-          <span>{isRTL ? '📖 نحوه بازی دور (خلاصه و مفید)' : '📖 How to Play (Quick Guide)'}</span>
-        </button>
-
-        {/* Primary Action: Start Game Button */}
-        <div className="flex flex-col gap-2.5">
+      {/* Interactive Action Buttons (Material Design 3 High-Emphasis Stack) */}
+      <div className="w-full max-w-sm sm:max-w-md space-y-3 my-auto shrink-0">
+        {/* Primary Action: Start Game Button (M3 Filled Button - 56dp) */}
+        <div className="flex flex-col gap-3">
           <button 
             type="button"
             id="intro-play-button"
@@ -305,14 +293,14 @@ const IntroScreen: React.FC<Props> = ({
               sound.playStartGame();
               onNext();
             }}
-            className="start-btn w-full h-14 sm:h-15 text-base sm:text-lg font-bold flex items-center justify-center gap-2.5 active:scale-[0.98] transition-all font-ui"
+            className="start-btn w-full h-14 sm:h-16 text-base sm:text-lg font-black rounded-full bg-[var(--lapis)] hover:brightness-105 active:scale-[0.98] text-white shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-3 font-ui cursor-pointer"
           >
-            <Users size={22} />
-            <span>{t.startNewGame || t.newGame}</span>
+            <Users size={24} />
+            <span>{t.startNewGame || t.newGame || (isRTL ? 'شروع بازی جدید' : 'Start New Game')}</span>
           </button>
 
-          {/* Secondary Game Modes: Single player, 2-Player Duel & Online room */}
-          <div className="grid grid-cols-3 gap-2">
+          {/* Secondary Game Modes: Single player, 2-Player Duel & Online room (M3 3-Card Grid) */}
+          <div className="grid grid-cols-3 gap-2.5">
             {/* 1. Single Player Mode */}
             <button
               type="button"
@@ -321,10 +309,17 @@ const IntroScreen: React.FC<Props> = ({
                 sound.playClick();
                 onOpenSinglePlayer();
               }}
-              className="py-2.5 px-2 bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] rounded-[16px] font-bold text-xs shadow-xs active:scale-[0.98] transition-all flex flex-col items-center justify-center gap-1 font-ui cursor-pointer"
+              className="p-3 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs active:scale-[0.97] transition-all flex flex-col items-center justify-center gap-1.5 font-ui cursor-pointer group"
             >
-              <Mic size={18} className="text-[var(--lapis)]" />
-              <span className="truncate">{t.singlePlayerBtn || 'تک‌نفره'}</span>
+              <div className="w-9 h-9 rounded-full bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Mic size={18} />
+              </div>
+              <span className="font-extrabold text-xs text-[var(--ink)] leading-tight truncate w-full">
+                {t.singlePlayerBtn || (isRTL ? 'تک‌نفره' : 'Solo Run')}
+              </span>
+              <span className="text-[10px] text-[var(--mute)] font-medium leading-none truncate w-full">
+                {isRTL ? 'تمرین صوتی' : 'Voice Practice'}
+              </span>
             </button>
 
             {/* 2. Two-Player 1v1 Shared Screen Duel Mode */}
@@ -335,10 +330,17 @@ const IntroScreen: React.FC<Props> = ({
                 sound.playClick();
                 onOpenDuel?.();
               }}
-              className="py-2.5 px-2 bg-gradient-to-br from-blue-50 to-red-50 dark:from-blue-950/30 dark:to-red-950/30 hover:brightness-105 text-[var(--ink)] border-2 border-dashed border-[#2347C5]/40 rounded-[16px] font-black text-xs shadow-xs active:scale-[0.98] transition-all flex flex-col items-center justify-center gap-1 font-ui cursor-pointer"
+              className="p-3 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs active:scale-[0.97] transition-all flex flex-col items-center justify-center gap-1.5 font-ui cursor-pointer group"
             >
-              <Swords size={18} className="text-[#E0533C]" />
-              <span className="truncate">{isRTL ? 'دوئل دونفره ⚔️' : '1v1 Duel ⚔️'}</span>
+              <div className="w-9 h-9 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Swords size={18} />
+              </div>
+              <span className="font-extrabold text-xs text-[var(--ink)] leading-tight truncate w-full">
+                {isRTL ? 'دوئل دونفره ⚔️' : '1v1 Duel ⚔️'}
+              </span>
+              <span className="text-[10px] text-rose-600 dark:text-rose-400 font-semibold leading-none truncate w-full">
+                {isRTL ? 'روی ۱ گوشی' : 'Shared Screen'}
+              </span>
             </button>
 
             {/* 3. Online Multiplayer Mode */}
@@ -349,23 +351,30 @@ const IntroScreen: React.FC<Props> = ({
                 sound.playClick();
                 onOpenOnline();
               }}
-              className="py-2.5 px-2 bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] rounded-[16px] font-bold text-xs shadow-xs active:scale-[0.98] transition-all flex flex-col items-center justify-center gap-1 font-ui cursor-pointer"
+              className="p-3 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs active:scale-[0.97] transition-all flex flex-col items-center justify-center gap-1.5 font-ui cursor-pointer group"
             >
-              <Globe size={18} className="text-[var(--turq)]" />
-              <span className="truncate">{t.onlineRoom || 'آنلاین'}</span>
+              <div className="w-9 h-9 rounded-full bg-teal-50 dark:bg-teal-950/40 text-[var(--turq)] flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Globe size={18} />
+              </div>
+              <span className="font-extrabold text-xs text-[var(--ink)] leading-tight truncate w-full">
+                {t.onlineRoom || (isRTL ? 'اتاق آنلاین' : 'Online Room')}
+              </span>
+              <span className="text-[10px] text-[var(--turq)] font-semibold leading-none truncate w-full">
+                {isRTL ? 'از راه دور' : 'Multiplayer'}
+              </span>
             </button>
           </div>
         </div>
 
         {/* Legal & Privacy Policy Link for Google Play Compliance */}
-        <div className="flex items-center justify-center gap-2.5 pt-1 text-[11px] text-[var(--mute)] font-medium">
+        <div className="flex items-center justify-center gap-2 pt-1 text-xs text-[var(--mute)] font-medium">
           <button
             type="button"
             onClick={() => {
               setProfileInitialTab('privacy');
               setIsProfileModalOpen(true);
             }}
-            className="hover:text-[var(--ink)] underline underline-offset-2 transition-colors cursor-pointer"
+            className="hover:text-[var(--ink)] underline underline-offset-4 transition-colors cursor-pointer"
           >
             {isRTL ? 'حریم خصوصی' : 'Privacy Policy'}
           </button>
@@ -374,12 +383,12 @@ const IntroScreen: React.FC<Props> = ({
             href="./privacy.html"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-[var(--ink)] underline underline-offset-2 transition-colors cursor-pointer"
+            className="hover:text-[var(--ink)] underline underline-offset-4 transition-colors cursor-pointer"
           >
             {isRTL ? 'خط‌مشی وب' : 'Web Policy'}
           </a>
           <span>•</span>
-          <span className="opacity-80">v1.0.3</span>
+          <span className="opacity-75 font-mono text-[11px]">v1.0.4</span>
         </div>
       </div>
 
@@ -401,6 +410,7 @@ const IntroScreen: React.FC<Props> = ({
         onAuthChange={(u) => setUser(u)}
         onOpenInstallModal={() => setIsInstallModalOpen(true)}
         initialTab={profileInitialTab}
+        onOpenLeitner={onOpenLeitner}
       />
 
       {/* Full 38+ Language Picker Modal */}
@@ -659,13 +669,6 @@ const IntroScreen: React.FC<Props> = ({
           </div>
         </div>
       )}
-
-      {/* Quick How-To-Play Modal */}
-      <QuickHowToPlayModal
-        isOpen={isQuickGuideOpen}
-        onClose={() => setIsQuickGuideOpen(false)}
-        isRTL={isRTL}
-      />
     </div>
   );
 };

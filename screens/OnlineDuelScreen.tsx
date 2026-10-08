@@ -28,6 +28,7 @@ import {
 import { sound } from '../soundManager';
 import { FlagIcon } from '../components/FlagIcon';
 import { generateChallengingReflexOptions } from '../utils/testQuestionEngine';
+import { recordMistake } from '../mistakeReviewService';
 
 interface Props {
   initialRoom: OnlineDuelRoom;
@@ -156,6 +157,7 @@ export const OnlineDuelScreen: React.FC<Props> = ({
       sound.playCorrect();
     } else {
       sound.playBuzzer();
+      recordMistake(currentCard, choiceText, 'online_duel');
     }
 
     await submitOnlineDuelAnswer(room.roomId, myRole, isCorrect, reactionMs);

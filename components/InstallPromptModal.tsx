@@ -36,7 +36,7 @@ export const InstallPromptModal: React.FC<Props> = ({
   deferredPrompt,
   onInstalled
 }) => {
-  const [activeTab, setActiveTab] = useState<'apk' | 'android' | 'ios'>('apk');
+  const [activeTab, setActiveTab] = useState<'apk' | 'android' | 'ios'>('android');
   const [isInstalling, setIsInstalling] = useState(false);
   const [isInstalledSuccess, setIsInstalledSuccess] = useState(false);
   const [downloadingFile, setDownloadingFile] = useState<string | null>(null);
@@ -208,7 +208,7 @@ export const InstallPromptModal: React.FC<Props> = ({
                         <span className="text-[9px] bg-[var(--lapis-soft)] text-[var(--lapis)] font-black px-1.5 py-0.5 rounded-full">Google Play</span>
                       </h4>
                       <span className="text-[10px] text-[var(--mute)] font-medium">
-                        {isRTL ? 'فرمت Android App Bundle (.aab) • حجم ۲.۲ مگابایت • نسخه ۱.۰.۳' : 'Format: Android App Bundle (.aab) • Size: 2.2 MB • v1.0.3'}
+                        {isRTL ? 'فرمت Android App Bundle (.aab) • حجم ۲.۲ مگابایت • نسخه ۱.۰.۴' : 'Format: Android App Bundle (.aab) • Size: 2.2 MB • v1.0.4'}
                       </span>
                     </div>
                   </div>
@@ -225,7 +225,7 @@ export const InstallPromptModal: React.FC<Props> = ({
 
                 <div className="text-[10.5px] text-[var(--mute)] space-y-0.5 font-mono bg-[var(--panel)] p-2 rounded-[10px] border border-[var(--line)]">
                   <div><strong>Package:</strong> <code className="text-[var(--lapis)]">com.solonovate.dour</code></div>
-                  <div><strong>Version:</strong> 1.0.3 (VersionCode: 10003) • Target SDK: 36</div>
+                  <div><strong>Version:</strong> 1.0.4 (VersionCode: 10004) • Target SDK: 36</div>
                 </div>
 
                 <button

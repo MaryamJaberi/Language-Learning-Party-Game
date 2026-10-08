@@ -53,18 +53,19 @@ const HistoryScreen: React.FC<Props> = ({ language, history, onBack }) => {
         }`}
       >
         <div className="p-3 bg-[var(--panel)] border-b border-[var(--line)] flex items-center justify-between text-[var(--ink)] shadow-xs">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center">
-              <Trophy size={16} />
+          <div className="flex items-center gap-2.5">
+            <div className="w-10 h-10 rounded-full bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center shadow-xs">
+              <Trophy size={18} />
             </div>
-            <h2 className="text-base sm:text-lg font-bold font-display leading-tight">{t.history}</h2>
+            <h2 className="text-base sm:text-lg font-black font-display leading-tight">{t.history}</h2>
           </div>
           <button 
+            type="button"
             onClick={() => {
               sound.playClick();
               onBack();
             }} 
-            className="px-3.5 py-1.5 flex items-center justify-center bg-[var(--lapis-soft)] hover:bg-[var(--lapis-soft)]/80 text-[var(--lapis)] font-bold text-xs rounded-xl shadow-xs transition-transform active:scale-95 cursor-pointer"
+            className="h-10 px-4 flex items-center justify-center bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 text-[var(--ink)] border border-[var(--line)] font-bold text-xs rounded-full shadow-xs transition-transform active:scale-95 cursor-pointer"
           >
             {t.back}
           </button>

@@ -39,6 +39,7 @@ import OfflineIndicator from './components/OfflineIndicator';
 import FeedbackOverlay from './components/FeedbackOverlay';
 import { feedbackDirector } from './feedbackDirector';
 import { sound } from './soundManager';
+import { buildMistakeReviewSession } from './mistakeReviewService';
 import { auth, saveMatchToCloud, syncSettingsToCloud } from './firebase';
 import { createOnlineDuelRoom, joinOnlineDuelRoom } from './onlineRoomService';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -527,24 +528,40 @@ const App: React.FC = () => {
     setIsSingleSetupOpen(true);
   };
 
-  const handleStartSinglePlayer = (config: SinglePlayerSettings) => {
+  const handleStartSinglePlayer = (config: SinglePlayerSettings, customCards?: LanguageCard[]) => {
     setIsSingleSetupOpen(false);
     const effectiveNative = config.nativeLanguage || settings.nativeLanguage || settings.language || 'fa';
     const effectiveConfig = {
       ...config,
       nativeLanguage: effectiveNative
     };
-    const cards = getUniqueCardsForSession(
-      effectiveConfig.targetLanguage,
-      effectiveNative,
-      effectiveConfig.cefrLevel,
-      effectiveConfig.selectedCategories,
-      effectiveConfig.questionCount,
-      true
-    );
+    const cards = customCards && customCards.length > 0
+      ? customCards
+      : getUniqueCardsForSession(
+          effectiveConfig.targetLanguage,
+          effectiveNative,
+          effectiveConfig.cefrLevel,
+          effectiveConfig.selectedCategories,
+          effectiveConfig.questionCount,
+          true
+        );
     setSinglePlayerCards(cards);
     setSinglePlayerSettings(effectiveConfig);
     setCurrentScreen('SINGLE_PLAYER');
+  };
+
+  const handlePracticeMistakes = () => {
+    const { cards: reviewCards, targetLanguage, nativeLanguage } = buildMistakeReviewSession();
+    if (reviewCards.length === 0) return;
+    setIsSingleSetupOpen(false);
+    const reviewConfig: SinglePlayerSettings = {
+      ...singlePlayerSettings,
+      targetLanguage,
+      nativeLanguage,
+      questionCount: reviewCards.length,
+      displayMode: 'translate_to_target'
+    };
+    handleStartSinglePlayer(reviewConfig, reviewCards);
   };
 
   const handleSinglePlayerFinish = (report: SinglePlayerSessionReport) => {
@@ -871,6 +888,7 @@ const App: React.FC = () => {
         initialSettings={singlePlayerSettings}
         onClose={() => setIsSingleSetupOpen(false)}
         onStart={handleStartSinglePlayer}
+        onPracticeMistakes={handlePracticeMistakes}
       />
 
       <DuelSetupModal

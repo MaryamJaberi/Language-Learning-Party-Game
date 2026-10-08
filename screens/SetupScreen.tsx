@@ -499,9 +499,9 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
   return (
     <div className="app w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto min-h-full px-3 sm:px-4 pb-28 font-ui relative" dir={isRTL ? 'rtl' : 'ltr'}>
       
-      {/* HEADER: Back Button, Title & Circular Action Buttons */}
-      <header className="sticky top-0 z-20 bg-[var(--bg)] flex items-center justify-between py-2.5 px-0.5">
-        <div className="flex items-center gap-2">
+      {/* HEADER: Back Button, Title & Circular Action Buttons (M3 Top App Bar) */}
+      <header className="sticky top-0 z-20 bg-[var(--bg)]/90 backdrop-blur-md flex items-center justify-between py-3 px-1 border-b border-[var(--line)]/50">
+        <div className="flex items-center gap-2.5">
           {/* Back button to return to home/Intro screen */}
           <button
             type="button"
@@ -509,32 +509,28 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
               sound.playClick();
               onBack();
             }}
-            className="ib !w-9 !h-9"
+            className="w-10 h-10 rounded-full bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 border border-[var(--line)] flex items-center justify-center text-[var(--ink)] shadow-xs active:scale-95 transition-all cursor-pointer"
             aria-label={t.back || (isRTL ? 'بازگشت' : 'Back')}
             title={t.back || (isRTL ? 'بازگشت' : 'Back')}
           >
             <ArrowRight size={18} className={isRTL ? '' : 'rotate-180'} />
           </button>
-          <h1 className="text-[28px] sm:text-[34px] font-black leading-none tracking-tight text-[var(--ink)] whitespace-nowrap">
-            {t.title || 'دور'}
-          </h1>
-          {/* Replaced text pill with sleek gear icon to prevent two-line wrapping */}
-          <div 
-            className="w-8 h-8 rounded-full bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center text-[var(--mute)] shrink-0 shadow-xs" 
-            title={isRTL ? 'تنظیمات بازی' : 'Game Settings'}
-            aria-label={isRTL ? 'تنظیمات بازی' : 'Game Settings'}
-          >
-            <Settings size={16} />
-            <span className="sr-only">{t.gameSettings || (isRTL ? 'تنظیمات بازی' : 'Game Settings')}</span>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl sm:text-2xl font-black leading-none tracking-tight text-[var(--ink)] whitespace-nowrap font-display">
+              {t.title || 'دور'}
+            </h1>
+            <span className="px-2.5 py-0.5 rounded-full bg-[var(--lapis-soft)] text-[var(--lapis)] text-xs font-bold font-ui">
+              {t.gameSettings || (isRTL ? 'تنظیمات بازی' : 'Game Settings')}
+            </span>
           </div>
         </div>
 
-        <div className="icons relative flex items-center gap-1.5">
+        <div className="icons relative flex items-center gap-2">
           {/* Hint / Guide Button */}
           <button 
             type="button"
             id="hintBtn" 
-            className="ib" 
+            className="w-10 h-10 rounded-full bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 border border-[var(--line)] flex items-center justify-center text-[var(--ink)] shadow-xs active:scale-95 transition-all cursor-pointer" 
             aria-label={t.guide || 'راهنما'}
             title={t.guide || 'راهنما'}
             onClick={() => {
@@ -542,15 +538,17 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
               setIsSheetOpen(true);
             }}
           >
-            <svg viewBox="0 0 24 24">
+            <svg viewBox="0 0 24 24" className="w-5 h-5 stroke-current fill-none stroke-2">
               <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z" />
             </svg>
           </button>
 
           {/* Sound Toggle Button */}
           <SoundHeaderButton 
+            id="soundBtn"
             variant="icon-only" 
             language={settings.language} 
+            className="w-10 h-10 p-0 justify-center rounded-full border border-[var(--line)] bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 shadow-xs active:scale-95 transition-all"
             onToggle={(muted) => {
               setIsSoundMuted(muted);
               updateSettings('soundEnabled', !muted);
@@ -561,9 +559,9 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
           <button 
             type="button"
             id="uiLangBtn" 
-            className="ib" 
-            aria-label={t.uiLanguageLabel || 'App language'}
-            title={t.uiLanguageLabel || 'App language'}
+            className="w-10 h-10 rounded-full bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 border border-[var(--line)] flex items-center justify-center text-[var(--ink)] shadow-xs active:scale-95 transition-all cursor-pointer" 
+            aria-label={t.uiLanguageLabel || 'زبان برنامه'}
+            title={t.uiLanguageLabel || 'زبان برنامه'}
             onClick={() => {
               sound.playClick();
               setIsLangPopOpen(prev => !prev);
@@ -571,7 +569,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
               setIsTargetOpen(false);
             }}
           >
-            <svg viewBox="0 0 24 24">
+            <svg viewBox="0 0 24 24" className="w-5 h-5 stroke-current fill-none stroke-2">
               <circle cx="12" cy="12" r="9" />
               <path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18" />
             </svg>

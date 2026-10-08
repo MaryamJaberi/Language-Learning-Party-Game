@@ -10,6 +10,7 @@ import { FlagIcon } from './FlagIcon';
 import { LanguagePickerModal } from './LanguagePickerModal';
 import { sound } from '../soundManager';
 import { tUI, isRtlLang } from '../ui';
+import { getSavedMistakes } from '../mistakeReviewService';
 import { 
   X, 
   Play, 
@@ -21,7 +22,10 @@ import {
   Volume2,
   Globe,
   Languages,
-  ArrowRightLeft
+  ArrowRightLeft,
+  RotateCcw,
+  AlertCircle,
+  Box
 } from 'lucide-react';
 
 interface Props {
@@ -30,6 +34,8 @@ interface Props {
   initialSettings: SinglePlayerSettings;
   onClose: () => void;
   onStart: (settings: SinglePlayerSettings) => void;
+  onPracticeMistakes?: () => void;
+  onOpenLeitner?: () => void;
 }
 
 const SinglePlayerSetupModal: React.FC<Props> = ({
@@ -37,7 +43,9 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
   language,
   initialSettings,
   onClose,
-  onStart
+  onStart,
+  onPracticeMistakes,
+  onOpenLeitner
 }) => {
   const t = tUI(language);
   const isRTL = isRtlLang(language);
@@ -49,6 +57,8 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
 
   const currentTargetLangInfo = SUPPORTED_LANGUAGES.find(l => l.code === settings.targetLanguage) || SUPPORTED_LANGUAGES[0];
   const currentNativeLangInfo = SUPPORTED_LANGUAGES.find(l => l.code === settings.nativeLanguage) || SUPPORTED_LANGUAGES[0];
+
+  const unmasteredCount = getSavedMistakes().filter(m => !m.mastered).length;
 
   const handleStart = () => {
     sound.playStartGame();
@@ -91,6 +101,67 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-4 space-y-3.5 text-[var(--ink)]">
+
+          {/* Quick Practice Mistakes Banner */}
+          {unmasteredCount > 0 && onPracticeMistakes && (
+            <div className="p-3 bg-gradient-to-r from-rose-500/10 via-amber-500/10 to-rose-500/10 border-2 border-rose-500/30 rounded-2xl space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black text-rose-600 flex items-center gap-1.5">
+                  <RotateCcw size={14} />
+                  <span>{isRTL ? `بانک اشتباهات: ${unmasteredCount} کارت` : `Mistakes Bank: ${unmasteredCount} cards`}</span>
+                </span>
+                <span className="text-[10px] bg-rose-500/20 text-rose-600 px-2 py-0.5 rounded-full font-bold">
+                  {isRTL ? 'نیاز به دوره' : 'Review'}
+                </span>
+              </div>
+              <p className="text-[10.5px] text-[var(--mute)] leading-relaxed">
+                {isRTL 
+                  ? 'کارت‌هایی که قبلاً اشتباه پاسخ داده‌اید، به همراه سؤالات مشابه از نظر گرامر و کاربرد آماده دوره هستند.' 
+                  : 'Cards you missed are ready with parallel grammar variants.'}
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playStartGame();
+                  onPracticeMistakes();
+                }}
+                className="w-full py-2 bg-gradient-to-r from-rose-500 to-amber-500 hover:opacity-95 text-white text-xs font-black rounded-xl shadow-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-98 transition-transform"
+              >
+                <Sparkles size={14} />
+                <span>{isRTL ? 'دوره این اشتباهات + سؤالات مشابه 🚀' : 'Practice Mistakes & Variants 🚀'}</span>
+              </button>
+            </div>
+          )}
+
+          {/* Quick Leitner Box Spaced Repetition Card */}
+          {onOpenLeitner && (
+            <div className="p-3 bg-gradient-to-r from-amber-500/10 via-amber-500/15 to-amber-500/10 border-2 border-amber-500/30 rounded-2xl flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-xs">
+                  <Box size={16} />
+                </div>
+                <div className="min-w-0">
+                  <span className="text-xs font-black text-amber-700 dark:text-amber-400 block truncate">
+                    {isRTL ? 'جعبه لایتنر ۵ خانه (مرور روزانه)' : '5-Box Leitner Daily Review'}
+                  </span>
+                  <span className="text-[10px] text-[var(--mute)] block truncate">
+                    {isRTL ? 'جلوگیری از فراموشی با فواصل زمانی' : 'Spaced repetition practice'}
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playStartGame();
+                  onClose();
+                  onOpenLeitner();
+                }}
+                className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-black rounded-xl shrink-0 shadow-xs active:scale-95 transition-transform cursor-pointer"
+              >
+                <span>{isRTL ? 'ورود 📦' : 'Enter 📦'}</span>
+              </button>
+            </div>
+          )}
           
           {/* 1. Target Language Selection */}
           <div className="space-y-1.5">
