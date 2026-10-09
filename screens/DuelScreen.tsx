@@ -108,6 +108,7 @@ export const DuelScreen: React.FC<Props> = ({
       setRoundWinner(player);
       setReactionDiffMs(elapsedMs);
       sound.playCorrect();
+      sound.hapticFeedback('success');
 
       if (player === 'p1') {
         const streak = p1Streak + 1;
@@ -157,6 +158,7 @@ export const DuelScreen: React.FC<Props> = ({
     } else {
       // WRONG: Lockout penalty for this player!
       sound.playElimination();
+      sound.hapticFeedback('error');
       recordMistake(currentCard, selectedText, 'duel');
       if (player === 'p1') {
         setIsLockedP1(true);
@@ -213,7 +215,7 @@ export const DuelScreen: React.FC<Props> = ({
   }
 
   return (
-    <div className="w-full h-full flex flex-col justify-between overflow-hidden bg-[var(--bg)] text-[var(--ink)] font-ui select-none relative">
+    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full min-h-0 flex-1 flex flex-col justify-between overflow-hidden bg-[var(--bg)] text-[var(--ink)] font-ui select-none relative">
       
       {/* ======================================================== */}
       {/* 1. TOP ZONE: PLAYER 2 (Red) */}
@@ -349,6 +351,18 @@ export const DuelScreen: React.FC<Props> = ({
               title={isRTL ? 'پخش تلفظ صوتی' : 'Play audio'}
             >
               <Volume2 size={14} />
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                sound.playClick();
+                sound.speakSlow(currentCard.targetText, currentCard.targetLanguage);
+              }}
+              className="px-1.5 h-7 rounded-lg bg-[var(--bg)] hover:bg-[var(--line)] text-[var(--mute)] hover:text-[var(--ink)] flex items-center gap-0.5 text-[9px] font-black transition-colors cursor-pointer"
+              title={isRTL ? 'پخش آرام ۰.۷x برای تفکیک دقیق آواها' : 'Slow audio 0.7x'}
+            >
+              <span>🐢</span>
+              <span>0.7x</span>
             </button>
             <button
               type="button"

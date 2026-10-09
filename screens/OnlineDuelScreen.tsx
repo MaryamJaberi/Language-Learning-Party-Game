@@ -184,7 +184,7 @@ export const OnlineDuelScreen: React.FC<Props> = ({
   if (room.status === 'waiting') {
     return (
       <div 
-        className="w-full max-w-md mx-auto min-h-screen px-4 py-6 font-ui flex flex-col justify-between"
+        className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto min-h-full h-full min-h-0 flex-1 px-3 sm:px-4 py-4 sm:py-6 font-ui flex flex-col justify-between overflow-y-auto overscroll-contain"
         dir={isRTL ? 'rtl' : 'ltr'}
       >
         {/* Header */}
@@ -302,7 +302,7 @@ export const OnlineDuelScreen: React.FC<Props> = ({
 
   return (
     <div 
-      className={`w-full max-w-md mx-auto min-h-screen px-3 py-3 font-ui flex flex-col justify-between relative transition-all duration-300 ${
+      className={`w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto min-h-full h-full min-h-0 flex-1 px-2.5 sm:px-4 py-2 sm:py-3 font-ui flex flex-col justify-between relative overflow-y-auto overscroll-contain transition-all duration-300 ${
         isDizzy ? 'blur-[2px] filter contrast-125' : ''
       }`}
       dir={isRTL ? 'rtl' : 'ltr'}

@@ -25,7 +25,9 @@ import {
   ArrowRightLeft,
   RotateCcw,
   AlertCircle,
-  Box
+  Box,
+  Target,
+  Zap
 } from 'lucide-react';
 
 interface Props {
@@ -412,6 +414,73 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                   </button>
                 );
               })}
+            </div>
+          </div>
+
+          {/* 6. Ergonomic & Focus Enhancements */}
+          <div className="space-y-2 pt-1 border-t border-[var(--line)]/60">
+            <div className="text-[11px] font-bold text-[var(--mute)]">
+              {isRTL ? 'تنظیمات تمرکز و روان‌سازی یادگیری:' : 'Focus & Ergonomics:'}
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              {/* Auto Advance Toggle */}
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playToggle();
+                  setSettings(s => ({ ...s, autoAdvance: !s.autoAdvance }));
+                }}
+                className={`p-2.5 rounded-xl border text-start transition-all cursor-pointer flex flex-col justify-between gap-1 ${
+                  settings.autoAdvance
+                    ? 'bg-amber-500/10 border-amber-500/40 text-[var(--ink)] shadow-2xs'
+                    : 'bg-[var(--bg)] border-[var(--line)] text-[var(--mute)] hover:bg-[var(--panel)]'
+                }`}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <span className="text-xs font-black flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+                    <Zap size={13} />
+                    <span>{isRTL ? 'پیش‌روی خودکار' : 'Auto-Advance'}</span>
+                  </span>
+                  <span className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-bold ${
+                    settings.autoAdvance ? 'bg-amber-500 text-white' : 'bg-[var(--line)] text-transparent'
+                  }`}>
+                    ✓
+                  </span>
+                </div>
+                <span className="text-[9.5px] text-[var(--mute)] leading-tight">
+                  {isRTL ? 'انتقال نرم به کارت بعد پس از پاسخ درست' : 'Advance smoothly on correct answer'}
+                </span>
+              </button>
+
+              {/* Zen Focus Mode Toggle */}
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playToggle();
+                  setSettings(s => ({ ...s, zenMode: !s.zenMode }));
+                }}
+                className={`p-2.5 rounded-xl border text-start transition-all cursor-pointer flex flex-col justify-between gap-1 ${
+                  settings.zenMode
+                    ? 'bg-indigo-500/10 border-indigo-500/40 text-[var(--ink)] shadow-2xs'
+                    : 'bg-[var(--bg)] border-[var(--line)] text-[var(--mute)] hover:bg-[var(--panel)]'
+                }`}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <span className="text-xs font-black flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400">
+                    <Target size={13} />
+                    <span>{isRTL ? 'حالت تمرکز عمیق' : 'Zen Focus'}</span>
+                  </span>
+                  <span className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-bold ${
+                    settings.zenMode ? 'bg-indigo-500 text-white' : 'bg-[var(--line)] text-transparent'
+                  }`}>
+                    ✓
+                  </span>
+                </div>
+                <span className="text-[9.5px] text-[var(--mute)] leading-tight">
+                  {isRTL ? 'حذف شلوغی‌های بصری و فوکوس کامل بر واژه' : 'Distraction-free deep study'}
+                </span>
+              </button>
             </div>
           </div>
 

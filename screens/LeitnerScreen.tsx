@@ -110,9 +110,11 @@ export const LeitnerScreen: React.FC<Props> = ({
 
     if (isCorrect) {
       sound.playCorrect();
+      sound.hapticFeedback('success');
       setReviewResult('success');
     } else {
       sound.playBuzzer();
+      sound.hapticFeedback('error');
       setReviewResult('fail');
     }
 
@@ -131,6 +133,37 @@ export const LeitnerScreen: React.FC<Props> = ({
       }
     }, 1100);
   };
+
+  // Keyboard navigation & audio hotkeys for Leitner flow state
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (reviewResult !== null || !currentDueItem) return;
+      if (e.key === ' ' || e.code === 'Space') {
+        e.preventDefault();
+        sound.playClick();
+        setIsFlipped(f => !f);
+      } else if (e.key.toLowerCase() === 's') {
+        sound.speakSlow(currentDueItem.item.card.targetText, leitnerState.targetLanguage);
+      } else if (e.key.toLowerCase() === 'v') {
+        sound.speakNative(currentDueItem.item.card.targetText, leitnerState.targetLanguage);
+      } else if (e.key === '1' && reflexChoices[0]) {
+        const isCorrect = reflexChoices[0].trim().toLowerCase() === currentDueItem.item.card.targetText.trim().toLowerCase();
+        handleAnswer(isCorrect, reflexChoices[0]);
+      } else if (e.key === '2' && reflexChoices[1]) {
+        const isCorrect = reflexChoices[1].trim().toLowerCase() === currentDueItem.item.card.targetText.trim().toLowerCase();
+        handleAnswer(isCorrect, reflexChoices[1]);
+      } else if (e.key === '3' && reflexChoices[2]) {
+        const isCorrect = reflexChoices[2].trim().toLowerCase() === currentDueItem.item.card.targetText.trim().toLowerCase();
+        handleAnswer(isCorrect, reflexChoices[2]);
+      } else if (e.key === '4' && reflexChoices[3]) {
+        const isCorrect = reflexChoices[3].trim().toLowerCase() === currentDueItem.item.card.targetText.trim().toLowerCase();
+        handleAnswer(isCorrect, reflexChoices[3]);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [reviewResult, currentDueItem, reflexChoices, leitnerState.targetLanguage]);
 
   return (
     <div 
@@ -290,18 +323,47 @@ export const LeitnerScreen: React.FC<Props> = ({
                 )}
               </div>
 
-              {/* Flip Card Action */}
-              <button
-                type="button"
-                onClick={() => {
-                  sound.playClick();
-                  setIsFlipped(!isFlipped);
-                }}
-                className="py-1.5 px-4 bg-[var(--bg)] hover:bg-[var(--line)] rounded-full text-xs font-bold text-[var(--mute)] hover:text-[var(--ink)] inline-flex items-center gap-1.5 transition-colors cursor-pointer"
-              >
-                <RotateCw size={13} />
-                <span>{isFlipped ? (isRTL ? 'نمایش صورت سؤال' : 'Show Question') : (isRTL ? 'مشاهده ترجمه / پشت کارت' : 'Flip Card')}</span>
-              </button>
+              {/* Card Actions: Flip + Listen (Normal & 0.7x Slow) */}
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playClick();
+                    setIsFlipped(!isFlipped);
+                  }}
+                  className="py-1.5 px-3.5 bg-[var(--bg)] hover:bg-[var(--line)] rounded-full text-xs font-bold text-[var(--mute)] hover:text-[var(--ink)] inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                  title={isRTL ? 'پشت‌ورو کردن کارت [Space]' : 'Flip Card [Space]'}
+                >
+                  <RotateCw size={13} />
+                  <span>{isFlipped ? (isRTL ? 'صورت سؤال' : 'Question') : (isRTL ? 'پشت کارت' : 'Flip')}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playClick();
+                    sound.speakNative(currentDueItem.item.card.targetText, leitnerState.targetLanguage);
+                  }}
+                  className="py-1.5 px-2.5 bg-[var(--bg)] hover:bg-[var(--line)] rounded-full text-xs font-bold text-[var(--mute)] hover:text-[var(--ink)] inline-flex items-center gap-1 transition-colors cursor-pointer"
+                  title={isRTL ? 'پخش تلفظ صوتی [کلید V]' : 'Audio pronunciation [Key V]'}
+                >
+                  <Volume2 size={13} />
+                  <span>{isRTL ? 'تلفظ' : 'Audio'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playClick();
+                    sound.speakSlow(currentDueItem.item.card.targetText, leitnerState.targetLanguage);
+                  }}
+                  className="py-1.5 px-2.5 bg-[var(--bg)] hover:bg-[var(--line)] rounded-full text-[11px] font-bold text-[var(--mute)] hover:text-[var(--ink)] inline-flex items-center gap-1 transition-colors cursor-pointer"
+                  title={isRTL ? 'پخش آهسته ۰.۷x برای تفکیک هجاها [کلید S]' : 'Slow audio 0.7x [Key S]'}
+                >
+                  <span>🐢</span>
+                  <span>0.7x</span>
+                </button>
+              </div>
             </div>
 
             {/* 4 Reflex Options or Self-Rating Buttons */}

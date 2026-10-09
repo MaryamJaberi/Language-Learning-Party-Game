@@ -993,7 +993,7 @@ class SoundManager {
   public speak(
     text: string, 
     lang: string = 'en-US', 
-    options?: { force?: boolean; onStart?: () => void; onEnd?: () => void }
+    options?: { force?: boolean; rate?: number; onStart?: () => void; onEnd?: () => void }
   ): void {
     if (!text || text.trim() === '') return;
     const cleanText = text.replace(/[\(\)\[\]"']/g, '').trim();
@@ -1020,7 +1020,7 @@ class SoundManager {
       this.activeUtterance = utterance; // Prevent garbage collection bug in Chrome
 
       utterance.lang = targetBCP;
-      utterance.rate = 0.90; // Slightly measured pace for optimal learning clarity
+      utterance.rate = options?.rate ?? 0.90; // Default measured pace or customizable slow pace (0.70)
       utterance.pitch = 1.0;
       utterance.volume = (!options?.force && this.isMuted) ? 0 : 1.0;
 
@@ -1098,9 +1098,27 @@ class SoundManager {
   public speakNative(
     text: string, 
     lang: string = 'en-US',
-    options?: { onStart?: () => void; onEnd?: () => void }
+    options?: { onStart?: () => void; onEnd?: () => void; rate?: number }
   ): void {
     this.speak(text, lang, { force: true, ...options });
+  }
+
+  public speakSlow(
+    text: string, 
+    lang: string = 'en-US',
+    options?: { onStart?: () => void; onEnd?: () => void }
+  ): void {
+    this.speak(text, lang, { force: true, rate: 0.68, ...options });
+  }
+
+  public hapticFeedback(pattern: 'light' | 'success' | 'warning' | 'error' = 'light'): void {
+    if (typeof window === 'undefined' || typeof navigator === 'undefined' || !navigator.vibrate) return;
+    try {
+      if (pattern === 'light') navigator.vibrate(12);
+      else if (pattern === 'success') navigator.vibrate([15, 35, 20]);
+      else if (pattern === 'warning') navigator.vibrate([25, 45, 25]);
+      else if (pattern === 'error') navigator.vibrate([40, 55, 40]);
+    } catch {}
   }
 }
 

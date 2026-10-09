@@ -94,7 +94,7 @@ const EndGameScreen: React.FC<Props> = ({
   const missedCards = playedCards.filter(c => !c.guessedCorrectly);
 
   return (
-    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full min-h-0 flex-1 flex flex-col items-center justify-between p-3 sm:p-4 text-center select-none overflow-hidden font-ui bg-[var(--bg)] text-[var(--ink)]" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full min-h-0 flex-1 flex flex-col items-center justify-between p-2.5 sm:p-4 text-center select-none overflow-y-auto overscroll-contain font-ui bg-[var(--bg)] text-[var(--ink)]" dir={isRTL ? 'rtl' : 'ltr'}>
       
       {/* Pool warning banner */}
       {isPoolExhausted && (

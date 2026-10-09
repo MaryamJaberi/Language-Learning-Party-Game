@@ -45,7 +45,7 @@ export const TRANSLATIONS: Record<Language, any> = ({
   fa: {
     title: "دور",
     subtitle: "هیجان حدس کلمات، رقابت تیمی و تقویت مکالمه",
-    newGame: "شروع بازی جدید",
+    newGame: "شروع بازی دورهمی",
     history: "تاریخچه",
     guide: "راهنما",
     setup: "تنظیمات بازی",

@@ -11,7 +11,7 @@ describe('Complete End-to-End User Flow Tests', () => {
 
   const launchActiveGame = () => {
     // 1. Intro -> Setup Screen
-    fireEvent.click(screen.getByText('شروع بازی جدید'));
+    fireEvent.click(screen.getByText(/شروع بازی (دورهمی|جدید)/i));
 
     // 2. Click "شروع بازی" (bottom start bar button)
     const startBtn = screen.getByRole('button', { name: /شروع بازی/i });
@@ -47,7 +47,7 @@ describe('Complete End-to-End User Flow Tests', () => {
     fireEvent.click(closeHelpBtn);
 
     // Verify we returned to Intro Screen
-    expect(screen.getByText('شروع بازی جدید')).toBeInTheDocument();
+    expect(screen.getByText(/شروع بازی (دورهمی|جدید)/i)).toBeInTheDocument();
 
     // 3. Open History Screen
     const historyBtn = screen.getByRole('button', { name: /تاریخچه/i });
@@ -59,14 +59,14 @@ describe('Complete End-to-End User Flow Tests', () => {
     // Back to Intro
     const backBtns = screen.getAllByRole('button', { name: /بازگشت/i });
     fireEvent.click(backBtns[0]);
-    expect(screen.getByText('شروع بازی جدید')).toBeInTheDocument();
+    expect(screen.getByText(/شروع بازی دورهمی/i)).toBeInTheDocument();
   });
 
   test('Flow 2: Complete Setup, Player Count, and Seating Table Confirmation', () => {
     render(<App />);
 
-    // 1. From Intro -> Click "شروع بازی جدید"
-    const newGameBtn = screen.getByText('شروع بازی جدید');
+    // 1. From Intro -> Click "شروع بازی دورهمی"
+    const newGameBtn = screen.getByText(/شروع بازی دورهمی/i);
     fireEvent.click(newGameBtn);
 
     // 2. Setup Screen matches HTML design
@@ -180,7 +180,7 @@ describe('Complete End-to-End User Flow Tests', () => {
 
     const faTitle = screen.getAllByText('دور');
     expect(faTitle.length).toBeGreaterThan(0);
-    expect(screen.getByText('شروع بازی جدید')).toBeInTheDocument();
+    expect(screen.getByText(/شروع بازی (دورهمی|جدید)/i)).toBeInTheDocument();
   });
 
   test('Flow 5: Pause and Exit to Intro screen', () => {
@@ -202,7 +202,7 @@ describe('Complete End-to-End User Flow Tests', () => {
     }
 
     // Should be back on Intro
-    expect(screen.getByText('شروع بازی جدید')).toBeInTheDocument();
+    expect(screen.getByText(/شروع بازی (دورهمی|جدید)/i)).toBeInTheDocument();
   });
 
   test('Flow 6: PWA and Mobile App Installation modal and tabs', () => {
@@ -248,7 +248,7 @@ describe('Complete End-to-End User Flow Tests', () => {
     render(<App />);
 
     // 1. Intro -> Setup Screen
-    fireEvent.click(screen.getByText('شروع بازی جدید'));
+    fireEvent.click(screen.getByText(/شروع بازی دورهمی/i));
 
     // 2. Select 6 Players (3 Teams: Blue, Red, Green)
     const p6Btn = document.getElementById('players')?.querySelectorAll('button')[1];
@@ -280,7 +280,7 @@ describe('Complete End-to-End User Flow Tests', () => {
     render(<App />);
 
     // 1. Intro -> Setup Screen
-    fireEvent.click(screen.getByText('شروع بازی جدید'));
+    fireEvent.click(screen.getByText(/شروع بازی دورهمی/i));
 
     // 2. Select 8 Players (4 Teams: Blue, Red, Green, Yellow)
     const p8Btn = document.getElementById('players')?.querySelectorAll('button')[2];

@@ -62,7 +62,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     tableSeatingTitle: 'چیدمان دور میز',
     tableSeatingTip: 'هم‌تیمی‌ها دقیقاً روبروی هم می‌نشینند! چرخش نوبت ساعت‌گرد است.',
     tagline: 'گوشی رو دست‌به‌دست کن. زمان رو شکست بده. صحبت کن.',
-    startNewGame: 'شروع بازی جدید',
+    startNewGame: 'شروع بازی دورهمی',
     singlePlayerBtn: 'تک‌نفره',
     onlineRoom: 'اتاق آنلاین',
     gameHistory: 'تاریخچه بازی‌ها',

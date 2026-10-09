@@ -26,6 +26,7 @@ import {
   Smartphone,
   Download,
   Mic,
+  GraduationCap,
   History,
   Lock,
   X,
@@ -284,19 +285,38 @@ const IntroScreen: React.FC<Props> = ({
 
       {/* Interactive Action Buttons (Material Design 3 High-Emphasis Stack) */}
       <div className="w-full max-w-sm sm:max-w-md space-y-3 my-auto shrink-0">
-        {/* Primary Action: Start Game Button (M3 Filled Button - 56dp) */}
+        {/* Primary Action: Start Party Game Button (بازی دورهمی حضوری) */}
         <div className="flex flex-col gap-3">
           <button 
             type="button"
             id="intro-play-button"
+            aria-label={isRTL ? 'شروع بازی دورهمی' : 'Start Party Game'}
             onClick={() => {
               sound.playStartGame();
               onNext();
             }}
-            className="start-btn w-full h-14 sm:h-16 text-base sm:text-lg font-black rounded-full bg-[var(--lapis)] hover:brightness-105 active:scale-[0.98] text-white shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-3 font-ui cursor-pointer"
+            className="start-btn w-full min-h-[58px] sm:min-h-[64px] p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-[var(--lapis)] to-[#1b3ca8] hover:brightness-105 active:scale-[0.98] text-white shadow-md hover:shadow-lg transition-all flex items-center justify-between font-ui cursor-pointer group"
           >
-            <Users size={24} />
-            <span>{t.startNewGame || t.newGame || (isRTL ? 'شروع بازی جدید' : 'Start New Game')}</span>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white/20 text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-xs">
+                <Users size={22} className="text-white" />
+              </div>
+              <div className="text-start">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-base sm:text-lg font-black block leading-tight">
+                    {t.startNewGame || (isRTL ? 'شروع بازی دورهمی' : 'Start Party Game')}
+                  </span>
+                  <span className="text-sm select-none">👥</span>
+                </div>
+                <span className="text-[11px] text-white/80 font-medium block leading-tight mt-0.5">
+                  {isRTL ? 'بازی تیمی و گروهی' : 'Party Game'}
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center gap-1 bg-white/20 px-2.5 py-1.5 rounded-xl text-xs font-black shrink-0">
+              <Sparkles size={14} className="text-[var(--saffron)]" />
+              <span>{isRTL ? 'ورود' : 'Play'}</span>
+            </div>
           </button>
 
           {/* Secondary Game Modes: Single player, 2-Player Duel & Online room (M3 3-Card Grid) */}
@@ -312,17 +332,17 @@ const IntroScreen: React.FC<Props> = ({
               className="p-3 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs active:scale-[0.97] transition-all flex flex-col items-center justify-center gap-1.5 font-ui cursor-pointer group"
             >
               <div className="w-9 h-9 rounded-full bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center group-hover:scale-105 transition-transform">
-                <Mic size={18} />
+                <GraduationCap size={18} />
               </div>
               <span className="font-extrabold text-xs text-[var(--ink)] leading-tight truncate w-full">
                 {t.singlePlayerBtn || (isRTL ? 'تک‌نفره' : 'Solo Run')}
               </span>
               <span className="text-[10px] text-[var(--mute)] font-medium leading-none truncate w-full">
-                {isRTL ? 'تمرین صوتی' : 'Voice Practice'}
+                {isRTL ? 'یادگیری و تمرین' : 'Learn & Practice'}
               </span>
             </button>
 
-            {/* 2. Two-Player 1v1 Shared Screen Duel Mode */}
+            {/* 2. Two-Player 1v1 Duel Mode (Local & Online) */}
             <button
               type="button"
               id="intro-duel-btn"
@@ -339,7 +359,7 @@ const IntroScreen: React.FC<Props> = ({
                 {isRTL ? 'دوئل دونفره ⚔️' : '1v1 Duel ⚔️'}
               </span>
               <span className="text-[10px] text-rose-600 dark:text-rose-400 font-semibold leading-none truncate w-full">
-                {isRTL ? 'روی ۱ گوشی' : 'Shared Screen'}
+                {isRTL ? 'حضوری و آنلاین' : 'Local & Online'}
               </span>
             </button>
 
@@ -485,10 +505,10 @@ const IntroScreen: React.FC<Props> = ({
                     </div>
                     <div>
                       <h3 className="text-sm font-bold text-[var(--ink)]">
-                        {t.localPartyMode || (isRTL ? '۱. بازی دورهمی حضوری (Pass & Play)' : '1. Local Party (Pass & Play)')}
+                        {t.localPartyMode || (isRTL ? '۱. بازی دورهمی تیمی' : '1. Team Party Game')}
                       </h3>
                       <span className="text-[10px] text-[var(--teal)] font-bold">
-                        {t.localPartyDesc || (isRTL ? '۲ تا ۸ بازیکن • مسابقه با یک گوشی' : '2 to 8 players • One shared phone')}
+                        {t.localPartyDesc || (isRTL ? '۲ تا ۸ بازیکن • مسابقه تیمی دورهمی' : '2 to 8 players • Team match')}
                       </span>
                     </div>
                   </div>
@@ -498,12 +518,12 @@ const IntroScreen: React.FC<Props> = ({
                 </div>
                 <p className="text-[11px] text-[var(--mute)] font-medium leading-relaxed text-start">
                   {t.localPartySub || (isRTL 
-                    ? 'گوشی بین تیم‌ها می‌چرخد! تایمر زنگ‌دار، چرخ شانس موضوعات و کارت‌های واژگان برای یک مسابقه دورهمی پرشور.'
-                    : 'Pass the phone between teams! Buzzer timer, category wheel, and vocabulary cards for an energetic party.')}
+                    ? 'مسابقه جذاب تیمی! تایمر زنگ‌دار، چرخ شانس موضوعات و کارت‌های واژگان برای دورهمی‌های پرشور دوستانه و خانوادگی.'
+                    : 'Energetic team match! Buzzer timer, category wheel, and vocabulary cards for friends and family gatherings.')}
                 </p>
               </div>
 
-              {/* Option 2: Single Player Flashcard & Voice Challenge */}
+              {/* Option 2: Single Player Comprehensive Study & Practice */}
               <div 
                 onClick={() => {
                   sound.playClick();
@@ -515,14 +535,14 @@ const IntroScreen: React.FC<Props> = ({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-lg bg-[var(--vermilion)] text-white flex items-center justify-center font-bold">
-                      <Mic size={18} />
+                      <GraduationCap size={18} />
                     </div>
                     <div>
                       <h3 className="text-sm font-bold text-[var(--ink)]">
-                        {t.singlePlayer || (isRTL ? '۲. چالش تک‌نفره و سنجش تلفظ' : '2. Single-Player & Voice Challenge')}
+                        {t.singlePlayer || (isRTL ? '۲. یادگیری و تمرین تک‌نفره' : '2. Solo Study & Practice')}
                       </h3>
                       <span className="text-[10px] text-[var(--teal)] font-bold">
-                        {t.singlePlayerSub || (isRTL ? 'تمرین گفتار با میکروفون • ثبت در لیدربرد' : 'Voice pronunciation • Leaderboard records')}
+                        {t.singlePlayerSub || (isRTL ? 'فلش‌کارت، تستی، تایپ، تلفظ صوتی و لایتنر' : 'Flashcards, Quiz, Typing, Voice & Leitner')}
                       </span>
                     </div>
                   </div>
@@ -532,8 +552,8 @@ const IntroScreen: React.FC<Props> = ({
                 </div>
                 <p className="text-[11px] text-[var(--mute)] font-medium leading-relaxed text-start">
                   {t.singlePlayerDetail || (isRTL 
-                    ? 'فلش‌کارت‌های تخصصی در بیش از ۳۸ زبان، تمرین با هوش مصنوعی و میکروفون و ثبت رکوردهای برتر در لیدربرد تک‌نفره.'
-                    : 'Curated CEFR flashcards in 38+ languages, AI pronunciation score via mic, and top scores on the solo leaderboard.')}
+                    ? 'پکیج کامل یادگیری زبان: آزمون‌های ۴ گزینه‌ای، املا و تایپ، سنجش تلفظ با گفتار، مرور با جعبه لایتنر و ثبت رکورد در لیدربرد.'
+                    : 'Complete learning suite: 4-choice quizzes, spelling & typing, speech pronunciation scoring, Leitner spaced repetition, and leaderboard records.')}
                 </p>
               </div>
 
@@ -571,7 +591,7 @@ const IntroScreen: React.FC<Props> = ({
                 </p>
               </div>
 
-              {/* Option 4: Two-Player 1v1 Shared-Screen Duel */}
+              {/* Option 4: Two-Player 1v1 Duel (Local & Online Match) */}
               <div 
                 onClick={() => {
                   sound.playClick();
@@ -587,10 +607,10 @@ const IntroScreen: React.FC<Props> = ({
                     </div>
                     <div>
                       <h3 className="text-sm font-bold text-[var(--ink)]">
-                        {isRTL ? '۴. دوئل سرعتی دونفره (روی یک گوشی)' : '4. 1v1 Shared-Screen Duel'}
+                        {isRTL ? '۴. دوئل دونفره (حضوری یا مچ آنلاین)' : '4. 1v1 Duel (Local & Online Match)'}
                       </h3>
                       <span className="text-[10px] text-[#E0533C] font-bold">
-                        {isRTL ? 'مسابقه همزمان دو نفر • هرکی زودتر جواب بده!' : 'Head-to-head reflex race • Fastest tap wins!'}
+                        {isRTL ? 'مسابقه همزمان دو نفره • حضوری یا آنلاین' : 'Head-to-head reflex race • Local or online'}
                       </span>
                     </div>
                   </div>
@@ -600,8 +620,8 @@ const IntroScreen: React.FC<Props> = ({
                 </div>
                 <p className="text-[11px] text-[var(--mute)] font-medium leading-relaxed text-start">
                   {isRTL 
-                    ? 'گوشی بین دو نفر قرار می‌گیرد! هر دو بازیکن سوال را می‌بینند و هرکس سریع‌تر گزینه صحیح را بزند امتیاز می‌گیرد؛ نوار طناب‌کشی، شوک سرعت و راند نهایی!'
-                    : 'Place the phone between two players! Fastest reflex to tap the correct target word wins the round, with tug-of-war meter and shock power-up.'}
+                    ? 'مسابقه سرعتی دو نفره به صورت حضوری یا مچ آنلاین اینترنتی! پاسخ سریع‌تر به واژگان، طناب‌کشی امتیازی و راند نهایی.'
+                    : 'Fast-paced 1v1 duel playable locally or via online matchmaking! Fastest reflex to tap the correct target word wins the round.'}
                 </p>
               </div>
 

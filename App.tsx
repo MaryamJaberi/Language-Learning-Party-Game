@@ -41,7 +41,7 @@ import { feedbackDirector } from './feedbackDirector';
 import { sound } from './soundManager';
 import { buildMistakeReviewSession } from './mistakeReviewService';
 import { auth, saveMatchToCloud, syncSettingsToCloud } from './firebase';
-import { createOnlineDuelRoom, joinOnlineDuelRoom } from './onlineRoomService';
+import { createOnlineDuelRoom, joinOnlineDuelRoom, findOnlineDuelMatch } from './onlineRoomService';
 import { onAuthStateChanged } from 'firebase/auth';
 import { getRandomCharacters } from './characters';
 import { isRtlLang } from './ui';
@@ -617,7 +617,21 @@ const App: React.FC = () => {
 
   const handleStartOnlineDuel = async (roomCode?: string) => {
     try {
-      if (roomCode) {
+      if (roomCode === '__matchmake__') {
+        const targetLang = settings.targetLanguages?.[0] || 'nl';
+        const effectiveNative = isRtlLang(settings.language) ? 'fa' : 'en';
+        const match = await findOnlineDuelMatch(
+          settings.playerName || (isRtlLang(settings.language) ? 'بازیکن ۱' : 'Player 1'),
+          '🕹️',
+          targetLang,
+          effectiveNative,
+          'A1',
+          5
+        );
+        setOnlineDuelRoom(match.room);
+        setOnlineDuelMyRole(match.myPlayerRole);
+        setCurrentScreen('ONLINE_DUEL');
+      } else if (roomCode) {
         const joinResult = await joinOnlineDuelRoom(
           roomCode,
           settings.playerName || (isRtlLang(settings.language) ? 'بازیکن ۲' : 'Player 2'),
@@ -717,6 +731,11 @@ const App: React.FC = () => {
             setOnlineRoom(room);
             setOnlinePlayerId(myPlayerId);
             setCurrentScreen('ONLINE_GAME');
+          }}
+          onStartDuelGame={(room, myRole) => {
+            setOnlineDuelRoom(room);
+            setOnlineDuelMyRole(myRole);
+            setCurrentScreen('ONLINE_DUEL');
           }}
           onBack={() => setCurrentScreen('INTRO')}
         />

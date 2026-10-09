@@ -47,7 +47,10 @@ import {
   HelpCircle,
   ChevronDown,
   ChevronUp,
-  KeyRound
+  KeyRound,
+  Target,
+  Zap,
+  BookOpen
 } from 'lucide-react';
 
 interface Props {
@@ -125,6 +128,11 @@ const SinglePlayerScreen: React.FC<Props> = ({
   const [totalScore, setTotalScore] = useState(0);
   const [streak, setStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
+
+  // Delightful focus & ergonomic learning controls
+  const [isZenMode, setIsZenMode] = useState<boolean>(initialSettings.zenMode || false);
+  const [autoAdvance, setAutoAdvance] = useState<boolean>(initialSettings.autoAdvance || false);
+  const autoAdvanceTimerRef = useRef<number | null>(null);
 
   // Rounds & Escalating Speedrun Timer
   const totalCardsCount = cards.length;
@@ -393,6 +401,55 @@ const SinglePlayerScreen: React.FC<Props> = ({
     sound.speakNative(currentCard.targetText, currentCard.targetLanguage);
   };
 
+  const handlePlaySlowAudio = () => {
+    if (!currentCard) return;
+    sound.playClick();
+    sound.speakSlow(currentCard.targetText, currentCard.targetLanguage);
+  };
+
+  // Keyboard ergonomics for desktop / tablet flow state (1-4 choices, Space audio, S slow, H hint, Z zen)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const activeEl = document.activeElement as HTMLElement | null;
+      const isInput = activeEl?.tagName === 'INPUT' || activeEl?.tagName === 'TEXTAREA';
+
+      if (isInput) {
+        if (e.key === 'Enter') {
+          handleCheckAnswer();
+        }
+        return;
+      }
+
+      if (e.key === '1' && quickQuizOptions[0]) {
+        submitAnswer(quickQuizOptions[0]);
+      } else if (e.key === '2' && quickQuizOptions[1]) {
+        submitAnswer(quickQuizOptions[1]);
+      } else if (e.key === '3' && quickQuizOptions[2]) {
+        submitAnswer(quickQuizOptions[2]);
+      } else if (e.key === '4' && quickQuizOptions[3]) {
+        submitAnswer(quickQuizOptions[3]);
+      } else if (e.key === ' ' || e.code === 'Space') {
+        e.preventDefault();
+        handlePlayAudio();
+      } else if (e.key.toLowerCase() === 's') {
+        handlePlaySlowAudio();
+      } else if (e.key.toLowerCase() === 'h') {
+        setShowHintSection(prev => !prev);
+      } else if (e.key.toLowerCase() === 'z') {
+        setIsZenMode(prev => !prev);
+      } else if (e.key === 'Enter') {
+        if (evaluation?.isCorrect) {
+          handleNextCard(false);
+        } else if (evaluation && !evaluation.isCorrect) {
+          handleTryAgain();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [quickQuizOptions, evaluation, currentCard, userInput]);
+
   const submitAnswer = (rawAnswer: string) => {
     if (!currentCard) return;
 
@@ -435,6 +492,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
 
     if (evalResult.isCorrect) {
       sound.playCorrect();
+      sound.hapticFeedback('success');
       recordMistakeSuccess(currentCard.id);
       const challengeBonus = currentCard.isChallenge ? (currentCard.challengeBonus || 2) : 0;
       const points = evalResult.pointsAwarded + challengeBonus;
@@ -445,7 +503,6 @@ const SinglePlayerScreen: React.FC<Props> = ({
       if (newStreak > bestStreak) setBestStreak(newStreak);
 
       // --- GAME FEEL LAYERS 1, 2, 3 ---
-      // Layer 1 & 2: Score Pop + Combo Audio + Particle Sparks + Screen Shake
       feedbackDirector.triggerScoreGained({
         points,
         combo: newStreak,
@@ -486,8 +543,17 @@ const SinglePlayerScreen: React.FC<Props> = ({
         aiFeedback: evalResult.feedbackMessage
       };
       setResults(prev => [...prev, resEntry]);
+
+      // Smooth Auto-Advance if enabled (1.15s reading pause before next card)
+      if (autoAdvance) {
+        if (autoAdvanceTimerRef.current) clearTimeout(autoAdvanceTimerRef.current);
+        autoAdvanceTimerRef.current = window.setTimeout(() => {
+          handleNextCard(false);
+        }, 1150);
+      }
     } else {
       sound.playPass();
+      sound.hapticFeedback('error');
       setStreak(0);
       setAttempts(prev => prev + 1);
       // Persist mistake into Mistake Bank for review
@@ -605,7 +671,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
 
   return (
     <div 
-      className="app w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto min-h-screen px-3 sm:px-4 pb-12 font-ui relative flex flex-col justify-between"
+      className="app w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto min-h-full flex-1 px-3 sm:px-4 pb-12 font-ui relative flex flex-col justify-between overflow-y-auto overscroll-contain"
       dir={isRTL ? 'rtl' : 'ltr'}
     >
       {/* 1. Header (sticky, always visible matching HTML design) */}
@@ -641,6 +707,42 @@ const SinglePlayerScreen: React.FC<Props> = ({
         </div>
 
         <div className="flex items-center gap-1.5">
+          {/* Zen Focus Mode Toggle */}
+          <button
+            type="button"
+            onClick={() => {
+              sound.playToggle();
+              setIsZenMode(z => !z);
+            }}
+            className={`px-2 py-1 rounded-xl text-[10px] font-black border flex items-center gap-1 cursor-pointer transition-all ${
+              isZenMode 
+                ? 'bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 border-indigo-500/40 shadow-xs'
+                : 'bg-[var(--panel)] text-[var(--mute)] border-[var(--line)] hover:text-[var(--ink)]'
+            }`}
+            title={isRTL ? 'حالت تمرکز عمیق (بدون حواس‌پرتی) [کلید Z]' : 'Deep Focus Mode [Key Z]'}
+          >
+            <Target size={12} className={isZenMode ? 'text-indigo-500 animate-pulse' : ''} />
+            <span>{isRTL ? 'تمرکز' : 'Focus'}</span>
+          </button>
+
+          {/* Auto-Advance Toggle */}
+          <button
+            type="button"
+            onClick={() => {
+              sound.playToggle();
+              setAutoAdvance(a => !a);
+            }}
+            className={`px-2 py-1 rounded-xl text-[10px] font-black border flex items-center gap-1 cursor-pointer transition-all ${
+              autoAdvance 
+                ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/40 shadow-xs' 
+                : 'bg-[var(--panel)] text-[var(--mute)] border-[var(--line)] hover:text-[var(--ink)]'
+            }`}
+            title={isRTL ? 'پیش‌روی خودکار پس از پاسخ صحیح' : 'Auto-advance on correct answer'}
+          >
+            <Zap size={12} className={autoAdvance ? 'text-amber-500' : ''} />
+            <span>{isRTL ? 'خودکار' : 'Auto'}</span>
+          </button>
+
           {/* Score Badge */}
           <div className="px-2.5 py-1 rounded-full bg-[var(--panel)] border border-[var(--line)] text-xs font-black text-[var(--ink)] flex items-center gap-1 shadow-xs">
             <span>{toPersian(totalScore, isRTL)}</span>
@@ -656,55 +758,57 @@ const SinglePlayerScreen: React.FC<Props> = ({
         </div>
       </header>
 
-      {/* 2. Mode Selector Segment (Clean .seg from HTML) */}
-      <div className="mt-2 shrink-0">
-        <div className="seg" role="radiogroup" aria-label="حالت تمرین">
-          <button
-            type="button"
-            aria-checked={settings.displayMode === 'text_and_audio'}
-            onClick={() => {
-              sound.playClick();
-              setSettings(s => ({ ...s, displayMode: 'text_and_audio' }));
-              setEvaluation(null);
-            }}
-          >
-            {isRTL ? 'روخوانی' : 'Read'}
-          </button>
-          <button
-            type="button"
-            aria-checked={settings.displayMode === 'translate_to_target'}
-            onClick={() => {
-              sound.playClick();
-              setSettings(s => ({ ...s, displayMode: 'translate_to_target' }));
-              setEvaluation(null);
-            }}
-          >
-            {isRTL ? 'به هدف' : 'To Target'}
-          </button>
-          <button
-            type="button"
-            aria-checked={settings.displayMode === 'translate_to_native'}
-            onClick={() => {
-              sound.playClick();
-              setSettings(s => ({ ...s, displayMode: 'translate_to_native' }));
-              setEvaluation(null);
-            }}
-          >
-            {isRTL ? 'به مادری' : 'To Native'}
-          </button>
-          <button
-            type="button"
-            aria-checked={settings.displayMode === 'audio_only'}
-            onClick={() => {
-              sound.playClick();
-              setSettings(s => ({ ...s, displayMode: 'audio_only' }));
-              setEvaluation(null);
-            }}
-          >
-            {isRTL ? 'شنیداری' : 'Audio'}
-          </button>
+      {/* 2. Mode Selector Segment (Hidden in Zen mode to maximize focus) */}
+      {!isZenMode && (
+        <div className="mt-2 shrink-0 animate-fade-in">
+          <div className="seg" role="radiogroup" aria-label="حالت تمرین">
+            <button
+              type="button"
+              aria-checked={settings.displayMode === 'text_and_audio'}
+              onClick={() => {
+                sound.playClick();
+                setSettings(s => ({ ...s, displayMode: 'text_and_audio' }));
+                setEvaluation(null);
+              }}
+            >
+              {isRTL ? 'روخوانی' : 'Read'}
+            </button>
+            <button
+              type="button"
+              aria-checked={settings.displayMode === 'translate_to_target'}
+              onClick={() => {
+                sound.playClick();
+                setSettings(s => ({ ...s, displayMode: 'translate_to_target' }));
+                setEvaluation(null);
+              }}
+            >
+              {isRTL ? 'به هدف' : 'To Target'}
+            </button>
+            <button
+              type="button"
+              aria-checked={settings.displayMode === 'translate_to_native'}
+              onClick={() => {
+                sound.playClick();
+                setSettings(s => ({ ...s, displayMode: 'translate_to_native' }));
+                setEvaluation(null);
+              }}
+            >
+              {isRTL ? 'به مادری' : 'To Native'}
+            </button>
+            <button
+              type="button"
+              aria-checked={settings.displayMode === 'audio_only'}
+              onClick={() => {
+                sound.playClick();
+                setSettings(s => ({ ...s, displayMode: 'audio_only' }));
+                setEvaluation(null);
+              }}
+            >
+              {isRTL ? 'شنیداری' : 'Audio'}
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* 3. Progress Bar & Escalating Timer */}
       <div className="mt-2 shrink-0">
@@ -748,15 +852,27 @@ const SinglePlayerScreen: React.FC<Props> = ({
             </span>
           </div>
 
-          <button
-            type="button"
-            onClick={handlePlayAudio}
-            className="ib !w-9 !h-9"
-            aria-label={isRTL ? 'پخش تلفظ صوتی' : 'Audio Pronunciation'}
-            title={isRTL ? 'پخش تلفظ صوتی' : 'Audio Pronunciation'}
-          >
-            <Volume2 size={16} />
-          </button>
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={handlePlayAudio}
+              className="ib !w-8 !h-8"
+              aria-label={isRTL ? 'پخش تلفظ صوتی [Space]' : 'Audio Pronunciation [Space]'}
+              title={isRTL ? 'پخش تلفظ صوتی [کلید Space]' : 'Audio Pronunciation [Space]'}
+            >
+              <Volume2 size={16} />
+            </button>
+            <button
+              type="button"
+              onClick={handlePlaySlowAudio}
+              className="px-2 py-1 rounded-xl text-[10px] font-black border border-[var(--line)] bg-[var(--bg)] hover:bg-[var(--line)] text-[var(--mute)] hover:text-[var(--ink)] flex items-center gap-1 cursor-pointer transition-all active:scale-95"
+              aria-label={isRTL ? 'تلفظ آرام ۰.۷x [کلید S]' : 'Slow audio 0.7x [Key S]'}
+              title={isRTL ? 'پخش شمرده و آهسته (برای درک دقیق آواها) [کلید S]' : 'Slow pronunciation 0.7x [Key S]'}
+            >
+              <span>🐢</span>
+              <span>0.7x</span>
+            </button>
+          </div>
         </div>
 
         {/* 70/30 Pedagogical Rule: Challenge Card Banner */}
@@ -889,6 +1005,15 @@ const SinglePlayerScreen: React.FC<Props> = ({
               {currentCard.pronunciation && (
                 <div className="text-xs font-mono font-bold text-[var(--turq)] mt-1.5 px-2.5 py-0.5 rounded-full bg-[var(--bg)] border border-[var(--line)]">
                   🗣️ [{currentCard.pronunciation}]
+                </div>
+              )}
+
+              {currentCard.grammarPoint && (
+                <div className="mt-2 text-center">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[var(--lapis)] bg-[var(--lapis-soft)] px-2.5 py-1 rounded-xl border border-[var(--lapis)]/20 shadow-2xs">
+                    <BookOpen size={12} className="shrink-0" />
+                    <span>{currentCard.grammarPoint}</span>
+                  </span>
                 </div>
               )}
             </div>
@@ -1117,10 +1242,14 @@ const SinglePlayerScreen: React.FC<Props> = ({
                 <button
                   key={`quick-opt-${oIdx}-${opt}`}
                   type="button"
+                  aria-label={opt}
                   onClick={() => submitAnswer(opt)}
-                  className="p-2.5 rounded-xl bg-[var(--panel)] hover:bg-[var(--lapis-soft)] border border-[var(--line)] hover:border-[var(--lapis)] text-xs sm:text-sm font-bold text-[var(--ink)] text-center transition-all active:scale-95 cursor-pointer shadow-xs"
+                  className="p-2.5 rounded-xl bg-[var(--panel)] hover:bg-[var(--lapis-soft)] border border-[var(--line)] hover:border-[var(--lapis)] text-xs sm:text-sm font-bold text-[var(--ink)] text-center transition-all active:scale-95 cursor-pointer shadow-xs relative flex items-center justify-center gap-1.5"
                 >
-                  {opt}
+                  <span className="hidden sm:inline-flex text-[9px] text-[var(--mute)] bg-[var(--bg)] border border-[var(--line)] px-1 rounded-sm leading-none py-0.5 font-mono" aria-hidden="true">
+                    {oIdx + 1}
+                  </span>
+                  <span>{opt}</span>
                 </button>
               ))}
             </div>

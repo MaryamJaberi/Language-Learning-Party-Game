@@ -11,7 +11,10 @@ import {
   subscribeToRoom, 
   switchPlayerTeam, 
   startOnlineGame, 
-  getDeviceId 
+  getDeviceId,
+  findOnlineDuelMatch,
+  findOnlineMultiplayerMatch,
+  subscribeToOnlineDuelRoom
 } from '../onlineRoomService';
 import { 
   Globe, 
@@ -30,14 +33,20 @@ import {
   MessageSquare,
   Sparkles,
   PhoneCall,
-  AlertCircle
+  AlertCircle,
+  Swords,
+  Radio,
+  Loader2,
+  Wifi
 } from 'lucide-react';
+import { OnlineDuelRoom } from '../types';
 
 interface Props {
   language: Language;
   initialSettings: GameSettings;
   initialRoomCode?: string;
   onStartGame: (room: OnlineRoomState, myPlayerId: number) => void;
+  onStartDuelGame?: (room: OnlineDuelRoom, myRole: 'p1' | 'p2') => void;
   onBack: () => void;
 }
 
@@ -46,14 +55,15 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
   initialSettings,
   initialRoomCode = '',
   onStartGame,
+  onStartDuelGame,
   onBack
 }) => {
   const t = TRANSLATIONS[language] || TRANSLATIONS.fa;
   const isRTL = isRtlLang(language);
   const myDeviceId = getDeviceId();
 
-  // Mode: 'select' | 'create' | 'join' | 'in_lobby'
-  const [viewMode, setViewMode] = useState<'select' | 'create' | 'join' | 'in_lobby'>(
+  // Mode: 'select' | 'create' | 'join' | 'in_lobby' | 'matchmaking'
+  const [viewMode, setViewMode] = useState<'select' | 'create' | 'join' | 'in_lobby' | 'matchmaking'>(
     initialRoomCode ? 'join' : 'select'
   );
 
@@ -71,6 +81,20 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+
+  // Matchmaking State
+  const [matchmakingType, setMatchmakingType] = useState<'duel' | 'party' | null>(null);
+  const [matchmakingElapsed, setMatchmakingElapsed] = useState<number>(0);
+  const [matchmakingStatusText, setMatchmakingStatusText] = useState<string>('');
+  const duelUnsubRef = useRef<(() => void) | null>(null);
+  const matchmakingTimerRef = useRef<any>(null);
+
+  useEffect(() => {
+    return () => {
+      if (matchmakingTimerRef.current) clearInterval(matchmakingTimerRef.current);
+      if (duelUnsubRef.current) duelUnsubRef.current();
+    };
+  }, []);
 
   // Auto-subscribe when in room
   const onStartGameRef = useRef(onStartGame);
@@ -264,6 +288,117 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
     }
   };
 
+  // Quick Online Matchmaking (دونفره و چندنفره)
+  const handleFindDuelMatch = async () => {
+    const effectiveName = playerName.trim() || (isRTL ? 'بازیکن ۱' : 'Player 1');
+    localStorage.setItem('dor_player_name', effectiveName);
+    setPlayerName(effectiveName);
+
+    sound.playClick();
+    setViewMode('matchmaking');
+    setMatchmakingType('duel');
+    setMatchmakingElapsed(0);
+    setMatchmakingStatusText(isRTL ? 'در حال جستجوی رقیب آنلاین برای دوئل...' : 'Searching for 1v1 online opponent...');
+    setErrorMessage(null);
+
+    if (matchmakingTimerRef.current) clearInterval(matchmakingTimerRef.current);
+    matchmakingTimerRef.current = setInterval(() => {
+      setMatchmakingElapsed(prev => prev + 1);
+    }, 1000);
+
+    try {
+      const targetLang = initialSettings.targetLanguages?.[0] || 'nl';
+      const nativeLang = initialSettings.nativeLanguage || (isRTL ? 'fa' : 'en');
+      const cefr = initialSettings.cefrLevel || 'A1';
+
+      const result = await findOnlineDuelMatch(
+        effectiveName,
+        '🦁',
+        targetLang,
+        nativeLang,
+        cefr,
+        5
+      );
+
+      if (result.myPlayerRole === 'p2') {
+        setMatchmakingStatusText(isRTL ? '🎯 رقیب آنلاین پیدا شد! در حال انتقال به دوئل...' : '🎯 Opponent found! Launching duel...');
+        sound.playVictory();
+        setTimeout(() => {
+          if (matchmakingTimerRef.current) clearInterval(matchmakingTimerRef.current);
+          if (onStartDuelGame) {
+            onStartDuelGame(result.room, 'p2');
+          }
+        }, 1000);
+      } else {
+        setMatchmakingStatusText(isRTL ? 'اتاق دوئل آماده شد. در انتظار اتصال حریف...' : 'Duel room ready. Waiting for opponent...');
+        const unsub = subscribeToOnlineDuelRoom(result.room.roomId, (updated) => {
+          if (updated && updated.player2) {
+            setMatchmakingStatusText(isRTL ? '🎯 حریف وصل شد! شروع مسابقه...' : '🎯 Opponent joined! Starting duel...');
+            sound.playVictory();
+            setTimeout(() => {
+              if (matchmakingTimerRef.current) clearInterval(matchmakingTimerRef.current);
+              unsub();
+              if (onStartDuelGame) {
+                onStartDuelGame(updated, 'p1');
+              }
+            }, 1000);
+          }
+        });
+        duelUnsubRef.current = unsub;
+      }
+    } catch (err: any) {
+      if (matchmakingTimerRef.current) clearInterval(matchmakingTimerRef.current);
+      setErrorMessage(err.message || (isRTL ? 'خطا در اتصال به سرور دوئل' : 'Matchmaking error'));
+      setViewMode('select');
+    }
+  };
+
+  const handleFindPartyMatch = async () => {
+    const effectiveName = playerName.trim() || (isRTL ? 'بازیکن' : 'Player');
+    localStorage.setItem('dor_player_name', effectiveName);
+    setPlayerName(effectiveName);
+
+    sound.playClick();
+    setViewMode('matchmaking');
+    setMatchmakingType('party');
+    setMatchmakingElapsed(0);
+    setMatchmakingStatusText(isRTL ? 'در حال جستجوی اتاق فعال دورهمی...' : 'Searching for open party match...');
+    setErrorMessage(null);
+
+    if (matchmakingTimerRef.current) clearInterval(matchmakingTimerRef.current);
+    matchmakingTimerRef.current = setInterval(() => {
+      setMatchmakingElapsed(prev => prev + 1);
+    }, 1000);
+
+    try {
+      const match = await findOnlineMultiplayerMatch(effectiveName, initialSettings);
+      setMatchmakingStatusText(isRTL ? '🎯 اتاق گروهی پیدا شد! ورود به لابی...' : '🎯 Party room found! Entering lobby...');
+      sound.playVictory();
+
+      setTimeout(() => {
+        if (matchmakingTimerRef.current) clearInterval(matchmakingTimerRef.current);
+        setMyPlayerId(match.playerId);
+        setCurrentRoom(match.room);
+        setViewMode('in_lobby');
+      }, 900);
+    } catch (err: any) {
+      if (matchmakingTimerRef.current) clearInterval(matchmakingTimerRef.current);
+      setErrorMessage(err.message || (isRTL ? 'خطا در جستجوی بازی گروهی' : 'Party matchmaking error'));
+      setViewMode('select');
+    }
+  };
+
+  const handleCancelMatchmaking = () => {
+    sound.playClick();
+    if (matchmakingTimerRef.current) clearInterval(matchmakingTimerRef.current);
+    if (duelUnsubRef.current) {
+      duelUnsubRef.current();
+      duelUnsubRef.current = null;
+    }
+    setViewMode('select');
+    setMatchmakingType(null);
+  };
+
   const isHost = currentRoom?.hostId === myDeviceId;
 
   return (
@@ -274,7 +409,9 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
         <button
           onClick={() => {
             sound.playClick();
-            if (viewMode === 'in_lobby') {
+            if (viewMode === 'matchmaking') {
+              handleCancelMatchmaking();
+            } else if (viewMode === 'in_lobby') {
               setViewMode('select');
               setCurrentRoom(null);
             } else if (viewMode === 'create' || viewMode === 'join') {
@@ -303,55 +440,118 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
         </div>
       )}
 
-      {/* 1. SELECTION MODE (Host vs Join) */}
+      {/* 1. SELECTION MODE (Matchmaking vs Host vs Join) */}
       {viewMode === 'select' && (
         <div className="w-full max-w-sm sm:max-w-md my-auto space-y-3 font-ui">
           
-          <div className="bg-[var(--panel)] text-[var(--ink)] p-5 rounded-[24px] border border-[var(--line)] shadow-xs">
-            <div className="flex justify-center mb-2">
-              <TeamMascot color="PARTY" size={70} />
+          <div className="bg-[var(--panel)] text-[var(--ink)] p-4 sm:p-5 rounded-[24px] border border-[var(--line)] shadow-xs">
+            <div className="flex justify-center mb-1.5">
+              <TeamMascot color="PARTY" size={60} />
             </div>
-            <h1 className="text-2xl font-black font-display text-[var(--ink)] mb-1">
-              {language === 'fa' ? 'دورهمی آنلاین با دوستان' : 'Online Party Room'}
+            <h1 className="text-xl sm:text-2xl font-black font-display text-[var(--ink)] mb-1">
+              {language === 'fa' ? 'بازی آنلاین و چندنفره' : 'Online & Multiplayer'}
             </h1>
             <p className="text-xs text-[var(--mute)] font-medium leading-relaxed">
               {language === 'fa' 
-                ? 'همه با گوشی خود وارد شوند، کارت برای حدس‌زننده مخفی می‌ماند و در دیسکورد یا گوگل میت صحبت کنید!' 
-                : 'Everyone joins on their own phone, cards are hidden from the active guesser, and speak on Discord or Meet!'}
+                ? 'مچ‌یابی سریع با بازیکنان آنلاین، یا ساخت اتاق خصوصی و بازی از راه دور با دوستان!' 
+                : 'Fast online matchmaking or host a private room with friends!'}
             </p>
+
+            {/* Quick Player Name Input */}
+            <div className="mt-3 text-start">
+              <label className="block text-[11px] font-bold text-[var(--mute)] mb-1">
+                {language === 'fa' ? 'نام شما در بازی آنلاین:' : 'Your Online Display Name:'}
+              </label>
+              <input
+                type="text"
+                value={playerName}
+                onChange={e => {
+                  setPlayerName(e.target.value);
+                  localStorage.setItem('dor_player_name', e.target.value);
+                }}
+                placeholder={language === 'fa' ? 'مثلاً: آیدین، نیلوفر...' : 'e.g. Alex'}
+                className="w-full px-3 py-2 bg-[var(--bg)] rounded-xl border border-[var(--line)] text-xs font-bold text-[var(--ink)] focus:border-[var(--lapis)] focus:outline-hidden"
+              />
+            </div>
           </div>
 
-          <div className="space-y-2.5">
-            {/* Create Room Button */}
+          {/* Action Grid: Matchmaking (2-Player Duel & Multiplayer Party) + Custom Rooms */}
+          <div className="space-y-2">
+            {/* MATCHMAKING 1: Quick 1v1 Online Duel */}
+            <button
+              onClick={handleFindDuelMatch}
+              className="w-full py-3 px-4 text-xs sm:text-sm font-extrabold flex items-center justify-between rounded-2xl bg-gradient-to-r from-[#2347C5] to-[#E0533C] hover:brightness-105 text-white shadow-md transition-all active:scale-98 cursor-pointer group"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                  <Swords size={18} />
+                </div>
+                <div className="text-start">
+                  <span className="block leading-tight font-black">
+                    {language === 'fa' ? 'مچ‌یابی آنلاین دونفره (دوئل سرعتی)' : 'Find 1v1 Online Duel Match'}
+                  </span>
+                  <span className="text-[10px] text-white/80 font-medium block leading-tight mt-0.5">
+                    {language === 'fa' ? 'جستجوی حریف آنلاین • رقابت زنده روی ۲ گوشی' : 'Quick match 1v1 across 2 phones'}
+                  </span>
+                </div>
+              </div>
+              <span className="text-[11px] bg-white/20 px-2 py-0.5 rounded-lg font-bold">
+                {language === 'fa' ? 'جستجو ⚡' : 'Search ⚡'}
+              </span>
+            </button>
+
+            {/* MATCHMAKING 2: Quick Multiplayer Party */}
+            <button
+              onClick={handleFindPartyMatch}
+              className="w-full py-3 px-4 text-xs sm:text-sm font-extrabold flex items-center justify-between rounded-2xl bg-gradient-to-r from-[var(--turq)] to-[var(--lapis)] hover:brightness-105 text-white shadow-md transition-all active:scale-98 cursor-pointer group"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                  <Users size={18} />
+                </div>
+                <div className="text-start">
+                  <span className="block leading-tight font-black">
+                    {language === 'fa' ? 'مچ‌یابی دورهمی چندنفره' : 'Find Multiplayer Party Match'}
+                  </span>
+                  <span className="text-[10px] text-white/80 font-medium block leading-tight mt-0.5">
+                    {language === 'fa' ? 'ورود به لابی‌های فعال گروهی' : 'Join active multiplayer group lobby'}
+                  </span>
+                </div>
+              </div>
+              <span className="text-[11px] bg-white/20 px-2 py-0.5 rounded-lg font-bold">
+                {language === 'fa' ? 'جستجو 👥' : 'Search 👥'}
+              </span>
+            </button>
+
+            {/* Host Private Custom Room */}
             <button
               onClick={() => {
                 sound.playClick();
                 setViewMode('create');
               }}
-              className="w-full py-3.5 text-sm sm:text-base font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 rounded-2xl bg-[var(--lapis)] hover:brightness-105 text-[var(--on-lapis)] shadow-md transition-all active:scale-98 cursor-pointer"
+              className="w-full py-2.5 px-3 text-xs font-bold flex items-center justify-center gap-2 rounded-xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs transition-all active:scale-98 cursor-pointer"
             >
-              <Crown size={18} />
-              <span>{language === 'fa' ? 'ایجاد اتاق جدید (میزبان)' : 'Host New Room'}</span>
-              <Zap size={16} fill="currentColor" />
+              <Crown size={15} className="text-[var(--saffron)]" />
+              <span>{language === 'fa' ? 'ساخت اتاق اختصاصی با دوستان (میزبان)' : 'Host Private Room'}</span>
             </button>
 
-            {/* Join Room Button */}
+            {/* Join with Code */}
             <button
               onClick={() => {
                 sound.playClick();
                 setViewMode('join');
               }}
-              className="w-full py-3.5 text-sm sm:text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs transition-all active:scale-98 cursor-pointer"
+              className="w-full py-2.5 px-3 text-xs font-bold flex items-center justify-center gap-2 rounded-xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs transition-all active:scale-98 cursor-pointer"
             >
-              <Users size={18} />
+              <Wifi size={15} className="text-[var(--lapis)]" />
               <span>{language === 'fa' ? 'ورود با کد اتاق (بازیکن)' : 'Join with Room Code'}</span>
             </button>
           </div>
 
           {/* Voice Helper Info Box */}
-          <div className="bg-[var(--panel)] text-[var(--ink)] p-3.5 rounded-2xl border border-[var(--line)] shadow-xs text-start space-y-1 text-[11px]">
+          <div className="bg-[var(--panel)] text-[var(--ink)] p-3 rounded-2xl border border-[var(--line)] shadow-xs text-start space-y-1 text-[11px]">
             <div className="flex items-center gap-1.5 text-[var(--turq)] font-bold">
-              <Headphones size={14} />
+              <Headphones size={13} />
               <span>{language === 'fa' ? 'نحوه ارتباط صوتی:' : 'Voice Chat Setup:'}</span>
             </div>
             <p className="text-[var(--mute)] font-medium leading-relaxed">
@@ -361,6 +561,51 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
             </p>
           </div>
 
+        </div>
+      )}
+
+      {/* 1.5 MATCHMAKING RADAR MODE */}
+      {viewMode === 'matchmaking' && (
+        <div className="w-full max-w-sm sm:max-w-md my-auto space-y-4 bg-[var(--panel)] p-5 sm:p-6 rounded-[28px] border border-[var(--line)] shadow-lg text-center font-ui animate-fade-in">
+          {/* Animated Pulsing Radar */}
+          <div className="relative w-24 h-24 sm:w-28 sm:h-28 mx-auto flex items-center justify-center">
+            <div className="absolute inset-0 rounded-full bg-[var(--lapis)]/20 animate-ping duration-1000" />
+            <div className="absolute inset-2 rounded-full bg-[var(--turq)]/20 animate-pulse" />
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-tr from-[var(--lapis)] to-[var(--turq)] text-white flex items-center justify-center shadow-lg relative z-10">
+              {matchmakingType === 'duel' ? <Swords size={28} className="animate-bounce" /> : <Users size={28} className="animate-bounce" />}
+            </div>
+          </div>
+
+          <div>
+            <h2 className="text-lg sm:text-xl font-black text-[var(--ink)] mb-1">
+              {matchmakingType === 'duel' 
+                ? (isRTL ? 'مچ‌یابی آنلاین دوئل (دونفره)' : '1v1 Online Duel Matchmaking')
+                : (isRTL ? 'مچ‌یابی آنلاین دورهمی (چندنفره)' : 'Multiplayer Party Matchmaking')}
+            </h2>
+            <p className="text-xs font-bold text-[var(--turq)] min-h-[18px]">
+              {matchmakingStatusText}
+            </p>
+          </div>
+
+          {/* Matchmaking Timer */}
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[var(--bg)] rounded-full text-xs font-mono font-bold text-[var(--ink)] border border-[var(--line)]">
+            <Radio size={13} className="text-emerald-500 animate-pulse" />
+            <span>00:{String(matchmakingElapsed).padStart(2, '0')}</span>
+          </div>
+
+          <p className="text-[11px] text-[var(--mute)] leading-relaxed">
+            {matchmakingType === 'duel'
+              ? (isRTL ? 'در حال جستجو بین بازیکنان آنلاین فعال. به محض یافتن رقیب، مسابقه بلافاصله شروع می‌شود!' : 'Finding active online player. Duel starts as soon as opponent connects!')
+              : (isRTL ? 'در حال جستجوی اتاق‌های باز دورهمی یا ساخت اتاق عمومی برای ورود سایر بازیکنان.' : 'Searching for open parties or hosting a public lobby for others.')}
+          </p>
+
+          <button
+            type="button"
+            onClick={handleCancelMatchmaking}
+            className="w-full py-2.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--line)] text-rose-600 dark:text-rose-400 font-bold text-xs border border-rose-300 dark:border-rose-900/40 transition-all cursor-pointer"
+          >
+            {isRTL ? 'لغو جستجو' : 'Cancel Matchmaking'}
+          </button>
         </div>
       )}
 

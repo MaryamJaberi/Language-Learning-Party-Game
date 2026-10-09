@@ -195,6 +195,7 @@ export interface OnlineRoomState {
   voiceProvider?: 'meet' | 'discord' | 'jitsi' | 'custom';
   voiceLink?: string;
   reactions?: RoomReaction[];
+  isPublicMatchmaking?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -214,6 +215,8 @@ export interface SinglePlayerSettings {
   timeLimitSeconds: number; // 0 = unlimited
   autoPlayAudio: boolean;
   selectedCategories: string[];
+  zenMode?: boolean; // Distraction-free deep focus mode
+  autoAdvance?: boolean; // Smooth auto-advance on correct answer
 }
 
 export interface SinglePlayerCardResult {
@@ -298,6 +301,7 @@ export interface OnlineDuelRoom {
   reactionDiffMs?: number | null;
   matchWinner?: 'p1' | 'p2' | null;
   sabotageTarget?: 'p1' | 'p2' | null;
+  isPublicMatchmaking?: boolean;
   updatedAt?: string;
 }
 

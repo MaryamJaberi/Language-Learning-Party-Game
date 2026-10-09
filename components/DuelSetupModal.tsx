@@ -102,10 +102,10 @@ export const DuelSetupModal: React.FC<Props> = ({
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-black text-[var(--ink)]">
-                {isRTL ? 'دوئل سرعتی دونفره (آرکید)' : '1v1 Fast Reflex Arcade Duel'}
+                {isRTL ? 'دوئل سرعتی دونفره ⚔️' : '1v1 Speed Duel ⚔️'}
               </h2>
               <span className="text-[11px] font-bold text-[var(--mute)]">
-                {isRTL ? 'هرکی زودتر جواب بده امتیاز رو می‌گیره!' : 'Fastest reflex wins the round!'}
+                {isRTL ? 'مسابقه سرعتی دونفره (حضوری یا آنلاین اینترنتی)' : 'Head-to-head duel (Local or Online Match)'}
               </span>
             </div>
           </div>
@@ -120,6 +120,34 @@ export const DuelSetupModal: React.FC<Props> = ({
 
         {/* Form Body */}
         <div className="p-4 space-y-4 overflow-y-auto flex-1">
+          {/* Quick 1v1 Online Matchmaking Banner */}
+          <div className="p-3 bg-gradient-to-r from-blue-500/10 via-rose-500/10 to-amber-500/10 border border-[#2347C5]/30 rounded-2xl flex items-center justify-between gap-2 shadow-2xs">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-r from-[#2347C5] to-[#E0533C] text-white flex items-center justify-center shrink-0 shadow-xs">
+                <Swords size={16} />
+              </div>
+              <div className="text-start">
+                <span className="text-xs font-black text-[var(--ink)] block leading-tight">
+                  {isRTL ? 'مچ‌یابی آنلاین دونفره' : '1v1 Online Matchmaking'}
+                </span>
+                <span className="text-[10px] text-[var(--mute)] font-medium block">
+                  {isRTL ? 'جستجوی زنده حریف در اینترنت' : 'Live opponent search online'}
+                </span>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                sound.playClick();
+                onClose();
+                onStartOnlineDuel?.('__matchmake__');
+              }}
+              className="py-1.5 px-3 bg-gradient-to-r from-[#2347C5] to-[#E0533C] hover:brightness-105 active:scale-95 text-white text-xs font-black rounded-xl shrink-0 shadow-xs transition-all cursor-pointer"
+            >
+              {isRTL ? 'مچ آنلاین ⚡' : 'Match ⚡'}
+            </button>
+          </div>
+
           {/* DEVICE MODE SELECTOR (1 Phone vs 2 Phones) */}
           <div className="bg-[var(--bg)] p-1 rounded-2xl border border-[var(--line)] grid grid-cols-2 gap-1">
             <button
@@ -132,7 +160,7 @@ export const DuelSetupModal: React.FC<Props> = ({
               }`}
             >
               <Smartphone size={15} />
-              <span>{isRTL ? '📱 روی یک گوشی' : '📱 On 1 Phone'}</span>
+              <span>{isRTL ? '📱 حضوری (۱ گوشی)' : '📱 Local (1 Phone)'}</span>
             </button>
             <button
               type="button"
@@ -143,8 +171,8 @@ export const DuelSetupModal: React.FC<Props> = ({
                   : 'text-[var(--mute)] hover:text-[var(--ink)]'
               }`}
             >
-              <Wifi size={15} />
-              <span>{isRTL ? '📲 روی دو گوشی' : '📲 On 2 Phones'}</span>
+              <Globe size={15} />
+              <span>{isRTL ? '🌐 آنلاین (۲ گوشی)' : '🌐 Online (2 Phones)'}</span>
             </button>
           </div>
 
@@ -164,6 +192,20 @@ export const DuelSetupModal: React.FC<Props> = ({
               </p>
 
               <div className="space-y-2 pt-1">
+                {/* Quick 1v1 Matchmaking */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playClick();
+                    onClose();
+                    onStartOnlineDuel?.('__matchmake__');
+                  }}
+                  className="w-full py-2.5 px-3 bg-gradient-to-r from-[#2347C5] to-[#E0533C] hover:brightness-105 text-white text-xs font-black rounded-xl flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+                >
+                  <Swords size={15} />
+                  <span>{isRTL ? '⚡ مچ‌یابی آنلاین دونفره (سریع)' : '⚡ Find 1v1 Online Duel Match'}</span>
+                </button>
+
                 <button
                   type="button"
                   onClick={() => {
@@ -427,13 +469,13 @@ export const DuelSetupModal: React.FC<Props> = ({
           >
             {deviceMode === 'two_phones' ? (
               <>
-                <Wifi size={18} />
-                <span>{isRTL ? 'شروع دوئل روی ۲ گوشی 📲' : 'Start 2-Phones Duel 📲'}</span>
+                <Globe size={18} />
+                <span>{isRTL ? 'شروع دوئل آنلاین 🌐' : 'Start Online Duel 🌐'}</span>
               </>
             ) : (
               <>
                 <Play size={18} fill="currentColor" />
-                <span>{isRTL ? 'شروع دوئل روی ۱ گوشی 📱' : 'Start 1-Phone Duel 📱'}</span>
+                <span>{isRTL ? 'شروع مسابقه دوئل ⚔️' : 'Start Duel Match ⚔️'}</span>
               </>
             )}
           </button>

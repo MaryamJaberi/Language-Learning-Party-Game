@@ -182,7 +182,7 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
   const winners = room.teams.filter(t => (t.score || 0) === maxScore);
 
   return (
-    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full min-h-0 flex-1 flex flex-col justify-between p-3 sm:p-4 text-center select-none relative overflow-hidden bg-[var(--bg)] text-[var(--ink)] font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full min-h-0 flex-1 flex flex-col justify-between p-2.5 sm:p-4 text-center select-none relative overflow-y-auto overscroll-contain bg-[var(--bg)] text-[var(--ink)] font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
       
       {/* Floating Emoji Reactions Overlay */}
       <div className="absolute inset-0 pointer-events-none z-40 overflow-hidden">

@@ -1213,8 +1213,8 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
           <div className="text-xs sm:text-sm text-[var(--ink)]/80 space-y-2.5 leading-relaxed overflow-y-auto max-h-[60vh] pr-1">
             <p>
               {isRTL 
-                ? '«دور» یک بازی گروهی هیجان‌انگیز است که دور یک میز نشسته و یک گوشی بین بازیکنان دست‌به‌دست می‌شود.'
-                : 'Turn is a fast-paced party game where players pass a single phone around the table.'}
+                ? '«دور» یک بازی گروهی هیجان‌انگیز است که دور یک میز یا به‌صورت آنلاین بین اعضای تیم‌ها بازی می‌شود.'
+                : 'Turn is an exciting party game played around the table or online between team members.'}
             </p>
             <p>
               {isRTL

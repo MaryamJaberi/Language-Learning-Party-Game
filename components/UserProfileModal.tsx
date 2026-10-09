@@ -176,7 +176,7 @@ export const UserProfileModal: React.FC<Props> = ({
     sound.playClick();
     setIsDeletingAccount(true);
     try {
-      await deleteUserAccountAndData();
+      await deleteUserAccountAndData(currentUser?.uid);
       if (onAuthChange) onAuthChange(null);
       setCloudHistory([]);
       setDeleteConfirmOpen(false);

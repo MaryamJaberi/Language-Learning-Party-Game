@@ -28,6 +28,7 @@ import {
 } from './types';
 import { buildSessionCardPool } from './cardsData';
 import { getRandomCharacters } from './characters';
+import { getUniqueCardsForSession } from './contentEngine';
 
 /**
  * Get or generate a persistent local device ID for the player
@@ -64,7 +65,8 @@ export const createOnlineRoom = async (
   hostName: string, 
   settings: GameSettings,
   voiceProvider: 'meet' | 'discord' | 'jitsi' | 'custom' = 'jitsi',
-  customVoiceLink?: string
+  customVoiceLink?: string,
+  isPublicMatchmaking: boolean = false
 ): Promise<{ roomId: string; roomCode: string; playerId: number }> => {
   const roomCode = generateRoomCode();
   const roomId = `room_${roomCode.toLowerCase()}`;
@@ -120,6 +122,7 @@ export const createOnlineRoom = async (
     voiceProvider,
     voiceLink: resolvedVoiceLink,
     reactions: [],
+    isPublicMatchmaking,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   };
@@ -473,7 +476,8 @@ export const createOnlineDuelRoom = async (
   cefrLevel: CEFRLevel,
   winningScore: number,
   cards: LanguageCard[],
-  sabotageEnabled: boolean = true
+  sabotageEnabled: boolean = true,
+  isPublicMatchmaking: boolean = false
 ): Promise<OnlineDuelRoom> => {
   const roomId = 'duel_' + Math.random().toString(36).substring(2, 9);
   const roomCode = generateRoomCode();
@@ -488,6 +492,7 @@ export const createOnlineDuelRoom = async (
     cefrLevel,
     winningScore,
     sabotageEnabled,
+    isPublicMatchmaking,
     player1: {
       id: hostId,
       name: hostName || 'Player 1',
@@ -748,4 +753,138 @@ export const subscribeToOnlineDuelRoom = (
     }
   );
 };
+
+/**
+ * -------------------------------------------------------------
+ * QUICK PUBLIC MATCHMAKING: 1v1 DUEL (مچ‌یابی آنلاین دونفره)
+ * -------------------------------------------------------------
+ * Searches for an open waiting duel room with public matchmaking enabled.
+ * If found, joins immediately as player 2.
+ * If not found, creates a new public waiting duel room as host (player 1).
+ */
+export const findOnlineDuelMatch = async (
+  playerName: string,
+  playerAvatar: string = '🕹️',
+  targetLanguage: Language = 'nl',
+  nativeLanguage: Language = 'fa',
+  cefrLevel: CEFRLevel = 'A1',
+  winningScore: number = 5,
+  cards?: LanguageCard[]
+): Promise<{ room: OnlineDuelRoom; myPlayerRole: 'p1' | 'p2'; isNewRoom: boolean }> => {
+  const myId = getDeviceId();
+
+  try {
+    const q = query(
+      collection(db, 'rooms'),
+      where('status', '==', 'waiting')
+    );
+    const snap = await getDocs(q);
+
+    for (const docSnap of snap.docs) {
+      const data = docSnap.data() as OnlineDuelRoom;
+      // Must be an active 1v1 duel room waiting for opponent
+      if (
+        data.roomId && 
+        data.player1 && 
+        !data.player2 && 
+        data.player1.id !== myId &&
+        (data.isPublicMatchmaking !== false)
+      ) {
+        const joinResult = await joinOnlineDuelRoom(data.roomCode, playerName, playerAvatar);
+        if (!('error' in joinResult)) {
+          return { room: joinResult.room, myPlayerRole: 'p2', isNewRoom: false };
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Matchmaking duel query error, creating new room:', err);
+  }
+
+  // No open room found, create a new public waiting room as host
+  const duelCards = cards && cards.length > 0 
+    ? cards 
+    : getUniqueCardsForSession(targetLanguage, nativeLanguage, cefrLevel, [], Math.max(winningScore * 4, 30), true);
+
+  const newRoom = await createOnlineDuelRoom(
+    playerName,
+    playerAvatar,
+    targetLanguage,
+    nativeLanguage,
+    cefrLevel,
+    winningScore,
+    duelCards,
+    true,
+    true // isPublicMatchmaking = true
+  );
+
+  return { room: newRoom, myPlayerRole: 'p1', isNewRoom: true };
+};
+
+/**
+ * -------------------------------------------------------------
+ * QUICK PUBLIC MATCHMAKING: MULTIPLAYER PARTY (مچ‌یابی گروهی)
+ * -------------------------------------------------------------
+ * Searches for an open public multiplayer lobby with available slots.
+ * If found, joins the room immediately.
+ * If not found, creates a new public party room as host.
+ */
+export const findOnlineMultiplayerMatch = async (
+  playerName: string,
+  settings: GameSettings
+): Promise<{ roomId: string; room: OnlineRoomState; playerId: number; isHost: boolean }> => {
+  const myId = getDeviceId();
+  const maxPlayers = settings.playerCount || 4;
+
+  try {
+    const q = query(
+      collection(db, 'rooms'),
+      where('status', '==', 'lobby')
+    );
+    const snap = await getDocs(q);
+
+    for (const docSnap of snap.docs) {
+      const data = docSnap.data() as OnlineRoomState;
+      if (
+        data.id && 
+        Array.isArray(data.players) && 
+        data.players.length < (data.settings?.playerCount || maxPlayers) &&
+        (data.isPublicMatchmaking !== false)
+      ) {
+        const alreadyIn = data.players.some(p => p.deviceId === myId);
+        if (!alreadyIn) {
+          const joinRes = await joinOnlineRoom(data.code, playerName);
+          return { roomId: joinRes.roomId, room: joinRes.room, playerId: joinRes.playerId, isHost: false };
+        } else {
+          const existingPlayer = data.players.find(p => p.deviceId === myId);
+          return { roomId: data.id, room: data, playerId: existingPlayer?.id || 0, isHost: data.hostId === myId };
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Multiplayer matchmaking query error, creating new room:', err);
+  }
+
+  // Create new public multiplayer room
+  const { roomId, roomCode, playerId } = await createOnlineRoom(playerName, settings, 'jitsi', undefined, true);
+  const createdSnap = await getDoc(doc(db, 'rooms', roomId));
+  const createdRoom = (createdSnap.exists() ? createdSnap.data() : {
+    id: roomId,
+    code: roomCode,
+    hostId: myId,
+    hostName: playerName,
+    status: 'lobby',
+    currentRound: 1,
+    activePlayerIndex: 0,
+    settings,
+    teams: [],
+    players: [],
+    currentCard: null,
+    roundTimer: settings.roundDuration * 1000,
+    isTimerRunning: false,
+    playedCards: []
+  }) as OnlineRoomState;
+
+  return { roomId, room: createdRoom, playerId, isHost: true };
+};
+
 
