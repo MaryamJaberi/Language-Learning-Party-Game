@@ -165,45 +165,86 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
             </div>
           )}
           
-          {/* 1. Target Language Selection */}
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-[var(--ink)] flex items-center gap-1.5">
+          {/* 1. Streamlined Clean Language Selection Pair */}
+          <div className="space-y-2 p-3 bg-[var(--bg)] border border-[var(--line)] rounded-2xl">
+            <div className="flex items-center justify-between text-xs font-bold text-[var(--ink)]">
+              <span className="flex items-center gap-1.5">
                 <Globe size={13} className="text-[var(--lapis)]" />
-                <span>{isRTL ? 'زبان تمرین (Target Language):' : 'Target Language:'}</span>
-              </label>
-              <span className="text-[10px] text-[var(--mute)] font-bold">۳۸ زبان</span>
+                <span>{isRTL ? 'انتخاب زبان‌ها:' : 'Languages:'}</span>
+              </span>
+              <span className="text-[10px] text-[var(--mute)] font-medium">
+                {isRTL ? '۳۸ زبان بین‌المللی' : '38 Languages'}
+              </span>
             </div>
 
-            <button
-              type="button"
-              onClick={() => {
-                sound.playClick();
-                setPickerMode('target');
-              }}
-              className="w-full p-2.5 rounded-2xl bg-[var(--bg)] hover:bg-[var(--line)]/50 border border-[var(--line)] text-[var(--ink)] flex items-center justify-between shadow-xs active:scale-98 transition-all cursor-pointer"
-            >
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center text-lg shadow-xs">
-                  <FlagIcon language={settings.targetLanguage} size={20} />
+            <div className="grid grid-cols-[1fr,auto,1fr] items-center gap-2">
+              {/* Target Language Card */}
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playClick();
+                  setPickerMode('target');
+                }}
+                className="p-2.5 rounded-xl bg-[var(--panel)] hover:bg-[var(--line)]/40 border border-[var(--line)] text-start shadow-xs active:scale-98 transition-all cursor-pointer min-w-0"
+              >
+                <div className="text-[9.5px] text-[var(--mute)] font-bold mb-1 flex items-center justify-between">
+                  <span>{isRTL ? 'زبان تمرین (هدف)' : 'Target'}</span>
+                  <span className="text-[9px] text-[var(--lapis)]">▾</span>
                 </div>
-                <div className="text-start">
-                  <div className="font-extrabold text-xs text-[var(--ink)]">
-                    {currentTargetLangInfo.nativeName}
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="w-6 h-6 rounded-md bg-[var(--bg)] border border-[var(--line)] flex items-center justify-center shrink-0">
+                    <FlagIcon language={settings.targetLanguage} size={15} />
                   </div>
-                  <div className="text-[9.5px] text-[var(--mute)] font-medium">
-                    {isRTL ? 'زبان یادگیری و تمرین' : 'Target Practice Language'}
-                  </div>
+                  <span className="font-extrabold text-xs text-[var(--ink)] truncate">
+                    {currentTargetLangInfo.nativeName.split(' ')[0]}
+                  </span>
                 </div>
-              </div>
-              <div className="px-2.5 py-1 rounded-lg bg-[var(--lapis-soft)] text-[var(--lapis)] font-bold text-[11px] flex items-center gap-1">
-                <span>{isRTL ? 'تغییر ▾' : 'Change ▾'}</span>
-              </div>
-            </button>
+              </button>
 
-            {/* Quick-Pick Popular Language Chips */}
-            <div className="flex items-center gap-1 overflow-x-auto py-0.5 no-scrollbar">
-              {(['en-US', 'nl', 'de', 'fr', 'es', 'it', 'fa', 'tr', 'ar', 'ru', 'zh', 'ja'] as Language[]).map(langCode => {
+              {/* Quick Swap Languages */}
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playToggle();
+                  setSettings(s => ({
+                    ...s,
+                    targetLanguage: s.nativeLanguage,
+                    nativeLanguage: s.targetLanguage
+                  }));
+                }}
+                className="w-7 h-7 rounded-full bg-[var(--panel)] border border-[var(--line)] hover:border-[var(--lapis)] text-[var(--ink)] flex items-center justify-center shadow-2xs active:scale-90 transition-all cursor-pointer"
+                title={isRTL ? 'جابجایی زبان‌ها' : 'Swap languages'}
+              >
+                <ArrowRightLeft size={12} className="text-[var(--mute)]" />
+              </button>
+
+              {/* Native / Reference Language Card */}
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playClick();
+                  setPickerMode('native');
+                }}
+                className="p-2.5 rounded-xl bg-[var(--panel)] hover:bg-[var(--line)]/40 border border-[var(--line)] text-start shadow-xs active:scale-98 transition-all cursor-pointer min-w-0"
+              >
+                <div className="text-[9.5px] text-[var(--mute)] font-bold mb-1 flex items-center justify-between">
+                  <span>{isRTL ? 'زبان راهنما (مبدأ)' : 'Guide'}</span>
+                  <span className="text-[9px] text-[var(--turq)]">▾</span>
+                </div>
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="w-6 h-6 rounded-md bg-[var(--bg)] border border-[var(--line)] flex items-center justify-center shrink-0">
+                    <FlagIcon language={settings.nativeLanguage} size={15} />
+                  </div>
+                  <span className="font-extrabold text-xs text-[var(--ink)] truncate">
+                    {currentNativeLangInfo.nativeName.split(' ')[0]}
+                  </span>
+                </div>
+              </button>
+            </div>
+
+            {/* Quick-Pick Popular Target Language Chips */}
+            <div className="flex items-center gap-1 overflow-x-auto pt-1 no-scrollbar">
+              {(['en-US', 'nl', 'de', 'fr', 'es', 'tr', 'ar', 'fa'] as Language[]).map(langCode => {
                 const isSelected = settings.targetLanguage === langCode;
                 const langInfo = SUPPORTED_LANGUAGES.find(l => l.code === langCode);
                 return (
@@ -214,54 +255,18 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                       sound.playToggle();
                       setSettings(s => ({ ...s, targetLanguage: langCode }));
                     }}
-                    className={`px-2.5 py-1 rounded-lg border text-[10px] font-bold shrink-0 flex items-center gap-1 transition-all cursor-pointer ${
+                    className={`px-2 py-0.5 rounded-lg border text-[10px] font-bold shrink-0 flex items-center gap-1 transition-all cursor-pointer ${
                       isSelected 
                         ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs' 
-                        : 'bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--panel)]'
+                        : 'bg-[var(--panel)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--bg)]'
                     }`}
                   >
-                    <FlagIcon language={langCode} size={12} />
+                    <FlagIcon language={langCode} size={11} />
                     <span>{langInfo?.nativeName.split(' ')[0] || langCode}</span>
                   </button>
                 );
               })}
             </div>
-          </div>
-
-          {/* 2. Native Reference Language (Hints & Prompts) */}
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-[var(--ink)] flex items-center gap-1.5">
-                <Languages size={13} className="text-[var(--turq)]" />
-                <span>{isRTL ? 'زبان مبدأ (راهنما):' : 'Guide / Reference Language:'}</span>
-              </label>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => {
-                sound.playClick();
-                setPickerMode('native');
-              }}
-              className="w-full p-2.5 rounded-2xl bg-[var(--bg)] hover:bg-[var(--line)]/50 border border-[var(--line)] text-[var(--ink)] flex items-center justify-between shadow-xs active:scale-98 transition-all cursor-pointer"
-            >
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center text-lg shadow-xs">
-                  <FlagIcon language={settings.nativeLanguage} size={20} />
-                </div>
-                <div className="text-start">
-                  <div className="font-extrabold text-xs text-[var(--ink)]">
-                    {currentNativeLangInfo.nativeName}
-                  </div>
-                  <div className="text-[9.5px] text-[var(--mute)] font-medium">
-                    {isRTL ? 'راهنمای کارت‌ها' : 'Card Guide'}
-                  </div>
-                </div>
-              </div>
-              <div className="px-2.5 py-1 rounded-lg bg-[var(--lapis-soft)] text-[var(--lapis)] font-bold text-[11px] flex items-center gap-1">
-                <span>{isRTL ? 'تغییر ▾' : 'Change ▾'}</span>
-              </div>
-            </button>
           </div>
 
           {/* 3. Challenge Mode */}
@@ -388,42 +393,167 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
             </div>
           </div>
 
-          {/* 5. Number of Cards */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-[var(--ink)] flex items-center gap-1.5">
-              <Clock size={13} className="text-[var(--saffron)]" />
-              <span>{isRTL ? 'تعداد کارت‌ها:' : 'Number of Cards:'}</span>
-            </label>
-            <div className="grid grid-cols-4 gap-1.5 text-center">
-              {[5, 10, 15, 20].map(cnt => {
-                const isSelected = settings.questionCount === cnt;
-                return (
-                  <button
-                    key={cnt}
-                    onClick={() => {
-                      sound.playToggle();
-                      setSettings(s => ({ ...s, questionCount: cnt }));
-                    }}
-                    className={`py-1.5 rounded-xl border font-bold text-[11px] transition-all cursor-pointer active:scale-95 ${
-                      isSelected 
-                        ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs' 
-                        : 'bg-[var(--bg)] border-[var(--line)] text-[var(--ink)] hover:bg-[var(--panel)]'
-                    }`}
-                  >
-                    {cnt} {isRTL ? 'کارت' : 'cards'}
-                  </button>
-                );
-              })}
+          {/* 5. Match Format: Total Match Time vs Card Count */}
+          <div className="space-y-2 p-3 bg-[var(--bg)] border border-[var(--line)] rounded-2xl">
+            <div className="flex items-center justify-between text-xs font-bold text-[var(--ink)]">
+              <span className="flex items-center gap-1.5">
+                <Clock size={13} className="text-[var(--saffron)]" />
+                <span>{isRTL ? 'قالب تمرین و زمان:' : 'Match Format & Time:'}</span>
+              </span>
+              <span className="text-[10px] text-[var(--mute)] font-medium">
+                {settings.matchMode === 'timed_match' ? (isRTL ? 'مسابقه لیدربرد 🏆' : 'Leaderboard Match 🏆') : (isRTL ? 'تمرین آزاد 🃏' : 'Free Practice 🃏')}
+              </span>
             </div>
+
+            {/* Match Mode Tabs */}
+            <div className="grid grid-cols-2 gap-1.5 p-1 bg-[var(--panel)] border border-[var(--line)] rounded-xl text-center">
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playToggle();
+                  setSettings(s => ({
+                    ...s,
+                    matchMode: 'timed_match',
+                    totalMatchSeconds: s.totalMatchSeconds || 60,
+                    questionCount: 30 // Enough cards for speedrun in time
+                  }));
+                }}
+                className={`py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                  settings.matchMode === 'timed_match'
+                    ? 'bg-[var(--lapis)] text-[var(--on-lapis)] shadow-xs'
+                    : 'text-[var(--mute)] hover:text-[var(--ink)]'
+                }`}
+              >
+                <Zap size={13} />
+                <span>{isRTL ? 'مسابقه زمان کل ⏱️' : 'Timed Match ⏱️'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playToggle();
+                  setSettings(s => ({
+                    ...s,
+                    matchMode: 'card_count',
+                    totalMatchSeconds: 0,
+                    questionCount: s.questionCount > 20 ? 10 : s.questionCount
+                  }));
+                }}
+                className={`py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                  settings.matchMode !== 'timed_match'
+                    ? 'bg-[var(--lapis)] text-[var(--on-lapis)] shadow-xs'
+                    : 'text-[var(--mute)] hover:text-[var(--ink)]'
+                }`}
+              >
+                <Layers size={13} />
+                <span>{isRTL ? 'تعداد کارت ثابت 🃏' : 'Fixed Cards 🃏'}</span>
+              </button>
+            </div>
+
+            {/* Total Time Options for Timed Match */}
+            {settings.matchMode === 'timed_match' ? (
+              <div className="space-y-1 pt-1">
+                <div className="text-[10px] text-[var(--mute)] font-bold">
+                  {isRTL ? 'زمان کل مسابقه (حل بیشترین کارت و کسب امتیاز سطح):' : 'Total match duration (answer as many as possible):'}
+                </div>
+                <div className="grid grid-cols-4 gap-1.5 text-center">
+                  {[30, 60, 90, 120].map(sec => {
+                    const isSelected = (settings.totalMatchSeconds || 60) === sec;
+                    return (
+                      <button
+                        key={sec}
+                        type="button"
+                        onClick={() => {
+                          sound.playToggle();
+                          setSettings(s => ({
+                            ...s,
+                            totalMatchSeconds: sec,
+                            timeLimitSeconds: sec
+                          }));
+                        }}
+                        className={`py-1.5 rounded-xl border font-black text-[11px] transition-all cursor-pointer active:scale-95 ${
+                          isSelected
+                            ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs'
+                            : 'bg-[var(--panel)] border-[var(--line)] text-[var(--ink)] hover:bg-[var(--bg)]'
+                        }`}
+                      >
+                        {sec} {isRTL ? 'ثانیه' : 's'}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              /* Fixed Card Count Options */
+              <div className="space-y-1 pt-1">
+                <div className="text-[10px] text-[var(--mute)] font-bold">
+                  {isRTL ? 'تعداد کارت‌های این جلسه:' : 'Number of cards:'}
+                </div>
+                <div className="grid grid-cols-4 gap-1.5 text-center">
+                  {[5, 10, 15, 20].map(cnt => {
+                    const isSelected = settings.questionCount === cnt;
+                    return (
+                      <button
+                        key={cnt}
+                        type="button"
+                        onClick={() => {
+                          sound.playToggle();
+                          setSettings(s => ({ ...s, questionCount: cnt }));
+                        }}
+                        className={`py-1.5 rounded-xl border font-bold text-[11px] transition-all cursor-pointer active:scale-95 ${
+                          isSelected 
+                            ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs' 
+                            : 'bg-[var(--panel)] border-[var(--line)] text-[var(--ink)] hover:bg-[var(--bg)]'
+                        }`}
+                      >
+                        {cnt} {isRTL ? 'کارت' : 'cards'}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* 6. Ergonomic & Focus Enhancements */}
+          {/* 6. Ergonomic, Active Recall & Focus Enhancements */}
           <div className="space-y-2 pt-1 border-t border-[var(--line)]/60">
             <div className="text-[11px] font-bold text-[var(--mute)]">
-              {isRTL ? 'تنظیمات تمرکز و روان‌سازی یادگیری:' : 'Focus & Ergonomics:'}
+              {isRTL ? 'تنظیمات تمرکز و فعال‌سازی یادگیری:' : 'Focus & Memory Ergonomics:'}
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {/* Active Recall: Hide choices initially */}
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playToggle();
+                  setSettings(s => ({
+                    ...s,
+                    hideOptionsByDefault: s.hideOptionsByDefault === false ? true : false
+                  }));
+                }}
+                className={`p-2.5 rounded-xl border text-start transition-all cursor-pointer flex flex-col justify-between gap-1 ${
+                  settings.hideOptionsByDefault !== false
+                    ? 'bg-emerald-500/10 border-emerald-500/40 text-[var(--ink)] shadow-2xs'
+                    : 'bg-[var(--bg)] border-[var(--line)] text-[var(--mute)] hover:bg-[var(--panel)]'
+                }`}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <span className="text-xs font-black flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+                    <Sparkles size={13} />
+                    <span>{isRTL ? 'بازیابی فعال ذهن' : 'Active Recall'}</span>
+                  </span>
+                  <span className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-bold ${
+                    settings.hideOptionsByDefault !== false ? 'bg-emerald-500 text-white' : 'bg-[var(--line)] text-transparent'
+                  }`}>
+                    ✓
+                  </span>
+                </div>
+                <span className="text-[9.5px] text-[var(--mute)] leading-tight">
+                  {isRTL ? 'گزینه‌ها مخفی باشند و با هینت باز شوند' : 'Hide choices until hint is tapped'}
+                </span>
+              </button>
+
               {/* Auto Advance Toggle */}
               <button
                 type="button"
@@ -469,7 +599,7 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                 <div className="flex items-center justify-between w-full">
                   <span className="text-xs font-black flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400">
                     <Target size={13} />
-                    <span>{isRTL ? 'حالت تمرکز عمیق' : 'Zen Focus'}</span>
+                    <span>{isRTL ? 'تمرکز عمیق' : 'Zen Focus'}</span>
                   </span>
                   <span className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-bold ${
                     settings.zenMode ? 'bg-indigo-500 text-white' : 'bg-[var(--line)] text-transparent'
@@ -478,7 +608,7 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                   </span>
                 </div>
                 <span className="text-[9.5px] text-[var(--mute)] leading-tight">
-                  {isRTL ? 'حذف شلوغی‌های بصری و فوکوس کامل بر واژه' : 'Distraction-free deep study'}
+                  {isRTL ? 'حذف شلوغی‌های بصری' : 'Distraction-free'}
                 </span>
               </button>
             </div>

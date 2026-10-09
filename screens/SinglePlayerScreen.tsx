@@ -13,7 +13,7 @@ import { tUI, isRtlLang } from '../ui';
 import { FlagIcon } from '../components/FlagIcon';
 import { SUPPORTED_LANGUAGES } from '../constants';
 import { evaluateAnswer, EvaluationResult } from '../answerEvaluator';
-import { markCardsAsSeen, saveWeakCards, getPersonalRecords, updatePersonalRecords } from '../contentEngine';
+import { markCardsAsSeen, saveWeakCards, getPersonalRecords, updatePersonalRecords, getUniqueCardsForSession } from '../contentEngine';
 import { recordMistake, recordMistakeSuccess } from '../mistakeReviewService';
 import { feedbackDirector } from '../feedbackDirector';
 import { SoundHeaderButton } from '../components/SoundHeaderButton';
@@ -133,6 +133,19 @@ const SinglePlayerScreen: React.FC<Props> = ({
   const [isZenMode, setIsZenMode] = useState<boolean>(initialSettings.zenMode || false);
   const [autoAdvance, setAutoAdvance] = useState<boolean>(initialSettings.autoAdvance || false);
   const autoAdvanceTimerRef = useRef<number | null>(null);
+
+  // Active Recall & Customizable Hint State (hiding choices by default)
+  const [revealedOptions, setRevealedOptions] = useState<boolean>(initialSettings.hideOptionsByDefault === false);
+  const [activeHintType, setActiveHintType] = useState<'none' | 'letters' | 'word' | 'options' | 'audio'>('none');
+
+  // Timed Match vs Fixed Card Count
+  const isTimedMatch = settings.matchMode === 'timed_match' || (settings.totalMatchSeconds || 0) > 0;
+  const initialMatchSeconds = settings.totalMatchSeconds || (settings.matchMode === 'timed_match' ? 60 : 0);
+  const [matchRemainingSeconds, setMatchRemainingSeconds] = useState<number>(initialMatchSeconds);
+  const matchTimerRef = useRef<number | null>(null);
+  const resultsRef = useRef<SinglePlayerCardResult[]>(results);
+  resultsRef.current = results;
+  const isFinishedRef = useRef<boolean>(false);
 
   // Rounds & Escalating Speedrun Timer
   const totalCardsCount = cards.length;
@@ -302,6 +315,8 @@ const SinglePlayerScreen: React.FC<Props> = ({
     setAttempts(1);
     setIsRevealed(false);
     setShowHintSection(false);
+    setRevealedOptions(settings.hideOptionsByDefault === false);
+    setActiveHintType('none');
     setRevealedLettersCount(1);
     startTimeRef.current = Date.now();
 
@@ -340,7 +355,32 @@ const SinglePlayerScreen: React.FC<Props> = ({
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [currentIndex, currentCard?.id, currentRound, currentRoundTimeLimit, settings.displayMode, settings.autoPlayAudio]);
+  }, [currentIndex, currentCard?.id, currentRound, currentRoundTimeLimit, settings.displayMode, settings.autoPlayAudio, settings.hideOptionsByDefault]);
+
+  // Global Timed Match Session Countdown Timer
+  useEffect(() => {
+    if (!isTimedMatch) return;
+    isFinishedRef.current = false;
+
+    matchTimerRef.current = window.setInterval(() => {
+      setMatchRemainingSeconds(prev => {
+        if (prev <= 1) {
+          clearInterval(matchTimerRef.current!);
+          if (!isFinishedRef.current) {
+            isFinishedRef.current = true;
+            sound.playRoundEnd();
+            finishSession(resultsRef.current);
+          }
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => {
+      if (matchTimerRef.current) clearInterval(matchTimerRef.current);
+    };
+  }, [isTimedMatch]);
 
   const toggleListening = () => {
     if (!speechSupported || !recognitionRef.current) return;
@@ -495,7 +535,8 @@ const SinglePlayerScreen: React.FC<Props> = ({
       sound.hapticFeedback('success');
       recordMistakeSuccess(currentCard.id);
       const challengeBonus = currentCard.isChallenge ? (currentCard.challengeBonus || 2) : 0;
-      const points = evalResult.pointsAwarded + challengeBonus;
+      const creativeBonus = currentCard.isCreative ? 35 : 0;
+      const points = evalResult.pointsAwarded + challengeBonus + creativeBonus;
       const newScore = totalScore + points;
       setTotalScore(newScore);
       const newStreak = streak + 1;
@@ -506,9 +547,11 @@ const SinglePlayerScreen: React.FC<Props> = ({
       feedbackDirector.triggerScoreGained({
         points,
         combo: newStreak,
-        label: currentCard.isChallenge 
-          ? `+${points} ⭐ چالش` 
-          : newStreak > 1 ? `+${points} ×${newStreak}` : `+${points} PTS`
+        label: currentCard.isCreative
+          ? `+${points} 🎭 خلاقانه (${currentCard.cefrLevel})`
+          : currentCard.isChallenge 
+            ? `+${points} ⭐ چالش (${currentCard.cefrLevel})` 
+            : newStreak > 1 ? `+${points} ×${newStreak} (${currentCard.cefrLevel})` : `+${points} PTS (${currentCard.cefrLevel})`
       });
 
       // Record fastest answer time for personal records
@@ -597,17 +640,31 @@ const SinglePlayerScreen: React.FC<Props> = ({
     if (currentIndex + 1 < cards.length) {
       setCurrentIndex(prev => prev + 1);
     } else {
-      // Finished all cards! Build report
-      finishSession([...results, ...(evaluation?.isCorrect ? [] : [{
-        card: currentCard,
-        userAnswer: userInput,
-        isCorrect: evaluation?.isCorrect || false,
-        attempts,
-        timeSpentSeconds: Math.max(1, Math.round((Date.now() - startTimeRef.current) / 1000)),
-        pointsEarned: evaluation?.pointsAwarded || 0,
-        similarityScore: evaluation?.similarity || 0,
-        aiFeedback: evaluation?.feedbackMessage
-      }])]);
+      if (isTimedMatch && matchRemainingSeconds > 0) {
+        // Timed match: dynamically supply more cards so player can keep answering!
+        const moreCards = getUniqueCardsForSession(
+          settings.targetLanguage,
+          settings.nativeLanguage,
+          settings.cefrLevel,
+          settings.selectedCategories,
+          10,
+          false
+        );
+        setCards(prev => [...prev, ...moreCards]);
+        setCurrentIndex(prev => prev + 1);
+      } else {
+        // Finished all cards! Build report
+        finishSession([...results, ...(evaluation?.isCorrect ? [] : [{
+          card: currentCard,
+          userAnswer: userInput,
+          isCorrect: evaluation?.isCorrect || false,
+          attempts,
+          timeSpentSeconds: Math.max(1, Math.round((Date.now() - startTimeRef.current) / 1000)),
+          pointsEarned: evaluation?.pointsAwarded || 0,
+          similarityScore: evaluation?.similarity || 0,
+          aiFeedback: evaluation?.feedbackMessage
+        }])]);
+      }
     }
   };
 
@@ -699,14 +756,31 @@ const SinglePlayerScreen: React.FC<Props> = ({
               </span>
             </div>
             <span className="text-[11px] font-bold text-[var(--mute)]">
-              {isRTL 
-                ? `دور ${toPersian(currentRound, isRTL)} از ۳ • کارت ${toPersian(currentIndex + 1, isRTL)} از ${toPersian(cards.length, isRTL)}`
-                : `Round ${currentRound}/3 • Card ${currentIndex + 1}/${cards.length}`}
+              {isTimedMatch 
+                ? (isRTL 
+                    ? `مسابقه زمان کل • ${toPersian(results.filter(r => r.isCorrect).length, isRTL)} کارت حل‌شده` 
+                    : `Timed Match • ${results.filter(r => r.isCorrect).length} solved`)
+                : (isRTL 
+                    ? `دور ${toPersian(currentRound, isRTL)} از ۳ • کارت ${toPersian(currentIndex + 1, isRTL)} از ${toPersian(cards.length, isRTL)}`
+                    : `Round ${currentRound}/3 • Card ${currentIndex + 1}/${cards.length}`)}
             </span>
           </div>
         </div>
 
         <div className="flex items-center gap-1.5">
+          {/* Timed Match Global Countdown Badge */}
+          {isTimedMatch && (
+            <div className={`px-2 py-1 rounded-xl border text-[11px] font-black flex items-center gap-1 transition-all ${
+              matchRemainingSeconds <= 10 
+                ? 'bg-rose-500/20 text-rose-600 border-rose-500/50 animate-pulse' 
+                : 'bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/40'
+            }`}>
+              <Clock size={12} className={matchRemainingSeconds <= 10 ? 'animate-spin' : ''} />
+              <span className="font-mono">
+                {Math.floor(matchRemainingSeconds / 60)}:{(matchRemainingSeconds % 60).toString().padStart(2, '0')}
+              </span>
+            </div>
+          )}
           {/* Zen Focus Mode Toggle */}
           <button
             type="button"

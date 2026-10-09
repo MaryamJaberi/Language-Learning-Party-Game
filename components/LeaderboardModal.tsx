@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Language, LeaderboardEntry } from '../types';
+import { Language, LeaderboardEntry, CEFRLevel } from '../types';
 import { fetchLeaderboard } from '../contentEngine';
 import { FlagIcon } from './FlagIcon';
 import { sound } from '../soundManager';
 import { tUI, isRtlLang } from '../ui';
-import { Trophy, Medal, Flame, X, RefreshCw, Star } from 'lucide-react';
+import { Trophy, Medal, Flame, X, RefreshCw, Star, Layers } from 'lucide-react';
 
 interface Props {
   language: Language;
@@ -15,6 +15,7 @@ interface Props {
 const LeaderboardModal: React.FC<Props> = ({ language, isOpen, onClose }) => {
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedLevel, setSelectedLevel] = useState<CEFRLevel | 'all'>('all');
   const t = tUI(language);
   const isRTL = isRtlLang(language);
 
@@ -82,11 +83,35 @@ const LeaderboardModal: React.FC<Props> = ({ language, isOpen, onClose }) => {
               loadData();
             }}
             disabled={isLoading}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-[8px] bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] shadow-[var(--shadow-sm)] hover:bg-[var(--bg)] text-[11px] font-bold active:translate-y-0.5 transition-all"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-[8px] bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] shadow-[var(--shadow-sm)] hover:bg-[var(--bg)] text-[11px] font-bold active:translate-y-0.5 transition-all cursor-pointer"
           >
             <RefreshCw size={12} className={isLoading ? 'animate-spin' : ''} />
             <span>{isRTL ? 'تازه‌سازی' : 'Refresh'}</span>
           </button>
+        </div>
+
+        {/* CEFR Level Filter Tabs */}
+        <div className="px-3 py-1.5 bg-[var(--panel)] border-b border-[var(--line)] flex items-center gap-1 overflow-x-auto no-scrollbar">
+          {(['all', 'A1', 'A2', 'B1', 'B2', 'C1'] as const).map(lvl => {
+            const isSelected = selectedLevel === lvl;
+            return (
+              <button
+                key={lvl}
+                type="button"
+                onClick={() => {
+                  sound.playToggle();
+                  setSelectedLevel(lvl);
+                }}
+                className={`px-2.5 py-1 rounded-lg text-[10.5px] font-black transition-all cursor-pointer shrink-0 ${
+                  isSelected
+                    ? 'bg-[var(--lapis)] text-[var(--on-lapis)] shadow-xs'
+                    : 'text-[var(--mute)] hover:bg-[var(--bg)] hover:text-[var(--ink)]'
+                }`}
+              >
+                {lvl === 'all' ? (isRTL ? 'همه سطوح' : 'All Levels') : lvl}
+              </button>
+            );
+          })}
         </div>
 
         {/* Table Content */}
@@ -96,13 +121,21 @@ const LeaderboardModal: React.FC<Props> = ({ language, isOpen, onClose }) => {
               <RefreshCw size={24} className="animate-spin text-[var(--vermilion)]" />
               <span>{isRTL ? 'در حال دریافت رتبه‌ها...' : 'Loading ranks...'}</span>
             </div>
-          ) : entries.length === 0 ? (
-            <div className="py-12 text-center text-[var(--mute)] text-sm font-bold">
-              <Star size={32} className="mx-auto mb-2 text-[var(--saffron)]" />
-              <span>{isRTL ? 'هنوز رکوردی ثبت نشده! اولین نفری باش که رکورد می‌زنه.' : 'No records yet! Be the first to claim the top spot.'}</span>
-            </div>
-          ) : (
-            entries.map((entry, idx) => {
+          ) : (() => {
+            const displayed = entries.filter(e => selectedLevel === 'all' || e.cefrLevel === selectedLevel);
+            if (displayed.length === 0) {
+              return (
+                <div className="py-12 text-center text-[var(--mute)] text-sm font-bold">
+                  <Star size={32} className="mx-auto mb-2 text-[var(--saffron)]" />
+                  <span>
+                    {isRTL 
+                      ? (selectedLevel === 'all' ? 'هنوز رکوردی ثبت نشده! اولین نفری باش که رکورد می‌زنه.' : `هنوز رکوردی در سطح ${selectedLevel} ثبت نشده! اولین رکورد را تو ثبت کن.`)
+                      : 'No records yet for this level! Be the first to claim the top spot.'}
+                  </span>
+                </div>
+              );
+            }
+            return displayed.map((entry, idx) => {
               const isTop1 = idx === 0;
               const isTop2 = idx === 1;
               const isTop3 = idx === 2;
@@ -174,8 +207,8 @@ const LeaderboardModal: React.FC<Props> = ({ language, isOpen, onClose }) => {
                   </div>
                 </div>
               );
-            })
-          )}
+            });
+          })()}
         </div>
 
         {/* Footer */}

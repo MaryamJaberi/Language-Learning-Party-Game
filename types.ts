@@ -54,6 +54,8 @@ export interface LanguageCard {
   isReverse?: boolean; // Reverse translation flag
   isChallenge?: boolean; // Challenge card (30% learning curve, bonus points, 0 penalty on fail/skip)
   challengeBonus?: number; // Extra bonus points for answering challenge card
+  isCreative?: boolean; // Creative scenario, roleplay, cultural nuance, or witty idiom card
+  scenarioRole?: string; // Scenario tag e.g. "در کافه", "فرودگاه", "اصطلاح کوچه بازاری"
 }
 
 export interface Player {
@@ -217,6 +219,9 @@ export interface SinglePlayerSettings {
   selectedCategories: string[];
   zenMode?: boolean; // Distraction-free deep focus mode
   autoAdvance?: boolean; // Smooth auto-advance on correct answer
+  matchMode?: 'timed_match' | 'card_count'; // Total session countdown vs fixed card count
+  totalMatchSeconds?: number; // Total match duration in seconds (e.g. 30, 60, 90, 120)
+  hideOptionsByDefault?: boolean; // Active recall: hide multiple choices until explicitly revealed
 }
 
 export interface SinglePlayerCardResult {

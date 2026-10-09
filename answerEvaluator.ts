@@ -215,9 +215,19 @@ export function evaluateAnswer(
     }
   }
 
-  // Base points calculation: 100 on 1st try, 60 on corrected try
-  const basePoints = attemptNumber === 1 ? 100 : 60;
-  const speedBonus = Math.round(timeRemainingRatio * 25);
+  // Base points calculation scaled by card CEFR level (A1 -> C1/C2) as requested
+  const cefrMultipliers: Record<string, number> = {
+    'A1': 1.0,
+    'A2': 1.35,
+    'B1': 1.8,
+    'B2': 2.4,
+    'C1': 3.2,
+    'C2': 3.8
+  };
+  const levelMult = cefrMultipliers[card.cefrLevel] || 1.0;
+  const rawBase = attemptNumber === 1 ? 100 : 60;
+  const basePoints = Math.round(rawBase * levelMult);
+  const speedBonus = Math.round(timeRemainingRatio * 25 * levelMult);
   const totalPoints = basePoints + speedBonus;
 
   // Exact Match

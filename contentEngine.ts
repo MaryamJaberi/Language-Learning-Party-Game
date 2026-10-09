@@ -333,6 +333,19 @@ export function getUniqueCardsForSession(
     });
   }
 
+  // 4.5 Prioritize creative cards (roleplay scenarios & idioms) for engaging variety
+  const creativeCandidates = pool.filter(c => c.isCreative);
+  if (creativeCandidates.length > 0) {
+    const targetCreativeCount = Math.max(1, Math.min(3, Math.floor(requestedCount * 0.3)));
+    const shuffledCreative = [...creativeCandidates].sort(() => Math.random() - 0.5);
+    for (const cc of shuffledCreative.slice(0, targetCreativeCount)) {
+      if (finalSelection.length >= requestedCount) break;
+      if (!finalSelection.some(c => c.id === cc.id)) {
+        finalSelection.push(cc);
+      }
+    }
+  }
+
   // 5. Fill with unseen cards
   const shuffledUnseen = [...unseenCards].sort(() => Math.random() - 0.5);
   for (const card of shuffledUnseen) {
