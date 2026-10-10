@@ -815,6 +815,14 @@ export function getC1CardsForSession(
         return;
       }
 
+      // Verify targetLanguage has authentic translations in this C1 frame & entity
+      const isEnglishTarget = targetLanguage === 'en' || targetLanguage === 'en-US';
+      const hasPrefix = Boolean(frame.prefix[targetLanguage] || frame.prefix[targetLanguage.split('-')[0]]);
+      const hasEntity = Boolean(entity.texts[targetLanguage] || entity.texts[targetLanguage.split('-')[0]]);
+      if (!isEnglishTarget && (!hasPrefix || !hasEntity)) {
+        return;
+      }
+
       const targetPrefix = getSafeText(frame.prefix, targetLanguage, frame.prefix['en']);
       const targetSuffix = getSafeText(frame.suffix, targetLanguage, frame.suffix['en']);
       const targetEntity = getSafeText(entity.texts, targetLanguage, entity.texts['en']);

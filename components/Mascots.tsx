@@ -13,41 +13,40 @@ export const TeamMascot: React.FC<MascotProps> = ({ color = TeamColor.Blue, clas
 
   switch (color) {
     case TeamColor.Blue:
-      /* BLUE TEAM: Glowing Neon Cyan Aquatic Buddy (Image 2 Neon Style) */
+      /* BLUE TEAM: Clean, charming minimal mascot buddy */
       return (
         <svg 
           width={size} 
           height={size} 
           viewBox="0 0 100 100" 
-          className={`${isPartyAnimate} ${className} drop-shadow-[0_0_8px_rgba(0,240,255,0.75)]`}
+          className={`${isPartyAnimate} ${className} drop-shadow-sm`}
         >
-          {/* Water Spout Neon Fountain */}
-          <path d="M48,16 Q50,4 40,4 Q48,10 48,16" fill="none" stroke="#00F0FF" strokeWidth="3" strokeLinecap="round" />
-          <path d="M52,16 Q54,4 62,4 Q54,10 52,16" fill="none" stroke="#00F0FF" strokeWidth="3" strokeLinecap="round" />
-          <circle cx="40" cy="4" r="2" fill="#FFE600" stroke="#FFE600" />
-          <circle cx="62" cy="4" r="2" fill="#FFE600" stroke="#FFE600" />
+          {/* Soft Friendly Shadow */}
+          <ellipse cx="50" cy="88" rx="28" ry="6" fill="rgba(0,0,0,0.08)" />
 
-          {/* Neon Tube Round Body */}
-          <circle cx="50" cy="54" r="33" fill="#001830" stroke="#00F0FF" strokeWidth="4" />
-          {/* Inner Glowing Tube Belly */}
-          <ellipse cx="50" cy="64" rx="20" ry="12" fill="none" stroke="#38BDF8" strokeWidth="2.5" strokeDasharray="4 2" />
+          {/* Smooth Round Body */}
+          <circle cx="50" cy="50" r="36" fill="#0284C7" />
+          <circle cx="50" cy="50" r="32" fill="#38BDF8" />
 
-          {/* Glowing Neon Flippers */}
-          <path d="M17,54 Q10,58 18,66" fill="none" stroke="#00F0FF" strokeWidth="3.5" strokeLinecap="round" />
-          <path d="M83,54 Q90,58 82,66" fill="none" stroke="#00F0FF" strokeWidth="3.5" strokeLinecap="round" />
+          {/* Cheerful Little Sparkle / Hat */}
+          <path d="M47,10 Q50,4 53,10 Q56,16 50,16 Q44,16 47,10 Z" fill="#FACC15" />
 
-          {/* Radiant Neon Eyes */}
-          <circle cx="38" cy="46" r="6" fill="#00F0FF" />
-          <circle cx="36" cy="44" r="2" fill="#FFFFFF" />
-          <circle cx="62" cy="46" r="6" fill="#00F0FF" />
-          <circle cx="60" cy="44" r="2" fill="#FFFFFF" />
+          {/* Flippers / Hands */}
+          <circle cx="16" cy="52" r="8" fill="#0284C7" />
+          <circle cx="84" cy="52" r="8" fill="#0284C7" />
 
-          {/* Neon Pink Cheeks */}
-          <ellipse cx="28" cy="54" rx="4" ry="2.5" fill="#FF007F" stroke="#FF007F" />
-          <ellipse cx="72" cy="54" rx="4" ry="2.5" fill="#FF007F" stroke="#FF007F" />
+          {/* Big Expressive Friendly Eyes */}
+          <ellipse cx="38" cy="45" rx="5" ry="7" fill="#0F172A" />
+          <circle cx="36" cy="42" r="2.2" fill="#FFFFFF" />
+          <ellipse cx="62" cy="45" rx="5" ry="7" fill="#0F172A" />
+          <circle cx="60" cy="42" r="2.2" fill="#FFFFFF" />
 
-          {/* Cute Neon Open Smile */}
-          <path d="M44,54 Q50,62 56,54" fill="none" stroke="#FFE600" strokeWidth="3" strokeLinecap="round" />
+          {/* Soft Rosy Cheeks */}
+          <circle cx="28" cy="54" r="5" fill="#FB7185" opacity="0.8" />
+          <circle cx="72" cy="54" r="5" fill="#FB7185" opacity="0.8" />
+
+          {/* Warm Happy Smile */}
+          <path d="M43,53 Q50,61 57,53" fill="none" stroke="#0F172A" strokeWidth="3" strokeLinecap="round" />
         </svg>
       );
 

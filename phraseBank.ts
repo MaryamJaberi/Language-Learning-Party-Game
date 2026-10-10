@@ -25,7 +25,8 @@ function pickText(texts: Record<string, string>, lang: Language): string {
   if (direct) return direct;
   if (lang === 'en-US' || lang === 'en') return texts['en-US'] || texts.en || '';
   if (lang === 'fa') return texts.fa || '';
-  return texts[lang] || texts.en || texts['en-US'] || '';
+  // Never fallback to English if another specific language was requested!
+  return texts[lang] || '';
 }
 
 function typeOf(raw: string): ContentType {

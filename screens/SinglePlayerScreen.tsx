@@ -50,7 +50,8 @@ import {
   KeyRound,
   Target,
   Zap,
-  BookOpen
+  BookOpen,
+  Layers
 } from 'lucide-react';
 
 interface Props {
@@ -134,8 +135,8 @@ const SinglePlayerScreen: React.FC<Props> = ({
   const [autoAdvance, setAutoAdvance] = useState<boolean>(initialSettings.autoAdvance || false);
   const autoAdvanceTimerRef = useRef<number | null>(null);
 
-  // Active Recall & Customizable Hint State (hiding choices by default)
-  const [revealedOptions, setRevealedOptions] = useState<boolean>(initialSettings.hideOptionsByDefault === false);
+  // Active Recall & Customizable Hint State (hiding choices by default if enabled)
+  const [revealedOptions, setRevealedOptions] = useState<boolean>(initialSettings.hideOptionsByDefault !== true);
   const [activeHintType, setActiveHintType] = useState<'none' | 'letters' | 'word' | 'options' | 'audio'>('none');
 
   // Timed Match vs Fixed Card Count
@@ -315,7 +316,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
     setAttempts(1);
     setIsRevealed(false);
     setShowHintSection(false);
-    setRevealedOptions(settings.hideOptionsByDefault === false);
+    setRevealedOptions(settings.hideOptionsByDefault !== true);
     setActiveHintType('none');
     setRevealedLettersCount(1);
     startTimeRef.current = Date.now();
@@ -1162,154 +1163,234 @@ const SinglePlayerScreen: React.FC<Props> = ({
 
       {/* 5. Input Section: 4 Interactive Choices, Mic button and Text Input */}
       <div className="space-y-2 shrink-0 font-ui mt-1">
-        {/* Smart Progressive Non-Choice Clue Section (Replaces easy multiple-choice with word structure & anagrams) */}
-        {!evaluation?.isCorrect && targetAnswerForHint && (
+        {/* Interactive Customizable Hint Bar */}
+        {!evaluation?.isCorrect && (
           <div className="pt-0.5">
-            {!showHintSection ? (
-              <button
-                type="button"
-                onClick={() => {
-                  sound.playToggle();
-                  setShowHintSection(true);
-                }}
-                className="w-full py-2.5 px-3 rounded-xl border border-dashed border-[var(--lapis)]/40 hover:border-[var(--lapis)] bg-[var(--lapis-soft)]/50 hover:bg-[var(--lapis-soft)] text-[var(--lapis)] text-xs font-bold flex items-center justify-center gap-2 transition-all active:scale-[0.99] cursor-pointer shadow-2xs"
-              >
-                <Lightbulb size={15} className="text-[var(--saffron)]" />
-                <span>{isRTL ? '💡 سرنخ و حروف کمکی (بدون گزینه حاضری)' : '💡 Clue & Letter Hints (No Choices)'}</span>
-                <ChevronDown size={14} />
-              </button>
-            ) : (
-              <div className="animate-fadeIn space-y-2.5 bg-[var(--panel)] p-3 rounded-2xl border border-[var(--line)] shadow-xs">
-                {/* Header */}
-                <div className="text-[11px] font-bold text-[var(--mute)] px-0.5 flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 text-[var(--lapis)] font-black">
-                    <Lightbulb size={14} className="text-[var(--saffron)]" />
-                    <span>{isRTL ? 'راهنمای ساختار و حروف (برای تقویت ذهن)' : 'Structure & Letter Clues'}</span>
-                  </span>
+            <div className="p-2.5 rounded-2xl bg-[var(--panel)] border border-[var(--line)] space-y-2 shadow-2xs">
+              <div className="flex items-center justify-between px-1">
+                <span className="text-[11px] font-black text-[var(--ink)] flex items-center gap-1.5">
+                  <Lightbulb size={13} className="text-[var(--saffron)]" />
+                  <span>{isRTL ? '💡 انتخاب سرنخ و راهنما:' : '💡 Choose Hint Type:'}</span>
+                </span>
+                {(showHintSection || revealedOptions) && (
                   <button
                     type="button"
                     onClick={() => {
                       sound.playToggle();
                       setShowHintSection(false);
+                      setRevealedOptions(false);
+                      setActiveHintType('none');
                     }}
-                    className="text-[10px] font-bold text-[var(--mute)] hover:text-[var(--ink)] flex items-center gap-1 py-1 px-2 rounded-lg bg-[var(--bg)] border border-[var(--line)] cursor-pointer hover:bg-[var(--line)]/40 transition-colors"
-                    title={isRTL ? 'بستن راهنما' : 'Hide hint'}
+                    className="text-[10px] text-[var(--mute)] hover:text-[var(--ink)] font-bold cursor-pointer flex items-center gap-0.5"
                   >
-                    <span>{isRTL ? 'مخفی‌سازی' : 'Hide'}</span>
+                    <span>{isRTL ? 'مخفی‌سازی همه' : 'Hide all'}</span>
                     <ChevronUp size={12} />
                   </button>
-                </div>
-
-                {/* Educational / Semantic Clue from card */}
-                {currentCard?.hint && (
-                  <div className="text-xs font-bold text-[var(--ink)] bg-[var(--saffron)]/15 border border-[var(--saffron)]/30 rounded-xl px-2.5 py-1.5 flex items-start gap-1.5 leading-relaxed">
-                    <span className="shrink-0 text-sm mt-0.5">💡</span>
-                    <div>
-                      <span className="text-[10px] text-[var(--mute)] block">{isRTL ? 'سرنخ مفهومی:' : 'Concept Clue:'}</span>
-                      <span>{currentCard.hint}</span>
-                    </div>
-                  </div>
-                )}
-
-                {/* 1. Letter Slots / Masked Word Clue */}
-                <div className="bg-[var(--bg)] p-2.5 rounded-xl border border-[var(--line)] space-y-1.5">
-                  <div className="flex items-center justify-between text-[11px] font-bold">
-                    <span className="text-[var(--mute)]">
-                      {isRTL 
-                        ? `ساختار پاسخ (${totalLettersCount} حرف)`
-                        : `Word Structure (${totalLettersCount} letters)`}
-                    </span>
-                    {revealedLettersCount < totalLettersCount - 1 && (
-                      <button
-                        type="button"
-                        onClick={handleRevealMoreLetter}
-                        className="text-[10px] font-bold text-[var(--teal)] hover:underline flex items-center gap-1 bg-[var(--teal)]/10 px-2 py-0.5 rounded-md border border-[var(--teal)]/20 active:scale-95 transition-all cursor-pointer"
-                      >
-                        <KeyRound size={11} />
-                        <span>{isRTL ? '+۱ حرف کمکی' : '+1 Letter'}</span>
-                      </button>
-                    )}
-                  </div>
-
-                  {/* Render Masked Words & Letter Slots */}
-                  <div 
-                    dir={isRtlLang(settings.displayMode === 'translate_to_native' ? (currentCard?.nativeLanguage || 'fa') : (currentCard?.targetLanguage || 'en-US')) ? 'rtl' : 'ltr'}
-                    className="flex flex-wrap items-center justify-center gap-1.5 py-1 select-none"
-                  >
-                    {(() => {
-                      let globalLetterIdx = 0;
-                      return targetAnswerForHint.split(' ').map((word, wIdx) => (
-                        <div key={`word-${wIdx}`} className="flex items-center gap-1 mx-1">
-                          {word.split('').map((char: string, cIdx: number) => {
-                            const isNonLetter = !/\p{L}/u.test(char);
-                            if (isNonLetter) {
-                              return (
-                                <span key={`char-${wIdx}-${cIdx}`} className="text-sm font-bold text-[var(--mute)] px-0.5">
-                                  {char}
-                                </span>
-                              );
-                            }
-                            const currentIdx = globalLetterIdx++;
-                            const isRevealedChar = currentIdx === 0 || currentIdx < revealedLettersCount;
-                            return (
-                              <span
-                                key={`slot-${wIdx}-${cIdx}`}
-                                className={`w-6 h-7 sm:w-7 sm:h-8 rounded-lg flex items-center justify-center text-xs sm:text-sm font-black transition-all ${
-                                  isRevealedChar
-                                    ? 'bg-[var(--teal)]/15 text-[var(--teal)] border border-[var(--teal)]/40 shadow-2xs'
-                                    : 'bg-[var(--panel)] text-transparent border-b-2 border-[var(--mute)]'
-                                }`}
-                              >
-                                {isRevealedChar ? char : '_'}
-                              </span>
-                            );
-                          })}
-                        </div>
-                      ));
-                    })()}
-                  </div>
-                </div>
-
-                {/* 2. Scrambled Letters Pool (Anagram clue - gives user the pieces without giving away the answer) */}
-                {scrambledLetters.length > 0 && (
-                  <div className="bg-[var(--bg)] p-2.5 rounded-xl border border-[var(--line)] space-y-1.5">
-                    <div className="flex items-center justify-between text-[11px] font-bold text-[var(--mute)]">
-                      <span>{isRTL ? 'حروف تشکیل‌دهنده (درهم‌ریخته • برای افزودن لمس کنید):' : 'Scrambled Letters (Tap to add):'}</span>
-                      {userInput.length > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => setUserInput(prev => prev.slice(0, -1))}
-                          className="text-[10px] text-[var(--vermilion)] hover:underline flex items-center gap-0.5 cursor-pointer font-bold"
-                        >
-                          <span>{isRTL ? '⌫ پاک‌کردن حرف' : '⌫ Backspace'}</span>
-                        </button>
-                      )}
-                    </div>
-                    <div className="flex flex-wrap items-center justify-center gap-1.5 py-1">
-                      {scrambledLetters.map((letter, lIdx) => (
-                        <button
-                          key={`scr-${lIdx}-${letter}`}
-                          type="button"
-                          onClick={() => handleAddLetterToInput(letter)}
-                          className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[var(--panel)] hover:bg-[var(--lapis-soft)] text-[var(--ink)] border border-[var(--line)] hover:border-[var(--lapis)] text-xs sm:text-sm font-black flex items-center justify-center transition-transform active:scale-90 cursor-pointer shadow-2xs"
-                          title={letter}
-                        >
-                          {letter}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
                 )}
               </div>
-            )}
+
+              {/* 4 Customizable Hint Action Buttons */}
+              <div className="grid grid-cols-4 gap-1.5 text-center">
+                {/* 1. Letter Skeleton / Masked Slots */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playToggle();
+                    setShowHintSection(true);
+                    setActiveHintType('letters');
+                  }}
+                  className={`py-2 px-1 rounded-xl text-[10.5px] font-black border flex flex-col items-center gap-1 cursor-pointer transition-all active:scale-95 ${
+                    showHintSection && activeHintType === 'letters'
+                      ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs'
+                      : 'bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--panel)]'
+                  }`}
+                  title={isRTL ? 'نمایش ساختار و حروف کلمه' : 'Show letter structure'}
+                >
+                  <KeyRound size={14} className={showHintSection && activeHintType === 'letters' ? '' : 'text-[var(--turq)]'} />
+                  <span className="truncate">{isRTL ? '🔤 حروف' : 'Letters'}</span>
+                </button>
+
+                {/* 2. Word / Context Concept Clue */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playToggle();
+                    setShowHintSection(true);
+                    setActiveHintType('word');
+                  }}
+                  className={`py-2 px-1 rounded-xl text-[10.5px] font-black border flex flex-col items-center gap-1 cursor-pointer transition-all active:scale-95 ${
+                    showHintSection && activeHintType === 'word'
+                      ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs'
+                      : 'bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--panel)]'
+                  }`}
+                  title={isRTL ? 'نمایش سرنخ و مفهوم کلمه' : 'Show concept clue'}
+                >
+                  <Sparkles size={14} className={showHintSection && activeHintType === 'word' ? '' : 'text-[var(--saffron)]'} />
+                  <span className="truncate">{isRTL ? '💬 کلمه' : 'Clue'}</span>
+                </button>
+
+                {/* 3. Reveal 4 Choices */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playToggle();
+                    setRevealedOptions(prev => !prev);
+                    if (!revealedOptions) {
+                      setActiveHintType('options');
+                    }
+                  }}
+                  className={`py-2 px-1 rounded-xl text-[10.5px] font-black border flex flex-col items-center gap-1 cursor-pointer transition-all active:scale-95 ${
+                    revealedOptions
+                      ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs'
+                      : 'bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--panel)]'
+                  }`}
+                  title={isRTL ? 'نمایش ۴ گزینه تستی' : 'Reveal 4 choices'}
+                >
+                  <Layers size={14} className={revealedOptions ? '' : 'text-[var(--lapis)]'} />
+                  <span className="truncate">{isRTL ? '📋 گزینه‌ها' : 'Options'}</span>
+                </button>
+
+                {/* 4. Slow Audio Pronunciation */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    handlePlaySlowAudio();
+                  }}
+                  className="py-2 px-1 rounded-xl text-[10.5px] font-black border bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--panel)] flex flex-col items-center gap-1 cursor-pointer transition-all active:scale-95"
+                  title={isRTL ? 'تلفظ آرام صوتی' : 'Slow audio pronunciation'}
+                >
+                  <Volume2 size={14} className="text-amber-500" />
+                  <span className="truncate">{isRTL ? '🎧 تلفظ' : 'Audio'}</span>
+                </button>
+              </div>
+
+              {/* Clue Content when showHintSection is true */}
+              {showHintSection && (
+                <div className="animate-fade-in pt-1 space-y-2">
+                  {/* Semantic Concept Clue */}
+                  {(activeHintType === 'word' || activeHintType === 'none' || !currentCard?.hint) && (
+                    <div className="text-xs font-bold text-[var(--ink)] bg-[var(--saffron)]/15 border border-[var(--saffron)]/30 rounded-xl px-2.5 py-1.5 flex items-start gap-1.5 leading-relaxed">
+                      <span className="shrink-0 text-sm mt-0.5">💡</span>
+                      <div>
+                        <span className="text-[10px] text-[var(--mute)] block">{isRTL ? 'سرنخ مفهومی:' : 'Concept Clue:'}</span>
+                        <span>{currentCard?.hint || (isRTL ? `دسته‌بندی: ${currentCard?.category || 'عمومی و پرکاربرد'}` : `Category: ${currentCard?.category || 'Practical'}`)}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Letter slots & anagrams */}
+                  {(activeHintType === 'letters' || activeHintType === 'none') && (
+                    <>
+                      <div className="bg-[var(--bg)] p-2.5 rounded-xl border border-[var(--line)] space-y-1.5">
+                        <div className="flex items-center justify-between text-[11px] font-bold">
+                          <span className="text-[var(--mute)]">
+                            {isRTL 
+                              ? `ساختار پاسخ (${totalLettersCount} حرف)`
+                              : `Word Structure (${totalLettersCount} letters)`}
+                          </span>
+                          {revealedLettersCount < totalLettersCount - 1 && (
+                            <button
+                              type="button"
+                              onClick={handleRevealMoreLetter}
+                              className="text-[10px] font-bold text-[var(--teal)] hover:underline flex items-center gap-1 bg-[var(--teal)]/10 px-2 py-0.5 rounded-md border border-[var(--teal)]/20 active:scale-95 transition-all cursor-pointer"
+                            >
+                              <KeyRound size={11} />
+                              <span>{isRTL ? '+۱ حرف کمکی' : '+1 Letter'}</span>
+                            </button>
+                          )}
+                        </div>
+
+                        <div 
+                          dir={isRtlLang(settings.displayMode === 'translate_to_native' ? (currentCard?.nativeLanguage || 'fa') : (currentCard?.targetLanguage || 'en-US')) ? 'rtl' : 'ltr'}
+                          className="flex flex-wrap items-center justify-center gap-1.5 py-1 select-none"
+                        >
+                          {(() => {
+                            let globalLetterIdx = 0;
+                            return targetAnswerForHint.split(' ').map((word, wIdx) => (
+                              <div key={`word-${wIdx}`} className="flex items-center gap-1 mx-1">
+                                {word.split('').map((char: string, cIdx: number) => {
+                                  const isNonLetter = !/\p{L}/u.test(char);
+                                  if (isNonLetter) {
+                                    return (
+                                      <span key={`char-${wIdx}-${cIdx}`} className="text-sm font-bold text-[var(--mute)] px-0.5">
+                                        {char}
+                                      </span>
+                                    );
+                                  }
+                                  const currentIdx = globalLetterIdx++;
+                                  const isRevealedChar = currentIdx === 0 || currentIdx < revealedLettersCount;
+                                  return (
+                                    <span
+                                      key={`slot-${wIdx}-${cIdx}`}
+                                      className={`w-6 h-7 sm:w-7 sm:h-8 rounded-lg flex items-center justify-center text-xs sm:text-sm font-black transition-all ${
+                                        isRevealedChar
+                                          ? 'bg-[var(--teal)]/15 text-[var(--teal)] border border-[var(--teal)]/40 shadow-2xs'
+                                          : 'bg-[var(--panel)] text-transparent border-b-2 border-[var(--mute)]'
+                                      }`}
+                                    >
+                                      {isRevealedChar ? char : '_'}
+                                    </span>
+                                  );
+                                })}
+                              </div>
+                            ));
+                          })()}
+                        </div>
+                      </div>
+
+                      {/* Scrambled Letters Pool */}
+                      {scrambledLetters.length > 0 && (
+                        <div className="bg-[var(--bg)] p-2.5 rounded-xl border border-[var(--line)] space-y-1.5">
+                          <div className="flex items-center justify-between text-[11px] font-bold text-[var(--mute)]">
+                            <span>{isRTL ? 'حروف تشکیل‌دهنده (درهم‌ریخته • برای افزودن لمس کنید):' : 'Scrambled Letters (Tap to add):'}</span>
+                            {userInput.length > 0 && (
+                              <button
+                                type="button"
+                                onClick={() => setUserInput(prev => prev.slice(0, -1))}
+                                className="text-[10px] text-[var(--vermilion)] hover:underline flex items-center gap-0.5 cursor-pointer font-bold"
+                              >
+                                <span>{isRTL ? '⌫ پاک‌کردن حرف' : '⌫ Backspace'}</span>
+                              </button>
+                            )}
+                          </div>
+                          <div className="flex flex-wrap items-center justify-center gap-1.5 py-1">
+                            {scrambledLetters.map((letter, lIdx) => (
+                              <button
+                                key={`scr-${lIdx}-${letter}`}
+                                type="button"
+                                onClick={() => handleAddLetterToInput(letter)}
+                                className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[var(--panel)] hover:bg-[var(--lapis-soft)] text-[var(--ink)] border border-[var(--line)] hover:border-[var(--lapis)] text-xs sm:text-sm font-black flex items-center justify-center transition-transform active:scale-90 cursor-pointer shadow-2xs"
+                                title={letter}
+                              >
+                                {letter}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         )}
         
-        {/* Quick Quiz 4 Options from testQuestionEngine */}
-        {quickQuizOptions.length > 0 && !evaluation && (
-          <div className="space-y-1.5 my-1.5">
-            <div className="text-[11px] font-bold text-[var(--mute)] text-center">
-              {isRTL ? 'یا پاسخ را مستقیماً از ۴ گزینه زیر لمس کنید:' : 'Or tap an answer directly from the 4 options below:'}
+        {/* Quick Quiz 4 Options - ONLY shown when revealedOptions is true */}
+        {quickQuizOptions.length > 0 && !evaluation && revealedOptions && (
+          <div className="space-y-1.5 my-1.5 animate-fade-in">
+            <div className="flex items-center justify-between text-[11px] font-bold text-[var(--mute)] px-1">
+              <span>{isRTL ? 'یا پاسخ را مستقیماً از ۴ گزینه زیر لمس کنید:' : 'Or tap an answer directly from the 4 options below:'}</span>
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playToggle();
+                  setRevealedOptions(false);
+                }}
+                className="text-[10px] text-[var(--mute)] hover:text-[var(--ink)] cursor-pointer"
+              >
+                {isRTL ? 'مخفی‌سازی گزینه‌ها ✕' : 'Hide choices ✕'}
+              </button>
             </div>
             <div className="grid grid-cols-2 gap-2">
               {quickQuizOptions.map((opt, oIdx) => (

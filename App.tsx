@@ -855,6 +855,7 @@ const App: React.FC = () => {
           language={settings.language}
           initialSection={activeHelpSection}
           onClose={closeHelp}
+          onLanguageChange={handleGlobalLanguageChange}
         />
       )}
 

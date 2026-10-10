@@ -85,6 +85,24 @@ const IntroScreen: React.FC<Props> = ({
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [profileInitialTab, setProfileInitialTab] = useState<'records' | 'leaderboard'>('records');
 
+  // Animated gentle guide invitation nudge
+  const [hasSeenGuideNudge, setHasSeenGuideNudge] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('dor_guide_nudge_seen') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const handleOpenHelpWithNudge = () => {
+    sound.playClick();
+    setHasSeenGuideNudge(true);
+    try {
+      localStorage.setItem('dor_guide_nudge_seen', 'true');
+    } catch {}
+    onOpenHelp?.();
+  };
+
   const currentLangInfo = SUPPORTED_LANGUAGES.find(l => l.code === language) || SUPPORTED_LANGUAGES[0];
   const currentCefr = settings?.cefrLevel || 'all';
   const activeCefrInfo = CEFR_LEVELS.find(l => l.id === currentCefr) || CEFR_LEVELS[5]; // default all
@@ -209,15 +227,18 @@ const IntroScreen: React.FC<Props> = ({
           {/* Help / Guide button */}
           <button
             id="header-guide-btn"
-            onClick={() => {
-              sound.playClick();
-              onOpenHelp?.();
-            }}
+            onClick={handleOpenHelpWithNudge}
             aria-label={t.guide || (isRTL ? 'راهنما' : 'Guide')}
-            className="w-11 h-11 flex items-center justify-center bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 text-[var(--ink)] border border-[var(--line)] rounded-full shadow-xs active:scale-95 transition-all cursor-pointer"
+            className="w-11 h-11 flex items-center justify-center bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 text-[var(--ink)] border border-[var(--line)] rounded-full shadow-xs active:scale-95 transition-all cursor-pointer relative"
             title={t.gameRules || (isRTL ? 'راهنمای بازی' : 'Game Rules')}
           >
-            <BookOpen size={20} />
+            <BookOpen size={20} className={!hasSeenGuideNudge ? 'text-[var(--lapis)] animate-pulse' : ''} />
+            {!hasSeenGuideNudge && (
+              <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-[var(--saffron)] border-2 border-[var(--panel)] shadow-xs animate-ping" />
+            )}
+            {!hasSeenGuideNudge && (
+              <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-[var(--saffron)] border-2 border-[var(--panel)] shadow-xs" />
+            )}
           </button>
 
           {/* User Profile button (Hosts History, Records & Leaderboard) */}
@@ -241,44 +262,71 @@ const IntroScreen: React.FC<Props> = ({
         </div>
       </div>
 
+      {/* Friendly, Non-intrusive Animated Guide Invitation Nudge */}
+      {!hasSeenGuideNudge && (
+        <div 
+          onClick={handleOpenHelpWithNudge}
+          className="w-full max-w-sm sm:max-w-md mx-auto mb-2.5 p-2.5 rounded-2xl bg-gradient-to-r from-[var(--lapis-soft)] via-[var(--panel)] to-[var(--lapis-soft)] border border-[var(--lapis)]/40 hover:border-[var(--lapis)] shadow-xs flex items-center justify-between gap-2.5 cursor-pointer transition-all active:scale-[0.98] group animate-fade-in"
+        >
+          <div className="flex items-center gap-2.5 min-w-0 text-start">
+            <div className="w-8 h-8 rounded-xl bg-[var(--lapis)] text-white flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform animate-bounce">
+              <BookOpen size={16} />
+            </div>
+            <div className="min-w-0">
+              <div className="text-xs font-black text-[var(--ink)] flex items-center gap-1.5 truncate">
+                <span>{isRTL ? '✨ با ۴ سبک جذاب بازی «دور» آشنا شوید!' : '✨ Discover the 4 exciting game modes!'}</span>
+              </div>
+              <div className="text-[10px] text-[var(--mute)] font-medium truncate">
+                {isRTL ? 'دورهمی تیمی • دوئل دونفره • چالش تک‌نفره • جعبه لایتنر' : 'Team Party • 2P Duel • Single-Player • Leitner Box'}
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-1 shrink-0">
+            <span className="text-[10px] bg-[var(--lapis)] text-white font-black px-2.5 py-1 rounded-lg shadow-2xs group-hover:brightness-110 flex items-center gap-1">
+              <span>{isRTL ? 'راهنما 📖' : 'Guide 📖'}</span>
+            </span>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                sound.playClick();
+                setHasSeenGuideNudge(true);
+                try {
+                  localStorage.setItem('dor_guide_nudge_seen', 'true');
+                } catch {}
+              }}
+              className="p-1 rounded-full text-[var(--mute)] hover:text-[var(--ink)] hover:bg-[var(--line)]/50 cursor-pointer"
+              aria-label="Dismiss"
+            >
+              <X size={13} />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Hero Modern Card Area (Material Design 3 Surface Container) */}
       <div className="relative w-full max-w-sm sm:max-w-md mx-auto my-auto shrink-0">
-        <div className="bg-[var(--panel)] border border-[var(--line)] p-6 sm:p-7 text-center flex flex-col justify-between min-h-[240px] sm:min-h-[260px] rounded-[28px] shadow-sm transition-all">
-          {/* Top Chips Row */}
-          <div className="flex items-center justify-between gap-2">
-            <span className="px-3 py-1 rounded-full bg-[var(--lapis-soft)] text-[var(--lapis)] text-xs font-bold font-ui flex items-center gap-1.5 border border-[var(--lapis)]/15">
-              <Sparkles size={13} className="text-[var(--lapis)]" />
-              <span>{t.vocabParty || (isRTL ? 'بازی دورهمی واژگان' : 'Vocab Party')}</span>
-            </span>
-            <span className="px-3 py-1 bg-[var(--bg)] text-[var(--mute)] text-xs font-bold rounded-full font-ui flex items-center gap-1.5 border border-[var(--line)]">
-              <Globe size={13} className="text-[var(--turq)]" />
-              <span>{t.multiLingual || (isRTL ? '۳۸+ زبان دنیا' : '38+ Languages')}</span>
-            </span>
-          </div>
-
+        <div className="bg-[var(--panel)] border border-[var(--line)] p-6 sm:p-7 text-center flex flex-col justify-center min-h-[200px] sm:min-h-[220px] rounded-[28px] shadow-sm transition-all">
           {/* Interactive Mascot & Hero Titles */}
-          <div className="my-auto py-3 flex flex-col items-center">
+          <div className="py-2 flex flex-col items-center">
             {/* Mascot Character with bouncy party feel */}
             <div 
               onClick={handleMascotClick}
-              className="cursor-pointer transition-transform hover:scale-110 active:scale-90 inline-block relative mb-2 select-none"
+              className="cursor-pointer transition-transform hover:scale-110 active:scale-90 inline-block relative mb-3 select-none"
               title={isRTL ? 'برای شادی بزن روی کاراکتر!' : 'Tap mascot for party cheer!'}
             >
-              <TeamMascot color="BLUE" size={60} className={mascotBounce ? 'animate-bounce' : ''} />
+              <TeamMascot color="BLUE" size={68} className={mascotBounce ? 'animate-bounce' : ''} />
               {partyEmote && (
                 <span className="absolute -top-3 -right-2 text-2xl animate-ping select-none">{partyEmote}</span>
               )}
             </div>
 
-            <h1 className="text-5xl sm:text-6xl font-black text-[var(--ink)] leading-none tracking-tight font-display mb-1.5">
+            <h1 className="text-5xl sm:text-6xl font-black text-[var(--ink)] leading-none tracking-tight font-display mb-2">
               {t.title || 'دور'}
             </h1>
-            <h2 className="text-lg sm:text-xl font-black text-[var(--lapis)] leading-snug font-display mb-2">
+            <h2 className="text-base sm:text-lg font-bold text-[var(--lapis)] leading-snug font-display max-w-xs mx-auto">
               {t.subtitle || (isRTL ? 'هیجان حدس کلمات و یادگیری زبان' : 'Word Guessing Party Game')}
             </h2>
-            <p className="text-[var(--mute)] text-xs sm:text-sm font-medium leading-relaxed font-ui max-w-xs mx-auto">
-              {t.tagline || (isRTL ? 'گوشی را دور میز بچرخانید، بدون گفتن کلمه ممنوعه هم‌تیمی خود را به جواب برسانید!' : 'Pass the phone, describe the word without forbidden clues!')}
-            </p>
           </div>
         </div>
       </div>
