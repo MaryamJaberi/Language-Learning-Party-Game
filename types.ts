@@ -248,6 +248,7 @@ export interface SinglePlayerSessionReport {
   accuracy: number;
   bestStreak: number;
   weakCards: LanguageCard[];
+  totalDurationSeconds?: number;
 }
 
 export interface LeaderboardEntry {

@@ -19,6 +19,7 @@ import { feedbackDirector } from '../feedbackDirector';
 import { SoundHeaderButton } from '../components/SoundHeaderButton';
 import ExitConfirmModal from '../components/ExitConfirmModal';
 import { generateChallengingReflexOptions } from '../utils/testQuestionEngine';
+import { getPronunciationHint } from '../pronunciationService';
 import { 
   Mic, 
   MicOff, 
@@ -51,7 +52,11 @@ import {
   Target,
   Zap,
   BookOpen,
-  Layers
+  Layers,
+  Clock,
+  SkipForward,
+  PenTool,
+  Award
 } from 'lucide-react';
 
 interface Props {
@@ -107,12 +112,18 @@ const SinglePlayerScreen: React.FC<Props> = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [settings, setSettings] = useState<SinglePlayerSettings>(initialSettings);
   
-  // Input State
+  // Input State & Mode Switcher (Speech vs Text)
   const [userInput, setUserInput] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(true);
+  const [inputMode, setInputMode] = useState<'speech' | 'text'>('text');
+  const textInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Random Lightbulb Hint State
+  const [randomHintMessage, setRandomHintMessage] = useState<string | null>(null);
+  const [showRandomHint, setShowRandomHint] = useState<boolean>(false);
   
-  // Microphone Permission Request State (User asked: ask for permission every time user taps mic)
+  // Microphone Permission Request State
   const [showMicPermissionModal, setShowMicPermissionModal] = useState(false);
   const [micPermissionError, setMicPermissionError] = useState<string | null>(null);
   const [isRequestingMic, setIsRequestingMic] = useState(false);
@@ -135,7 +146,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
   const [autoAdvance, setAutoAdvance] = useState<boolean>(initialSettings.autoAdvance || false);
   const autoAdvanceTimerRef = useRef<number | null>(null);
 
-  // Active Recall & Customizable Hint State (hiding choices by default if enabled)
+  // Active Recall & Options State
   const [revealedOptions, setRevealedOptions] = useState<boolean>(initialSettings.hideOptionsByDefault !== true);
   const [activeHintType, setActiveHintType] = useState<'none' | 'letters' | 'word' | 'options' | 'audio'>('none');
 
@@ -143,38 +154,23 @@ const SinglePlayerScreen: React.FC<Props> = ({
   const isTimedMatch = settings.matchMode === 'timed_match' || (settings.totalMatchSeconds || 0) > 0;
   const initialMatchSeconds = settings.totalMatchSeconds || (settings.matchMode === 'timed_match' ? 60 : 0);
   const [matchRemainingSeconds, setMatchRemainingSeconds] = useState<number>(initialMatchSeconds);
+  const [sessionElapsedSeconds, setSessionElapsedSeconds] = useState<number>(0);
+  const sessionStartTimeRef = useRef<number>(Date.now());
   const matchTimerRef = useRef<number | null>(null);
   const resultsRef = useRef<SinglePlayerCardResult[]>(results);
   resultsRef.current = results;
   const isFinishedRef = useRef<boolean>(false);
 
-  // Rounds & Escalating Speedrun Timer
-  const totalCardsCount = cards.length;
-  const round1End = Math.max(1, Math.floor(totalCardsCount / 3));
-  const round2End = Math.max(2, Math.floor((totalCardsCount * 2) / 3));
-  const currentRound = currentIndex < round1End ? 1 : currentIndex < round2End ? 2 : 3;
-  const totalRounds = 3;
-
-  // Escalating timer calculation (Diminishing seconds per round as user requested)
-  const baseSeconds = settings.timeLimitSeconds > 0 ? settings.timeLimitSeconds : 22;
-  const currentRoundTimeLimit = 
-    currentRound === 1 
-      ? baseSeconds 
-      : currentRound === 2 
-        ? Math.max(8, Math.round(baseSeconds * 0.72)) 
-        : Math.max(5, Math.round(baseSeconds * 0.48));
-
-  // Timer per card
-  const [cardTimer, setCardTimer] = useState(currentRoundTimeLimit);
+  // Timer per card (no rounds in single player mode)
+  const cardTimeLimit = settings.timeLimitSeconds > 0 ? settings.timeLimitSeconds : 20;
+  const [cardTimer, setCardTimer] = useState(cardTimeLimit);
   const timerRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(Date.now());
   const recognitionRef = useRef<any>(null);
-  const prevRoundRef = useRef<number>(1);
 
   // Personal Records
   const [personalRecords] = useState(getPersonalRecords());
   const fastestAnswerRef = useRef<number>(999);
-  const [roundNotification, setRoundNotification] = useState<string | null>(null);
   const [isNewRecordAlert, setIsNewRecordAlert] = useState(false);
 
   const currentCard: LanguageCard | undefined = cards[currentIndex];
@@ -184,41 +180,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
     setSettings(initialSettings);
   }, [initialSettings]);
 
-  // Non-option Smart Hint Calculations (Replaces multiple-choice with word structure & anagram clues)
-  const targetAnswerForHint = useMemo(() => {
-    if (!currentCard) return '';
-    const isNativeAnswer = settings.displayMode === 'translate_to_native';
-    return (isNativeAnswer ? currentCard.translation : currentCard.targetText) || '';
-  }, [currentCard, settings.displayMode]);
 
-  // Scrambled letters bank (shuffled letters of the word for anagram clue)
-  const scrambledLetters = useMemo<string[]>(() => {
-    if (!targetAnswerForHint) return [];
-    // Extract non-space characters
-    const cleanChars: string[] = targetAnswerForHint.split('').filter((ch: string) => ch.trim() !== '');
-    // Shuffle array
-    const shuffled = [...cleanChars];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-  }, [targetAnswerForHint]);
-
-  // Total alphabetic letters count in answer
-  const totalLettersCount = useMemo<number>(() => {
-    return targetAnswerForHint.split('').filter((ch: string) => ch.trim() !== '').length;
-  }, [targetAnswerForHint]);
-
-  const handleRevealMoreLetter = () => {
-    sound.playToggle();
-    setRevealedLettersCount(prev => Math.min(prev + 1, Math.max(1, totalLettersCount - 1)));
-  };
-
-  const handleAddLetterToInput = (letter: string) => {
-    sound.playClick();
-    setUserInput(prev => prev + letter);
-  };
 
   // 4 Smart multiple-choice options powered by pedagogical test question engine
   const quickQuizOptions = useMemo(() => {
@@ -307,7 +269,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
     };
   }, [currentCard?.targetLanguage, settings.targetLanguage]);
 
-  // Handle Escalating Card Timer & Auto-Play Audio
+  // Handle Card Timer & Auto-Play Audio
   useEffect(() => {
     if (!currentCard) return;
 
@@ -316,24 +278,14 @@ const SinglePlayerScreen: React.FC<Props> = ({
     setAttempts(1);
     setIsRevealed(false);
     setShowHintSection(false);
+    setShowRandomHint(false);
+    setRandomHintMessage(null);
     setRevealedOptions(settings.hideOptionsByDefault !== true);
     setActiveHintType('none');
     setRevealedLettersCount(1);
     startTimeRef.current = Date.now();
 
-    // Check if round advanced to notify user about tighter timer
-    if (currentRound > prevRoundRef.current) {
-      prevRoundRef.current = currentRound;
-      sound.playPowerUp();
-      setRoundNotification(
-        currentRound === 2 
-          ? (isRTL ? `⚡ دور ۲ از ۳: زمان کاهش یافت (${currentRoundTimeLimit} ثانیه)! سرعت را بیشتر کن!` : `⚡ Round 2 of 3: Timer tightens to ${currentRoundTimeLimit}s!`)
-          : (isRTL ? `🔥 دور ۳ از ۳: سرعت توربو رعدآسا (${currentRoundTimeLimit} ثانیه)! مرحله نهایی!` : `🔥 Round 3 of 3: Turbo speedrun ${currentRoundTimeLimit}s! Final push!`)
-      );
-      setTimeout(() => setRoundNotification(null), 3500);
-    }
-
-    setCardTimer(currentRoundTimeLimit);
+    setCardTimer(cardTimeLimit);
     if (timerRef.current) clearInterval(timerRef.current);
     
     timerRef.current = window.setInterval(() => {
@@ -356,7 +308,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [currentIndex, currentCard?.id, currentRound, currentRoundTimeLimit, settings.displayMode, settings.autoPlayAudio, settings.hideOptionsByDefault]);
+  }, [currentIndex, currentCard?.id, cardTimeLimit, settings.displayMode, settings.autoPlayAudio, settings.hideOptionsByDefault]);
 
   // Global Timed Match Session Countdown Timer
   useEffect(() => {
@@ -381,6 +333,15 @@ const SinglePlayerScreen: React.FC<Props> = ({
     return () => {
       if (matchTimerRef.current) clearInterval(matchTimerRef.current);
     };
+  }, [isTimedMatch]);
+
+  // Stopwatch timer for Fixed Card Count mode
+  useEffect(() => {
+    if (isTimedMatch) return;
+    const interval = window.setInterval(() => {
+      setSessionElapsedSeconds(Math.max(1, Math.round((Date.now() - sessionStartTimeRef.current) / 1000)));
+    }, 1000);
+    return () => clearInterval(interval);
   }, [isTimedMatch]);
 
   const toggleListening = () => {
@@ -544,6 +505,15 @@ const SinglePlayerScreen: React.FC<Props> = ({
       setStreak(newStreak);
       if (newStreak > bestStreak) setBestStreak(newStreak);
 
+      // Sound feedback for score & streak
+      if (newStreak >= 3) {
+        sound.playMilestoneGlow();
+      } else if (newStreak >= 2) {
+        sound.playPowerUp();
+      } else {
+        sound.playScoreTick(newStreak);
+      }
+
       // --- GAME FEEL LAYERS 1, 2, 3 ---
       feedbackDirector.triggerScoreGained({
         points,
@@ -613,6 +583,72 @@ const SinglePlayerScreen: React.FC<Props> = ({
     sound.playClick();
     setEvaluation(null);
     setUserInput('');
+  };
+
+  const handleTriggerRandomHint = () => {
+    if (!currentCard) return;
+    sound.playPowerUp();
+
+    const userNative = settings.nativeLanguage || (isRTL ? 'fa' : 'en');
+
+    // 1. In 'Read' mode (text_and_audio), the word is already visible on the card.
+    // The only helpful hint for reading practice is pronunciation written in the user's
+    // native language and/or phonetic alphabet (IPA).
+    if (settings.displayMode === 'text_and_audio' || settings.displayMode === 'audio_only') {
+      const pronHint = getPronunciationHint(
+        currentCard.targetText,
+        currentCard.targetLanguage,
+        userNative,
+        currentCard.pronunciation
+      );
+      setRandomHintMessage(pronHint);
+      setShowRandomHint(true);
+      return;
+    }
+
+    // 2. In other modes:
+    const hintsPool: string[] = [];
+
+    // Pronunciation clue
+    const pron = getPronunciationHint(
+      currentCard.targetText,
+      currentCard.targetLanguage,
+      userNative,
+      currentCard.pronunciation
+    );
+    if (pron) {
+      hintsPool.push(pron);
+    }
+
+    // Semantic Clue or Topic
+    if (currentCard.hint) {
+      hintsPool.push(currentCard.hint);
+    } else if (currentCard.topic) {
+      hintsPool.push(isRTL ? `موضوع: ${currentCard.topic}` : `Topic: ${currentCard.topic}`);
+    }
+
+    // Grammar point if available
+    if (currentCard.grammarPoint) {
+      hintsPool.push(isRTL ? `نکته گرامر: ${currentCard.grammarPoint}` : `Grammar: ${currentCard.grammarPoint}`);
+    }
+
+    // In translate_to_target (where target text is hidden), first letter and length are useful:
+    if (settings.displayMode === 'translate_to_target') {
+      const targetWord = (currentCard.targetText || '').trim();
+      if (targetWord) {
+        const firstLetter = targetWord.charAt(0);
+        hintsPool.push(isRTL ? `حرف اول کلمه: «${firstLetter}»` : `First letter: "${firstLetter}"`);
+      }
+
+    }
+
+    if (hintsPool.length === 0) {
+      hintsPool.push(isRTL ? `معنی: ${currentCard.translation}` : `Meaning: ${currentCard.translation}`);
+    }
+
+    const chosen = hintsPool[Math.floor(Math.random() * hintsPool.length)];
+    setRandomHintMessage(chosen);
+    setShowRandomHint(true);
   };
 
   const handleNextCard = (skipCurrent: boolean = false) => {
@@ -706,7 +742,8 @@ const SinglePlayerScreen: React.FC<Props> = ({
       failedCount: failed,
       accuracy,
       bestStreak,
-      weakCards
+      weakCards,
+      totalDurationSeconds: Math.max(1, Math.round((Date.now() - sessionStartTimeRef.current) / 1000))
     };
 
     onFinish(report);
@@ -732,45 +769,41 @@ const SinglePlayerScreen: React.FC<Props> = ({
       className="app w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto min-h-full flex-1 px-3 sm:px-4 pb-12 font-ui relative flex flex-col justify-between overflow-y-auto overscroll-contain"
       dir={isRTL ? 'rtl' : 'ltr'}
     >
-      {/* 1. Header (sticky, always visible matching HTML design) */}
-      <header className="sticky top-0 z-20 bg-[var(--bg)] flex items-center justify-between py-2.5 px-0.5 border-b border-[var(--line)]/50">
-        <div className="flex items-center gap-2">
+      {/* 1. Header (clean, focused, either play or exit) */}
+      <header className="sticky top-0 z-20 bg-[var(--bg)] flex items-center justify-between py-2 px-0.5 border-b border-[var(--line)]/50 shrink-0">
+        <div className="flex items-center gap-2 min-w-0">
           <button
             type="button"
             onClick={() => {
               sound.playClick();
               setShowExitConfirm(true);
             }}
-            className="ib"
-            aria-label={t.exit || 'خروج'}
-            title={t.exit || 'خروج'}
+            className="ib !px-2.5 !py-1 !w-auto flex items-center gap-1 font-bold text-xs text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 border-rose-200 cursor-pointer shadow-2xs shrink-0"
+            aria-label={t.exit || (isRTL ? 'خروج' : 'Exit')}
+            title={t.exit || (isRTL ? 'خروج از بازی' : 'Exit Game')}
           >
-            <ArrowLeft size={19} className={isRTL ? 'rotate-180' : ''} />
+            <ArrowLeft size={16} className={isRTL ? 'rotate-180' : ''} />
+            <span>{t.exit || (isRTL ? 'خروج' : 'Exit')}</span>
           </button>
-          <div>
-            <div className="flex items-center gap-1.5 min-w-0">
-              <h1 className="text-base sm:text-xl font-black leading-none text-[var(--ink)] whitespace-nowrap truncate">
-                {t.singlePlayer || 'تمرین تک‌نفره'}
-              </h1>
-              <span className="text-[10px] font-bold text-[var(--turq)] bg-[var(--turq)]/10 px-2 py-0.5 rounded-full border border-[var(--turq)]/20 shrink-0">
-                {currentCard?.cefrLevel ? `سطح ${currentCard.cefrLevel}` : 'A1'}
-              </span>
-            </div>
+          <div className="min-w-0">
+            <h1 className="text-sm font-black leading-tight text-[var(--ink)] truncate">
+              {t.singlePlayer || (isRTL ? 'تمرین تک‌نفره' : 'Practice')}
+            </h1>
             <span className="text-[11px] font-bold text-[var(--mute)]">
               {isTimedMatch 
                 ? (isRTL 
-                    ? `مسابقه زمان کل • ${toPersian(results.filter(r => r.isCorrect).length, isRTL)} کارت حل‌شده` 
-                    : `Timed Match • ${results.filter(r => r.isCorrect).length} solved`)
+                    ? `زمان‌دار • ${toPersian(results.filter(r => r.isCorrect).length, isRTL)} حل‌شده` 
+                    : `Timed • ${results.filter(r => r.isCorrect).length} solved`)
                 : (isRTL 
-                    ? `دور ${toPersian(currentRound, isRTL)} از ۳ • کارت ${toPersian(currentIndex + 1, isRTL)} از ${toPersian(cards.length, isRTL)}`
-                    : `Round ${currentRound}/3 • Card ${currentIndex + 1}/${cards.length}`)}
+                    ? `کارت ${toPersian(currentIndex + 1, isRTL)} از ${toPersian(cards.length, isRTL)}`
+                    : `Card ${currentIndex + 1} of ${cards.length}`)}
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5">
-          {/* Timed Match Global Countdown Badge */}
-          {isTimedMatch && (
+        <div className="flex items-center gap-1.5 shrink-0">
+          {/* Timer Badge */}
+          {isTimedMatch ? (
             <div className={`px-2 py-1 rounded-xl border text-[11px] font-black flex items-center gap-1 transition-all ${
               matchRemainingSeconds <= 10 
                 ? 'bg-rose-500/20 text-rose-600 border-rose-500/50 animate-pulse' 
@@ -781,109 +814,25 @@ const SinglePlayerScreen: React.FC<Props> = ({
                 {Math.floor(matchRemainingSeconds / 60)}:{(matchRemainingSeconds % 60).toString().padStart(2, '0')}
               </span>
             </div>
+          ) : (
+            <div className="px-2 py-1 rounded-xl border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] text-[11px] font-black flex items-center gap-1">
+              <Clock size={12} className="text-[var(--turq)]" />
+              <span className="font-mono">
+                {Math.floor(sessionElapsedSeconds / 60)}:{(sessionElapsedSeconds % 60).toString().padStart(2, '0')}
+              </span>
+            </div>
           )}
-          {/* Zen Focus Mode Toggle */}
-          <button
-            type="button"
-            onClick={() => {
-              sound.playToggle();
-              setIsZenMode(z => !z);
-            }}
-            className={`px-2 py-1 rounded-xl text-[10px] font-black border flex items-center gap-1 cursor-pointer transition-all ${
-              isZenMode 
-                ? 'bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 border-indigo-500/40 shadow-xs'
-                : 'bg-[var(--panel)] text-[var(--mute)] border-[var(--line)] hover:text-[var(--ink)]'
-            }`}
-            title={isRTL ? 'حالت تمرکز عمیق (بدون حواس‌پرتی) [کلید Z]' : 'Deep Focus Mode [Key Z]'}
-          >
-            <Target size={12} className={isZenMode ? 'text-indigo-500 animate-pulse' : ''} />
-            <span>{isRTL ? 'تمرکز' : 'Focus'}</span>
-          </button>
-
-          {/* Auto-Advance Toggle */}
-          <button
-            type="button"
-            onClick={() => {
-              sound.playToggle();
-              setAutoAdvance(a => !a);
-            }}
-            className={`px-2 py-1 rounded-xl text-[10px] font-black border flex items-center gap-1 cursor-pointer transition-all ${
-              autoAdvance 
-                ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/40 shadow-xs' 
-                : 'bg-[var(--panel)] text-[var(--mute)] border-[var(--line)] hover:text-[var(--ink)]'
-            }`}
-            title={isRTL ? 'پیش‌روی خودکار پس از پاسخ صحیح' : 'Auto-advance on correct answer'}
-          >
-            <Zap size={12} className={autoAdvance ? 'text-amber-500' : ''} />
-            <span>{isRTL ? 'خودکار' : 'Auto'}</span>
-          </button>
 
           {/* Score Badge */}
-          <div className="px-2.5 py-1 rounded-full bg-[var(--panel)] border border-[var(--line)] text-xs font-black text-[var(--ink)] flex items-center gap-1 shadow-xs">
-            <span>{toPersian(totalScore, isRTL)}</span>
-            <span className="text-[10px] text-[var(--mute)]">PTS</span>
+          <div 
+            key={`score-${totalScore}`}
+            className="px-2.5 py-1 rounded-xl bg-[var(--panel)] border border-amber-500/40 text-xs font-black text-[var(--ink)] flex items-center gap-1 shadow-xs"
+          >
+            <Award size={13} className="text-amber-500" />
+            <span className="font-mono text-amber-600 dark:text-amber-400 font-extrabold">{toPersian(totalScore, isRTL)}</span>
           </div>
-
-          {/* Sound Toggle Button */}
-          <SoundHeaderButton 
-            variant="icon-only" 
-            language={isRTL ? 'fa' : 'en'} 
-            className="w-9 h-9 p-0" 
-          />
         </div>
       </header>
-
-      {/* 2. Mode Selector Segment (Hidden in Zen mode to maximize focus) */}
-      {!isZenMode && (
-        <div className="mt-2 shrink-0 animate-fade-in">
-          <div className="seg" role="radiogroup" aria-label="حالت تمرین">
-            <button
-              type="button"
-              aria-checked={settings.displayMode === 'text_and_audio'}
-              onClick={() => {
-                sound.playClick();
-                setSettings(s => ({ ...s, displayMode: 'text_and_audio' }));
-                setEvaluation(null);
-              }}
-            >
-              {isRTL ? 'روخوانی' : 'Read'}
-            </button>
-            <button
-              type="button"
-              aria-checked={settings.displayMode === 'translate_to_target'}
-              onClick={() => {
-                sound.playClick();
-                setSettings(s => ({ ...s, displayMode: 'translate_to_target' }));
-                setEvaluation(null);
-              }}
-            >
-              {isRTL ? 'به هدف' : 'To Target'}
-            </button>
-            <button
-              type="button"
-              aria-checked={settings.displayMode === 'translate_to_native'}
-              onClick={() => {
-                sound.playClick();
-                setSettings(s => ({ ...s, displayMode: 'translate_to_native' }));
-                setEvaluation(null);
-              }}
-            >
-              {isRTL ? 'به مادری' : 'To Native'}
-            </button>
-            <button
-              type="button"
-              aria-checked={settings.displayMode === 'audio_only'}
-              onClick={() => {
-                sound.playClick();
-                setSettings(s => ({ ...s, displayMode: 'audio_only' }));
-                setEvaluation(null);
-              }}
-            >
-              {isRTL ? 'شنیداری' : 'Audio'}
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* 3. Progress Bar & Escalating Timer */}
       <div className="mt-2 shrink-0">
@@ -909,57 +858,50 @@ const SinglePlayerScreen: React.FC<Props> = ({
         </div>
       )}
 
-      {/* Round Transition Notification Banner */}
-      {roundNotification && (
-        <div className="mt-2 p-2.5 rounded-[14px] bg-[var(--saffron)] text-[var(--on-saffron)] text-xs font-black text-center shadow-xs">
-          {roundNotification}
-        </div>
-      )}
-
-      {/* 4. Center Interactive Flashcard in .panel style (Clean, no category tag) */}
+      {/* 4. Center Interactive Flashcard in .panel style */}
       <div className="panel my-2 flex-1 flex flex-col justify-between relative !p-5">
-        {/* Top of card: Language code + listen button */}
+        {/* Top of card: Lightbulb Random Hint Lamp on the side + listen buttons */}
         <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-1.5">
-            <FlagIcon language={currentCard.targetLanguage} size={18} />
-            <span className="text-xs font-black uppercase text-[var(--mute)] tracking-wider">
-              {currentCard.targetLanguage}
-            </span>
-          </div>
+          {/* Lightbulb Hint Icon Button (Exact 1 icon + 1 text) */}
+          <button
+            type="button"
+            onClick={handleTriggerRandomHint}
+            className="px-2.5 py-1 rounded-xl text-xs font-bold border border-amber-400/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-300 flex items-center gap-1.5 cursor-pointer transition-all active:scale-95 shadow-2xs"
+            aria-label={isRTL ? 'راهنما' : 'Hint'}
+            title={isRTL ? 'دریافت راهنمایی تصادفی 💡' : 'Get Random Hint 💡'}
+          >
+            <Lightbulb size={15} className="text-amber-500" />
+            <span>{isRTL ? 'راهنما' : 'Hint'}</span>
+          </button>
 
           <div className="flex items-center gap-1.5">
             <button
               type="button"
               onClick={handlePlayAudio}
-              className="ib !w-8 !h-8"
+              className="ib !w-8 !h-8 cursor-pointer"
               aria-label={isRTL ? 'پخش تلفظ صوتی [Space]' : 'Audio Pronunciation [Space]'}
               title={isRTL ? 'پخش تلفظ صوتی [کلید Space]' : 'Audio Pronunciation [Space]'}
             >
               <Volume2 size={16} />
             </button>
-            <button
-              type="button"
-              onClick={handlePlaySlowAudio}
-              className="px-2 py-1 rounded-xl text-[10px] font-black border border-[var(--line)] bg-[var(--bg)] hover:bg-[var(--line)] text-[var(--mute)] hover:text-[var(--ink)] flex items-center gap-1 cursor-pointer transition-all active:scale-95"
-              aria-label={isRTL ? 'تلفظ آرام ۰.۷x [کلید S]' : 'Slow audio 0.7x [Key S]'}
-              title={isRTL ? 'پخش شمرده و آهسته (برای درک دقیق آواها) [کلید S]' : 'Slow pronunciation 0.7x [Key S]'}
-            >
-              <span>🐢</span>
-              <span>0.7x</span>
-            </button>
           </div>
         </div>
 
-        {/* 70/30 Pedagogical Rule: Challenge Card Banner */}
-        {currentCard.isChallenge && (
-          <div className="mb-2 px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-400/50 text-amber-800 dark:text-amber-200 text-xs font-bold flex items-center justify-between shrink-0 shadow-xs">
-            <div className="flex items-center gap-1.5">
-              <Sparkles size={14} className="text-amber-500 shrink-0" />
-              <span>{isRTL ? '⭐ کارت چالش (+یادگیری)' : '⭐ Challenge Card (+Learning)'}</span>
+        {/* Random Hint Toast Bubble */}
+        {showRandomHint && randomHintMessage && (
+          <div className="mb-2 p-2.5 rounded-xl bg-amber-500/15 border border-amber-400/40 text-amber-900 dark:text-amber-200 text-xs font-bold flex items-center justify-between animate-fade-in shadow-2xs">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <Lightbulb size={15} className="text-amber-500 shrink-0" />
+              <span className="truncate">{randomHintMessage}</span>
             </div>
-            <span className="text-[10px] text-emerald-700 dark:text-emerald-300 font-semibold">
-              {isRTL ? '۲+ امتیاز تشویقی • بدون کسر امتیاز' : '+2 Bonus • No Penalty'}
-            </span>
+            <button
+              type="button"
+              onClick={() => setShowRandomHint(false)}
+              className="text-amber-700 dark:text-amber-300 hover:text-amber-900 p-0.5 cursor-pointer shrink-0"
+              aria-label={isRTL ? 'بستن' : 'Close'}
+            >
+              <X size={13} />
+            </button>
           </div>
         )}
 
@@ -974,19 +916,6 @@ const SinglePlayerScreen: React.FC<Props> = ({
               <p className="text-sm font-bold text-[var(--ink)] text-center">
                 {isRTL ? 'گوش دهید و کلمه شنیده‌شده را بگویید یا بنویسید' : 'Listen and repeat or type what you hear'}
               </p>
-              {!showHintSection && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    sound.playToggle();
-                    setShowHintSection(true);
-                  }}
-                  className="mt-2 text-xs font-bold text-[var(--lapis)] hover:underline flex items-center gap-1.5 bg-[var(--lapis-soft)] px-3.5 py-1.5 rounded-full cursor-pointer transition-transform active:scale-95 shadow-2xs"
-                >
-                  <Lightbulb size={13} className="text-[var(--saffron)]" />
-                  <span>{isRTL ? '💡 سرنخ و حروف کمکی' : '💡 Clue & Letter Hints'}</span>
-                </button>
-              )}
             </div>
           ) : settings.displayMode === 'translate_to_target' ? (
             /* Mode 2: Translate to Target (Native prompt visible in Persian, target text hidden) */
@@ -1001,27 +930,13 @@ const SinglePlayerScreen: React.FC<Props> = ({
                 {currentCard.translation}
               </div>
 
-              {isRevealed || evaluation?.isCorrect ? (
+              {(isRevealed || evaluation?.isCorrect) && (
                 <div 
                   dir={isRtlLang(currentCard.targetLanguage) ? 'rtl' : 'ltr'}
                   className="mt-3 text-lg sm:text-xl font-black text-[var(--turq)] bg-[var(--bg)] px-4 py-1.5 rounded-[12px] border border-[var(--line)]"
                 >
                   {currentCard.targetText}
                 </div>
-              ) : (
-                !showHintSection && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      sound.playToggle();
-                      setShowHintSection(true);
-                    }}
-                    className="mt-3 text-xs font-bold text-[var(--lapis)] hover:underline flex items-center gap-1.5 bg-[var(--lapis-soft)] px-3.5 py-1.5 rounded-full cursor-pointer transition-transform active:scale-95 shadow-2xs"
-                  >
-                    <Lightbulb size={13} className="text-[var(--saffron)]" />
-                    <span>{isRTL ? '💡 سرنخ و حروف کمکی' : '💡 Clue & Letter Hints'}</span>
-                  </button>
-                )
               )}
             </div>
           ) : settings.displayMode === 'translate_to_native' ? (
@@ -1037,27 +952,13 @@ const SinglePlayerScreen: React.FC<Props> = ({
                 {currentCard.targetText}
               </div>
 
-              {isRevealed || evaluation?.isCorrect ? (
+              {(isRevealed || evaluation?.isCorrect) && (
                 <div 
                   dir={isRtlLang(currentCard.nativeLanguage || settings.nativeLanguage || 'fa') ? 'rtl' : 'ltr'}
                   className="mt-3 text-lg sm:text-xl font-black text-[var(--lapis)] bg-[var(--bg)] px-4 py-1.5 rounded-[12px] border border-[var(--line)]"
                 >
                   {currentCard.translation}
                 </div>
-              ) : (
-                !showHintSection && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      sound.playToggle();
-                      setShowHintSection(true);
-                    }}
-                    className="mt-3 text-xs font-bold text-[var(--lapis)] hover:underline flex items-center gap-1.5 bg-[var(--lapis-soft)] px-3.5 py-1.5 rounded-full cursor-pointer transition-transform active:scale-95 shadow-2xs"
-                  >
-                    <Lightbulb size={13} className="text-[var(--saffron)]" />
-                    <span>{isRTL ? '💡 سرنخ و حروف کمکی' : '💡 Clue & Letter Hints'}</span>
-                  </button>
-                )
               )}
             </div>
           ) : (
@@ -1077,28 +978,23 @@ const SinglePlayerScreen: React.FC<Props> = ({
                 {currentCard.translation}
               </div>
 
-              {currentCard.pronunciation && (
-                <div className="text-xs font-mono font-bold text-[var(--turq)] mt-1.5 px-2.5 py-0.5 rounded-full bg-[var(--bg)] border border-[var(--line)]">
-                  🗣️ [{currentCard.pronunciation}]
-                </div>
-              )}
-
-              {currentCard.grammarPoint && (
-                <div className="mt-2 text-center">
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[var(--lapis)] bg-[var(--lapis-soft)] px-2.5 py-1 rounded-xl border border-[var(--lapis)]/20 shadow-2xs">
-                    <BookOpen size={12} className="shrink-0" />
-                    <span>{currentCard.grammarPoint}</span>
-                  </span>
-                </div>
-              )}
+              {/* Pronunciation Guide (Native script & IPA) */}
+              {(() => {
+                const userNative = settings.nativeLanguage || (isRTL ? 'fa' : 'en');
+                const pron = getPronunciationHint(
+                  currentCard.targetText,
+                  currentCard.targetLanguage,
+                  userNative,
+                  currentCard.pronunciation
+                );
+                return (
+                  <div className="text-xs font-bold text-[var(--turq)] mt-2 px-3 py-1 rounded-xl bg-[var(--bg)] border border-[var(--line)] shadow-2xs font-mono">
+                    {pron}
+                  </div>
+                );
+              })()}
             </div>
           )}
-        </div>
-
-        {/* Card bottom footer */}
-        <div className="pt-2 border-t border-[var(--line)] flex items-center justify-between text-xs font-bold text-[var(--mute)]">
-          <span>{currentCard.contentType || 'عبارت'}</span>
-          <span>+{currentCard.points || 1} امتیاز</span>
         </div>
       </div>
 
@@ -1161,334 +1057,119 @@ const SinglePlayerScreen: React.FC<Props> = ({
         </div>
       )}
 
-      {/* 5. Input Section: 4 Interactive Choices, Mic button and Text Input */}
+      {/* 5. Input Section: 3 Clear Actions (Type, Skip, Speak) */}
       <div className="space-y-2 shrink-0 font-ui mt-1">
-        {/* Interactive Customizable Hint Bar */}
-        {!evaluation?.isCorrect && (
-          <div className="pt-0.5">
-            <div className="p-2.5 rounded-2xl bg-[var(--panel)] border border-[var(--line)] space-y-2 shadow-2xs">
-              <div className="flex items-center justify-between px-1">
-                <span className="text-[11px] font-black text-[var(--ink)] flex items-center gap-1.5">
-                  <Lightbulb size={13} className="text-[var(--saffron)]" />
-                  <span>{isRTL ? '💡 انتخاب سرنخ و راهنما:' : '💡 Choose Hint Type:'}</span>
-                </span>
-                {(showHintSection || revealedOptions) && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      sound.playToggle();
-                      setShowHintSection(false);
-                      setRevealedOptions(false);
-                      setActiveHintType('none');
-                    }}
-                    className="text-[10px] text-[var(--mute)] hover:text-[var(--ink)] font-bold cursor-pointer flex items-center gap-0.5"
-                  >
-                    <span>{isRTL ? 'مخفی‌سازی همه' : 'Hide all'}</span>
-                    <ChevronUp size={12} />
-                  </button>
-                )}
-              </div>
 
-              {/* 4 Customizable Hint Action Buttons */}
-              <div className="grid grid-cols-4 gap-1.5 text-center">
-                {/* 1. Letter Skeleton / Masked Slots */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    sound.playToggle();
-                    setShowHintSection(true);
-                    setActiveHintType('letters');
-                  }}
-                  className={`py-2 px-1 rounded-xl text-[10.5px] font-black border flex flex-col items-center gap-1 cursor-pointer transition-all active:scale-95 ${
-                    showHintSection && activeHintType === 'letters'
-                      ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs'
-                      : 'bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--panel)]'
-                  }`}
-                  title={isRTL ? 'نمایش ساختار و حروف کلمه' : 'Show letter structure'}
-                >
-                  <KeyRound size={14} className={showHintSection && activeHintType === 'letters' ? '' : 'text-[var(--turq)]'} />
-                  <span className="truncate">{isRTL ? '🔤 حروف' : 'Letters'}</span>
-                </button>
-
-                {/* 2. Word / Context Concept Clue */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    sound.playToggle();
-                    setShowHintSection(true);
-                    setActiveHintType('word');
-                  }}
-                  className={`py-2 px-1 rounded-xl text-[10.5px] font-black border flex flex-col items-center gap-1 cursor-pointer transition-all active:scale-95 ${
-                    showHintSection && activeHintType === 'word'
-                      ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs'
-                      : 'bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--panel)]'
-                  }`}
-                  title={isRTL ? 'نمایش سرنخ و مفهوم کلمه' : 'Show concept clue'}
-                >
-                  <Sparkles size={14} className={showHintSection && activeHintType === 'word' ? '' : 'text-[var(--saffron)]'} />
-                  <span className="truncate">{isRTL ? '💬 کلمه' : 'Clue'}</span>
-                </button>
-
-                {/* 3. Reveal 4 Choices */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    sound.playToggle();
-                    setRevealedOptions(prev => !prev);
-                    if (!revealedOptions) {
-                      setActiveHintType('options');
-                    }
-                  }}
-                  className={`py-2 px-1 rounded-xl text-[10.5px] font-black border flex flex-col items-center gap-1 cursor-pointer transition-all active:scale-95 ${
-                    revealedOptions
-                      ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs'
-                      : 'bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--panel)]'
-                  }`}
-                  title={isRTL ? 'نمایش ۴ گزینه تستی' : 'Reveal 4 choices'}
-                >
-                  <Layers size={14} className={revealedOptions ? '' : 'text-[var(--lapis)]'} />
-                  <span className="truncate">{isRTL ? '📋 گزینه‌ها' : 'Options'}</span>
-                </button>
-
-                {/* 4. Slow Audio Pronunciation */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    handlePlaySlowAudio();
-                  }}
-                  className="py-2 px-1 rounded-xl text-[10.5px] font-black border bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--panel)] flex flex-col items-center gap-1 cursor-pointer transition-all active:scale-95"
-                  title={isRTL ? 'تلفظ آرام صوتی' : 'Slow audio pronunciation'}
-                >
-                  <Volume2 size={14} className="text-amber-500" />
-                  <span className="truncate">{isRTL ? '🎧 تلفظ' : 'Audio'}</span>
-                </button>
-              </div>
-
-              {/* Clue Content when showHintSection is true */}
-              {showHintSection && (
-                <div className="animate-fade-in pt-1 space-y-2">
-                  {/* Semantic Concept Clue */}
-                  {(activeHintType === 'word' || activeHintType === 'none' || !currentCard?.hint) && (
-                    <div className="text-xs font-bold text-[var(--ink)] bg-[var(--saffron)]/15 border border-[var(--saffron)]/30 rounded-xl px-2.5 py-1.5 flex items-start gap-1.5 leading-relaxed">
-                      <span className="shrink-0 text-sm mt-0.5">💡</span>
-                      <div>
-                        <span className="text-[10px] text-[var(--mute)] block">{isRTL ? 'سرنخ مفهومی:' : 'Concept Clue:'}</span>
-                        <span>{currentCard?.hint || (isRTL ? `دسته‌بندی: ${currentCard?.category || 'عمومی و پرکاربرد'}` : `Category: ${currentCard?.category || 'Practical'}`)}</span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Letter slots & anagrams */}
-                  {(activeHintType === 'letters' || activeHintType === 'none') && (
-                    <>
-                      <div className="bg-[var(--bg)] p-2.5 rounded-xl border border-[var(--line)] space-y-1.5">
-                        <div className="flex items-center justify-between text-[11px] font-bold">
-                          <span className="text-[var(--mute)]">
-                            {isRTL 
-                              ? `ساختار پاسخ (${totalLettersCount} حرف)`
-                              : `Word Structure (${totalLettersCount} letters)`}
-                          </span>
-                          {revealedLettersCount < totalLettersCount - 1 && (
-                            <button
-                              type="button"
-                              onClick={handleRevealMoreLetter}
-                              className="text-[10px] font-bold text-[var(--teal)] hover:underline flex items-center gap-1 bg-[var(--teal)]/10 px-2 py-0.5 rounded-md border border-[var(--teal)]/20 active:scale-95 transition-all cursor-pointer"
-                            >
-                              <KeyRound size={11} />
-                              <span>{isRTL ? '+۱ حرف کمکی' : '+1 Letter'}</span>
-                            </button>
-                          )}
-                        </div>
-
-                        <div 
-                          dir={isRtlLang(settings.displayMode === 'translate_to_native' ? (currentCard?.nativeLanguage || 'fa') : (currentCard?.targetLanguage || 'en-US')) ? 'rtl' : 'ltr'}
-                          className="flex flex-wrap items-center justify-center gap-1.5 py-1 select-none"
-                        >
-                          {(() => {
-                            let globalLetterIdx = 0;
-                            return targetAnswerForHint.split(' ').map((word, wIdx) => (
-                              <div key={`word-${wIdx}`} className="flex items-center gap-1 mx-1">
-                                {word.split('').map((char: string, cIdx: number) => {
-                                  const isNonLetter = !/\p{L}/u.test(char);
-                                  if (isNonLetter) {
-                                    return (
-                                      <span key={`char-${wIdx}-${cIdx}`} className="text-sm font-bold text-[var(--mute)] px-0.5">
-                                        {char}
-                                      </span>
-                                    );
-                                  }
-                                  const currentIdx = globalLetterIdx++;
-                                  const isRevealedChar = currentIdx === 0 || currentIdx < revealedLettersCount;
-                                  return (
-                                    <span
-                                      key={`slot-${wIdx}-${cIdx}`}
-                                      className={`w-6 h-7 sm:w-7 sm:h-8 rounded-lg flex items-center justify-center text-xs sm:text-sm font-black transition-all ${
-                                        isRevealedChar
-                                          ? 'bg-[var(--teal)]/15 text-[var(--teal)] border border-[var(--teal)]/40 shadow-2xs'
-                                          : 'bg-[var(--panel)] text-transparent border-b-2 border-[var(--mute)]'
-                                      }`}
-                                    >
-                                      {isRevealedChar ? char : '_'}
-                                    </span>
-                                  );
-                                })}
-                              </div>
-                            ));
-                          })()}
-                        </div>
-                      </div>
-
-                      {/* Scrambled Letters Pool */}
-                      {scrambledLetters.length > 0 && (
-                        <div className="bg-[var(--bg)] p-2.5 rounded-xl border border-[var(--line)] space-y-1.5">
-                          <div className="flex items-center justify-between text-[11px] font-bold text-[var(--mute)]">
-                            <span>{isRTL ? 'حروف تشکیل‌دهنده (درهم‌ریخته • برای افزودن لمس کنید):' : 'Scrambled Letters (Tap to add):'}</span>
-                            {userInput.length > 0 && (
-                              <button
-                                type="button"
-                                onClick={() => setUserInput(prev => prev.slice(0, -1))}
-                                className="text-[10px] text-[var(--vermilion)] hover:underline flex items-center gap-0.5 cursor-pointer font-bold"
-                              >
-                                <span>{isRTL ? '⌫ پاک‌کردن حرف' : '⌫ Backspace'}</span>
-                              </button>
-                            )}
-                          </div>
-                          <div className="flex flex-wrap items-center justify-center gap-1.5 py-1">
-                            {scrambledLetters.map((letter, lIdx) => (
-                              <button
-                                key={`scr-${lIdx}-${letter}`}
-                                type="button"
-                                onClick={() => handleAddLetterToInput(letter)}
-                                className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[var(--panel)] hover:bg-[var(--lapis-soft)] text-[var(--ink)] border border-[var(--line)] hover:border-[var(--lapis)] text-xs sm:text-sm font-black flex items-center justify-center transition-transform active:scale-90 cursor-pointer shadow-2xs"
-                                title={letter}
-                              >
-                                {letter}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-        
-        {/* Quick Quiz 4 Options - ONLY shown when revealedOptions is true */}
-        {quickQuizOptions.length > 0 && !evaluation && revealedOptions && (
-          <div className="space-y-1.5 my-1.5 animate-fade-in">
-            <div className="flex items-center justify-between text-[11px] font-bold text-[var(--mute)] px-1">
-              <span>{isRTL ? 'یا پاسخ را مستقیماً از ۴ گزینه زیر لمس کنید:' : 'Or tap an answer directly from the 4 options below:'}</span>
-              <button
-                type="button"
-                onClick={() => {
-                  sound.playToggle();
-                  setRevealedOptions(false);
-                }}
-                className="text-[10px] text-[var(--mute)] hover:text-[var(--ink)] cursor-pointer"
-              >
-                {isRTL ? 'مخفی‌سازی گزینه‌ها ✕' : 'Hide choices ✕'}
-              </button>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              {quickQuizOptions.map((opt, oIdx) => (
-                <button
-                  key={`quick-opt-${oIdx}-${opt}`}
-                  type="button"
-                  aria-label={opt}
-                  onClick={() => submitAnswer(opt)}
-                  className="p-2.5 rounded-xl bg-[var(--panel)] hover:bg-[var(--lapis-soft)] border border-[var(--line)] hover:border-[var(--lapis)] text-xs sm:text-sm font-bold text-[var(--ink)] text-center transition-all active:scale-95 cursor-pointer shadow-xs relative flex items-center justify-center gap-1.5"
-                >
-                  <span className="hidden sm:inline-flex text-[9px] text-[var(--mute)] bg-[var(--bg)] border border-[var(--line)] px-1 rounded-sm leading-none py-0.5 font-mono" aria-hidden="true">
-                    {oIdx + 1}
-                  </span>
-                  <span>{opt}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Large Speaking Mic Button */}
-        {speechSupported ? (
-          <div>
-            <button
-              type="button"
-              onClick={toggleListening}
-              className={`btn-turq w-full !min-h-[48px] !text-sm sm:!text-base ${
-                isListening ? '!bg-[var(--danger)] animate-pulse' : ''
-              }`}
-            >
-              {isListening ? (
-                <>
-                  <MicOff size={20} />
-                  <span>{t.stopListening} ({isRTL ? 'در حال شنیدن...' : 'Listening...'})</span>
-                </>
-              ) : (
-                <>
-                  <Mic size={20} />
-                  <span>{t.tapToSpeak}</span>
-                </>
-              )}
-            </button>
-          </div>
-        ) : (
-          <div className="text-[11px] text-[var(--mute)] text-center font-bold">
-            {t.micNotSupported}
-          </div>
-        )}
-
-        {/* Text Input with Submit */}
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            dir={isRtlLang(settings.displayMode === 'translate_to_native' ? (currentCard?.nativeLanguage || 'fa') : (currentCard?.targetLanguage || 'nl')) ? 'rtl' : 'ltr'}
-            value={userInput}
-            onChange={e => setUserInput(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === 'Enter') handleCheckAnswer();
-            }}
-            placeholder={t.enterAnswerPlaceholder || (isRTL ? 'پاسخ را بنویسید یا بگویید...' : 'Type or speak answer...')}
-            className="flex-1 min-w-0 bg-[var(--panel)] text-[var(--ink)] px-3.5 py-2.5 rounded-[14px] border border-[var(--line)] text-xs sm:text-sm font-bold focus:outline-none focus:border-[var(--lapis)] transition-colors"
-          />
-
+        {/* Action Row: نوشتن، رد کردن، لمس برای صحبت کنار هم باشند */}
+        <div className="grid grid-cols-3 gap-2 pt-0.5">
+          {/* 1. نوشتن (Writing / Text Input) */}
           <button
             type="button"
-            onClick={handleCheckAnswer}
-            className="btn-primary !min-h-[44px] !px-3.5 whitespace-nowrap shrink-0 flex items-center justify-center gap-1.5 font-bold text-xs sm:text-sm"
+            onClick={() => {
+              sound.playToggle();
+              setInputMode('text');
+              setTimeout(() => textInputRef.current?.focus(), 50);
+            }}
+            className={`py-2 px-2 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-95 shadow-2xs ${
+              inputMode === 'text'
+                ? 'bg-[var(--lapis)] text-white border-[var(--lapis)] shadow-xs'
+                : 'bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border-[var(--line)]'
+            }`}
+            title={isRTL ? 'حالت نوشتن و تایپ' : 'Type mode'}
           >
-            <Send size={14} className={isRTL ? 'rotate-180' : ''} />
-            <span className="whitespace-nowrap">{t.checkAnswer}</span>
+            <PenTool size={15} />
+            <span className="truncate">{isRTL ? 'نوشتن' : 'Type'}</span>
           </button>
-        </div>
 
-        {/* Skip Card / Hint Actions */}
-        <div className="flex items-center justify-between text-xs font-bold text-[var(--mute)] pt-1">
+          {/* 2. رد کردن (Skip Card) */}
           <button
             type="button"
             onClick={() => handleNextCard(true)}
-            className="hover:text-[var(--ink)] transition-colors py-1 cursor-pointer flex items-center gap-1"
+            className="py-2 px-2 rounded-xl border border-[var(--line)] bg-[var(--panel)] hover:bg-[var(--bg)] text-xs font-bold text-[var(--mute)] hover:text-[var(--ink)] flex items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-95 shadow-2xs"
+            aria-label={isRTL ? 'رد کردن' : 'Skip'}
+            title={isRTL ? 'رد کردن این کارت' : 'Skip this card'}
           >
-            <span>{isRTL ? 'رد کردن این کارت ⏭️' : 'Skip Card ⏭️'}</span>
+            <SkipForward size={15} />
+            <span className="truncate">{isRTL ? 'رد کردن' : 'Skip'}</span>
           </button>
 
-          {!showHintSection && !evaluation?.isCorrect && (
-            <button
-              type="button"
-              onClick={() => {
-                sound.playToggle();
-                setShowHintSection(true);
-              }}
-              className="text-[var(--lapis)] hover:underline flex items-center gap-1 py-1 cursor-pointer font-bold"
-            >
-              <Lightbulb size={13} className="text-[var(--saffron)]" />
-              <span>{isRTL ? 'سرنخ و حروف کمکی 💡' : 'Clue & Hints 💡'}</span>
-            </button>
-          )}
+          {/* 3. لمس برای صحبت (Touch to Speak) */}
+          <button
+            type="button"
+            onClick={() => {
+              if (inputMode !== 'speech') {
+                setInputMode('speech');
+              }
+              toggleListening();
+            }}
+            className={`py-2 px-2 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-95 shadow-2xs ${
+              isListening
+                ? 'bg-rose-500 text-white border-rose-600 animate-pulse'
+                : inputMode === 'speech'
+                  ? 'bg-[var(--turq)] text-white border-[var(--turq)] shadow-xs'
+                  : 'bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border-[var(--line)]'
+            }`}
+            title={isRTL ? 'صحبت کردن با میکروفون' : 'Touch to speak'}
+          >
+            {isListening ? <MicOff size={15} /> : <Mic size={15} />}
+            <span className="truncate">
+              {isListening 
+                ? (isRTL ? 'پایان گفتار' : 'Stop') 
+                : (isRTL ? 'لمس برای صحبت' : 'Speak')}
+            </span>
+          </button>
         </div>
 
+        {/* Input Bar: Text Typing Input (shown when in text mode, or default) */}
+        {inputMode === 'text' && (
+          <div className="flex items-center gap-2 animate-fade-in">
+            <input
+              ref={textInputRef}
+              type="text"
+              dir={isRtlLang(settings.displayMode === 'translate_to_native' ? (currentCard?.nativeLanguage || 'fa') : (currentCard?.targetLanguage || 'nl')) ? 'rtl' : 'ltr'}
+              value={userInput}
+              onChange={e => setUserInput(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter') handleCheckAnswer();
+              }}
+              placeholder={t.enterAnswerPlaceholder || (isRTL ? 'جمله را اینجا تایپ کنید یا بگویید...' : 'Type or speak the sentence here...')}
+              className="flex-1 min-w-0 bg-[var(--panel)] text-[var(--ink)] px-3.5 py-2.5 rounded-[14px] border border-[var(--line)] text-xs sm:text-sm font-bold focus:outline-none focus:border-[var(--lapis)] transition-colors"
+            />
+
+            <button
+              type="button"
+              onClick={handleCheckAnswer}
+              className="btn-primary !min-h-[44px] !px-3.5 whitespace-nowrap shrink-0 flex items-center justify-center gap-1.5 font-bold text-xs sm:text-sm"
+              aria-label={t.checkAnswer || (isRTL ? 'بررسی پاسخ' : 'Check Answer')}
+            >
+              <Send size={14} className={isRTL ? 'rotate-180' : ''} />
+              <span>{t.checkAnswer || (isRTL ? 'بررسی پاسخ' : 'Check')}</span>
+            </button>
+          </div>
+        )}
+
+        {/* Speech Mode Active Listening Indicator Bar */}
+        {inputMode === 'speech' && (
+          <div className="p-2.5 rounded-xl bg-[var(--bg)] border border-[var(--line)] flex items-center justify-between text-xs animate-fade-in">
+            <div className="flex items-center gap-2 font-bold text-[var(--ink)]">
+              <div className={`w-2.5 h-2.5 rounded-full ${isListening ? 'bg-rose-500 animate-ping' : 'bg-[var(--turq)]'}`} />
+              <span>
+                {isListening 
+                  ? (isRTL ? 'در حال شنیدن... لطفاً تلفظ کنید 🎙️' : 'Listening... please pronounce clearly 🎙️')
+                  : (isRTL ? 'برای شروع صحبت، دکمه «لمس برای صحبت» بالا را بزنید' : 'Tap "Speak" above to begin pronunciation test')}
+              </span>
+            </div>
+            {isListening && (
+              <button
+                type="button"
+                onClick={toggleListening}
+                className="text-[11px] font-bold text-rose-500 hover:underline cursor-pointer"
+              >
+                {isRTL ? 'توقف' : 'Stop'}
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Explicit Microphone Permission Modal */}

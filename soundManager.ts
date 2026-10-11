@@ -10,6 +10,8 @@ class SoundManager {
   private lastBgmMode: 'none' | 'menu' | 'game' = 'menu';
   private bgmTimeout: number | null = null;
   private bgmStep: number = 0;
+  private bgmDucked: boolean = false;
+  private bgmVolumeMultiplier: number = 1.0;
 
   // Speech synthesis and fallback audio state
   private activeUtterance: SpeechSynthesisUtterance | null = null;
@@ -143,6 +145,16 @@ class SoundManager {
     if (this.currentBgmMode === 'menu') {
       this.stopBGM();
     }
+  }
+
+  public setBgmDucking(ducked: boolean) {
+    this.bgmDucked = ducked;
+    // Lower background music to a soft ambient volume during gameplay (approx 35-40%)
+    this.bgmVolumeMultiplier = ducked ? 0.35 : 1.0;
+  }
+
+  public isBgmDucked(): boolean {
+    return this.bgmDucked;
   }
 
   public playWinner() {
@@ -765,8 +777,9 @@ class SoundManager {
         const gain = ctx.createGain();
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(mNote, now);
-        gain.gain.setValueAtTime(0.025, now);
-        gain.gain.exponentialRampToValueAtTime(0.0005, now + 0.26);
+        const melVol = 0.025 * this.bgmVolumeMultiplier;
+        gain.gain.setValueAtTime(melVol, now);
+        gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, melVol * 0.02), now + 0.26);
         osc.connect(gain);
         gain.connect(ctx.destination);
         osc.start(now);
@@ -779,8 +792,9 @@ class SoundManager {
         const bassGain = ctx.createGain();
         bassOsc.type = 'sine';
         bassOsc.frequency.setValueAtTime(bNote, now);
-        bassGain.gain.setValueAtTime(0.045, now);
-        bassGain.gain.exponentialRampToValueAtTime(0.0005, now + 0.38);
+        const bassVol = 0.045 * this.bgmVolumeMultiplier;
+        bassGain.gain.setValueAtTime(bassVol, now);
+        bassGain.gain.exponentialRampToValueAtTime(Math.max(0.0001, bassVol * 0.01), now + 0.38);
         bassOsc.connect(bassGain);
         bassGain.connect(ctx.destination);
         bassOsc.start(now);
@@ -833,8 +847,9 @@ class SoundManager {
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(note, now);
 
-      gain.gain.setValueAtTime(0.045, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+      const gameBassVol = 0.045 * this.bgmVolumeMultiplier;
+      gain.gain.setValueAtTime(gameBassVol, now);
+      gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, gameBassVol * 0.02), now + 0.12);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
@@ -848,8 +863,9 @@ class SoundManager {
         const shakerGain = ctx.createGain();
         shaker.type = 'sine';
         shaker.frequency.setValueAtTime(2400 + Math.random() * 400, now);
-        shakerGain.gain.setValueAtTime(0.015, now);
-        shakerGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.03);
+        const shakerVol = 0.015 * this.bgmVolumeMultiplier;
+        shakerGain.gain.setValueAtTime(shakerVol, now);
+        shakerGain.gain.exponentialRampToValueAtTime(Math.max(0.00005, shakerVol * 0.01), now + 0.03);
 
         shaker.connect(shakerGain);
         shakerGain.connect(ctx.destination);

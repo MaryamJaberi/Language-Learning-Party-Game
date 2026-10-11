@@ -14,12 +14,14 @@ import {
   Volume2, 
   Sparkles,
   Send,
-  AlertCircle
+  AlertCircle,
+  Clock
 } from 'lucide-react';
 
 interface Props {
   report: SinglePlayerSessionReport;
-  language: Language;
+  language?: Language;
+  uiLanguage?: Language;
   onPlayAgain: () => void;
   onPracticeWeakCards: (cards: LanguageCard[]) => void;
   onOpenLeaderboard?: () => void;
@@ -29,13 +31,15 @@ interface Props {
 const SinglePlayerReportScreen: React.FC<Props> = ({
   report,
   language,
+  uiLanguage,
   onPlayAgain,
   onPracticeWeakCards,
   onOpenLeaderboard,
   onExit
 }) => {
-  const t = tUI(language);
-  const isRTL = isRtlLang(language);
+  const activeLang: Language = uiLanguage || language || (report.settings?.nativeLanguage as Language) || 'fa';
+  const t = tUI(activeLang);
+  const isRTL = isRtlLang(activeLang);
 
   const [playerName, setPlayerName] = useState(() => {
     return localStorage.getItem('dor_single_player_name') || t.languagePro || (isRTL ? 'قهرمان زبان' : 'Language Pro');
@@ -101,9 +105,8 @@ const SinglePlayerReportScreen: React.FC<Props> = ({
           <span>{isRTL ? 'منوی اصلی' : 'Main Menu'}</span>
         </button>
 
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[var(--panel)] border border-[var(--line)] shadow-xs text-xs font-bold text-[var(--turq)]">
-          <FlagIcon language={report.settings.targetLanguage} size={15} />
-          <span>{report.settings.cefrLevel}</span>
+        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-[var(--panel)] border border-[var(--line)] shadow-xs">
+          <FlagIcon language={report.settings.targetLanguage} size={16} />
         </div>
       </div>
 
@@ -158,7 +161,7 @@ const SinglePlayerReportScreen: React.FC<Props> = ({
           )}
 
           {/* Detailed Metric Grid */}
-          <div className="grid grid-cols-3 gap-1.5 text-center mt-2">
+          <div className="grid grid-cols-4 gap-1.5 text-center mt-2">
             <div className="bg-[var(--bg)] p-2.5 rounded-xl border border-[var(--line)]">
               <div className="text-base font-black text-emerald-600 dark:text-emerald-400">{report.accuracy}%</div>
               <div className="text-[10px] text-[var(--mute)] font-bold">{t.accuracy}</div>
@@ -170,6 +173,17 @@ const SinglePlayerReportScreen: React.FC<Props> = ({
             <div className="bg-[var(--bg)] p-2.5 rounded-xl border border-[var(--line)]">
               <div className="text-base font-black text-[var(--saffron)]">{report.correctedCount}</div>
               <div className="text-[10px] text-[var(--mute)] font-bold">{isRTL ? 'تصحیح‌شده' : 'Corrected'}</div>
+            </div>
+            <div className="bg-[var(--bg)] p-2.5 rounded-xl border border-[var(--line)]">
+              <div className="text-base font-black text-[var(--ink)] font-mono">
+                {report.totalDurationSeconds !== undefined
+                  ? `${Math.floor(report.totalDurationSeconds / 60)}:${(report.totalDurationSeconds % 60).toString().padStart(2, '0')}`
+                  : `${Math.round(report.results.reduce((acc, r) => acc + (r.timeSpentSeconds || 0), 0))}s`}
+              </div>
+              <div className="text-[10px] text-[var(--mute)] font-bold flex items-center justify-center gap-0.5">
+                <Clock size={10} className="text-[var(--turq)]" />
+                <span>{isRTL ? 'زمان کل' : 'Duration'}</span>
+              </div>
             </div>
           </div>
         </div>

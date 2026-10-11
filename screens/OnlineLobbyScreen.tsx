@@ -14,7 +14,8 @@ import {
   getDeviceId,
   findOnlineDuelMatch,
   findOnlineMultiplayerMatch,
-  subscribeToOnlineDuelRoom
+  subscribeToOnlineDuelRoom,
+  updatePlayerNameInRoom
 } from '../onlineRoomService';
 import { 
   Globe, 
@@ -37,7 +38,8 @@ import {
   Swords,
   Radio,
   Loader2,
-  Wifi
+  Wifi,
+  Edit3
 } from 'lucide-react';
 import { OnlineDuelRoom } from '../types';
 
@@ -81,6 +83,11 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+
+  // In-Room Editable Name State (Allows player to edit their name directly inside the room)
+  const [inRoomName, setInRoomName] = useState('');
+  const [isEditingRoomName, setIsEditingRoomName] = useState(false);
+  const [isSavingRoomName, setIsSavingRoomName] = useState(false);
 
   // Matchmaking State
   const [matchmakingType, setMatchmakingType] = useState<'duel' | 'party' | null>(null);
@@ -288,6 +295,33 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
     }
   };
 
+  // Sync inRoomName with active player profile in currentRoom
+  useEffect(() => {
+    if (currentRoom) {
+      const me = currentRoom.players.find(p => p.id === myPlayerId);
+      if (me && !isEditingRoomName) {
+        setInRoomName(me.name);
+      }
+    }
+  }, [currentRoom, myPlayerId, isEditingRoomName]);
+
+  // Save new player name directly from inside the room
+  const handleSaveRoomName = async () => {
+    if (!currentRoom || !inRoomName.trim() || isSavingRoomName) return;
+    setIsSavingRoomName(true);
+    sound.playClick();
+    try {
+      await updatePlayerNameInRoom(currentRoom.id, myPlayerId, inRoomName.trim());
+      localStorage.setItem('dor_player_name', inRoomName.trim());
+      setPlayerName(inRoomName.trim());
+      setIsEditingRoomName(false);
+    } catch (e) {
+      console.error('Failed to update player name in room:', e);
+    } finally {
+      setIsSavingRoomName(false);
+    }
+  };
+
   // Quick Online Matchmaking (دونفره و چندنفره)
   const handleFindDuelMatch = async () => {
     const effectiveName = playerName.trim() || (isRTL ? 'بازیکن ۱' : 'Player 1');
@@ -453,75 +487,13 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
             </h1>
             <p className="text-xs text-[var(--mute)] font-medium leading-relaxed">
               {language === 'fa' 
-                ? 'مچ‌یابی سریع با بازیکنان آنلاین، یا ساخت اتاق خصوصی و بازی از راه دور با دوستان!' 
-                : 'Fast online matchmaking or host a private room with friends!'}
+                ? 'ساخت اتاق اختصاصی و بازی دورهمی آنلاین با دوستان از راه دور!' 
+                : 'Host a private room and play online with friends!'}
             </p>
-
-            {/* Quick Player Name Input */}
-            <div className="mt-3 text-start">
-              <label className="block text-[11px] font-bold text-[var(--mute)] mb-1">
-                {language === 'fa' ? 'نام شما در بازی آنلاین:' : 'Your Online Display Name:'}
-              </label>
-              <input
-                type="text"
-                value={playerName}
-                onChange={e => {
-                  setPlayerName(e.target.value);
-                  localStorage.setItem('dor_player_name', e.target.value);
-                }}
-                placeholder={language === 'fa' ? 'مثلاً: آیدین، نیلوفر...' : 'e.g. Alex'}
-                className="w-full px-3 py-2 bg-[var(--bg)] rounded-xl border border-[var(--line)] text-xs font-bold text-[var(--ink)] focus:border-[var(--lapis)] focus:outline-hidden"
-              />
-            </div>
           </div>
 
-          {/* Action Grid: Matchmaking (2-Player Duel & Multiplayer Party) + Custom Rooms */}
+          {/* Action Grid: Custom Rooms (Host / Join) */}
           <div className="space-y-2">
-            {/* MATCHMAKING 1: Quick 1v1 Online Duel */}
-            <button
-              onClick={handleFindDuelMatch}
-              className="w-full py-3 px-4 text-xs sm:text-sm font-extrabold flex items-center justify-between rounded-2xl bg-gradient-to-r from-[#2347C5] to-[#E0533C] hover:brightness-105 text-white shadow-md transition-all active:scale-98 cursor-pointer group"
-            >
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-                  <Swords size={18} />
-                </div>
-                <div className="text-start">
-                  <span className="block leading-tight font-black">
-                    {language === 'fa' ? 'مچ‌یابی آنلاین دونفره (دوئل سرعتی)' : 'Find 1v1 Online Duel Match'}
-                  </span>
-                  <span className="text-[10px] text-white/80 font-medium block leading-tight mt-0.5">
-                    {language === 'fa' ? 'جستجوی حریف آنلاین • رقابت زنده روی ۲ گوشی' : 'Quick match 1v1 across 2 phones'}
-                  </span>
-                </div>
-              </div>
-              <span className="text-[11px] bg-white/20 px-2 py-0.5 rounded-lg font-bold">
-                {language === 'fa' ? 'جستجو ⚡' : 'Search ⚡'}
-              </span>
-            </button>
-
-            {/* MATCHMAKING 2: Quick Multiplayer Party */}
-            <button
-              onClick={handleFindPartyMatch}
-              className="w-full py-3 px-4 text-xs sm:text-sm font-extrabold flex items-center justify-between rounded-2xl bg-gradient-to-r from-[var(--turq)] to-[var(--lapis)] hover:brightness-105 text-white shadow-md transition-all active:scale-98 cursor-pointer group"
-            >
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-                  <Users size={18} />
-                </div>
-                <div className="text-start">
-                  <span className="block leading-tight font-black">
-                    {language === 'fa' ? 'مچ‌یابی دورهمی چندنفره' : 'Find Multiplayer Party Match'}
-                  </span>
-                  <span className="text-[10px] text-white/80 font-medium block leading-tight mt-0.5">
-                    {language === 'fa' ? 'ورود به لابی‌های فعال گروهی' : 'Join active multiplayer group lobby'}
-                  </span>
-                </div>
-              </div>
-              <span className="text-[11px] bg-white/20 px-2 py-0.5 rounded-lg font-bold">
-                {language === 'fa' ? 'جستجو 👥' : 'Search 👥'}
-              </span>
-            </button>
 
             {/* Host Private Custom Room */}
             <button
@@ -835,6 +807,58 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
               <span className="text-[10px] text-[var(--mute)] font-medium">
                 {language === 'fa' ? 'روی نام تیم برای جابجایی کلیک کنید' : 'Click team to switch'}
               </span>
+            </div>
+
+            {/* In-Room Player Name Quick Edit */}
+            <div className="p-2 bg-[var(--bg)] rounded-xl border border-[var(--line)] flex items-center justify-between gap-2 text-xs">
+              <span className="text-[11px] font-bold text-[var(--mute)] shrink-0">
+                {language === 'fa' ? 'نام شما در این اتاق:' : 'Your Name in Room:'}
+              </span>
+              <div className="flex items-center gap-1.5 flex-1 min-w-0 justify-end">
+                {isEditingRoomName ? (
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="text"
+                      value={inRoomName}
+                      onChange={e => setInRoomName(e.target.value)}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') handleSaveRoomName();
+                      }}
+                      className="w-28 sm:w-36 px-2 py-0.5 bg-[var(--panel)] border border-[var(--lapis)] rounded-lg text-xs font-bold text-[var(--ink)] focus:outline-hidden"
+                      autoFocus
+                    />
+                    <button
+                      type="button"
+                      onClick={handleSaveRoomName}
+                      disabled={isSavingRoomName || !inRoomName.trim()}
+                      className="px-2 py-1 bg-[var(--lapis)] text-white text-[10px] font-bold rounded-lg shadow-2xs hover:brightness-105 active:scale-95 cursor-pointer"
+                    >
+                      {language === 'fa' ? 'ذخیره' : 'Save'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsEditingRoomName(false)}
+                      className="px-1.5 py-1 text-[var(--mute)] text-[10px] font-bold hover:text-[var(--ink)] cursor-pointer"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-extrabold text-[var(--ink)] truncate max-w-[140px]">
+                      {currentRoom.players.find(p => p.id === myPlayerId)?.name || inRoomName || (language === 'fa' ? 'بازیکن' : 'Player')}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setIsEditingRoomName(true)}
+                      className="p-1 text-[var(--lapis)] hover:bg-[var(--lapis-soft)] rounded-md transition-colors cursor-pointer"
+                      title={language === 'fa' ? 'ویرایش نام در اتاق' : 'Edit name in room'}
+                    >
+                      <Edit3 size={13} />
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Teams Grid */}

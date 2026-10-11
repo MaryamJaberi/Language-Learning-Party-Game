@@ -54,9 +54,12 @@ export const DuelSetupModal: React.FC<Props> = ({
   const [faceToFaceRotation, setFaceToFaceRotation] = useState<boolean>(true);
   const [sabotageEnabled, setSabotageEnabled] = useState<boolean>(true);
 
-  // Synchronize player names when language or open state changes
+  // Synchronize player names and target language when language or open state changes
   useEffect(() => {
     if (isOpen) {
+      if (currentLanguage) {
+        setTargetLanguage(currentLanguage);
+      }
       if (!player1Name || player1Name === 'بازیکن ۱ (آبی)' || player1Name === 'Player 1 (Blue)') {
         setPlayer1Name(defaultP1);
       }
@@ -64,7 +67,7 @@ export const DuelSetupModal: React.FC<Props> = ({
         setPlayer2Name(defaultP2);
       }
     }
-  }, [isOpen, isRTL, isEn, defaultP1, defaultP2]);
+  }, [isOpen, isRTL, isEn, defaultP1, defaultP2, currentLanguage]);
 
   if (!isOpen) return null;
 
@@ -120,34 +123,6 @@ export const DuelSetupModal: React.FC<Props> = ({
 
         {/* Form Body */}
         <div className="p-4 space-y-4 overflow-y-auto flex-1">
-          {/* Quick 1v1 Online Matchmaking Banner */}
-          <div className="p-3 bg-gradient-to-r from-blue-500/10 via-rose-500/10 to-amber-500/10 border border-[#2347C5]/30 rounded-2xl flex items-center justify-between gap-2 shadow-2xs">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-r from-[#2347C5] to-[#E0533C] text-white flex items-center justify-center shrink-0 shadow-xs">
-                <Swords size={16} />
-              </div>
-              <div className="text-start">
-                <span className="text-xs font-black text-[var(--ink)] block leading-tight">
-                  {isRTL ? 'مچ‌یابی آنلاین دونفره' : '1v1 Online Matchmaking'}
-                </span>
-                <span className="text-[10px] text-[var(--mute)] font-medium block">
-                  {isRTL ? 'جستجوی زنده حریف در اینترنت' : 'Live opponent search online'}
-                </span>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                sound.playClick();
-                onClose();
-                onStartOnlineDuel?.('__matchmake__');
-              }}
-              className="py-1.5 px-3 bg-gradient-to-r from-[#2347C5] to-[#E0533C] hover:brightness-105 active:scale-95 text-white text-xs font-black rounded-xl shrink-0 shadow-xs transition-all cursor-pointer"
-            >
-              {isRTL ? 'مچ آنلاین ⚡' : 'Match ⚡'}
-            </button>
-          </div>
-
           {/* DEVICE MODE SELECTOR (1 Phone vs 2 Phones) */}
           <div className="bg-[var(--bg)] p-1 rounded-2xl border border-[var(--line)] grid grid-cols-2 gap-1">
             <button

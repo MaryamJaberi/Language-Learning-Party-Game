@@ -224,6 +224,29 @@ export const joinOnlineRoom = async (
 };
 
 /**
+ * Update player's display name inside an existing game room
+ */
+export const updatePlayerNameInRoom = async (
+  roomId: string,
+  playerId: number,
+  newName: string
+): Promise<void> => {
+  const cleanName = newName.trim();
+  if (!cleanName) return;
+  const roomRef = doc(db, 'rooms', roomId);
+  const roomSnap = await getDoc(roomRef);
+  if (!roomSnap.exists()) return;
+  const room = roomSnap.data() as OnlineRoomState;
+  const updatedPlayers = room.players.map(p => 
+    p.id === playerId ? { ...p, name: cleanName } : p
+  );
+  await updateDoc(roomRef, {
+    players: updatedPlayers,
+    updatedAt: new Date().toISOString()
+  });
+};
+
+/**
  * Subscribe in real-time to room state changes
  */
 export const subscribeToRoom = (

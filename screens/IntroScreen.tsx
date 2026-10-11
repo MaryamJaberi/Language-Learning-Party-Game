@@ -306,25 +306,25 @@ const IntroScreen: React.FC<Props> = ({
 
       {/* Hero Modern Card Area (Material Design 3 Surface Container) */}
       <div className="relative w-full max-w-sm sm:max-w-md mx-auto my-auto shrink-0">
-        <div className="bg-[var(--panel)] border border-[var(--line)] p-6 sm:p-7 text-center flex flex-col justify-center min-h-[200px] sm:min-h-[220px] rounded-[28px] shadow-sm transition-all">
-          {/* Interactive Mascot & Hero Titles */}
-          <div className="py-2 flex flex-col items-center">
+        <div className="bg-[var(--panel)] border border-[var(--line)] p-5 sm:p-6 text-center flex flex-col justify-center min-h-[170px] sm:min-h-[185px] rounded-[24px] shadow-sm transition-all">
+          {/* Interactive Mascot & Hero Title */}
+          <div className="py-1 flex flex-col items-center">
             {/* Mascot Character with bouncy party feel */}
             <div 
               onClick={handleMascotClick}
-              className="cursor-pointer transition-transform hover:scale-110 active:scale-90 inline-block relative mb-3 select-none"
+              className="cursor-pointer transition-transform hover:scale-105 active:scale-95 inline-block relative mb-2.5 select-none"
               title={isRTL ? 'برای شادی بزن روی کاراکتر!' : 'Tap mascot for party cheer!'}
             >
-              <TeamMascot color="BLUE" size={68} className={mascotBounce ? 'animate-bounce' : ''} />
+              <TeamMascot color="BLUE" size={60} className={mascotBounce ? 'animate-bounce' : ''} />
               {partyEmote && (
                 <span className="absolute -top-3 -right-2 text-2xl animate-ping select-none">{partyEmote}</span>
               )}
             </div>
 
-            <h1 className="text-5xl sm:text-6xl font-black text-[var(--ink)] leading-none tracking-tight font-display mb-2">
+            <h1 className="text-4xl sm:text-5xl font-black text-[var(--ink)] leading-none tracking-tight font-display mb-1.5">
               {t.title || 'دور'}
             </h1>
-            <h2 className="text-base sm:text-lg font-bold text-[var(--lapis)] leading-snug font-display max-w-xs mx-auto">
+            <h2 className="text-sm sm:text-base font-bold text-[var(--lapis)] leading-snug font-display max-w-xs mx-auto">
               {t.subtitle || (isRTL ? 'هیجان حدس کلمات و یادگیری زبان' : 'Word Guessing Party Game')}
             </h2>
           </div>
@@ -343,21 +343,15 @@ const IntroScreen: React.FC<Props> = ({
               sound.playStartGame();
               onNext();
             }}
-            className="start-btn w-full min-h-[58px] sm:min-h-[64px] p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-[var(--lapis)] to-[#1b3ca8] hover:brightness-105 active:scale-[0.98] text-white shadow-md hover:shadow-lg transition-all flex items-center justify-between font-ui cursor-pointer group"
+            className="start-btn w-full min-h-[54px] sm:min-h-[58px] p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-[var(--lapis)] to-[#1b3ca8] hover:brightness-105 active:scale-[0.98] text-white shadow-md hover:shadow-lg transition-all flex items-center justify-between font-ui cursor-pointer group"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white/20 text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-xs">
-                <Users size={22} className="text-white" />
+              <div className="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-xs">
+                <Users size={20} className="text-white" />
               </div>
               <div className="text-start">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-base sm:text-lg font-black block leading-tight">
-                    {t.startNewGame || (isRTL ? 'شروع بازی دورهمی' : 'Start Party Game')}
-                  </span>
-                  <span className="text-sm select-none">👥</span>
-                </div>
-                <span className="text-[11px] text-white/80 font-medium block leading-tight mt-0.5">
-                  {isRTL ? 'بازی تیمی و گروهی' : 'Party Game'}
+                <span className="text-base sm:text-lg font-black block leading-tight">
+                  {t.startNewGame || (isRTL ? 'شروع بازی دورهمی' : 'Start Party Game')}
                 </span>
               </div>
             </div>

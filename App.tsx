@@ -256,10 +256,15 @@ const App: React.FC = () => {
   useEffect(() => {
     const isSoundOn = settings.soundEnabled ?? true;
     sound.setSoundEnabled(isSoundOn);
-    if (isSoundOn && currentScreen !== 'GAME') {
+    const isGameScreen = ['GAME', 'SINGLE_PLAYER', 'DUEL_GAME', 'ONLINE_GAME', 'ONLINE_DUEL'].includes(currentScreen);
+    
+    // Automatically lower/duck background music volume when entering game screen
+    sound.setBgmDucking(isGameScreen);
+
+    if (isSoundOn) {
       sound.startMenuBGM();
-    } else if (currentScreen === 'GAME') {
-      sound.stopMenuBGM();
+    } else {
+      sound.stopBGM();
     }
   }, [settings.soundEnabled, currentScreen]);
 
@@ -527,9 +532,16 @@ const App: React.FC = () => {
 
   // Single Player Flow
   const handleOpenSinglePlayer = () => {
+    const effectiveNative = settings.nativeLanguage || settings.language || 'fa';
+    let preferredTarget = settings.targetLanguages?.[0];
+    if (!preferredTarget || preferredTarget === effectiveNative || (effectiveNative.startsWith('en') && preferredTarget.startsWith('en'))) {
+      preferredTarget = effectiveNative.startsWith('en') ? 'es' : 'en-US';
+    }
+
     setSinglePlayerSettings(prev => ({
       ...prev,
-      nativeLanguage: settings.nativeLanguage || settings.language || 'fa',
+      targetLanguage: prev.targetLanguage && prev.targetLanguage !== effectiveNative ? prev.targetLanguage : preferredTarget,
+      nativeLanguage: effectiveNative,
       selectedCategories: settings.selectedCategories
     }));
     setIsSingleSetupOpen(true);
@@ -877,6 +889,7 @@ const App: React.FC = () => {
         <SinglePlayerReportScreen
           report={singlePlayerReport}
           uiLanguage={settings.language}
+          language={settings.language}
           onPlayAgain={() => handleStartSinglePlayer(singlePlayerSettings)}
           onPracticeWeakCards={handlePracticeWeakCards}
           onOpenLeaderboard={() => setIsLeaderboardOpen(true)}

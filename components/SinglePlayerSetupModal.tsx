@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Language, 
   CEFRLevel, 
@@ -54,6 +54,12 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
 
   const [settings, setSettings] = useState<SinglePlayerSettings>(initialSettings);
   const [pickerMode, setPickerMode] = useState<'target' | 'native' | null>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      setSettings(initialSettings);
+    }
+  }, [isOpen, initialSettings]);
 
   if (!isOpen) return null;
 
@@ -269,127 +275,52 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
             </div>
           </div>
 
-          {/* 3. Challenge Mode */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-[var(--ink)] flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <Languages size={13} className="text-[var(--saffron)]" />
-                <span>{isRTL ? 'سبک تمرین:' : 'Training Mode:'}</span>
-              </div>
-            </label>
-            <div className="grid grid-cols-2 gap-1.5">
-              {/* Mode 1: Pronunciation & Reading */}
-              <button
-                type="button"
-                onClick={() => {
+          {/* 3 & 4. Practice Style & CEFR Difficulty Level Compact Side-by-Side Menu */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-2.5 bg-[var(--bg)] border border-[var(--line)] rounded-2xl">
+            {/* Practice Style Menu */}
+            <div className="space-y-1">
+              <label htmlFor="sp-style-select" className="text-[11px] font-bold text-[var(--ink)] flex items-center gap-1">
+                <Languages size={12} className="text-[var(--lapis)]" />
+                <span>{isRTL ? 'سبک تمرین:' : 'Practice Style:'}</span>
+              </label>
+              <select
+                id="sp-style-select"
+                value={settings.displayMode}
+                onChange={(e) => {
                   sound.playToggle();
-                  setSettings(s => ({ ...s, displayMode: 'text_and_audio' }));
+                  setSettings(s => ({ ...s, displayMode: e.target.value as any }));
                 }}
-                className={`p-2.5 rounded-xl border flex flex-col items-center text-center gap-0.5 transition-all cursor-pointer active:scale-98 ${
-                  settings.displayMode === 'text_and_audio'
-                    ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] font-bold shadow-xs'
-                    : 'bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--panel)]'
-                }`}
+                className="w-full bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] rounded-xl px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:border-[var(--lapis)] cursor-pointer"
               >
-                <FileText size={15} />
-                <span className="text-[11px] font-bold whitespace-nowrap">{isRTL ? 'روخوانی و تلفظ' : 'Reading & Speech'}</span>
-                <span className="text-[9px] opacity-80 leading-tight whitespace-nowrap">
-                  {isRTL ? 'دیدن متن + تلفظ' : 'See text + speech'}
-                </span>
-              </button>
-
-              {/* Mode 2: Translate to Target Language */}
-              <button
-                type="button"
-                onClick={() => {
-                  sound.playToggle();
-                  setSettings(s => ({ ...s, displayMode: 'translate_to_target' }));
-                }}
-                className={`p-2.5 rounded-xl border flex flex-col items-center text-center gap-0.5 transition-all cursor-pointer active:scale-98 ${
-                  settings.displayMode === 'translate_to_target'
-                    ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] font-bold shadow-xs'
-                    : 'bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--panel)]'
-                }`}
-              >
-                <Languages size={15} />
-                <span className="text-[11px] font-bold whitespace-nowrap">
-                  {isRTL ? `${currentNativeLangInfo.persianName} به ${currentTargetLangInfo.persianName}` : `${currentNativeLangInfo.name} → ${currentTargetLangInfo.name}`}
-                </span>
-                <span className="text-[9px] opacity-80 leading-tight whitespace-nowrap">
-                  {isRTL ? 'دیدن مبدأ ➔ حدس هدف' : 'Prompt ➔ target'}
-                </span>
-              </button>
-
-              {/* Mode 3: Translate to Native */}
-              <button
-                type="button"
-                onClick={() => {
-                  sound.playToggle();
-                  setSettings(s => ({ ...s, displayMode: 'translate_to_native' }));
-                }}
-                className={`p-2.5 rounded-xl border flex flex-col items-center text-center gap-0.5 transition-all cursor-pointer active:scale-98 ${
-                  settings.displayMode === 'translate_to_native'
-                    ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] font-bold shadow-xs'
-                    : 'bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--panel)]'
-                }`}
-              >
-                <ArrowRightLeft size={15} />
-                <span className="text-[11px] font-bold whitespace-nowrap">
-                  {isRTL ? `${currentTargetLangInfo.persianName} به ${currentNativeLangInfo.persianName}` : `${currentTargetLangInfo.name} → ${currentNativeLangInfo.name}`}
-                </span>
-                <span className="text-[9px] opacity-80 leading-tight whitespace-nowrap">
-                  {isRTL ? 'دیدن هدف ➔ حدس ترجمه' : 'Target ➔ meaning'}
-                </span>
-              </button>
-
-              {/* Mode 4: Audio-Only */}
-              <button
-                type="button"
-                onClick={() => {
-                  sound.playToggle();
-                  setSettings(s => ({ ...s, displayMode: 'audio_only' }));
-                }}
-                className={`p-2.5 rounded-xl border flex flex-col items-center text-center gap-0.5 transition-all cursor-pointer active:scale-98 ${
-                  settings.displayMode === 'audio_only'
-                    ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] font-bold shadow-xs'
-                    : 'bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--panel)]'
-                }`}
-              >
-                <Headphones size={15} />
-                <span className="text-[11px] font-bold">{isRTL ? '🎧 چالش شنیداری' : '🎧 Listening Test'}</span>
-                <span className="text-[9px] opacity-80 leading-tight">
-                  {isRTL ? 'فقط شنیدن بدون متن' : 'Audio without text'}
-                </span>
-              </button>
+                <option value="text_and_audio">{isRTL ? '📖 روخوانی و تلفظ' : '📖 Reading & Speech'}</option>
+                <option value="translate_to_target">{isRTL ? `🎯 ترجمه به ${currentTargetLangInfo.persianName}` : `🎯 To ${currentTargetLangInfo.name}`}</option>
+                <option value="translate_to_native">{isRTL ? `🔄 ترجمه به ${currentNativeLangInfo.persianName}` : `🔄 To ${currentNativeLangInfo.name}`}</option>
+                <option value="audio_only">{isRTL ? '🎧 چالش شنیداری' : '🎧 Listening Test'}</option>
+              </select>
             </div>
-          </div>
 
-          {/* 4. CEFR Level Selection (A1, A2, B1, B2, C1, all) */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-[var(--ink)] flex items-center gap-1.5">
-              <Layers size={13} className="text-[var(--lapis)]" />
-              <span>{isRTL ? 'سطح دشواری (CEFR):' : 'Level (CEFR):'}</span>
-            </label>
-            <div className="grid grid-cols-6 gap-1 text-center">
-              {(['A1', 'A2', 'B1', 'B2', 'C1', 'all'] as CEFRLevel[]).map(lvl => {
-                const isSelected = (settings.cefrLevel || 'all') === lvl;
-                return (
-                  <button
-                    key={lvl}
-                    onClick={() => {
-                      sound.playToggle();
-                      setSettings(s => ({ ...s, cefrLevel: lvl }));
-                    }}
-                    className={`py-1.5 rounded-xl border font-bold text-[11px] transition-all cursor-pointer active:scale-95 ${
-                      isSelected 
-                        ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs' 
-                        : 'bg-[var(--bg)] border-[var(--line)] text-[var(--ink)] hover:bg-[var(--panel)]'
-                    }`}
-                  >
-                    {lvl === 'all' ? (isRTL ? 'همه' : 'All') : lvl}
-                  </button>
-                );
-              })}
+            {/* CEFR Difficulty Level Menu */}
+            <div className="space-y-1">
+              <label htmlFor="sp-level-select" className="text-[11px] font-bold text-[var(--ink)] flex items-center gap-1">
+                <Layers size={12} className="text-[var(--turq)]" />
+                <span>{isRTL ? 'سطح دشواری (CEFR):' : 'Level (CEFR):'}</span>
+              </label>
+              <select
+                id="sp-level-select"
+                value={settings.cefrLevel || 'all'}
+                onChange={(e) => {
+                  sound.playToggle();
+                  setSettings(s => ({ ...s, cefrLevel: e.target.value as CEFRLevel }));
+                }}
+                className="w-full bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] rounded-xl px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:border-[var(--lapis)] cursor-pointer"
+              >
+                <option value="all">{isRTL ? '⭐ همه سطوح' : '⭐ All Levels'}</option>
+                <option value="A1">A1 {isRTL ? '(مبتدی)' : '(Beginner)'}</option>
+                <option value="A2">A2 {isRTL ? '(پایه)' : '(Elementary)'}</option>
+                <option value="B1">B1 {isRTL ? '(متوسط)' : '(Intermediate)'}</option>
+                <option value="B2">B2 {isRTL ? '(پیشرفته)' : '(Upper Intermediate)'}</option>
+                <option value="C1">C1 {isRTL ? '(تسلط کامل)' : '(Advanced)'}</option>
+              </select>
             </div>
           </div>
 
@@ -515,104 +446,7 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
             )}
           </div>
 
-          {/* 6. Ergonomic, Active Recall & Focus Enhancements */}
-          <div className="space-y-2 pt-1 border-t border-[var(--line)]/60">
-            <div className="text-[11px] font-bold text-[var(--mute)]">
-              {isRTL ? 'تنظیمات تمرکز و فعال‌سازی یادگیری:' : 'Focus & Memory Ergonomics:'}
-            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              {/* Active Recall: Hide choices initially */}
-              <button
-                type="button"
-                onClick={() => {
-                  sound.playToggle();
-                  setSettings(s => ({
-                    ...s,
-                    hideOptionsByDefault: s.hideOptionsByDefault === false ? true : false
-                  }));
-                }}
-                className={`p-2.5 rounded-xl border text-start transition-all cursor-pointer flex flex-col justify-between gap-1 ${
-                  settings.hideOptionsByDefault !== false
-                    ? 'bg-emerald-500/10 border-emerald-500/40 text-[var(--ink)] shadow-2xs'
-                    : 'bg-[var(--bg)] border-[var(--line)] text-[var(--mute)] hover:bg-[var(--panel)]'
-                }`}
-              >
-                <div className="flex items-center justify-between w-full">
-                  <span className="text-xs font-black flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
-                    <Sparkles size={13} />
-                    <span>{isRTL ? 'بازیابی فعال ذهن' : 'Active Recall'}</span>
-                  </span>
-                  <span className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-bold ${
-                    settings.hideOptionsByDefault !== false ? 'bg-emerald-500 text-white' : 'bg-[var(--line)] text-transparent'
-                  }`}>
-                    ✓
-                  </span>
-                </div>
-                <span className="text-[9.5px] text-[var(--mute)] leading-tight">
-                  {isRTL ? 'گزینه‌ها مخفی باشند و با هینت باز شوند' : 'Hide choices until hint is tapped'}
-                </span>
-              </button>
-
-              {/* Auto Advance Toggle */}
-              <button
-                type="button"
-                onClick={() => {
-                  sound.playToggle();
-                  setSettings(s => ({ ...s, autoAdvance: !s.autoAdvance }));
-                }}
-                className={`p-2.5 rounded-xl border text-start transition-all cursor-pointer flex flex-col justify-between gap-1 ${
-                  settings.autoAdvance
-                    ? 'bg-amber-500/10 border-amber-500/40 text-[var(--ink)] shadow-2xs'
-                    : 'bg-[var(--bg)] border-[var(--line)] text-[var(--mute)] hover:bg-[var(--panel)]'
-                }`}
-              >
-                <div className="flex items-center justify-between w-full">
-                  <span className="text-xs font-black flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
-                    <Zap size={13} />
-                    <span>{isRTL ? 'پیش‌روی خودکار' : 'Auto-Advance'}</span>
-                  </span>
-                  <span className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-bold ${
-                    settings.autoAdvance ? 'bg-amber-500 text-white' : 'bg-[var(--line)] text-transparent'
-                  }`}>
-                    ✓
-                  </span>
-                </div>
-                <span className="text-[9.5px] text-[var(--mute)] leading-tight">
-                  {isRTL ? 'انتقال نرم به کارت بعد پس از پاسخ درست' : 'Advance smoothly on correct answer'}
-                </span>
-              </button>
-
-              {/* Zen Focus Mode Toggle */}
-              <button
-                type="button"
-                onClick={() => {
-                  sound.playToggle();
-                  setSettings(s => ({ ...s, zenMode: !s.zenMode }));
-                }}
-                className={`p-2.5 rounded-xl border text-start transition-all cursor-pointer flex flex-col justify-between gap-1 ${
-                  settings.zenMode
-                    ? 'bg-indigo-500/10 border-indigo-500/40 text-[var(--ink)] shadow-2xs'
-                    : 'bg-[var(--bg)] border-[var(--line)] text-[var(--mute)] hover:bg-[var(--panel)]'
-                }`}
-              >
-                <div className="flex items-center justify-between w-full">
-                  <span className="text-xs font-black flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400">
-                    <Target size={13} />
-                    <span>{isRTL ? 'تمرکز عمیق' : 'Zen Focus'}</span>
-                  </span>
-                  <span className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-bold ${
-                    settings.zenMode ? 'bg-indigo-500 text-white' : 'bg-[var(--line)] text-transparent'
-                  }`}>
-                    ✓
-                  </span>
-                </div>
-                <span className="text-[9.5px] text-[var(--mute)] leading-tight">
-                  {isRTL ? 'حذف شلوغی‌های بصری' : 'Distraction-free'}
-                </span>
-              </button>
-            </div>
-          </div>
 
         </div>
 

@@ -13,7 +13,7 @@ export const TeamMascot: React.FC<MascotProps> = ({ color = TeamColor.Blue, clas
 
   switch (color) {
     case TeamColor.Blue:
-      /* BLUE TEAM: Clean, charming minimal mascot buddy */
+      /* BLUE TEAM: Clean, minimal and friendly avatar */
       return (
         <svg 
           width={size} 
@@ -21,32 +21,25 @@ export const TeamMascot: React.FC<MascotProps> = ({ color = TeamColor.Blue, clas
           viewBox="0 0 100 100" 
           className={`${isPartyAnimate} ${className} drop-shadow-sm`}
         >
-          {/* Soft Friendly Shadow */}
-          <ellipse cx="50" cy="88" rx="28" ry="6" fill="rgba(0,0,0,0.08)" />
+          {/* Subtle soft base shadow */}
+          <ellipse cx="50" cy="88" rx="24" ry="5" fill="rgba(0,0,0,0.06)" />
 
-          {/* Smooth Round Body */}
-          <circle cx="50" cy="50" r="36" fill="#0284C7" />
+          {/* Clean minimal round body */}
+          <circle cx="50" cy="50" r="35" fill="#0284C7" />
           <circle cx="50" cy="50" r="32" fill="#38BDF8" />
 
-          {/* Cheerful Little Sparkle / Hat */}
-          <path d="M47,10 Q50,4 53,10 Q56,16 50,16 Q44,16 47,10 Z" fill="#FACC15" />
+          {/* Friendly clean eyes */}
+          <circle cx="40" cy="46" r="4.5" fill="#0F172A" />
+          <circle cx="38.5" cy="44.5" r="1.5" fill="#FFFFFF" />
+          <circle cx="60" cy="46" r="4.5" fill="#0F172A" />
+          <circle cx="58.5" cy="44.5" r="1.5" fill="#FFFFFF" />
 
-          {/* Flippers / Hands */}
-          <circle cx="16" cy="52" r="8" fill="#0284C7" />
-          <circle cx="84" cy="52" r="8" fill="#0284C7" />
+          {/* Minimal soft cheeks */}
+          <circle cx="31" cy="53" r="3.5" fill="#FB7185" opacity="0.6" />
+          <circle cx="69" cy="53" r="3.5" fill="#FB7185" opacity="0.6" />
 
-          {/* Big Expressive Friendly Eyes */}
-          <ellipse cx="38" cy="45" rx="5" ry="7" fill="#0F172A" />
-          <circle cx="36" cy="42" r="2.2" fill="#FFFFFF" />
-          <ellipse cx="62" cy="45" rx="5" ry="7" fill="#0F172A" />
-          <circle cx="60" cy="42" r="2.2" fill="#FFFFFF" />
-
-          {/* Soft Rosy Cheeks */}
-          <circle cx="28" cy="54" r="5" fill="#FB7185" opacity="0.8" />
-          <circle cx="72" cy="54" r="5" fill="#FB7185" opacity="0.8" />
-
-          {/* Warm Happy Smile */}
-          <path d="M43,53 Q50,61 57,53" fill="none" stroke="#0F172A" strokeWidth="3" strokeLinecap="round" />
+          {/* Gentle pleasant smile */}
+          <path d="M44,53 Q50,59 56,53" fill="none" stroke="#0F172A" strokeWidth="2.5" strokeLinecap="round" />
         </svg>
       );
 

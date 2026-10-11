@@ -519,22 +519,24 @@ const GameplayScreen: React.FC<Props> = ({
           </span>
         </div>
 
-        {/* Control Actions (Sound, Guide, Pause) - M3 Icon Buttons */}
+        {/* Control Actions: Exit, Sound, Pause */}
         <div className="flex items-center gap-1.5">
+          {/* Exit Game Button */}
           <button 
-            aria-label="Toggle Seating Circle"
-            title={isRTL ? "نمایش / مخفی‌سازی چیدمان دور میز" : "Toggle Table Seating"}
+            type="button"
+            aria-label="Exit Game"
+            title={isRTL ? "خروج از بازی" : "Exit Game"}
             onClick={() => {
               sound.playClick();
-              setShowSeatingCircle(prev => !prev);
+              setShowExitConfirm(true);
             }}
-            className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[var(--line)] flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer ${
-              showSeatingCircle ? 'bg-[var(--turq)] text-white border-[var(--turq)]' : 'bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 text-[var(--ink)]'
-            }`}
+            className="h-9 px-2.5 sm:h-10 rounded-xl border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 hover:bg-rose-100 flex items-center gap-1 transition-all active:scale-95 shadow-xs cursor-pointer font-bold text-xs"
           >
-            <Users size={15} />
+            <LogOut size={14} className={isRTL ? "rotate-180" : ""} />
+            <span>{isRTL ? "خروج" : "Exit"}</span>
           </button>
 
+          {/* Sound Toggle */}
           <button 
             type="button"
             aria-label="Sound Toggle"
@@ -567,42 +569,21 @@ const GameplayScreen: React.FC<Props> = ({
             )}
           </button>
 
+          {/* Pause Game */}
           <button 
-            aria-label="Help"
-            onClick={() => {
-              sound.playClick();
-              onOpenHelp?.();
-            }}
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[var(--line)] bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 text-[var(--ink)] flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer"
-          >
-            <HelpCircle size={16} />
-          </button>
-
-          <button 
+            type="button"
             aria-label="Pause"
             onClick={() => {
               sound.playClick();
               setGameStatus(GameStatus.Paused);
             }}
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/30 text-rose-600 dark:text-rose-400 hover:bg-red-100 flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer"
           >
             <Pause size={16} />
           </button>
         </div>
 
       </div>
-
-      {/* Player Arrangement Circle (Interactive Table Seating - Toggleable) */}
-      {showSeatingCircle && (
-        <div className="my-1 shrink-0 transition-all">
-          <PlayerCircle 
-            players={players} 
-            activePlayerIndex={activePlayerIndex} 
-            teams={teams} 
-            compact={true}
-          />
-        </div>
-      )}
 
       {/* Main Active Language Card */}
       <div className="w-full flex-1 min-h-0 flex flex-col justify-between my-1">
@@ -765,46 +746,7 @@ const GameplayScreen: React.FC<Props> = ({
                 </span>
               )}
 
-              {currentCard?.grammarPoint && (
-                <button
-                  type="button"
-                  onClick={() => setShowGrammar(!showGrammar)}
-                  className={`text-[10px] px-2.5 py-1 rounded-xl border border-[var(--line)] font-bold flex items-center gap-1 transition-all ${
-                    showGrammar ? 'bg-[var(--lapis)] text-white border-[var(--lapis)]' : 'bg-[var(--panel)] text-[var(--ink)]'
-                  }`}
-                >
-                  <Sparkles size={11} className={showGrammar ? 'text-white' : 'text-[var(--turq)]'} />
-                  <span>{isRTL ? 'گرامر' : 'Grammar'}</span>
-                </button>
-              )}
-
-              {currentCard?.hint && (
-                <button
-                  type="button"
-                  onClick={() => setShowHint(!showHint)}
-                  className={`text-[10px] px-2.5 py-1 rounded-xl border border-[var(--line)] font-bold flex items-center gap-1 transition-all ${
-                    showHint ? 'bg-[var(--saffron)] text-[#15204A] border-[var(--saffron)]' : 'bg-[var(--panel)] text-[var(--ink)]'
-                  }`}
-                >
-                  <Lightbulb size={11} className={showHint ? 'text-[#15204A]' : 'text-[var(--saffron)]'} />
-                  <span>{isRTL ? 'راهنما' : 'Hint'}</span>
-                </button>
-              )}
-
             </div>
-
-            {/* Expandable Grammar / Hint Drawers */}
-            {showGrammar && currentCard?.grammarPoint && (
-              <div className="mt-1.5 p-2.5 bg-[var(--bg)] text-[var(--ink)] rounded-xl text-[11px] font-medium border border-[var(--line)] max-w-xs shadow-xs animate-fadeIn">
-                ✨ {currentCard.grammarPoint}
-              </div>
-            )}
-
-            {showHint && currentCard?.hint && (
-              <div className="mt-1.5 p-2.5 bg-[var(--bg)] text-[var(--ink)] rounded-xl text-[11px] font-medium border border-[var(--line)] max-w-xs shadow-xs animate-fadeIn">
-                💡 {currentCard.hint}
-              </div>
-            )}
 
           </div>
 
