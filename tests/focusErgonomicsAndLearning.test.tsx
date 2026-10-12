@@ -99,7 +99,7 @@ describe('Focus, Ergonomics & Learning Flow Tests', () => {
     expect(speakSlowSpy).toHaveBeenCalledWith('fiets', 'nl');
   });
 
-  test('4. Zen focus mode toggles cleanly and minimizes visual distractions', () => {
+  test('4. Streamlined single player container minimizes visual distractions for deep learning', () => {
     const onFinish = vi.fn();
     const onExit = vi.fn();
 
@@ -113,15 +113,10 @@ describe('Focus, Ergonomics & Learning Flow Tests', () => {
       />
     );
 
-    // Initial state: Mode selector is visible
-    expect(screen.getByRole('radiogroup', { name: 'حالت تمرین' })).toBeInTheDocument();
-
-    // Toggle Zen Mode
-    const focusBtn = screen.getByRole('button', { name: /تمرکز/i });
-    fireEvent.click(focusBtn);
-
-    // Segment mode bar hides to maximize focus
+    // Verify clean, distraction-free container without bulky in-game mode switchers
     expect(screen.queryByRole('radiogroup', { name: 'حالت تمرین' })).not.toBeInTheDocument();
+    // Card target is cleanly visible
+    expect(screen.getByText('دوچرخه')).toBeInTheDocument();
   });
 
   test('5. Keyboard ergonomics: hotkey Space triggers audio, hotkey S triggers slow audio', () => {

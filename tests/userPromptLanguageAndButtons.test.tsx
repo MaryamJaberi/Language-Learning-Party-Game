@@ -179,12 +179,11 @@ describe('User Feedback: 3 Buttons Side-by-Side, Localized Results, and Online M
     );
 
     // Switch to online mode in DuelSetupModal
-    const onlineTabBtn = screen.getByRole('button', { name: /آنلاین|Online/i });
+    const onlineTabBtn = screen.getByRole('button', { name: /۲ گوشی|2 Phones/i });
     fireEvent.click(onlineTabBtn);
 
     // DuelSetupModal MUST contain the 1v1 online matchmaking banner
-    expect(screen.getByText(/مچ‌یابی آنلاین دونفره/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /مچ آنلاین ⚡/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /مچ‌یابی آنلاین/i })).toBeInTheDocument();
   });
 
   test('4. Correct target language card generation for German, Dutch, and French', () => {

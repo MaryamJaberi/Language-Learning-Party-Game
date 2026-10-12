@@ -92,13 +92,13 @@ describe('User Feedback, Audio Resumption & Single Player Learning Modes', () =>
     // In translate_to_target mode, native prompt should be visible
     expect(screen.getByText('سلام')).toBeInTheDocument();
 
-    // 4 quick quiz options should be rendered
-    const choicesBanner = screen.getByText(/یا پاسخ را مستقیماً از ۴ گزینه زیر لمس کنید/i);
-    expect(choicesBanner).toBeInTheDocument();
+    // Type the answer in the input box
+    const input = screen.getByPlaceholderText(/اینجا تایپ کنید|اینجا بنویسید|جمله/i);
+    fireEvent.change(input, { target: { value: 'hallo' } });
 
-    // Clicking the correct option 'hallo' should evaluate successfully
-    const halloOption = screen.getByRole('button', { name: 'hallo' });
-    fireEvent.click(halloOption);
+    // Click check answer
+    const submitBtn = screen.getByRole('button', { name: /بررسی/i });
+    fireEvent.click(submitBtn);
 
     // Verify correct feedback
     expect(screen.getByText(/آفرین/i)).toBeInTheDocument();
@@ -131,8 +131,8 @@ describe('User Feedback, Audio Resumption & Single Player Learning Modes', () =>
       />
     );
 
-    // Submit empty input
-    const submitBtn = screen.getByRole('button', { name: /بررسی پاسخ/i });
+    // Submit empty input directly
+    const submitBtn = screen.getByRole('button', { name: /بررسی/i });
     fireEvent.click(submitBtn);
 
     // Check for actionable guidance containing راه‌حل

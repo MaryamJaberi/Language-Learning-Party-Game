@@ -248,31 +248,6 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
               </button>
             </div>
 
-            {/* Quick-Pick Popular Target Language Chips */}
-            <div className="flex items-center gap-1 overflow-x-auto pt-1 no-scrollbar">
-              {(['en-US', 'nl', 'de', 'fr', 'es', 'tr', 'ar', 'fa'] as Language[]).map(langCode => {
-                const isSelected = settings.targetLanguage === langCode;
-                const langInfo = SUPPORTED_LANGUAGES.find(l => l.code === langCode);
-                return (
-                  <button
-                    key={langCode}
-                    type="button"
-                    onClick={() => {
-                      sound.playToggle();
-                      setSettings(s => ({ ...s, targetLanguage: langCode }));
-                    }}
-                    className={`px-2 py-0.5 rounded-lg border text-[10px] font-bold shrink-0 flex items-center gap-1 transition-all cursor-pointer ${
-                      isSelected 
-                        ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs' 
-                        : 'bg-[var(--panel)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--bg)]'
-                    }`}
-                  >
-                    <FlagIcon language={langCode} size={11} />
-                    <span>{langInfo?.nativeName.split(' ')[0] || langCode}</span>
-                  </button>
-                );
-              })}
-            </div>
           </div>
 
           {/* 3 & 4. Practice Style & CEFR Difficulty Level Compact Side-by-Side Menu */}
@@ -367,6 +342,7 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                     ...s,
                     matchMode: 'card_count',
                     totalMatchSeconds: 0,
+                    timeLimitSeconds: 0,
                     questionCount: s.questionCount > 20 ? 10 : s.questionCount
                   }));
                 }}

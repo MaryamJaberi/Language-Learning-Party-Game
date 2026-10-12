@@ -521,7 +521,7 @@ const GameplayScreen: React.FC<Props> = ({
 
         {/* Control Actions: Exit, Sound, Pause */}
         <div className="flex items-center gap-1.5">
-          {/* Exit Game Button */}
+          {/* Exit Game Button (Icon-only) */}
           <button 
             type="button"
             aria-label="Exit Game"
@@ -530,10 +530,9 @@ const GameplayScreen: React.FC<Props> = ({
               sound.playClick();
               setShowExitConfirm(true);
             }}
-            className="h-9 px-2.5 sm:h-10 rounded-xl border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 hover:bg-rose-100 flex items-center gap-1 transition-all active:scale-95 shadow-xs cursor-pointer font-bold text-xs"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 hover:bg-rose-100 flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer"
           >
-            <LogOut size={14} className={isRTL ? "rotate-180" : ""} />
-            <span>{isRTL ? "خروج" : "Exit"}</span>
+            <LogOut size={16} className={isRTL ? "rotate-180" : ""} />
           </button>
 
           {/* Sound Toggle */}
@@ -581,6 +580,22 @@ const GameplayScreen: React.FC<Props> = ({
           >
             <Pause size={16} />
           </button>
+
+          {/* In-Game Help / Rules */}
+          {onOpenHelp && (
+            <button
+              type="button"
+              aria-label="Help"
+              title={isRTL ? "راهنمای بازی" : "Game Rules"}
+              onClick={() => {
+                sound.playClick();
+                onOpenHelp();
+              }}
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer"
+            >
+              <HelpCircle size={16} />
+            </button>
+          )}
         </div>
 
       </div>

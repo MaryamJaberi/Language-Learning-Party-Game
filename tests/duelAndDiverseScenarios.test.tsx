@@ -45,11 +45,13 @@ describe('Diverse Scenarios & Deep Feature Testing', () => {
 
       // Verify header and titles
       expect(screen.getByText(/دوئل سرعتی دونفره ⚔️/i)).toBeInTheDocument();
-      expect(screen.getByText(/مسابقه سرعتی دونفره/i)).toBeInTheDocument();
+      // Switch to Two Phones Online mode
+      const twoPhonesTab = screen.getByRole('button', { name: /🌐 آنلاین \(۲ گوشی\)/i });
+      fireEvent.click(twoPhonesTab);
 
       // Verify 1v1 Online Matchmaking banner
       expect(screen.getByText(/مچ‌یابی آنلاین دونفره/i)).toBeInTheDocument();
-      const onlineMatchBtn = screen.getByRole('button', { name: /مچ آنلاین ⚡/i });
+      const onlineMatchBtn = screen.getByRole('button', { name: /مچ‌یابی آنلاین/i });
       expect(onlineMatchBtn).toBeInTheDocument();
 
       // Click Online Match banner button

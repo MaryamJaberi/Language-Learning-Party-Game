@@ -699,7 +699,7 @@ const App: React.FC = () => {
 
   return (
     <main 
-      className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto flex flex-col relative bg-[var(--bg)] text-[var(--ink)] min-h-0 flex-1 min-h-screen overflow-x-hidden overflow-y-auto" 
+      className="w-full max-w-lg sm:max-w-xl md:max-w-2xl mx-auto flex flex-col relative bg-[var(--bg)] text-[var(--ink)] min-h-0 flex-1 min-h-screen overflow-x-hidden overflow-y-auto" 
       style={{ 
         height: '100%', 
         maxHeight: '100dvh',

@@ -44,9 +44,8 @@ export const LanguagePickerModal: React.FC<LanguagePickerModalProps> = ({
     }
   }, [isOpen]);
 
-  const regionTabs: { id: LanguageRegion | 'all'; labelFa: string; labelEn: string; icon: string }[] = [
+  const regionTabs: { id: Exclude<LanguageRegion, 'popular'> | 'all'; labelFa: string; labelEn: string; icon: string }[] = [
     { id: 'all', labelFa: 'همه زبان‌ها', labelEn: 'All', icon: '🌍' },
-    { id: 'popular', labelFa: 'پرطرفدار', labelEn: 'Popular', icon: '🌟' },
     { id: 'middle_east', labelFa: 'خاورمیانه', labelEn: 'Middle East', icon: '🕌' },
     { id: 'europe', labelFa: 'اروپا', labelEn: 'Europe', icon: '🏛️' },
     { id: 'asia', labelFa: 'آسیا', labelEn: 'Asia', icon: '⛩️' },
@@ -57,12 +56,8 @@ export const LanguagePickerModal: React.FC<LanguagePickerModalProps> = ({
     const q = searchQuery.trim().toLowerCase();
     return SUPPORTED_LANGUAGES.filter(lang => {
       // Region filter
-      if (activeRegion !== 'all') {
-        if (activeRegion === 'popular') {
-          if (!lang.popular) return false;
-        } else if (lang.region !== activeRegion) {
-          return false;
-        }
+      if (activeRegion !== 'all' && lang.region !== activeRegion) {
+        return false;
       }
 
       // Search filter

@@ -450,7 +450,7 @@ const IntroScreen: React.FC<Props> = ({
             {isRTL ? 'خط‌مشی وب' : 'Web Policy'}
           </a>
           <span>•</span>
-          <span className="opacity-75 font-mono text-[11px]">v1.0.4</span>
+          <span className="opacity-75 font-mono text-[11px]">v1.0.5</span>
         </div>
       </div>
 

@@ -48,15 +48,15 @@ plugins {
 }
 
 android {
-    namespace 'com.dour.languagegame'
-    compileSdk 34
+    namespace 'com.solonovate.dour'
+    compileSdk 36
 
     defaultConfig {
-        applicationId "com.dour.languagegame"
+        applicationId "com.solonovate.dour"
         minSdk 21
-        targetSdk 34
-        versionCode 10001
-        versionName "1.0.1"
+        targetSdk 36
+        versionCode 10005
+        versionName "1.0.5"
     }
 
     signingConfigs {
@@ -97,15 +97,17 @@ cat << 'EOF' > android-studio-project/app/proguard-rules.pro
 -keepclassmembers class * {
     @android.webkit.JavascriptInterface <methods>;
 }
--keepclassmembers class com.dour.languagegame.MainActivity$* {
+-keepclassmembers class com.solonovate.dour.MainActivity$* {
     *;
 }
 EOF
 
 # Copy source and assets
-cp android/src/com/dour/languagegame/MainActivity.java android-studio-project/app/src/main/java/com/dour/languagegame/
+mkdir -p android-studio-project/app/src/main/java/com/solonovate/dour/
+cp android/src/com/solonovate/dour/MainActivity.java android-studio-project/app/src/main/java/com/solonovate/dour/
 cp android/AndroidManifest.xml android-studio-project/app/src/main/
 cp -r android/res/* android-studio-project/app/src/main/res/
+mkdir -p android-studio-project/app/src/main/assets/dist/
 cp -r dist/* android-studio-project/app/src/main/assets/dist/
 cp release.keystore android-studio-project/
 
@@ -225,9 +227,7 @@ EOF
 echo "=== 4. Packaging Everything into Downloadable ZIP ==="
 rm -f public/downloads/dor-zaban-google-play-package.zip
 cd android-studio-project
-# Include the compiled APK inside the package as well!
-cp ../public/downloads/dor-zaban-v1.0.apk ./
-7z a -tzip ../public/downloads/dor-zaban-google-play-package.zip .
+python3 -m zipfile -c ../public/downloads/dor-zaban-google-play-package.zip .
 cd ..
 
 echo "=== 5. Final Package Output ==="
