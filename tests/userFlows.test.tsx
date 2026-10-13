@@ -196,7 +196,7 @@ describe('Complete End-to-End User Flow Tests', () => {
     fireEvent.click(exitBtn);
 
     // Confirm exit if modal appears
-    const confirmExitBtn = screen.queryByRole('button', { name: /بله، خروج/i });
+    const confirmExitBtn = screen.queryByRole('button', { name: /(برگشت به صفحه اول|بله، خروج)/i });
     if (confirmExitBtn) {
       fireEvent.click(confirmExitBtn);
     }
@@ -205,43 +205,22 @@ describe('Complete End-to-End User Flow Tests', () => {
     expect(screen.getByText(/شروع بازی (دورهمی|جدید)/i)).toBeInTheDocument();
   });
 
-  test('Flow 6: PWA and Mobile App Installation modal and tabs', () => {
+  test('Flow 6: PWA and Mobile App Installation inline tab in profile', () => {
     render(<App />);
 
     // Open User Profile modal where mobile install is located
     const profileBtn = screen.getByRole('button', { name: /پروفایل و لیدربرد/i });
     fireEvent.click(profileBtn);
 
-    // Verify Mobile Install section is in the profile modal
-    expect(screen.getByText(/نصب روی موبایل \(Android & iOS\)/i)).toBeInTheDocument();
+    // Click the Install tab in the profile modal
+    const installTabBtn = screen.getByRole('tab', { name: /نصب روی گوشی/i });
+    expect(installTabBtn).toBeInTheDocument();
+    fireEvent.click(installTabBtn);
 
-    // Click Install button to open the full installation modal
-    const installBtn = screen.getByRole('button', { name: /نصب مستقیم روی گوشی/i });
-    fireEvent.click(installBtn);
-
-    // Verify Modal is opened
-    expect(screen.getByText(/نصب روی گوشی \(PWA\)/i)).toBeInTheDocument();
-    expect(screen.getByText(/نحوه افزودن در مرورگر کروم/i)).toBeInTheDocument();
-
-    // Switch to iOS Tab
-    const iosTabBtn = screen.getByText(/🍏 iOS/i);
-    fireEvent.click(iosTabBtn);
-
-    // Verify iOS Instructions are shown
-    expect(screen.getByText(/نحوه افزودن در سافاری آیفون/i)).toBeInTheDocument();
-    expect(screen.getByText(/دکمه Share/i)).toBeInTheDocument();
-
-    // Switch back to Android Tab
-    const androidTabBtn = screen.getByText(/🤖 Android/i);
-    fireEvent.click(androidTabBtn);
-    expect(screen.getByText(/نحوه افزودن در مرورگر کروم/i)).toBeInTheDocument();
-
-    // Close modal via close button
-    const closeBtn = screen.getByRole('button', { name: /متوجه شدم، بستن/i });
-    fireEvent.click(closeBtn);
-
-    // Verify modal is closed
-    expect(screen.queryByText(/نحوه افزودن در مرورگر کروم/i)).not.toBeInTheDocument();
+    // Verify inline Mobile Install section is displayed
+    expect(screen.getByText(/نصب مستقیم روی گوشی \(Android & iOS\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/راهنمای نصب در مرورگر کروم اندروید/i)).toBeInTheDocument();
+    expect(screen.getByText(/راهنمای نصب در مرورگر سافاری آیفون/i)).toBeInTheDocument();
   });
 
   test('Flow 7: 6 Players (3 Teams) Setup, and gameplay turn rotation', () => {

@@ -93,24 +93,23 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
 
   const addTargetLang = (lang: Language) => {
     sound.playPowerUp();
-    if (!targetLangs.includes(lang)) {
-      onSave({
-        ...settings,
-        targetLanguages: [...targetLangs, lang]
-      });
-    }
+    onSave({
+      ...settings,
+      targetLanguages: [lang],
+      targetLanguage: lang
+    });
     setSearchQuery('');
     setIsSearchFocused(false);
   };
 
-  const removeTargetLang = (lang: Language) => {
+  const removeTargetLang = () => {
     sound.playToggle();
-    if (targetLangs.length > 1) {
-      onSave({
-        ...settings,
-        targetLanguages: targetLangs.filter(l => l !== lang)
-      });
-    }
+    onSave({
+      ...settings,
+      targetLanguages: [],
+      targetLanguage: '' as any
+    });
+    setSearchQuery('');
   };
 
   const selectCefrLevel = (level: CEFRLevel) => {
@@ -156,10 +155,10 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
           </button>
         </div>
 
-        {/* Active Language Tags */}
+        {/* Active Language Tag */}
         <div>
           <div className="flex flex-wrap gap-1.5 items-center">
-            {targetLangs.map(code => {
+            {targetLangs.slice(0, 1).map(code => {
               const lang = SUPPORTED_LANGUAGES.find(l => l.code === code);
               return (
                 <div 
@@ -171,16 +170,14 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
                   <span className="text-[9px] opacity-75 font-mono uppercase bg-black/10 px-1 rounded">
                     {code}
                   </span>
-                  {targetLangs.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => removeTargetLang(code)}
-                      className="w-4 h-4 rounded-full bg-[var(--ink)]/20 hover:bg-[var(--vermilion)] hover:text-white flex items-center justify-center text-[10px] ml-0.5 transition-colors cursor-pointer"
-                      title={t.removeLanguage}
-                    >
-                      <X size={10} />
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => removeTargetLang()}
+                    className="w-4 h-4 rounded-full bg-[var(--ink)]/20 hover:bg-[var(--vermilion)] hover:text-white flex items-center justify-center text-[10px] ml-0.5 transition-colors cursor-pointer"
+                    title={t.removeLanguage}
+                  >
+                    <X size={10} />
+                  </button>
                 </div>
               );
             })}

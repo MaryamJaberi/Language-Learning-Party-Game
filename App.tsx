@@ -387,8 +387,8 @@ const App: React.FC = () => {
       const customName = settings.playerNames?.[i]?.trim();
       const defaultName = customName && customName.length > 0 
         ? customName 
-        : (effectiveNative === 'fa' ? `بازیکن ${i + 1}` : `Player ${i + 1}`);
-      const avatar = PLAYER_AVATARS[i % PLAYER_AVATARS.length];
+        : (randomCartoonDefaults[i] || (effectiveNative === 'fa' ? `بازیکن ${i + 1}` : `Player ${i + 1}`));
+      const avatar = settings.playerAvatars?.[i] || PLAYER_AVATARS[i % PLAYER_AVATARS.length];
       return {
         id: i,
         name: defaultName,
@@ -523,6 +523,55 @@ const App: React.FC = () => {
   const handleExitGame = () => {
     setGameStatus(GameStatus.Setup);
     setCurrentScreen('INTRO');
+  };
+
+  const handleExitToHome = () => {
+    setGameStatus(GameStatus.Setup);
+    setCurrentScreen('INTRO');
+  };
+
+  const handleExitToSetup = () => {
+    setGameStatus(GameStatus.Setup);
+    setCurrentScreen('SETUP');
+  };
+
+  const handleUpdatePlayer = (index: number, newName: string, newAvatar: string) => {
+    setPlayers(prev => {
+      const copy = [...prev];
+      if (copy[index]) {
+        copy[index] = { ...copy[index], name: newName, avatar: newAvatar };
+      }
+      return copy;
+    });
+    setSettings(prev => {
+      const names = [...(prev.playerNames || [])];
+      const avatars = [...(prev.playerAvatars || [])];
+      names[index] = newName;
+      avatars[index] = newAvatar;
+      const updated = { ...prev, playerNames: names, playerAvatars: avatars };
+      localStorage.setItem('dor_settings', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const handleRandomizePlayers = () => {
+    const effectiveNative = settings.nativeLanguage || settings.language || 'fa';
+    const names = getRandomCharacters(effectiveNative, settings.playerCount);
+    const shuffledAvatars = [...PLAYER_AVATARS, '🦄', '🐙', '👾', '🤖', '🧙‍♂️', '🦸', '🥷', '👑'].sort(() => Math.random() - 0.5);
+    setPlayers(prev => prev.map((p, i) => ({
+      ...p,
+      name: names[i] || (effectiveNative === 'fa' ? `بازیکن ${i + 1}` : `Player ${i + 1}`),
+      avatar: shuffledAvatars[i % shuffledAvatars.length]
+    })));
+    setSettings(prev => {
+      const updated = {
+        ...prev,
+        playerNames: names,
+        playerAvatars: shuffledAvatars.slice(0, settings.playerCount)
+      };
+      localStorage.setItem('dor_settings', JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const handleClearHistory = () => {
@@ -817,7 +866,11 @@ const App: React.FC = () => {
           teams={teams}
           settings={settings}
           onConfirm={startConfirmedGame}
-          onBack={() => setCurrentScreen('SETUP')}
+          onBack={handleExitToSetup}
+          onExitHome={handleExitToHome}
+          onExitSetup={handleExitToSetup}
+          onUpdatePlayer={handleUpdatePlayer}
+          onRandomizePlayers={handleRandomizePlayers}
           onOpenHelp={() => openHelp('rules')}
         />
       )}
@@ -844,7 +897,9 @@ const App: React.FC = () => {
           onResume={handleResume}
           isPoolExhausted={isPoolExhausted}
           onFinish={handleGameFinish}
-          onExit={handleExitGame}
+          onExit={handleExitToHome}
+          onExitHome={handleExitToHome}
+          onExitSetup={handleExitToSetup}
           onOpenHelp={() => openHelp('rules')}
           playedCards={playedCards}
           setPlayedCards={setPlayedCards}
@@ -879,7 +934,9 @@ const App: React.FC = () => {
           initialSettings={singlePlayerSettings}
           uiLanguage={settings.language}
           onFinish={handleSinglePlayerFinish}
-          onExit={() => setCurrentScreen('INTRO')}
+          onExit={handleExitToHome}
+          onExitHome={handleExitToHome}
+          onExitSetup={handleExitToSetup}
           onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
         />
       )}
@@ -903,7 +960,9 @@ const App: React.FC = () => {
           settings={duelSettings}
           cards={duelCards}
           uiLanguage={settings.language}
-          onExit={() => setCurrentScreen('INTRO')}
+          onExit={handleExitToHome}
+          onExitHome={handleExitToHome}
+          onExitSetup={handleExitToSetup}
           isRTL={isRtlLang(settings.language)}
         />
       )}

@@ -24,11 +24,15 @@ import { FlagIcon } from '../components/FlagIcon';
 import { generateChallengingReflexOptions } from '../utils/testQuestionEngine';
 import { recordMistake } from '../mistakeReviewService';
 
+import ExitConfirmModal from '../components/ExitConfirmModal';
+
 interface Props {
   settings: DuelSettings;
   cards: LanguageCard[];
   uiLanguage: Language;
   onExit: () => void;
+  onExitHome?: () => void;
+  onExitSetup?: () => void;
   isRTL?: boolean;
 }
 
@@ -37,6 +41,8 @@ export const DuelScreen: React.FC<Props> = ({
   cards,
   uiLanguage,
   onExit,
+  onExitHome,
+  onExitSetup,
   isRTL = true
 }) => {
   // Match Scores
@@ -215,7 +221,7 @@ export const DuelScreen: React.FC<Props> = ({
   }
 
   return (
-    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full min-h-0 flex-1 flex flex-col justify-between overflow-hidden bg-[var(--bg)] text-[var(--ink)] font-ui select-none relative">
+    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full max-h-[100dvh] min-h-0 flex-1 flex flex-col justify-between overflow-hidden bg-[var(--bg)] text-[var(--ink)] font-ui select-none relative">
       
       {/* ======================================================== */}
       {/* 1. TOP ZONE: PLAYER 2 (Red) */}
@@ -540,55 +546,21 @@ export const DuelScreen: React.FC<Props> = ({
       {/* 5. EXIT CONFIRMATION MODAL ("مطمئنی؟") */}
       {/* ======================================================== */}
       {showExitModal && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-fade-in font-ui"
-          dir={isRTL ? 'rtl' : 'ltr'}
-          onClick={() => setShowExitModal(false)}
-        >
-          <div 
-            className="w-full max-w-xs bg-[var(--panel)] border-2 border-rose-500/40 rounded-[24px] p-5 shadow-2xl text-[var(--ink)] space-y-4 text-center"
-            onClick={e => e.stopPropagation()}
-          >
-            <div className="w-12 h-12 rounded-2xl bg-rose-500/15 text-rose-500 flex items-center justify-center mx-auto">
-              <AlertTriangle size={26} />
-            </div>
-
-            <div>
-              <h3 className="text-base font-black text-[var(--ink)]">
-                {isRTL ? 'مطمئنی می‌خوای از مسابقه خارج بشی؟' : 'Are you sure you want to quit?'}
-              </h3>
-              <p className="text-xs text-[var(--mute)] mt-1.5 leading-relaxed">
-                {isRTL 
-                  ? 'اگر الان خارج بشی، امتیازات این دوئل لغو خواهد شد.' 
-                  : 'If you leave now, the current match progress will be lost.'}
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 pt-1">
-              <button
-                type="button"
-                onClick={() => {
-                  sound.playClick();
-                  setShowExitModal(false);
-                }}
-                className="py-2.5 rounded-xl border border-[var(--line)] text-xs font-bold hover:bg-[var(--bg)] cursor-pointer"
-              >
-                {isRTL ? 'ادامه بازی' : 'Keep Playing'}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  sound.playElimination();
-                  setShowExitModal(false);
-                  onExit();
-                }}
-                className="py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-xs font-black shadow-md cursor-pointer"
-              >
-                {isRTL ? 'بله، خروج' : 'Yes, Quit'}
-              </button>
-            </div>
-          </div>
-        </div>
+        <ExitConfirmModal
+          isOpen={true}
+          isRTL={isRTL}
+          onCancel={() => setShowExitModal(false)}
+          onExitHome={() => {
+            setShowExitModal(false);
+            if (onExitHome) onExitHome();
+            else onExit();
+          }}
+          onExitSetup={() => {
+            setShowExitModal(false);
+            if (onExitSetup) onExitSetup();
+            else onExit();
+          }}
+        />
       )}
 
       {/* ======================================================== */}

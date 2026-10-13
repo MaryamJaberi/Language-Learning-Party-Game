@@ -3,6 +3,8 @@ import { Language } from '../types';
 import { sound } from '../soundManager';
 import { isRtlLang, tUI } from '../ui';
 import { downloadFileWithBlob } from '../utils/downloadHelper';
+import { isAdminUser } from '../constants';
+import { User } from 'firebase/auth';
 import { 
   Download, 
   Smartphone, 
@@ -18,7 +20,8 @@ import {
   ShieldCheck,
   WifiOff,
   Loader2,
-  AlertTriangle
+  AlertTriangle,
+  Lock
 } from 'lucide-react';
 
 interface Props {
@@ -27,6 +30,7 @@ interface Props {
   onClose: () => void;
   deferredPrompt?: any;
   onInstalled?: () => void;
+  currentUser?: User | null;
 }
 
 export const InstallPromptModal: React.FC<Props> = ({
@@ -34,8 +38,10 @@ export const InstallPromptModal: React.FC<Props> = ({
   isOpen,
   onClose,
   deferredPrompt,
-  onInstalled
+  onInstalled,
+  currentUser
 }) => {
+  const isAdmin = isAdminUser(currentUser?.email);
   const [activeTab, setActiveTab] = useState<'apk' | 'android' | 'ios'>('android');
   const [isInstalling, setIsInstalling] = useState(false);
   const [isInstalledSuccess, setIsInstalledSuccess] = useState(false);
@@ -121,10 +127,14 @@ export const InstallPromptModal: React.FC<Props> = ({
             </div>
             <div className="text-start">
               <h3 className="text-sm font-bold font-display uppercase tracking-wider text-[var(--ink)]">
-                {t.installApp || (isRTL ? 'نصب روی گوشی (PWA) و دانلود APK' : 'Install on Mobile (PWA & APK)')}
+                {isAdmin
+                  ? (t.installApp || (isRTL ? 'نصب روی گوشی (PWA) و دانلود APK' : 'Install on Mobile (PWA & APK)'))
+                  : (isRTL ? 'نصب اپلیکیشن روی گوشی (PWA)' : 'Install App on Mobile (PWA)')}
               </h3>
               <p className="text-[10px] text-[var(--vermilion)] font-bold">
-                {isRTL ? 'فایل نصبی مستقیم APK + پکیج کامل Google Play Store' : 'Signed APK + Complete Play Store Submission Bundle'}
+                {isAdmin
+                  ? (isRTL ? 'فایل نصبی مستقیم APK + پکیج کامل Google Play Store (پنل مدیریت)' : 'Signed APK + Complete Play Store Submission Bundle (Admin)')
+                  : (isRTL ? 'نصب سریع و آفلاین بدون نیاز به اپ‌استور' : 'Fast & Offline Install (No App Store Needed)')}
               </p>
             </div>
           </div>
@@ -141,18 +151,20 @@ export const InstallPromptModal: React.FC<Props> = ({
         {/* Content Body */}
         <div className="p-4 space-y-3.5 overflow-y-auto overscroll-contain flex-1 font-ui">
           
-          {/* OS Switcher Tabs */}
-          <div className="grid grid-cols-3 gap-1.5 p-1 bg-[var(--bg)] border border-[var(--line)] rounded-[14px]">
-            <button
-              onClick={() => handleTabChange('apk')}
-              className={`py-2 px-1.5 rounded-[10px] font-bold text-[11px] sm:text-xs flex items-center justify-center gap-1 transition-all border ${
-                activeTab === 'apk'
-                  ? 'bg-[var(--panel)] text-[var(--ink)] border-[var(--line)] shadow-[var(--shadow-sm)]'
-                  : 'border-transparent text-[var(--mute)] hover:text-[var(--ink)]'
-              }`}
-            >
-              <span>📦 {isRTL ? 'فایل APK' : 'APK'}</span>
-            </button>
+          {/* OS Switcher Tabs - Only Admin sees APK tab */}
+          <div className={`grid ${isAdmin ? 'grid-cols-3' : 'grid-cols-2'} gap-1.5 p-1 bg-[var(--bg)] border border-[var(--line)] rounded-[14px]`}>
+            {isAdmin && (
+              <button
+                onClick={() => handleTabChange('apk')}
+                className={`py-2 px-1.5 rounded-[10px] font-bold text-[11px] sm:text-xs flex items-center justify-center gap-1 transition-all border ${
+                  activeTab === 'apk'
+                    ? 'bg-[var(--panel)] text-[var(--ink)] border-[var(--line)] shadow-[var(--shadow-sm)]'
+                    : 'border-transparent text-[var(--mute)] hover:text-[var(--ink)]'
+                }`}
+              >
+                <span>📦 {isRTL ? 'فایل APK (مدیر)' : 'APK (Admin)'}</span>
+              </button>
+            )}
 
             <button
               onClick={() => handleTabChange('android')}
@@ -177,8 +189,8 @@ export const InstallPromptModal: React.FC<Props> = ({
             </button>
           </div>
 
-          {/* TAB 1: APK & GOOGLE PLAY DOWNLOADS */}
-          {activeTab === 'apk' && (
+          {/* TAB 1: APK & GOOGLE PLAY DOWNLOADS - Strict Admin Guard */}
+          {activeTab === 'apk' && isAdmin && (
             <div className="space-y-3 text-start">
               
               {/* Download Feedback Banner */}

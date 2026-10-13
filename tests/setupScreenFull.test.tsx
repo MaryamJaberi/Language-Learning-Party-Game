@@ -37,7 +37,7 @@ describe('Setup Screen Comprehensive Requirements Suite', () => {
     onBackMock = vi.fn();
   });
 
-  it('1. Removes native language from learning chips and maintains at least one learning language', () => {
+  it('1. Renders single tagged learning language chip with removal cross, instant select, and no confirm button', () => {
     const { rerender } = render(
       <SetupScreen
         settings={settingsState}
@@ -47,43 +47,40 @@ describe('Setup Screen Comprehensive Requirements Suite', () => {
       />
     );
 
-    // Learning chips section should not contain Farsi (native)
+    // Learning section should exist and exclude Farsi (native)
     const targetGroup = screen.getByRole('group', { name: /زبان‌هایی که می‌خوام یاد بگیرم/ });
     expect(targetGroup).toBeInTheDocument();
 
-    // Check that 'فارسی' is not in targetGroup
     const persianInTargets = Array.from(targetGroup.querySelectorAll('button')).find(btn => btn.textContent?.includes('فارسی'));
     expect(persianInTargets).toBeUndefined();
 
-    // Clicking an active target chip ('nl') to toggle it off when 2 are selected
-    const dutchChip = Array.from(targetGroup.querySelectorAll('button')).find(btn => btn.textContent?.includes('Nederlands'));
-    expect(dutchChip).toBeDefined();
-    fireEvent.click(dutchChip!);
+    // Check that active language ('Nederlands' / 'nl') is tagged directly in the row
+    const tagChip = screen.getByTestId('target-lang-tag');
+    expect(tagChip).toBeInTheDocument();
+    expect(tagChip).toHaveTextContent(/Nederlands/i);
+
+    // Check that removal cross 'X' exists on the tag
+    const removeBtn = tagChip.querySelector('[role="button"]');
+    expect(removeBtn).toBeInTheDocument();
+
+    // Click remove 'X'
+    fireEvent.click(removeBtn!);
+    expect(onSaveMock).toHaveBeenCalled();
+    const afterRemoveSettings = onSaveMock.mock.calls[onSaveMock.mock.calls.length - 1][0];
+    expect(afterRemoveSettings.targetLanguages).toEqual([]);
+
+    // Open dropdown and click English
+    const englishOption = Array.from(targetGroup.querySelectorAll('button')).find(btn => btn.textContent?.includes('English'));
+    expect(englishOption).toBeDefined();
+    fireEvent.click(englishOption!);
 
     expect(onSaveMock).toHaveBeenCalled();
     const updatedSettings = onSaveMock.mock.calls[onSaveMock.mock.calls.length - 1][0];
-    expect(updatedSettings.targetLanguages).not.toContain('nl');
-    expect(updatedSettings.targetLanguages).toContain('en');
+    expect(updatedSettings.targetLanguages).toEqual(['en']);
+    expect(updatedSettings.targetLanguage).toBe('en');
 
-    // Update settingsState to reflect having only 1 language left ('en')
-    settingsState = { ...settingsState, targetLanguages: ['en'] };
-    rerender(
-      <SetupScreen
-        settings={settingsState}
-        onSave={onSaveMock}
-        onNext={onNextMock}
-        onBack={onBackMock}
-      />
-    );
-
-    // Trying to turn off the last language ('en') should NOT remove it and should display an actionable error
-    const englishChip = Array.from(screen.getByRole('group', { name: /زبان‌هایی که می‌خوام یاد بگیرم/ }).querySelectorAll('button')).find(btn => btn.textContent?.includes('English'));
-    expect(englishChip).toBeDefined();
-    fireEvent.click(englishChip!);
-
-    // Should display actionable message with solution
-    expect(screen.getByText(/حداقل یک زبان برای یادگیری باید انتخاب شود/)).toBeInTheDocument();
-    expect(screen.getByText(/راه‌حل:/)).toBeInTheDocument();
+    // Confirm there is NO "تایید و بستن" button
+    expect(screen.queryByText(/تایید و بستن/)).toBeNull();
   });
 
   it('2. Player count (4 / 6 / 8) is single-select and switches active state cleanly', () => {

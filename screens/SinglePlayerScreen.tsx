@@ -65,6 +65,8 @@ interface Props {
   uiLanguage: Language;
   onFinish: (report: SinglePlayerSessionReport) => void;
   onExit: () => void;
+  onExitHome?: () => void;
+  onExitSetup?: () => void;
   onOpenLeaderboard?: () => void;
 }
 
@@ -103,6 +105,8 @@ const SinglePlayerScreen: React.FC<Props> = ({
   uiLanguage,
   onFinish,
   onExit,
+  onExitHome,
+  onExitSetup,
   onOpenLeaderboard
 }) => {
   const t = tUI(uiLanguage);
@@ -1467,9 +1471,15 @@ const SinglePlayerScreen: React.FC<Props> = ({
         <ExitConfirmModal
           isRTL={isRTL}
           onCancel={() => setShowExitConfirm(false)}
-          onConfirm={() => {
+          onExitHome={() => {
             setShowExitConfirm(false);
-            onExit();
+            if (onExitHome) onExitHome();
+            else onExit();
+          }}
+          onExitSetup={() => {
+            setShowExitConfirm(false);
+            if (onExitSetup) onExitSetup();
+            else onExit();
           }}
         />
       )}

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Swords, X, Play, RotateCw, Users, Sparkles, Trophy, Smartphone, Wifi, Globe, KeyRound } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Swords, X, Play, RotateCw, Users, Sparkles, Trophy, Smartphone, Wifi, Globe, KeyRound, ChevronDown, Search, Check, Plus } from 'lucide-react';
 import { Language, CEFRLevel } from '../types';
 import { SUPPORTED_LANGUAGES, ARCADE_AVATARS, ARCADE_CHARACTERS } from '../constants';
 import { sound } from '../soundManager';
@@ -49,6 +49,8 @@ export const DuelSetupModal: React.FC<Props> = ({
   const [player2Name, setPlayer2Name] = useState(defaultP2);
   const [player2Avatar, setPlayer2Avatar] = useState('👾');
   const [targetLanguage, setTargetLanguage] = useState<Language>(currentLanguage || 'nl');
+  const [isLangPickerOpen, setIsLangPickerOpen] = useState(false);
+  const [searchLang, setSearchLang] = useState('');
   const [cefrLevel, setCefrLevel] = useState<CEFRLevel>('A1');
   const [winningScore, setWinningScore] = useState<number>(5);
   const [faceToFaceRotation, setFaceToFaceRotation] = useState<boolean>(true);
@@ -358,40 +360,171 @@ export const DuelSetupModal: React.FC<Props> = ({
             </div>
           </div>
 
-          {/* Language & CEFR Level */}
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <label className="text-[11px] font-bold text-[var(--mute)] block mb-1">
-                {isRTL ? 'زبان رقابت:' : 'Language:'}
-              </label>
-              <select
-                value={targetLanguage}
-                onChange={e => setTargetLanguage(e.target.value as Language)}
-                className="w-full text-xs font-bold p-2.5 rounded-xl bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] outline-none"
-              >
-                {SUPPORTED_LANGUAGES.map(l => (
-                  <option key={l.code} value={l.code}>
-                    {l.flag} {isRTL ? `${l.persianName} (${l.name})` : `${l.name} (${l.code.toUpperCase()})`}
-                  </option>
-                ))}
-              </select>
+          {/* Language Selection with Inline Removable Chip */}
+          <div className="bg-[var(--bg)] p-3 rounded-2xl border border-[var(--line)] space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-[var(--ink)] flex items-center gap-1.5">
+                <Globe size={14} className="text-[var(--lapis)]" />
+                <span>{isRTL ? 'زبان رقابت دوئل:' : 'Duel Language:'}</span>
+              </span>
+              <span className="text-[11px] font-bold text-[var(--lapis)]">
+                {targetLanguage ? (isRTL ? '۱ زبان فعال' : '1 active') : ''}
+              </span>
             </div>
 
-            <div>
-              <label className="text-[11px] font-bold text-[var(--mute)] block mb-1">
-                {isRTL ? 'سطح دشواری (CEFR):' : 'Level:'}
-              </label>
-              <select
-                value={cefrLevel}
-                onChange={e => setCefrLevel(e.target.value as CEFRLevel)}
-                className="w-full text-xs font-bold p-2.5 rounded-xl bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] outline-none"
-              >
-                <option value="A1">{isRTL ? 'A1 (مبتدی)' : 'A1 (Beginner)'}</option>
-                <option value="A2">{isRTL ? 'A2 (مقدماتی)' : 'A2 (Elementary)'}</option>
-                <option value="B1">{isRTL ? 'B1 (متوسط)' : 'B1 (Intermediate)'}</option>
-                <option value="B2">{isRTL ? 'B2 (پیشرفته)' : 'B2 (Upper-Intermediate)'}</option>
-                <option value="all">{isRTL ? 'تمام سطوح (ترکیبی)' : 'All Levels (Mixed)'}</option>
-              </select>
+            {/* Trigger Button with Removable Chip */}
+            <button
+              type="button"
+              onClick={() => {
+                sound.playClick();
+                setIsLangPickerOpen(prev => !prev);
+              }}
+              className="w-full min-h-[44px] px-3 py-1.5 rounded-xl bg-[var(--panel)] border border-[var(--line)] hover:border-[var(--lapis)] flex items-center justify-between transition-colors shadow-xs gap-2"
+              aria-expanded={isLangPickerOpen}
+            >
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                {targetLanguage ? (
+                  (() => {
+                    const lInfo = SUPPORTED_LANGUAGES.find(l => l.code === targetLanguage) || SUPPORTED_LANGUAGES[0];
+                    return (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[var(--lapis)] text-white text-xs font-bold shadow-xs max-w-full">
+                        <span>{lInfo.flag}</span>
+                        <span className="whitespace-nowrap truncate">
+                          {isRTL ? lInfo.persianName : lInfo.name}
+                        </span>
+                        <span className="text-[10px] opacity-80 whitespace-nowrap truncate font-mono uppercase">
+                          ({lInfo.code})
+                        </span>
+                        <span
+                          role="button"
+                          tabIndex={0}
+                          aria-label={isRTL ? `حذف ${lInfo.name}` : `Remove ${lInfo.name}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            sound.playClick();
+                            setTargetLanguage('' as any);
+                            setIsLangPickerOpen(true);
+                          }}
+                          className="w-4 h-4 rounded-full bg-white/20 hover:bg-white/40 active:scale-90 flex items-center justify-center shrink-0 cursor-pointer transition-transform ml-0.5 rtl:ml-0 rtl:mr-0.5"
+                        >
+                          <X size={11} strokeWidth={2.5} />
+                        </span>
+                      </span>
+                    );
+                  })()
+                ) : (
+                  <span className="text-xs font-bold text-[var(--mute)] flex items-center gap-1.5">
+                    <Plus size={14} className="text-[var(--lapis)]" />
+                    <span>{isRTL ? 'انتخاب زبان رقابت...' : 'Choose language...'}</span>
+                  </span>
+                )}
+              </div>
+              <ChevronDown size={16} className={`text-[var(--mute)] transition-transform duration-200 shrink-0 ${isLangPickerOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {/* Dropdown Menu */}
+            {isLangPickerOpen && (
+              <div className="p-2 rounded-xl bg-[var(--panel)] border border-[var(--line)] shadow-sm space-y-2 animate-fade-in">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchLang}
+                    onChange={e => setSearchLang(e.target.value)}
+                    placeholder={isRTL ? 'جستجوی زبان...' : 'Search languages...'}
+                    className="w-full h-8 px-2.5 text-xs rounded-lg bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] placeholder-[var(--mute)] outline-none focus:border-[var(--lapis)] rtl:pr-7 ltr:pl-7"
+                  />
+                  <Search size={13} className="absolute top-1/2 -translate-y-1/2 text-[var(--mute)] pointer-events-none rtl:right-2 ltr:left-2" />
+                  {searchLang && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchLang('')}
+                      className="absolute top-1/2 -translate-y-1/2 text-[var(--mute)] hover:text-[var(--ink)] p-0.5 rtl:left-1.5 ltr:right-1.5"
+                    >
+                      <X size={11} />
+                    </button>
+                  )}
+                </div>
+
+                <div className="max-h-44 overflow-y-auto space-y-1 no-scrollbar overscroll-contain">
+                  {SUPPORTED_LANGUAGES.filter(l => {
+                    const q = searchLang.trim().toLowerCase();
+                    if (!q) return true;
+                    return l.name.toLowerCase().includes(q) ||
+                           l.persianName.toLowerCase().includes(q) ||
+                           l.code.toLowerCase().includes(q);
+                  }).map(l => {
+                    const isSelected = targetLanguage === l.code;
+                    return (
+                      <button
+                        key={l.code}
+                        type="button"
+                        onClick={() => {
+                          sound.playClick();
+                          setTargetLanguage(l.code);
+                        }}
+                        className={`w-full flex items-center justify-between p-2 rounded-lg text-xs font-bold transition-all ${
+                          isSelected
+                            ? 'bg-[var(--lapis)] text-white shadow-xs'
+                            : 'hover:bg-[var(--bg)] text-[var(--ink)]'
+                        }`}
+                      >
+                        <span className="flex items-center gap-2 truncate">
+                          <span>{l.flag}</span>
+                          <span>{isRTL ? l.persianName : l.name}</span>
+                          <span className={`text-[10px] uppercase font-mono ${isSelected ? 'opacity-80' : 'text-[var(--mute)]'}`}>
+                            ({l.code})
+                          </span>
+                        </span>
+                        {isSelected && <Check size={13} strokeWidth={3} className="shrink-0" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Unified CEFR Difficulty Level Responsive Segment Grid */}
+          <div className="bg-[var(--bg)] p-3 rounded-2xl border border-[var(--line)] space-y-2">
+            <div className="flex items-center justify-between text-xs font-bold">
+              <span className="text-[var(--ink)]">
+                {isRTL ? 'سطح تسلط و دشواری (CEFR):' : 'Proficiency Level (CEFR):'}
+              </span>
+              <span className="text-[11px] font-black px-2 py-0.5 rounded-lg bg-[var(--lapis-soft)] text-[var(--lapis)]">
+                {cefrLevel === 'all' ? (isRTL ? 'همه سطوح' : 'All') : cefrLevel}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-5 gap-1.5" role="radiogroup" aria-label={isRTL ? 'سطح دشواری' : 'Proficiency Level'}>
+              {[
+                { id: 'A1', label: 'A1', sub: isRTL ? 'مبتدی' : 'Beg' },
+                { id: 'A2', label: 'A2', sub: isRTL ? 'پایه' : 'Elem' },
+                { id: 'B1', label: 'B1', sub: isRTL ? 'متوسط' : 'Inter' },
+                { id: 'B2', label: 'B2', sub: isRTL ? 'پیشرفته' : 'Upper' },
+                { id: 'all', label: isRTL ? 'همه' : 'All', sub: isRTL ? 'ترکیبی' : 'Mix' },
+              ].map(lvl => {
+                const isSelected = cefrLevel === lvl.id;
+                return (
+                  <button
+                    key={lvl.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={isSelected}
+                    onClick={() => {
+                      sound.playToggle();
+                      setCefrLevel(lvl.id as CEFRLevel);
+                    }}
+                    className={`py-2 px-1 rounded-xl text-center flex flex-col items-center justify-center transition-all cursor-pointer ${
+                      isSelected
+                        ? 'bg-[var(--lapis)] text-white shadow-xs font-black'
+                        : 'bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] hover:border-[var(--lapis)]/40 font-bold'
+                    }`}
+                  >
+                    <span className="text-xs leading-none">{lvl.label}</span>
+                    <span className={`text-[9px] mt-0.5 ${isSelected ? 'text-white/80' : 'text-[var(--mute)]'}`}>{lvl.sub}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 

@@ -68,6 +68,8 @@ interface Props {
   isPoolExhausted: boolean;
   onFinish: (entry: GameHistoryEntry) => void;
   onExit: () => void;
+  onExitHome?: () => void;
+  onExitSetup?: () => void;
   onOpenHelp?: () => void;
   playedCards?: PlayedCardRecord[];
   setPlayedCards?: React.Dispatch<React.SetStateAction<PlayedCardRecord[]>>;
@@ -95,6 +97,8 @@ const GameplayScreen: React.FC<Props> = ({
   isPoolExhausted, 
   onFinish, 
   onExit, 
+  onExitHome,
+  onExitSetup,
   onOpenHelp,
   playedCards = [],
   setPlayedCards,
@@ -479,7 +483,7 @@ const GameplayScreen: React.FC<Props> = ({
   }
 
   return (
-    <div className="w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto h-full min-h-0 flex-1 flex flex-col justify-between p-2.5 sm:p-4 select-none relative overflow-y-auto overscroll-contain bg-[var(--bg)] text-[var(--ink)] font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto h-full max-h-[100dvh] min-h-0 flex-1 flex flex-col justify-between p-2 sm:p-2.5 select-none relative overflow-hidden bg-[var(--bg)] text-[var(--ink)] font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
       
       {/* Turn Change Flash Banner */}
       {turnFlash && (
@@ -615,8 +619,8 @@ const GameplayScreen: React.FC<Props> = ({
             <div 
               className="px-2.5 py-1 rounded-xl border border-[var(--line)] font-bold text-xs shadow-xs flex items-center gap-1.5 bg-[var(--bg)] text-[var(--ink)]"
             >
-              <Zap size={13} className="text-[var(--lapis)]" />
-              <span>{activePlayer?.name || 'Player'}</span>
+              <span className="text-base leading-none select-none">{activePlayer?.avatar || '🦊'}</span>
+              <span className="font-black">{activePlayer?.name || 'Player'}</span>
               <span className="text-[10px] text-[var(--mute)]">({t.teamNames[activeColor]})</span>
             </div>
 
@@ -766,9 +770,13 @@ const GameplayScreen: React.FC<Props> = ({
           </div>
 
           {/* Clean Card Footer */}
-          <div className="flex items-center justify-between text-[11px] font-bold border-t border-[var(--line)] pt-2 shrink-0 font-ui text-[var(--mute)]">
-            <span>
-              {isRTL ? 'یار پاسخ‌دهنده: ' : 'Guesser: '}<strong className="text-[var(--ink)] font-bold">{partnerPlayer?.name || (isRTL ? 'هم‌تیمی' : 'Partner')}</strong>
+          <div className="flex items-center justify-between text-[11px] font-bold border-t border-[var(--line)] pt-1.5 shrink-0 font-ui text-[var(--mute)]">
+            <span className="inline-flex items-center gap-1">
+              <span>{isRTL ? 'یار پاسخ‌دهنده: ' : 'Guesser: '}</span>
+              <span className="inline-flex items-center gap-1 text-[var(--ink)] font-black">
+                <span className="text-sm select-none">{partnerPlayer?.avatar || '🦁'}</span>
+                <span>{partnerPlayer?.name || (isRTL ? 'هم‌تیمی' : 'Partner')}</span>
+              </span>
             </span>
             <span className="bg-[var(--saffron)] text-[#15204A] px-2 py-0.5 rounded-lg text-[10.5px] font-extrabold shadow-xs">
               +{currentCard?.isGolden ? (currentCard.points * 2) : (currentCard?.points || 1)} {isRTL ? 'امتیاز ⭐' : 'pts ⭐'}
@@ -812,9 +820,9 @@ const GameplayScreen: React.FC<Props> = ({
           <button
             type="button"
             onClick={handleSkip}
-            className="h-16 text-xs sm:text-sm font-extrabold uppercase flex flex-col items-center justify-center gap-1 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs transition-all active:scale-[0.97] cursor-pointer"
+            className="h-13 sm:h-14 text-xs sm:text-sm font-extrabold uppercase flex flex-col items-center justify-center gap-0.5 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs transition-all active:scale-[0.97] cursor-pointer"
           >
-            <X size={20} strokeWidth={2.5} className="text-rose-500" />
+            <X size={18} strokeWidth={2.5} className="text-rose-500" />
             <span className="leading-none">{isRTL ? 'رد کردن' : 'Skip'}</span>
           </button>
 
@@ -822,9 +830,9 @@ const GameplayScreen: React.FC<Props> = ({
           <button
             type="button"
             onClick={() => setShowAlmostModal(true)}
-            className="h-16 text-xs sm:text-sm font-extrabold uppercase flex flex-col items-center justify-center gap-1 rounded-2xl bg-[var(--saffron)] hover:brightness-105 text-[#15204A] border-0 shadow-xs transition-all active:scale-[0.97] cursor-pointer"
+            className="h-13 sm:h-14 text-xs sm:text-sm font-extrabold uppercase flex flex-col items-center justify-center gap-0.5 rounded-2xl bg-[var(--saffron)] hover:brightness-105 text-[#15204A] border-0 shadow-xs transition-all active:scale-[0.97] cursor-pointer"
           >
-            <ThumbsUp size={20} className="text-[#15204A]" />
+            <ThumbsUp size={18} className="text-[#15204A]" />
             <span className="leading-none text-center">{t.almostCorrectBtn || (isRTL ? 'تقریباً درست' : 'Almost')}</span>
           </button>
 
@@ -832,9 +840,9 @@ const GameplayScreen: React.FC<Props> = ({
           <button
             type="button"
             onClick={() => handleCorrect(false)}
-            className="h-16 text-xs sm:text-sm font-extrabold uppercase flex flex-col items-center justify-center gap-1 rounded-2xl bg-[var(--turq)] hover:brightness-105 text-white border-0 shadow-xs transition-all active:scale-[0.97] cursor-pointer"
+            className="h-13 sm:h-14 text-xs sm:text-sm font-extrabold uppercase flex flex-col items-center justify-center gap-0.5 rounded-2xl bg-[var(--turq)] hover:brightness-105 text-white border-0 shadow-xs transition-all active:scale-[0.97] cursor-pointer"
           >
-            <Check size={22} strokeWidth={3} className="text-white" />
+            <Check size={20} strokeWidth={3} className="text-white" />
             <span className="leading-none">{isRTL ? 'درست بود!' : 'Correct!'}</span>
           </button>
 
@@ -917,14 +925,14 @@ const GameplayScreen: React.FC<Props> = ({
       {gameStatus === GameStatus.PassPhone && (
         <Modal isOpen={true} onClose={() => {}} title={t.passPhone}>
           <div className="p-4 text-center space-y-3 font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
-            <div className="w-14 h-14 mx-auto rounded-2xl bg-[#FFE600] border-2 border-[#241442] flex items-center justify-center shadow-[3px_3px_0px_0px_#241442]">
-              <Smartphone size={28} className="text-[#1a0833] animate-bounce" />
+            <div className="w-16 h-16 mx-auto rounded-2xl bg-[var(--bg)] border-2 border-[var(--line)] flex items-center justify-center text-3xl shadow-xs">
+              {activePlayer?.avatar || '🦊'}
             </div>
-            <h3 className="text-base font-black text-[#1a0833]">
+            <h3 className="text-base font-black text-[var(--ink)]">
               {isRTL ? (
-                <>گوشی را به <span className="text-[#FF007F]">{activePlayer?.name}</span> بدهید!</>
+                <>گوشی را به <span className="text-[var(--lapis)]">{activePlayer?.name}</span> بدهید!</>
               ) : (
-                <>Pass phone to <span className="text-[#FF007F]">{activePlayer?.name}</span>!</>
+                <>Pass phone to <span className="text-[var(--lapis)]">{activePlayer?.name}</span>!</>
               )}
             </h3>
             <p className="text-xs text-slate-600 font-bold">
@@ -984,9 +992,15 @@ const GameplayScreen: React.FC<Props> = ({
         <ExitConfirmModal
           isRTL={isRTL}
           onCancel={() => setShowExitConfirm(false)}
-          onConfirm={() => {
+          onExitHome={() => {
             setShowExitConfirm(false);
-            onExit();
+            if (onExitHome) onExitHome();
+            else onExit();
+          }}
+          onExitSetup={() => {
+            setShowExitConfirm(false);
+            if (onExitSetup) onExitSetup();
+            else onExit();
           }}
         />
       )}

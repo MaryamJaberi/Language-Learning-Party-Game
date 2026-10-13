@@ -8,6 +8,7 @@ import { sound } from '../soundManager';
 import { usePWAInstall } from '../usePWAInstall';
 import { isRtlLang } from '../ui';
 import { downloadFileWithBlob } from '../utils/downloadHelper';
+import { isAdminUser } from '../constants';
 import { 
   Trophy, 
   Flame, 
@@ -18,6 +19,7 @@ import {
   LogOut, 
   Download, 
   Smartphone, 
+  Apple,
   X, 
   RefreshCw, 
   Sparkles,
@@ -34,7 +36,7 @@ import {
   Box
 } from 'lucide-react';
 
-export type ProfileTab = 'history' | 'records' | 'leitner' | 'leaderboard' | 'downloads' | 'privacy';
+export type ProfileTab = 'history' | 'records' | 'leitner' | 'leaderboard' | 'install' | 'downloads' | 'privacy';
 
 interface Props {
   language: Language;
@@ -234,14 +236,19 @@ export const UserProfileModal: React.FC<Props> = ({
     return combined;
   })();
 
-  const tabList: { id: ProfileTab; label: string; icon: React.FC<{ size?: number; className?: string; strokeWidth?: number }> }[] = [
+  const isAdmin = isAdminUser(currentUser?.email);
+
+  const baseTabs: { id: ProfileTab; label: string; icon: React.FC<{ size?: number; className?: string; strokeWidth?: number }> }[] = [
     { id: 'history', label: isRTL ? 'تاریخچه بازی‌ها' : 'Match History', icon: History },
     { id: 'records', label: isRTL ? 'رکوردهای من' : 'My Records', icon: Sparkles },
     { id: 'leitner', label: isRTL ? 'جعبه لایتنر' : 'Leitner', icon: Box },
     { id: 'leaderboard', label: isRTL ? 'رده‌بندی' : 'Ranks', icon: Trophy },
-    { id: 'downloads', label: isRTL ? 'نصب و دانلود' : 'Downloads & App', icon: Smartphone },
+    { id: 'install', label: isRTL ? 'نصب روی گوشی' : 'Install App', icon: Smartphone },
+    ...(isAdmin ? [{ id: 'downloads' as ProfileTab, label: isRTL ? 'دانلودها (مدیر)' : 'Downloads (Admin)', icon: Download }] : []),
     { id: 'privacy', label: isRTL ? 'حریم خصوصی' : 'Privacy', icon: ShieldCheck },
   ];
+
+  const tabList = baseTabs;
 
   return (
     <div 
@@ -271,11 +278,17 @@ export const UserProfileModal: React.FC<Props> = ({
               )}
               
               <div className="text-start">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <h2 className="text-base sm:text-lg font-bold text-[var(--ink)] font-display tracking-tight leading-snug">
                     {currentUser?.displayName || (isRTL ? 'حساب کاربری مهمان' : 'Guest Player')}
                   </h2>
-                  {currentUser && (
+                  {isAdmin && (
+                    <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[11px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <span>👑</span>
+                      <span>{isRTL ? 'مدیر کل (Admin)' : 'Admin'}</span>
+                    </span>
+                  )}
+                  {currentUser && !isAdmin && (
                     <span className="bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-semibold px-2 py-0.5 rounded-full">
                       {isRTL ? 'متصل' : 'Synced'}
                     </span>
@@ -714,8 +727,8 @@ export const UserProfileModal: React.FC<Props> = ({
             </div>
           )}
 
-          {/* TAB 5: DOWNLOADS & PACKAGES */}
-          {activeTab === 'downloads' && (
+          {/* TAB 5: DOWNLOADS & PACKAGES - Admin Only */}
+          {activeTab === 'downloads' && isAdmin && (
             <div className="space-y-3.5 text-start">
               <div className="p-4 rounded-[22px] bg-slate-50/80 dark:bg-slate-900/40 border border-[var(--line)] space-y-3">
                 <div className="flex items-center justify-between">
@@ -958,56 +971,105 @@ export const UserProfileModal: React.FC<Props> = ({
             </div>
           )}
 
-          {/* MOBILE INSTALLATION CARD (Google Material Design 3 Spec) */}
-          <div className="mt-3 p-4 rounded-[22px] bg-slate-50/80 dark:bg-slate-900/60 border border-[var(--line)] space-y-2.5 text-start shrink-0">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-xs font-bold text-[var(--ink)]">
-                <Smartphone size={16} className="text-[var(--lapis)]" />
-                <span>{isRTL ? 'نصب روی موبایل (Android & iOS)' : 'Mobile App & PWA'}</span>
-              </div>
-              <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
-                {isInstalled ? (isRTL ? 'نصب شده ✓' : 'Installed ✓') : (isRTL ? 'آفلاین و سریع' : 'Offline Ready')}
-              </span>
-            </div>
+          {/* TAB: INSTALL ON MOBILE (PWA) - Full native inline tab, no nested popup */}
+          {activeTab === 'install' && (
+            <div className="space-y-3.5 text-start">
+              {/* Install Status Header Card */}
+              <div className="p-4 rounded-[22px] bg-slate-50/80 dark:bg-slate-900/40 border border-[var(--line)] space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-full bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center shrink-0">
+                      <Smartphone size={20} strokeWidth={2} />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-[var(--ink)]">
+                        {isRTL ? 'نصب مستقیم روی گوشی (Android & iOS)' : 'Install App on Mobile (PWA)'}
+                      </h4>
+                      <span className="text-xs text-[var(--mute)] font-medium">
+                        {isRTL ? 'آفلاین، تمام‌صفحه و با سرعت فوق‌العاده' : 'Offline, fast & standalone fullscreen'}
+                      </span>
+                    </div>
+                  </div>
+                  <span className="text-[11px] font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+                    {isInstalled ? (isRTL ? 'نصب شده ✓' : 'Installed ✓') : (isRTL ? 'آماده نصب' : 'Ready')}
+                  </span>
+                </div>
 
-            <p className="text-xs text-[var(--mute)] leading-relaxed font-normal">
-              {isRTL 
-                ? 'برنامه را روی گوشی خود نصب کنید تا تمام‌صفحه، آفلاین و سریع در مهمانی‌ها در دسترس باشد.' 
-                : 'Install this app on Android or iOS for fast standalone launch and offline play.'}
-            </p>
+                <p className="text-xs text-[var(--mute)] leading-relaxed font-normal">
+                  {isRTL 
+                    ? 'با نصب این وب‌اپلیکیشن روی گوشی خود، بازی به شکل یک اپلیکیشن بومی مستقل، تمام‌صفحه و بدون نوار آدرس مرورگر اجرا می‌شود.'
+                    : 'Install this application directly on your home screen for standalone fullscreen launch and smooth offline play.'}
+                </p>
 
-            {isInstalled ? (
-              <div className="p-2.5 bg-[var(--panel)] border border-[var(--line)] text-emerald-600 rounded-full flex items-center justify-center gap-2 font-bold text-xs">
-                <CheckCircle2 size={16} />
-                <span>{isRTL ? 'اپلیکیشن روی این دستگاه نصب شده است!' : 'App is already installed!'}</span>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-2 pt-0.5">
-                {downloadMsg && (
-                  <div className="p-2 rounded-xl bg-[var(--lapis-soft)] text-[var(--lapis)] text-xs font-semibold flex items-center gap-1.5 animate-fadeIn">
-                    <Loader2 size={14} className="animate-spin shrink-0" />
-                    <span>{downloadMsg}</span>
+                {isInstalled ? (
+                  <div className="p-3 bg-[var(--panel)] border border-[var(--line)] text-emerald-600 rounded-[14px] flex items-center justify-center gap-2 font-bold text-xs shadow-xs">
+                    <CheckCircle2 size={18} />
+                    <span>{isRTL ? 'اپلیکیشن با موفقیت روی این دستگاه نصب شده است!' : 'App is already installed on this device!'}</span>
+                  </div>
+                ) : (
+                  <div>
+                    {isInstallable && (
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          sound.playClick();
+                          await install();
+                        }}
+                        className="w-full h-11 rounded-full bg-[var(--vermilion)] hover:bg-[#c94b2a] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-98 shadow-sm"
+                      >
+                        <Zap size={16} />
+                        <span>{isRTL ? 'نصب مستقیم با یک کلیک' : 'Instant 1-Click Install'}</span>
+                      </button>
+                    )}
                   </div>
                 )}
-
-                <button
-                  type="button"
-                  onClick={async () => {
-                    sound.playClick();
-                    if (onOpenInstallModal) {
-                      onOpenInstallModal();
-                    } else if (isInstallable) {
-                      await install();
-                    }
-                  }}
-                  className="w-full h-11 rounded-full bg-[var(--lapis-soft)] hover:bg-[var(--lapis)]/20 text-[var(--lapis)] dark:text-blue-300 font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-98"
-                >
-                  <Smartphone size={16} />
-                  <span>{isRTL ? 'نصب مستقیم روی گوشی و سایر گزینه‌ها (PWA)' : 'Direct Mobile Install & More Options (PWA)'}</span>
-                </button>
               </div>
-            )}
-          </div>
+
+              {/* Android Chrome Instructions */}
+              <div className="p-4 rounded-[22px] bg-slate-50/80 dark:bg-slate-900/40 border border-[var(--line)] space-y-2.5">
+                <div className="text-xs font-bold text-[var(--ink)] flex items-center gap-2">
+                  <Sparkles size={16} className="text-[var(--vermilion)]" />
+                  <span>{isRTL ? 'راهنمای نصب در مرورگر کروم اندروید (Chrome):' : 'How to install in Chrome (Android):'}</span>
+                </div>
+                <div className="space-y-2 text-xs text-[var(--mute)] font-medium">
+                  <div className="flex items-start gap-2 bg-[var(--panel)] p-2.5 rounded-[14px] border border-[var(--line)]">
+                    <span className="w-5 h-5 rounded-full bg-[var(--bg)] text-[var(--ink)] font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">۱</span>
+                    <span>{isRTL ? 'در بالای مرورگر روی منوی سه نقطه (⋮) ضربه بزنید.' : 'Tap the 3-dot menu (⋮) in Chrome.'}</span>
+                  </div>
+                  <div className="flex items-start gap-2 bg-[var(--panel)] p-2.5 rounded-[14px] border border-[var(--line)]">
+                    <span className="w-5 h-5 rounded-full bg-[var(--bg)] text-[var(--ink)] font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">۲</span>
+                    <span>{isRTL ? 'گزینه «نصب برنامه» (Install app) یا «افزودن به صفحه اصلی» را بزنید.' : 'Select "Install app" or "Add to Home screen".'}</span>
+                  </div>
+                  <div className="flex items-start gap-2 bg-[var(--panel)] p-2.5 rounded-[14px] border border-[var(--line)]">
+                    <span className="w-5 h-5 rounded-full bg-[var(--bg)] text-[var(--ink)] font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">۳</span>
+                    <span>{isRTL ? 'تایید کنید تا آیکون اپ به صفحه خانگی موبایل اضافه شود.' : 'Confirm to add the app icon to your phone screen.'}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* iOS Safari Instructions */}
+              <div className="p-4 rounded-[22px] bg-slate-50/80 dark:bg-slate-900/40 border border-[var(--line)] space-y-2.5">
+                <div className="text-xs font-bold text-[var(--ink)] flex items-center gap-2">
+                  <Apple size={16} className="text-[var(--ink)]" />
+                  <span>{isRTL ? 'راهنمای نصب در مرورگر سافاری آیفون (iOS):' : 'How to install in Safari (iOS):'}</span>
+                </div>
+                <div className="space-y-2 text-xs text-[var(--mute)] font-medium">
+                  <div className="flex items-start gap-2 bg-[var(--panel)] p-2.5 rounded-[14px] border border-[var(--line)]">
+                    <span className="w-5 h-5 rounded-full bg-[var(--bg)] text-[var(--ink)] font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">۱</span>
+                    <span>{isRTL ? 'در نوار پایین سافاری دکمه اشتراک‌گذاری (Share ⎋) را بزنید.' : 'Tap the Share icon (⎋) in the bottom bar.'}</span>
+                  </div>
+                  <div className="flex items-start gap-2 bg-[var(--panel)] p-2.5 rounded-[14px] border border-[var(--line)]">
+                    <span className="w-5 h-5 rounded-full bg-[var(--bg)] text-[var(--ink)] font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">۲</span>
+                    <span>{isRTL ? 'گزینه «Add to Home Screen» (افزودن به صفحه اصلی ➕) را انتخاب کنید.' : 'Scroll and select "Add to Home Screen" (➕).'}</span>
+                  </div>
+                  <div className="flex items-start gap-2 bg-[var(--panel)] p-2.5 rounded-[14px] border border-[var(--line)]">
+                    <span className="w-5 h-5 rounded-full bg-[var(--bg)] text-[var(--ink)] font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">۳</span>
+                    <span>{isRTL ? 'در بالا سمت راست روی Add ضربه بزنید.' : 'Tap "Add" in the top-right corner.'}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
         </div>
 

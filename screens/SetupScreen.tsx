@@ -265,13 +265,19 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
   }, []);
 
-  // Close language popup on click outside
+  // Close language popups on click outside
   useEffect(() => {
-    if (!isLangPopOpen) return;
+    if (!isLangPopOpen && !isTargetOpen && !isNativeOpen) return;
     const handleClickOutside = (e: MouseEvent | TouchEvent) => {
       const target = e.target as HTMLElement;
-      if (!target.closest('#uiPop') && !target.closest('#uiLangBtn')) {
+      if (isLangPopOpen && !target.closest('#uiPop') && !target.closest('#uiLangBtn')) {
         setIsLangPopOpen(false);
+      }
+      if (isTargetOpen && !target.closest('#targetLangContainer')) {
+        setIsTargetOpen(false);
+      }
+      if (isNativeOpen && !target.closest('#nativeLangContainer')) {
+        setIsNativeOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -280,7 +286,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('touchstart', handleClickOutside);
     };
-  }, [isLangPopOpen]);
+  }, [isLangPopOpen, isTargetOpen, isNativeOpen]);
 
   // Comprehensive language options with abbreviation badge and native name
   const languageOptions = useMemo(() => [
@@ -305,6 +311,11 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
   ], []);
 
   const currentNativeCode = (settings.nativeLanguage || settings.language || 'fa') as Language;
+  const currentTargetCode = (settings.targetLanguages?.[0] || settings.targetLanguage) as Language | undefined;
+  const currentTargetLangInfo = useMemo(() => {
+    if (!currentTargetCode) return null;
+    return languageOptions.find(l => l.code === currentTargetCode) || null;
+  }, [currentTargetCode, languageOptions]);
 
   // Filter languages for Native Dropdown
   const filteredNativeLanguages = useMemo(() => {
@@ -343,27 +354,33 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
     );
   }, [searchUi, languageOptions]);
 
-  // Toggle learning language in targetLanguages with actionable error
-  const toggleLearningLang = (code: string) => {
+  // Strictly 1 learning language across the app
+  const selectLearningLang = (code: string) => {
     sound.playClick();
-    const current = new Set(settings.targetLanguages || ['nl', 'en']);
-    if (current.has(code as Language)) {
-      if (current.size > 1) {
-        current.delete(code as Language);
-        setLangError(null);
-      } else {
-        setLangError(
-          t.atLeastOneLanguage || (isRTL
-            ? 'حداقل یک زبان برای یادگیری باید انتخاب شود. راه‌حل: روی یکی از زبان‌های دیگر کلیک کنید تا فعال شود.'
-            : 'At least one learning language must be selected. Fix: Tap another language chip to select it.')
-        );
-        return;
-      }
-    } else {
-      current.add(code as Language);
-      setLangError(null);
-    }
-    updateSettings('targetLanguages', Array.from(current));
+    setLangError(null);
+    onSave({
+      ...settings,
+      targetLanguages: [code as Language],
+      targetLanguage: code as Language
+    });
+  };
+
+  // Remove the active learning language chip and immediately open picker
+  const handleRemoveTargetLang = (e: React.MouseEvent | React.KeyboardEvent) => {
+    e.stopPropagation();
+    sound.playClick();
+    onSave({
+      ...settings,
+      targetLanguages: [],
+      targetLanguage: '' as any
+    });
+    setIsTargetOpen(true);
+    setIsNativeOpen(false);
+    setIsLangPopOpen(false);
+  };
+
+  const toggleLearningLang = (code: string) => {
+    selectLearningLang(code);
   };
 
   // Change native language
@@ -761,22 +778,23 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
           </svg>
         </div>
 
-        {/* 2. LEARNING LANGUAGES DROPDOWN (Identical Look & Feel with Search at the Top) */}
+        {/* 2. LEARNING LANGUAGES DROPDOWN */}
         <div 
+          id="targetLangContainer"
           className="space-y-1.5" 
           role="group" 
           aria-label={t.languagesIWantToLearn || (isRTL ? 'زبان‌هایی که می‌خوام یاد بگیرم' : 'Languages I Want to Learn')}
         >
           <div className="flex items-center justify-between px-0.5">
             <span className="text-xs font-bold text-[var(--mute)] whitespace-nowrap">
-              {t.languagesIWantToLearn || (isRTL ? 'زبان‌هایی که می‌خوام یاد بگیرم:' : 'Languages I Want to Learn:')}
+              {t.languagesIWantToLearn || (isRTL ? 'زبان یادگیری (هدف):' : 'Learning Language:')}
             </span>
             <span className="text-xs font-bold text-[var(--lapis)] whitespace-nowrap">
-              {toPersian(settings.targetLanguages?.length || 0, isRTL)} {t.active || (isRTL ? 'زبان فعال' : 'active')}
+              {currentTargetLangInfo ? (isRTL ? '۱ زبان فعال' : '1 active') : (isRTL ? 'انتخاب نشده' : 'None selected')}
             </span>
           </div>
 
-          {/* Trigger Button - Clean summary matching native trigger design */}
+          {/* Trigger Button - Shows selected language tagged directly in the row with a removal cross */}
           <button
             type="button"
             onClick={() => {
@@ -785,20 +803,51 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
               setIsNativeOpen(false);
               setIsLangPopOpen(false);
             }}
-            className="w-full h-11 px-3 rounded-xl bg-[var(--bg)] border border-[var(--line)] hover:border-[var(--lapis)] flex items-center justify-between transition-colors shadow-xs"
+            className="w-full min-h-[44px] px-3 py-1.5 rounded-xl bg-[var(--bg)] border border-[var(--line)] hover:border-[var(--lapis)] flex items-center justify-between transition-colors shadow-xs gap-2"
             aria-expanded={isTargetOpen}
           >
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="w-6 h-6 rounded-md bg-[var(--lapis)] text-white font-mono font-black text-[10px] flex items-center justify-center shrink-0">
-                {toPersian(settings.targetLanguages?.length || 0, isRTL)}
-              </span>
-              <span className="text-xs font-bold text-[var(--ink)] whitespace-nowrap truncate">
-                {toPersian(settings.targetLanguages?.length || 0, isRTL)} {isRTL ? 'زبان یادگیری انتخاب شده' : 'learning languages selected'}
-              </span>
-              <span className="text-[11px] text-[var(--mute)] whitespace-nowrap truncate hidden sm:inline">
-                ({isRTL ? 'مشاهده و انتخاب' : 'Tap to customize'})
-              </span>
+            <div className="flex items-center gap-2 min-w-0 flex-1">
+              {currentTargetLangInfo ? (
+                /* Tagged Chip in the row with 'X' cross */
+                <span 
+                  data-testid="target-lang-tag"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[var(--lapis)] text-white text-xs font-bold shadow-xs max-w-full"
+                >
+                  <span className="w-4 h-4 rounded font-mono font-black text-[9px] bg-white/20 flex items-center justify-center shrink-0">
+                    {currentTargetLangInfo.short}
+                  </span>
+                  <span className="whitespace-nowrap truncate">{currentTargetLangInfo.name}</span>
+                  <span className="text-[10px] opacity-80 whitespace-nowrap truncate hidden xs:inline">
+                    ({currentTargetLangInfo.enName})
+                  </span>
+                  <span
+                    role="button"
+                    tabIndex={0}
+                    aria-label={isRTL ? `حذف ${currentTargetLangInfo.name}` : `Remove ${currentTargetLangInfo.name}`}
+                    onClick={handleRemoveTargetLang}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.stopPropagation();
+                        handleRemoveTargetLang(e as any);
+                      }
+                    }}
+                    className="w-4 h-4 rounded-full bg-white/20 hover:bg-white/40 active:scale-90 flex items-center justify-center shrink-0 cursor-pointer transition-transform ml-0.5 rtl:ml-0 rtl:mr-0.5"
+                    title={isRTL ? 'حذف و انتخاب زبان دیگر' : 'Remove and pick another'}
+                  >
+                    <X size={11} strokeWidth={2.5} />
+                  </span>
+                </span>
+              ) : (
+                /* Empty state prompting to pick */
+                <span className="text-xs font-bold text-[var(--mute)] flex items-center gap-1.5">
+                  <span className="w-5 h-5 rounded-md bg-[var(--lapis)]/10 text-[var(--lapis)] flex items-center justify-center font-bold text-xs">
+                    +
+                  </span>
+                  <span>{isRTL ? 'انتخاب زبان یادگیری...' : 'Select learning language...'}</span>
+                </span>
+              )}
             </div>
+
             <ChevronDown size={16} className={`text-[var(--mute)] transition-transform duration-200 shrink-0 ${isTargetOpen ? 'rotate-180' : ''}`} />
           </button>
 
@@ -824,21 +873,21 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
               )}
             </div>
 
-            <div className="max-h-48 overflow-y-auto space-y-1 no-scrollbar overscroll-contain">
+            <div className="max-h-52 overflow-y-auto space-y-1 no-scrollbar overscroll-contain">
               {filteredTargetLanguages.length === 0 ? (
                 <div className="text-xs text-[var(--mute)] py-2 text-center">{t.noLanguagesFound || 'No languages found'}</div>
               ) : (
                 filteredTargetLanguages.map(l => {
-                  const isSelected = settings.targetLanguages?.includes(l.code as Language);
+                  const isSelected = (settings.targetLanguages?.[0] === l.code) || (settings.targetLanguage === l.code);
                   return (
                     <button
                       key={`target-opt-${l.code}`}
                       type="button"
                       aria-pressed={isSelected}
-                      onClick={() => toggleLearningLang(l.code)}
+                      onClick={() => selectLearningLang(l.code)}
                       className={`w-full flex items-center justify-between p-2 rounded-lg text-xs font-bold transition-all ${
                         isSelected 
-                          ? 'bg-[var(--lapis)] text-[var(--on-lapis)]' 
+                          ? 'bg-[var(--lapis)] text-[var(--on-lapis)] shadow-xs' 
                           : 'hover:bg-[var(--bg)] text-[var(--ink)]'
                       }`}
                     >
@@ -863,17 +912,6 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                 })
               )}
             </div>
-
-            <button
-              type="button"
-              onClick={() => {
-                sound.playClick();
-                setIsTargetOpen(false);
-              }}
-              className="w-full py-1.5 text-center text-xs font-bold text-[var(--lapis)] hover:bg-[var(--bg)] rounded-lg transition-colors border border-dashed border-[var(--lapis)]/40 mt-1"
-            >
-              {isRTL ? 'تایید و بستن منو' : 'Done & Close'}
-            </button>
           </div>
         </div>
 

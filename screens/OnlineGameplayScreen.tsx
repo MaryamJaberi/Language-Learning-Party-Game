@@ -472,7 +472,11 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
         <ExitConfirmModal
           isRTL={isRTL}
           onCancel={() => setShowExitConfirm(false)}
-          onConfirm={() => {
+          onExitHome={() => {
+            setShowExitConfirm(false);
+            onExit();
+          }}
+          onExitSetup={() => {
             setShowExitConfirm(false);
             onExit();
           }}

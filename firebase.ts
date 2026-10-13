@@ -23,6 +23,7 @@ import {
 } from 'firebase/firestore';
 import firebaseConfig from './firebase-applet-config.json';
 import { GameHistoryEntry, GameSettings, Language } from './types';
+import { isAdminUser } from './constants';
 
 // Initialize Firebase App
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
@@ -44,11 +45,14 @@ export const signInWithGoogle = async (): Promise<User | null> => {
       // Sync user profile in Firestore safely (don't block auth if offline or permission denied)
       try {
         const userRef = doc(db, 'users', user.uid);
+        const isAdmin = isAdminUser(user.email);
         await setDoc(userRef, {
           uid: user.uid,
           displayName: user.displayName || 'Player',
           email: user.email || '',
           photoURL: user.photoURL || '',
+          role: isAdmin ? 'admin' : 'user',
+          isAdmin: isAdmin,
           lastLoginAt: new Date().toISOString()
         }, { merge: true });
       } catch (dbErr) {

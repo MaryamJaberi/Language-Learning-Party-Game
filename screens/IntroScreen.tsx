@@ -461,6 +461,7 @@ const IntroScreen: React.FC<Props> = ({
         onClose={() => setIsInstallModalOpen(false)}
         deferredPrompt={deferredPrompt}
         onInstalled={() => setIsAppInstalled(true)}
+        currentUser={user}
       />
 
       {/* User Profile, Personal Records & Leaderboard Modal */}

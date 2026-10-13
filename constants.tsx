@@ -286,3 +286,11 @@ export const CATEGORIES: Record<string, string[]> = {
   "CAT_ADJECTIVES": [],
   "CAT_ENTERTAINMENT": []
 };
+
+// System Admin Configuration (Authorized Admin for APK/AAB Downloads & Management)
+export const ADMIN_EMAILS: string[] = ['m.jaberi1212@gmail.com'];
+
+export const isAdminUser = (email?: string | null): boolean => {
+  if (!email) return false;
+  return ADMIN_EMAILS.includes(email.trim().toLowerCase());
+};

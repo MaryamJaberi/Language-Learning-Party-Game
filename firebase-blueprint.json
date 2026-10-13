@@ -9,12 +9,14 @@
         "displayName": { "type": "string" },
         "email": { "type": "string" },
         "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] },
+        "isAdmin": { "type": "boolean" },
         "createdAt": { "type": "string", "format": "date-time" },
         "lastLoginAt": { "type": "string", "format": "date-time" },
         "totalGamesPlayed": { "type": "number" },
         "settings": { "type": "object" }
       },
-      "required": ["uid", "createdAt"]
+      "required": ["uid"]
     },
     "GameMatch": {
       "title": "GameMatch",
