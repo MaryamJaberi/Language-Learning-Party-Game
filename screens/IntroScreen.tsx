@@ -37,11 +37,15 @@ import {
   ChevronDown,
   Award,
   Swords,
-  Box
+  Box,
+  Bot,
+  MapPin
 } from 'lucide-react';
 import { tUI, isRtlLang } from '../ui';
 import { GameSettings } from '../types';
-import { CEFR_LEVELS } from '../constants';
+import { CEFR_LEVELS, isAdminUser } from '../constants';
+import { AICoachChatModal } from '../components/AICoachChatModal';
+import { AdminMeetupMapModal } from '../components/AdminMeetupMapModal';
 
 interface Props {
   language: Language;
@@ -84,6 +88,9 @@ const IntroScreen: React.FC<Props> = ({
   const [isHistoryLoginModalOpen, setIsHistoryLoginModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [profileInitialTab, setProfileInitialTab] = useState<'records' | 'leaderboard'>('records');
+  const [isAdminMeetupMapOpen, setIsAdminMeetupMapOpen] = useState(false);
+  const [isAICoachOpen, setIsAICoachOpen] = useState(false);
+  const [isPartyChoiceModalOpen, setIsPartyChoiceModalOpen] = useState(false);
 
   // Animated gentle guide invitation nudge
   const [hasSeenGuideNudge, setHasSeenGuideNudge] = useState<boolean>(() => {
@@ -241,6 +248,38 @@ const IntroScreen: React.FC<Props> = ({
             )}
           </button>
 
+          {/* AI Coach & Referee Button (Gemini AI) */}
+          <button
+            id="header-ai-coach-btn"
+            onClick={() => {
+              sound.playClick();
+              setIsAICoachOpen(true);
+            }}
+            aria-label="مربی و داور هوشمند دور (Gemini AI)"
+            className="w-11 h-11 flex items-center justify-center bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 text-amber-500 border border-amber-400/40 rounded-full shadow-xs active:scale-95 transition-all cursor-pointer relative"
+            title="مربی هوشمند و داور بازی دور (Gemini AI)"
+          >
+            <Bot size={20} className="text-amber-500" />
+            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-amber-400" />
+          </button>
+
+          {/* Admin Meetup & Venue Map (Google Maps Grounding - Admin Only) */}
+          {isAdminUser(user?.email) && (
+            <button
+              id="header-admin-map-btn"
+              onClick={() => {
+                sound.playClick();
+                setIsAdminMeetupMapOpen(true);
+              }}
+              aria-label="نقشه کافه‌ها و قرارهای بازی (Google Maps)"
+              className="w-11 h-11 flex items-center justify-center bg-teal-500/15 hover:bg-teal-500/25 text-[var(--turq)] border border-[var(--turq)] rounded-full shadow-xs active:scale-95 transition-all cursor-pointer relative"
+              title="نقشه قرارهای بازی و کافه‌ها با Google Maps (ویژه مدیر)"
+            >
+              <MapPin size={20} className="text-[var(--turq)] animate-pulse" />
+              <span className="absolute -top-1 -right-1 text-[10px]">👑</span>
+            </button>
+          )}
+
           {/* User Profile button (Hosts History, Records & Leaderboard) */}
           <button
             id="header-profile-btn"
@@ -331,100 +370,124 @@ const IntroScreen: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* Interactive Action Buttons (Material Design 3 High-Emphasis Stack) */}
-      <div className="w-full max-w-sm sm:max-w-md space-y-3 my-auto shrink-0">
-        {/* Primary Action: Start Party Game Button (بازی دورهمی حضوری) */}
-        <div className="flex flex-col gap-3">
-          <button 
-            type="button"
-            id="intro-play-button"
-            aria-label={isRTL ? 'شروع بازی دورهمی' : 'Start Party Game'}
-            onClick={() => {
-              sound.playStartGame();
-              onNext();
-            }}
-            className="start-btn w-full min-h-[54px] sm:min-h-[58px] p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-[var(--lapis)] to-[#1b3ca8] hover:brightness-105 active:scale-[0.98] text-white shadow-md hover:shadow-lg transition-all flex items-center justify-between font-ui cursor-pointer group"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-xs">
-                <Users size={20} className="text-white" />
-              </div>
-              <div className="text-start">
-                <span className="text-base sm:text-lg font-black block leading-tight">
-                  {t.startNewGame || (isRTL ? 'شروع بازی دورهمی' : 'Start Party Game')}
+      {/* 3 EQUAL-VALUE GAME MODES (سه حالت بازی هم‌ارزش) */}
+      <div className="w-full max-w-sm sm:max-w-md space-y-2.5 my-auto shrink-0 font-ui">
+        {/* MODE 1: بازی دورهمی گروهی (Group Party - Local Pass&Play + Online Multiplayer Room) */}
+        <div 
+          onClick={() => {
+            sound.playStartGame();
+            setIsPartyChoiceModalOpen(true);
+          }}
+          className="group relative w-full p-3.5 sm:p-4 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] border border-[var(--line)] hover:border-[var(--lapis)] shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center justify-between gap-3 text-start"
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-11 h-11 rounded-xl bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-xs">
+              <Users size={22} />
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="text-sm sm:text-base font-black text-[var(--ink)] leading-tight">
+                  {isRTL ? 'دورهمی گروهی' : 'Group Party Game'}
+                </span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--lapis-soft)] text-[var(--lapis)] shrink-0">
+                  {isRTL ? '۴ تا ۸ نفره' : '4-8 Players'}
                 </span>
               </div>
+              <p className="text-[11px] text-[var(--mute)] font-medium truncate mt-0.5">
+                {isRTL ? 'بازی دور یک میز + اتاق آنلاین تیمی' : 'Pass & Play + Online Room'}
+              </p>
             </div>
-            <div className="flex items-center gap-1 bg-white/20 px-2.5 py-1.5 rounded-xl text-xs font-black shrink-0">
-              <Sparkles size={14} className="text-[var(--saffron)]" />
-              <span>{isRTL ? 'ورود' : 'Play'}</span>
-            </div>
-          </button>
+          </div>
 
-          {/* Secondary Game Modes: Single player, 2-Player Duel & Online room (M3 3-Card Grid) */}
-          <div className="grid grid-cols-3 gap-2.5">
-            {/* 1. Single Player Mode */}
-            <button
-              type="button"
-              id="intro-single-player-btn"
-              onClick={() => {
-                sound.playClick();
-                onOpenSinglePlayer();
-              }}
-              className="p-3 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs active:scale-[0.97] transition-all flex flex-col items-center justify-center gap-1.5 font-ui cursor-pointer group"
-            >
-              <div className="w-9 h-9 rounded-full bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center group-hover:scale-105 transition-transform">
-                <GraduationCap size={18} />
-              </div>
-              <span className="font-extrabold text-xs text-[var(--ink)] leading-tight truncate w-full">
-                {t.singlePlayerBtn || (isRTL ? 'تک‌نفره' : 'Solo Run')}
-              </span>
-              <span className="text-[10px] text-[var(--mute)] font-medium leading-none truncate w-full">
-                {isRTL ? 'یادگیری و تمرین' : 'Learn & Practice'}
-              </span>
-            </button>
-
-            {/* 2. Two-Player 1v1 Duel Mode (Local & Online) */}
-            <button
-              type="button"
-              id="intro-duel-btn"
-              onClick={() => {
-                sound.playClick();
-                onOpenDuel?.();
-              }}
-              className="p-3 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs active:scale-[0.97] transition-all flex flex-col items-center justify-center gap-1.5 font-ui cursor-pointer group"
-            >
-              <div className="w-9 h-9 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center group-hover:scale-105 transition-transform">
-                <Swords size={18} />
-              </div>
-              <span className="font-extrabold text-xs text-[var(--ink)] leading-tight truncate w-full">
-                {isRTL ? 'دوئل دونفره ⚔️' : '1v1 Duel ⚔️'}
-              </span>
-              <span className="text-[10px] text-rose-600 dark:text-rose-400 font-semibold leading-none truncate w-full">
-                {isRTL ? 'حضوری و آنلاین' : 'Local & Online'}
-              </span>
-            </button>
-
-            {/* 3. Online Multiplayer Mode */}
+          <div className="flex items-center gap-1.5 shrink-0">
             <button
               type="button"
               id="intro-online-btn"
-              onClick={() => {
+              aria-label={t.onlineRoom || (isRTL ? 'اتاق آنلاین' : 'Online Room')}
+              onClick={(e) => {
+                e.stopPropagation();
                 sound.playClick();
                 onOpenOnline();
               }}
-              className="p-3 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs active:scale-[0.97] transition-all flex flex-col items-center justify-center gap-1.5 font-ui cursor-pointer group"
+              className="px-2.5 py-1.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--line)] border border-[var(--line)] text-[var(--turq)] text-xs font-bold flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+              title={isRTL ? 'اتاق آنلاین تیمی از راه دور' : 'Online Multiplayer'}
             >
-              <div className="w-9 h-9 rounded-full bg-teal-50 dark:bg-teal-950/40 text-[var(--turq)] flex items-center justify-center group-hover:scale-105 transition-transform">
-                <Globe size={18} />
-              </div>
-              <span className="font-extrabold text-xs text-[var(--ink)] leading-tight truncate w-full">
-                {t.onlineRoom || (isRTL ? 'اتاق آنلاین' : 'Online Room')}
-              </span>
-              <span className="text-[10px] text-[var(--turq)] font-semibold leading-none truncate w-full">
-                {isRTL ? 'از راه دور' : 'Multiplayer'}
-              </span>
+              <Globe size={12} />
+              <span>{isRTL ? 'آنلاین' : 'Online'}</span>
             </button>
+
+            <div className="flex items-center gap-1 bg-[var(--lapis-soft)] text-[var(--lapis)] px-3 py-1.5 rounded-xl text-xs font-bold shrink-0">
+              <Users size={13} />
+              <span>{isRTL ? 'دورهمی' : 'Party'}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* MODE 2: دوئل دونفره (1v1 Speed Duel - Local & Online) */}
+        <div
+          id="intro-duel-btn"
+          onClick={() => {
+            sound.playClick();
+            onOpenDuel?.();
+          }}
+          className="group relative w-full p-3.5 sm:p-4 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] border border-[var(--line)] hover:border-rose-400 dark:hover:border-rose-600 shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center justify-between gap-3 text-start"
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-xs">
+              <Swords size={22} />
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="text-sm sm:text-base font-black text-[var(--ink)] leading-tight">
+                  {isRTL ? 'دوئل دونفره ⚔️' : '1v1 Speed Duel ⚔️'}
+                </span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 shrink-0">
+                  {isRTL ? '۲ نفره' : '2 Players'}
+                </span>
+              </div>
+              <p className="text-[11px] text-[var(--mute)] font-medium truncate mt-0.5">
+                {isRTL ? 'مسابقه سرعتی، شوک خرابکاری و هیجان' : 'Reflex Match, Sabotage Shocks'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 px-3 py-1.5 rounded-xl text-xs font-bold shrink-0">
+            <Zap size={13} />
+            <span>{isRTL ? 'دوئل' : 'Duel'}</span>
+          </div>
+        </div>
+
+        {/* MODE 3: چالش تک‌نفره (Solo Challenge & Leitner) */}
+        <div
+          id="intro-single-player-btn"
+          onClick={() => {
+            sound.playClick();
+            onOpenSinglePlayer();
+          }}
+          className="group relative w-full p-3.5 sm:p-4 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] border border-[var(--line)] hover:border-[var(--turq)] shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center justify-between gap-3 text-start"
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-11 h-11 rounded-xl bg-teal-50 dark:bg-teal-950/40 text-[var(--turq)] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-xs">
+              <GraduationCap size={22} />
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="text-sm sm:text-base font-black text-[var(--ink)] leading-tight">
+                  {isRTL ? 'چالش تک‌نفره' : 'Solo Challenge'}
+                </span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-50 dark:bg-teal-950/40 text-[var(--turq)] shrink-0">
+                  {isRTL ? 'انفرادی' : 'Solo Run'}
+                </span>
+              </div>
+              <p className="text-[11px] text-[var(--mute)] font-medium truncate mt-0.5">
+                {isRTL ? 'تلفظ صوتی، فلش‌کارت و جعبه لایتنر' : 'Voice, Flashcards & Practice'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1 bg-teal-50 dark:bg-teal-950/40 text-[var(--turq)] px-3 py-1.5 rounded-xl text-xs font-bold shrink-0">
+            <BookOpen size={13} />
+            <span>{isRTL ? 'تمرین' : 'Learn'}</span>
           </div>
         </div>
 
@@ -474,6 +537,10 @@ const IntroScreen: React.FC<Props> = ({
         onOpenInstallModal={() => setIsInstallModalOpen(true)}
         initialTab={profileInitialTab}
         onOpenLeitner={onOpenLeitner}
+        onOpenAdminMeetupMap={() => {
+          setIsProfileModalOpen(false);
+          setIsAdminMeetupMapOpen(true);
+        }}
       />
 
       {/* Full 38+ Language Picker Modal */}
@@ -732,6 +799,112 @@ const IntroScreen: React.FC<Props> = ({
           </div>
         </div>
       )}
+
+      {/* Party Mode Choice Modal: Pass & Play vs Online Room */}
+      {isPartyChoiceModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-fade-in font-ui"
+          dir={isRTL ? 'rtl' : 'ltr'}
+          onClick={() => setIsPartyChoiceModalOpen(false)}
+        >
+          <div
+            className="w-full max-w-sm bg-[var(--panel)] border border-[var(--line)] rounded-[24px] shadow-2xl p-5 space-y-4 text-[var(--ink)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-[var(--line)] pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center font-bold">
+                  <Users size={20} />
+                </div>
+                <div className="text-start">
+                  <h3 className="font-bold text-base text-[var(--ink)]">
+                    {isRTL ? 'انتخاب سبک دورهمی گروهی' : 'Choose Group Party Style'}
+                  </h3>
+                  <p className="text-[11px] text-[var(--mute)] font-medium">
+                    {isRTL ? 'حضوری دور یک میز یا آنلاین از راه دور؟' : 'Local or Remote Room?'}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsPartyChoiceModalOpen(false)}
+                className="p-1.5 rounded-full hover:bg-[var(--line)] text-[var(--mute)] hover:text-[var(--ink)] transition-colors"
+                aria-label="بستن"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="space-y-2.5">
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playStartGame();
+                  setIsPartyChoiceModalOpen(false);
+                  onNext();
+                }}
+                className="w-full p-3.5 rounded-2xl bg-gradient-to-r from-[var(--lapis)] to-[#1b3ca8] text-white flex items-center justify-between hover:brightness-105 active:scale-98 transition-all shadow-xs text-start cursor-pointer"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-white shrink-0">
+                    <Sparkles size={20} className="text-[var(--saffron)]" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm leading-tight">
+                      {isRTL ? 'بازی دورهمی حضوری (یک گوشی)' : 'Pass & Play (1 Phone)'}
+                    </h4>
+                    <p className="text-[11px] text-white/80 font-normal mt-0.5">
+                      {isRTL ? '۴ تا ۸ بازیکن دور هم، دست به دست کردن گوشی' : 'Pass phone around table'}
+                    </p>
+                  </div>
+                </div>
+                <ChevronRight size={18} className={isRTL ? 'rotate-180' : ''} />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playClick();
+                  setIsPartyChoiceModalOpen(false);
+                  onOpenOnline();
+                }}
+                className="w-full p-3.5 rounded-2xl bg-[var(--bg)] hover:bg-[var(--line)]/50 border border-[var(--line)] text-[var(--ink)] flex items-center justify-between active:scale-98 transition-all shadow-2xs text-start cursor-pointer"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-950/40 text-[var(--turq)] flex items-center justify-center shrink-0">
+                    <Globe size={20} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm leading-tight text-[var(--ink)]">
+                      {isRTL ? 'اتاق آنلاین تیمی (از راه دور)' : 'Online Room (Multi-Device)'}
+                    </h4>
+                    <p className="text-[11px] text-[var(--mute)] font-normal mt-0.5">
+                      {isRTL ? 'ورود با کد اتاق مشترک روی چند گوشی' : 'Join shared room via code'}
+                    </p>
+                  </div>
+                </div>
+                <ChevronRight size={18} className={isRTL ? 'rotate-180' : ''} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Admin Meetup & Boardgame Cafe Map (Google Maps Grounding - Admin Only) */}
+      <AdminMeetupMapModal
+        isOpen={isAdminMeetupMapOpen}
+        onClose={() => setIsAdminMeetupMapOpen(false)}
+        language={language}
+        isRTL={isRTL}
+      />
+
+      {/* AI Language Coach & Referee Chatbot (Gemini AI) */}
+      <AICoachChatModal
+        isOpen={isAICoachOpen}
+        onClose={() => setIsAICoachOpen(false)}
+        learningLanguage={settings?.targetLanguages?.[0] || 'English'}
+        guideLanguage={language === 'fa' ? 'Persian' : 'English'}
+        isRTL={isRTL}
+      />
     </div>
   );
 };

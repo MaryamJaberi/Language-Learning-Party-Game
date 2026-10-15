@@ -549,6 +549,12 @@ export const DuelScreen: React.FC<Props> = ({
         <ExitConfirmModal
           isOpen={true}
           isRTL={isRTL}
+          title={isRTL ? 'خروج از دوئل' : 'Leave Duel?'}
+          message={isRTL 
+            ? 'می‌خواهید به صفحه اول برگردید یا تنظیمات دوئل؟' 
+            : 'Return to Home screen or Duel settings?'}
+          homeLabel={isRTL ? 'برگشت به صفحه اول' : 'Return to Home Screen'}
+          setupLabel={isRTL ? 'تنظیمات دوئل' : 'Duel Settings'}
           onCancel={() => setShowExitModal(false)}
           onExitHome={() => {
             setShowExitModal(false);

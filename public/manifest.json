@@ -1,6 +1,6 @@
 {
-  "name": "دور | Turn - بازی کلمات گروهی",
-  "short_name": "دور - Turn",
+  "name": "Language app Dour - بازی دورهمی یادگیری زبان",
+  "short_name": "Language app Dour",
   "description": "بازی گروهی کلمات و حدس هیجان‌انگیز کلمات در دورهمی‌ها",
   "start_url": "./",
   "display": "standalone",

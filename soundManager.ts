@@ -24,6 +24,14 @@ class SoundManager {
   private tickToggle: boolean = false;
 
   constructor() {
+    try {
+      if (typeof window !== 'undefined') {
+        const savedMute = localStorage.getItem('dor_sound_muted');
+        if (savedMute !== null) {
+          this.isMuted = savedMute === 'true';
+        }
+      }
+    } catch {}
     this.initAutoUnlock();
     this.initVoices();
   }
@@ -166,6 +174,10 @@ class SoundManager {
   }
 
   public playBuzzer() {
+    this.playElimination();
+  }
+
+  public playError() {
     this.playElimination();
   }
 

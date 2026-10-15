@@ -91,6 +91,7 @@ export interface GameSettings {
   language: Language; // App UI language / Native reference language
   nativeLanguage?: Language; // Native / support language
   targetLanguages: Language[]; // Array of selected target languages (e.g. ['nl', 'en-US', 'de'])
+  targetLanguage?: Language; // Primary selected target language
   soundEnabled?: boolean;
   autoPronounceOnCorrect?: boolean; // Hear native speech pronunciation when answered correctly
   cardGameMode?: CardGameMode; // 'mixed' | 'reverse' | 'standard'

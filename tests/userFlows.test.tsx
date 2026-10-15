@@ -279,4 +279,31 @@ describe('Complete End-to-End User Flow Tests', () => {
     fireEvent.click(correctBtn);
     expect(screen.getByRole('button', { name: /درست بود!/i })).toBeInTheDocument();
   });
+
+  test('Flow 9: Exiting Single Player to settings opens SinglePlayerSetupModal and does NOT open multiplayer SetupScreen', async () => {
+    render(<App />);
+
+    // 1. Open Single Player modal from Intro
+    const singleBtn = document.getElementById('intro-single-player-btn');
+    expect(singleBtn).toBeInTheDocument();
+    fireEvent.click(singleBtn!);
+
+    // 2. Start Single Player
+    const startSingleBtn = screen.getByRole('button', { name: /شروع تمرین/i });
+    fireEvent.click(startSingleBtn);
+
+    // 3. We are in SinglePlayerScreen, click exit
+    const exitBtn = screen.getByRole('button', { name: /خروج/i });
+    fireEvent.click(exitBtn);
+
+    // 4. Modal opens with option to return to Single-Player Settings
+    const setupOption = screen.getByText(/تنظیمات تمرین انفرادی/i);
+    expect(setupOption).toBeInTheDocument();
+    fireEvent.click(setupOption);
+
+    // 5. Must be back on Intro with SinglePlayerSetupModal open, NOT multiplayer SetupScreen
+    expect(screen.queryByText('چیدمان دور میز')).not.toBeInTheDocument();
+    expect(screen.queryByText(/تعداد بازیکنان/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /شروع تمرین/i })).toBeInTheDocument();
+  });
 });

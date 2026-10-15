@@ -421,12 +421,12 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
   }, [currentSec]);
 
   const handleMinuteChange = (newMin: number) => {
-    const newTotal = Math.max(5, newMin * 60 + currentSec);
+    const newTotal = Math.max(3, newMin * 60 + currentSec);
     updateSettings('roundDuration', newTotal);
   };
 
   const handleSecondChange = (newSec: number) => {
-    const newTotal = Math.max(5, currentMin * 60 + newSec);
+    const newTotal = Math.max(3, currentMin * 60 + newSec);
     updateSettings('roundDuration', newTotal);
   };
 
@@ -1222,12 +1222,20 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
       <div className="start-bar">
         <button 
           type="button"
-          className="start-btn"
+          className="start-btn disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label={t.nextStartGame || (isRTL ? 'مرحله بعد: شروع بازی' : 'Next: Start Game')}
           onClick={() => {
+            const hasValidTargets = Array.isArray(settings.targetLanguages) && settings.targetLanguages.length > 0 && settings.targetLanguages[0];
+            if (!hasValidTargets) {
+              setLangError(isRTL ? 'لطفاً حداقل یک زبان برای یادگیری انتخاب کنید' : 'Please select at least one learning language');
+              setIsTargetOpen(true);
+              sound.playBuzzer();
+              return;
+            }
             sound.playStartGame();
             onNext();
           }}
+          disabled={!settings.targetLanguages || settings.targetLanguages.length === 0}
         >
           <span className="whitespace-nowrap">{t.nextStartGame || (isRTL ? 'مرحله بعد: شروع بازی' : 'Next: Start Game')}</span>
           {isRTL ? <ArrowLeft size={20} className="shrink-0" /> : <ArrowRight size={20} className="shrink-0" />}

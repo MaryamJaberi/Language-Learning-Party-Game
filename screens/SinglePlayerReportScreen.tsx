@@ -15,7 +15,9 @@ import {
   Sparkles,
   Send,
   AlertCircle,
-  Clock
+  Clock,
+  Sliders,
+  Home
 } from 'lucide-react';
 
 interface Props {
@@ -26,6 +28,7 @@ interface Props {
   onPracticeWeakCards: (cards: LanguageCard[]) => void;
   onOpenLeaderboard?: () => void;
   onExit: () => void;
+  onOpenSettings?: () => void;
 }
 
 const SinglePlayerReportScreen: React.FC<Props> = ({
@@ -35,7 +38,8 @@ const SinglePlayerReportScreen: React.FC<Props> = ({
   onPlayAgain,
   onPracticeWeakCards,
   onOpenLeaderboard,
-  onExit
+  onExit,
+  onOpenSettings
 }) => {
   const activeLang: Language = uiLanguage || language || (report.settings?.nativeLanguage as Language) || 'fa';
   const t = tUI(activeLang);
@@ -290,16 +294,33 @@ const SinglePlayerReportScreen: React.FC<Props> = ({
           <Flame size={16} className="text-[var(--saffron)]" />
         </button>
 
-        <button
-          onClick={() => {
-            sound.playClick();
-            onExit();
-          }}
-          className="w-full py-3 rounded-xl text-xs sm:text-sm font-bold bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-98 transition-all"
-        >
-          <ArrowLeft size={16} className={isRTL ? 'rotate-180' : ''} />
-          <span>{isRTL ? 'بازگشت به منوی اصلی' : 'Back to Main Menu'}</span>
-        </button>
+        <div className={`grid gap-2 ${onOpenSettings ? 'grid-cols-2' : 'grid-cols-1'}`}>
+          {onOpenSettings && (
+            <button
+              type="button"
+              onClick={() => {
+                sound.playClick();
+                onOpenSettings();
+              }}
+              className="py-3 px-2 rounded-xl text-xs sm:text-sm font-bold bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-98 transition-all"
+            >
+              <Sliders size={15} className="text-[var(--lapis)]" />
+              <span>{isRTL ? 'تنظیمات تمرین' : 'Settings'}</span>
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={() => {
+              sound.playClick();
+              onExit();
+            }}
+            className="w-full py-3 rounded-xl text-xs sm:text-sm font-bold bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-98 transition-all"
+          >
+            <Home size={15} />
+            <span>{isRTL ? 'بازگشت به منوی اصلی' : 'Back to Main Menu'}</span>
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -294,3 +294,30 @@ export const isAdminUser = (email?: string | null): boolean => {
   if (!email) return false;
   return ADMIN_EMAILS.includes(email.trim().toLowerCase());
 };
+
+export const DEFAULT_SETTINGS: GameSettings = {
+  playerCount: 4,
+  roundsCount: 3,
+  roundDuration: 60,
+  difficulty: 'easy',
+  cefrLevel: 'all',
+  nativeLanguage: 'fa',
+  targetLanguages: ['nl', 'en'],
+  cardGameMode: 'mixed',
+  autoPronounceOnCorrect: true,
+  selectedCategories: [
+    "CAT_EVERYDAY",
+    "CAT_RESTAURANT",
+    "CAT_FOOD",
+    "CAT_TRAVEL",
+    "CAT_SHOPPING",
+    "CAT_WORK",
+    "CAT_SMALLTALK"
+  ],
+  playerNames: ['سارا', 'علی', 'مریم', 'رضا', 'نیما', 'مهسا', 'پوریا', 'هدیه'],
+  language: 'fa',
+  passPhoneScreenEnabled: false,
+  soundEnabled: true,
+  powerCardsEnabled: true
+};
+

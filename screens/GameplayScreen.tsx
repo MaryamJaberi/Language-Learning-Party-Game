@@ -35,8 +35,10 @@ import {
   Clock,
   Eye,
   EyeOff,
-  Users
+  Users,
+  Bot
 } from 'lucide-react';
+import { AICoachChatModal } from '../components/AICoachChatModal';
 
 interface UndoSnapshot {
   activePlayerIndex: number;
@@ -123,6 +125,7 @@ const GameplayScreen: React.FC<Props> = ({
   // Audio countdown tracking
   const lastSecondRef = useRef<number>(-1);
   const hasFinishedGameRef = useRef<boolean>(false);
+  const isActionLockedRef = useRef<boolean>(false);
 
   // Gameplay Interactive States
   const [showHint, setShowHint] = useState(false);
@@ -134,6 +137,7 @@ const GameplayScreen: React.FC<Props> = ({
   const [powerCardsUsed, setPowerCardsUsed] = useState<string[]>([]);
   const [bonusNotification, setBonusNotification] = useState<string | null>(null);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
+  const [isAICoachOpen, setIsAICoachOpen] = useState(false);
 
   const vibrate = (ms: number | number[]) => {
     if ('vibrate' in navigator) {
@@ -283,6 +287,11 @@ const GameplayScreen: React.FC<Props> = ({
    * SUCCESS / CORRECT ANSWER
    */
   const handleCorrect = (wasAlmost: boolean = false) => {
+    if (isActionLockedRef.current) return;
+    if (gameStatus !== GameStatus.ActiveTurn || roundTimer <= 0) return;
+    isActionLockedRef.current = true;
+    setTimeout(() => { isActionLockedRef.current = false; }, 320);
+
     sound.playCorrect();
     vibrate(60);
 
@@ -372,6 +381,11 @@ const GameplayScreen: React.FC<Props> = ({
    * SKIP / WRONG ANSWER
    */
   const handleSkip = () => {
+    if (isActionLockedRef.current) return;
+    if (gameStatus !== GameStatus.ActiveTurn || roundTimer <= 0) return;
+    isActionLockedRef.current = true;
+    setTimeout(() => { isActionLockedRef.current = false; }, 320);
+
     sound.playBuzzer();
     vibrate(100);
 
@@ -765,6 +779,20 @@ const GameplayScreen: React.FC<Props> = ({
                 </span>
               )}
 
+              {/* AI Coach & Referee Quick Help */}
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playClick();
+                  setIsAICoachOpen(true);
+                }}
+                className="px-2 py-0.5 rounded-lg bg-[var(--panel)] hover:bg-[var(--bg)] border border-amber-400/40 text-amber-500 text-[10px] font-bold flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-2xs"
+                title="مشاوره با مربی و داور هوشمند دور"
+              >
+                <Bot size={11} />
+                <span>{isRTL ? 'داور هوشمند' : 'AI Referee'}</span>
+              </button>
+
             </div>
 
           </div>
@@ -1056,6 +1084,8 @@ const GameplayScreen: React.FC<Props> = ({
                   setCurrentRound(prev => prev + 1);
                   setRoundTimer(settings.roundDuration * 1000);
                   setTeams(prev => prev.map(t => ({ ...t, timeRemaining: settings.roundDuration * 1000, isEliminated: false })));
+                  const nextStartingPlayer = (activePlayerIndex + 1) % players.length;
+                  setActivePlayerIndex(nextStartingPlayer);
                   onGetNextWord();
                   setGameStatus(GameStatus.ActiveTurn);
                 } else {
@@ -1071,6 +1101,15 @@ const GameplayScreen: React.FC<Props> = ({
           </div>
         </Modal>
       )}
+
+      {/* In-Game AI Referee & Coach Chatbot (Gemini AI) */}
+      <AICoachChatModal
+        isOpen={isAICoachOpen}
+        onClose={() => setIsAICoachOpen(false)}
+        learningLanguage={currentCard?.targetLanguage || settings.targetLanguages?.[0] || 'English'}
+        guideLanguage={settings.language === 'fa' ? 'Persian' : 'English'}
+        isRTL={isRTL}
+      />
 
     </div>
   );

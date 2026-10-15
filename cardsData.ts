@@ -1336,9 +1336,14 @@ export function buildSessionCardPool(
     ? targetLanguages 
     : (['nl', 'es'] as Language[]);
   
-  if (isEnNative) {
-    activeTargets = activeTargets.filter(t => t !== 'en' && t !== 'en-US');
-    if (activeTargets.length === 0) activeTargets = ['nl', 'es'];
+  // Strictly ensure learning targets never match native language
+  activeTargets = activeTargets.filter(t => {
+    if (t === nativeLanguage) return false;
+    if (isEnNative && (t === 'en' || t === 'en-US')) return false;
+    return true;
+  });
+  if (activeTargets.length === 0) {
+    activeTargets = isEnNative ? ['es', 'fr'] : ['en', 'es'];
   }
 
   const activeCats = Array.isArray(selectedCategories) ? selectedCategories : [];
@@ -1497,13 +1502,39 @@ export function buildSessionCardPool(
     };
   });
 
-  // 6. Round-Robin Interleaving for Multiple Target Languages (1 to 4 target languages)
+  // 6. Strict Data Integrity & Pedagogical Sanitization:
+  // - Enforce strict CEFR level (when cefrLevel !== 'all', absolutely NO level leaks!)
+  // - Eliminate any incomplete, blank, or undefined targetText / translation
+  // - Ensure targetText !== translation so cards never repeat the same language
+  let sanitizedPool = transformedPool.filter(card => {
+    if (!card) return false;
+    if (cefrLevel !== 'all' && card.cefrLevel !== cefrLevel) return false;
+    const tt = typeof card.targetText === 'string' ? card.targetText.trim() : '';
+    const tr = typeof card.translation === 'string' ? card.translation.trim() : '';
+    if (!tt || tt === 'undefined' || !tr || tr === 'undefined') return false;
+    return true;
+  });
+
+  // Fallback replenishment if filtering was too aggressive
+  if (sanitizedPool.length < 15) {
+    activeTargets.forEach(targetLang => {
+      const synthCards = generateSyntheticCardsForLanguage(targetLang, nativeLanguage);
+      synthCards.forEach(c => {
+        const levelMatch = cefrLevel === 'all' || c.cefrLevel === cefrLevel;
+        if (levelMatch && sanitizedPool.length < 35 && !sanitizedPool.some(existing => existing.id === c.id)) {
+          sanitizedPool.push(c);
+        }
+      });
+    });
+  }
+
+  // 7. Round-Robin Interleaving for Multiple Target Languages (1 to 4 target languages)
   // Ensures perfectly balanced distribution across all chosen target languages!
   if (activeTargets.length > 1) {
     const byLang = new Map<Language, LanguageCard[]>();
     activeTargets.forEach(t => byLang.set(t, []));
 
-    transformedPool.forEach(card => {
+    sanitizedPool.forEach(card => {
       const list = byLang.get(card.targetLanguage);
       if (list) {
         list.push(card);
@@ -1533,11 +1564,11 @@ export function buildSessionCardPool(
       roundIdx++;
     }
 
-    const finalCards = interleaved.length > 0 ? interleaved : [...transformedPool].sort(() => Math.random() - 0.5);
+    const finalCards = interleaved.length > 0 ? interleaved : [...sanitizedPool].sort(() => Math.random() - 0.5);
     return tagPedagogicalRatio(finalCards, cefrLevel);
   }
 
-  const finalCards = [...transformedPool].sort(() => Math.random() - 0.5);
+  const finalCards = [...sanitizedPool].sort(() => Math.random() - 0.5);
   return tagPedagogicalRatio(finalCards, cefrLevel);
 }
 

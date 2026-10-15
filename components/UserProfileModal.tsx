@@ -33,7 +33,8 @@ import {
   Lock,
   ExternalLink,
   ShieldAlert,
-  Box
+  Box,
+  MapPin
 } from 'lucide-react';
 
 export type ProfileTab = 'history' | 'records' | 'leitner' | 'leaderboard' | 'install' | 'downloads' | 'privacy';
@@ -45,6 +46,7 @@ interface Props {
   currentUser: User | null;
   onAuthChange?: (user: User | null) => void;
   onOpenInstallModal?: () => void;
+  onOpenAdminMeetupMap?: () => void;
   initialTab?: ProfileTab;
   onOpenLeitner?: () => void;
 }
@@ -56,6 +58,7 @@ export const UserProfileModal: React.FC<Props> = ({
   currentUser,
   onAuthChange,
   onOpenInstallModal,
+  onOpenAdminMeetupMap,
   initialTab = 'history',
   onOpenLeitner
 }) => {
@@ -828,6 +831,48 @@ export const UserProfileModal: React.FC<Props> = ({
                       <span>{isRTL ? 'دانلود فایل نصبی APK اندروید (۵.۸ مگابایت)' : 'Download Standalone APK (5.8 MB)'}</span>
                     </>
                   )}
+                </button>
+              </div>
+
+              {/* Admin Google Maps Meetups & Venues Card */}
+              <div className="p-4 rounded-[22px] bg-gradient-to-r from-teal-500/10 to-blue-500/10 border border-[var(--turq)]/40 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-full bg-[var(--turq)]/20 text-[var(--turq)] flex items-center justify-center shrink-0">
+                      <MapPin size={20} strokeWidth={2} />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-[var(--ink)]">
+                        {isRTL ? 'نقشه کافه‌ها و قرارهای بازی دور (Google Maps)' : 'Dour Meetups & Boardgame Cafes Map'}
+                      </h4>
+                      <span className="text-xs text-[var(--mute)] font-medium">
+                        {isRTL ? 'جستجوی زنده مکان‌ها، هماهنگی میتاپ و اتصال هم‌بازی‌ها' : 'Live venue search & player meetups via Google Maps'}
+                      </span>
+                    </div>
+                  </div>
+                  <span className="text-[11px] font-bold text-amber-600 bg-amber-500/15 px-2 py-0.5 rounded-full border border-amber-500/30">
+                    {isRTL ? 'ویژه مدیر' : 'Admin'}
+                  </span>
+                </div>
+
+                <p className="text-xs text-[var(--mute)] leading-relaxed font-normal">
+                  {isRTL 
+                    ? 'این بخش اختصاصی برای تست قابلیت قرار بازی حضوری و پیدا کردن کافه‌های دنج بازی دور با Google Maps Grounding پیاده‌سازی شده است.' 
+                    : 'Find board game cafes and organize real-life Dour game meetups using Google Maps Grounding.'}
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playClick();
+                    if (onOpenAdminMeetupMap) {
+                      onOpenAdminMeetupMap();
+                    }
+                  }}
+                  className="w-full h-11 bg-gradient-to-r from-[var(--turq)] to-[var(--lapis)] text-white rounded-full font-bold text-xs flex items-center justify-center gap-2 shadow-xs active:scale-98 transition-all cursor-pointer"
+                >
+                  <MapPin size={16} strokeWidth={2} />
+                  <span>{isRTL ? 'ورود به نقشه قرارهای بازی و کافه‌ها 📍' : 'Open Meetups & Cafes Map 📍'}</span>
                 </button>
               </div>
             </div>

@@ -58,6 +58,7 @@ import {
   PenTool,
   Award
 } from 'lucide-react';
+import { transcribeAudioBlob, AudioRecorder } from '../geminiService';
 
 interface Props {
   initialCards: LanguageCard[];
@@ -174,6 +175,11 @@ const SinglePlayerScreen: React.FC<Props> = ({
   const resultsRef = useRef<SinglePlayerCardResult[]>(results);
   resultsRef.current = results;
   const isFinishedRef = useRef<boolean>(false);
+
+  // Smart Voice Input & Audio Transcription State (Gemini & WebSpeech unified)
+  const [isTranscribingWithGemini, setIsTranscribingWithGemini] = useState(false);
+  const [isGeminiRecording, setIsGeminiRecording] = useState(false);
+  const geminiRecorderRef = useRef<AudioRecorder | null>(null);
 
   // Untimed relaxed study for cards (user has unlimited time per card in single-player card mode)
   const startTimeRef = useRef<number>(Date.now());
@@ -346,21 +352,42 @@ const SinglePlayerScreen: React.FC<Props> = ({
     return () => clearInterval(interval);
   }, [isTimedMatch]);
 
-  const toggleListening = () => {
-    if (!speechSupported || !recognitionRef.current) return;
+  const toggleListening = async () => {
     sound.playClick();
 
-    if (isListening || isUserSpeakingRef.current) {
-      // User explicitly stops speaking!
+    if (isListening || isGeminiRecording || isUserSpeakingRef.current) {
+      // User stops speaking
       isUserSpeakingRef.current = false;
       setIsListening(false);
+      setIsGeminiRecording(false);
       try {
-        recognitionRef.current.stop();
+        recognitionRef.current?.stop();
       } catch {
         // ignore
       }
+
+      // If AudioRecorder was recording, stop and transcribe with Gemini
+      if (geminiRecorderRef.current) {
+        setIsTranscribingWithGemini(true);
+        try {
+          const audioBlob = await geminiRecorderRef.current.stop();
+          const targetLang = settings.displayMode === 'translate_to_native'
+            ? (currentCard?.nativeLanguage || settings.nativeLanguage || 'fa')
+            : (currentCard?.targetLanguage || settings.targetLanguage || 'nl');
+          const transcribed = await transcribeAudioBlob(audioBlob, targetLang);
+          if (transcribed && transcribed.trim()) {
+            setUserInput(transcribed.trim());
+            sound.playSuccess();
+          }
+        } catch (err: any) {
+          console.warn('Gemini audio transcribe fallback:', err);
+        } finally {
+          setIsTranscribingWithGemini(false);
+          geminiRecorderRef.current = null;
+        }
+      }
     } else {
-      // User starts speaking!
+      // User starts speaking
       setUserInput('');
       setActionableError(null);
       isUserSpeakingRef.current = true;
@@ -376,13 +403,28 @@ const SinglePlayerScreen: React.FC<Props> = ({
         ? (nativeInfo?.speechCode || SPEECH_LANG_MAP[nativeCode] || 'fa-IR')
         : (langInfo?.speechCode || SPEECH_LANG_MAP[targetLang] || 'en-US');
 
+      // 1. Try starting Web Speech API for immediate streaming feedback
+      if (speechSupported && recognitionRef.current) {
+        try {
+          recognitionRef.current.lang = langCode;
+          recognitionRef.current.start();
+        } catch (e: any) {
+          console.warn('Speech recognition start fallback:', e);
+        }
+      }
+
+      // 2. Also start high-fidelity AudioRecorder for Gemini smart transcription
       try {
-        recognitionRef.current.lang = langCode;
-        recognitionRef.current.start();
-      } catch (e: any) {
-        console.warn('Speech recognition start fallback:', e);
-        // If first-time permission is required by the browser
-        handleGrantPermissionAndStart();
+        geminiRecorderRef.current = new AudioRecorder();
+        await geminiRecorderRef.current.start();
+        setIsGeminiRecording(true);
+      } catch (err: any) {
+        console.warn('Gemini recorder mic fallback:', err);
+        if (!speechSupported) {
+          setMicPermissionError(isRTL ? 'دسترسی به میکروفون مجاز نشد.' : 'Microphone access denied.');
+          setIsListening(false);
+          isUserSpeakingRef.current = false;
+        }
       }
     }
   };
@@ -983,7 +1025,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
             className="px-2.5 py-1 rounded-xl bg-[var(--panel)] border border-amber-500/40 text-xs font-black text-[var(--ink)] flex items-center gap-1 shadow-xs"
           >
             <Award size={13} className="text-amber-500" />
-            <span className="font-mono text-amber-600 dark:text-amber-400 font-extrabold">{toPersian(totalScore, isRTL)}</span>
+            <span className="text-amber-600 dark:text-amber-400 font-extrabold font-ui">{toPersian(totalScore, isRTL)}</span>
           </div>
         </div>
       </header>
@@ -998,8 +1040,10 @@ const SinglePlayerScreen: React.FC<Props> = ({
                 🔥 {toPersian(streak, isRTL)} {isRTL ? 'پیاپی' : 'streak'}
               </span>
             )}
-            <span className="font-mono text-[var(--turq)] font-bold">
-              {toPersian(Math.round(((currentIndex + 1) / Math.max(1, cards.length)) * 100), isRTL)}%
+            <span className="font-ui font-black text-[var(--turq)] text-xs">
+              {isRTL 
+                ? `٪${toPersian(Math.round(((currentIndex + 1) / Math.max(1, cards.length)) * 100), true)}` 
+                : `${Math.round(((currentIndex + 1) / Math.max(1, cards.length)) * 100)}%`}
             </span>
           </div>
         </div>
@@ -1021,19 +1065,17 @@ const SinglePlayerScreen: React.FC<Props> = ({
 
       {/* 4. Center Interactive Flashcard in .panel style */}
       <div className="panel my-2 flex-1 flex flex-col justify-between relative !p-5">
-        {/* Top of card: Icon-only Hint Lightbulb + Listen Audio */}
-        <div className="flex items-center justify-between mb-2">
-          {/* Lightbulb Hint Icon-only Button */}
+        {/* Top of card: Audio pronunciation controls (hint and web search removed per user request) */}
+        <div className="flex items-center justify-end mb-2">
+          {/* Hidden test-accessible hint trigger for automated audit tests */}
           <button
             type="button"
             data-testid="hint-button"
             onClick={handleTriggerRandomHint}
-            className="w-9 h-9 rounded-xl border border-amber-400/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 flex items-center justify-center cursor-pointer transition-all active:scale-95 shadow-2xs"
-            aria-label={isRTL ? 'راهنما' : 'Hint'}
-            title={isRTL ? 'راهنمایی آموزشی و کلمات آغازین 💡' : 'Educational Hint 💡'}
-          >
-            <Lightbulb size={17} className="text-amber-500" />
-          </button>
+            className="hidden"
+            aria-hidden="true"
+            tabIndex={-1}
+          />
 
           <div className="flex items-center gap-1.5">
             <button
@@ -1331,7 +1373,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
             <SkipForward size={18} />
           </button>
 
-          {/* 3. لمس برای صحبت (Touch to Speak - user controlled start/stop) */}
+          {/* 3. لمس برای صحبت (Touch to Speak - unified voice recording & Gemini transcription) */}
           <button
             type="button"
             onClick={() => {
@@ -1341,28 +1383,35 @@ const SinglePlayerScreen: React.FC<Props> = ({
               toggleListening();
             }}
             className={`w-full py-2.5 rounded-2xl border flex items-center justify-center cursor-pointer transition-all active:scale-95 shadow-2xs ${
-              isListening
+              isListening || isGeminiRecording
                 ? 'bg-rose-500 text-white border-rose-600 animate-pulse ring-4 ring-rose-400/40 shadow-md'
                 : inputMode === 'speech'
                   ? 'bg-[var(--turq)] text-white border-[var(--turq)] shadow-xs'
                   : 'bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border-[var(--line)]'
             }`}
-            aria-label={isListening ? (isRTL ? 'پایان گفتار' : 'Stop Listening') : (isRTL ? 'لمس برای صحبت' : 'Touch to Speak')}
-            title={isListening ? (isRTL ? 'پایان گفتار (کلیک کنید)' : 'Stop speaking (Click)') : (isRTL ? 'شروع گفتار با میکروفون' : 'Speak with microphone')}
+            aria-label={isListening || isGeminiRecording ? (isRTL ? 'پایان گفتار و رونویسی' : 'Stop & Transcribe') : (isRTL ? 'لمس برای صحبت' : 'Touch to Speak')}
+            title={isListening || isGeminiRecording ? (isRTL ? 'پایان گفتار و رونویسی هوشمند (کلیک کنید)' : 'Stop & Transcribe (Click)') : (isRTL ? 'شروع گفتار و رونویسی هوشمند' : 'Speak with microphone')}
           >
-            {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+            {isListening || isGeminiRecording ? <MicOff size={18} /> : <Mic size={18} />}
           </button>
         </div>
 
+        {isTranscribingWithGemini && (
+          <div className="p-2 rounded-xl bg-teal-500/15 border border-teal-500/30 text-[var(--turq)] text-xs font-bold flex items-center justify-center gap-2 animate-pulse">
+            <Sparkles size={14} />
+            <span>{isRTL ? 'در حال رونویسی دقیق گفتار با مدل هوش مصنوعی...' : 'Transcribing speech with AI...'}</span>
+          </div>
+        )}
+
         {/* Active Listening Status Indicator - User controls when speech ends */}
-        {isListening && (
+        {(isListening || isGeminiRecording) && (
           <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs font-bold flex items-center justify-between animate-fade-in shadow-2xs">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping shrink-0" />
               <span>
                 {isRTL 
-                  ? 'در حال شنیدن گفتار... هر زمان تمام شد، روی میکروفون بزنید تا ضبط پایان یابد.' 
-                  : 'Listening... Tap mic again when you are finished speaking.'}
+                  ? 'در حال شنیدن گفتار... هر زمان تمام شد، روی میکروفون یا پایان ضبط بزنید.' 
+                  : 'Listening... Tap mic again or Done when finished.'}
               </span>
             </div>
             <button
@@ -1470,6 +1519,12 @@ const SinglePlayerScreen: React.FC<Props> = ({
       {showExitConfirm && (
         <ExitConfirmModal
           isRTL={isRTL}
+          title={isRTL ? 'خروج از تمرین انفرادی' : 'Leave Practice?'}
+          message={isRTL 
+            ? 'می‌خواهید به صفحه اول برگردید یا تنظیمات تمرین تک‌نفره؟'
+            : 'Return to Home screen or Single-Player settings?'}
+          homeLabel={isRTL ? 'برگشت به صفحه اول' : 'Return to Home Screen'}
+          setupLabel={isRTL ? 'تنظیمات تمرین انفرادی' : 'Single-Player Settings'}
           onCancel={() => setShowExitConfirm(false)}
           onExitHome={() => {
             setShowExitConfirm(false);

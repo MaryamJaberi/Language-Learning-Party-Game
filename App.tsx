@@ -535,6 +535,16 @@ const App: React.FC = () => {
     setCurrentScreen('SETUP');
   };
 
+  const handleSinglePlayerExitToSetup = () => {
+    setCurrentScreen('INTRO');
+    setIsSingleSetupOpen(true);
+  };
+
+  const handleDuelExitToSetup = () => {
+    setCurrentScreen('INTRO');
+    setIsDuelSetupOpen(true);
+  };
+
   const handleUpdatePlayer = (index: number, newName: string, newAvatar: string) => {
     setPlayers(prev => {
       const copy = [...prev];
@@ -936,7 +946,7 @@ const App: React.FC = () => {
           onFinish={handleSinglePlayerFinish}
           onExit={handleExitToHome}
           onExitHome={handleExitToHome}
-          onExitSetup={handleExitToSetup}
+          onExitSetup={handleSinglePlayerExitToSetup}
           onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
         />
       )}
@@ -951,6 +961,7 @@ const App: React.FC = () => {
           onPracticeWeakCards={handlePracticeWeakCards}
           onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
           onExit={() => setCurrentScreen('INTRO')}
+          onOpenSettings={handleSinglePlayerExitToSetup}
         />
       )}
 
@@ -962,7 +973,7 @@ const App: React.FC = () => {
           uiLanguage={settings.language}
           onExit={handleExitToHome}
           onExitHome={handleExitToHome}
-          onExitSetup={handleExitToSetup}
+          onExitSetup={handleDuelExitToSetup}
           isRTL={isRtlLang(settings.language)}
         />
       )}

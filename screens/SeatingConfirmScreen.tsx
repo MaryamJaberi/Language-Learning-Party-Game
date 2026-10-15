@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { GameSettings, Team, Player, TeamColor } from '../types';
 import { COLORS_MAP, PLAYER_AVATARS } from '../constants';
-import { tUI, isRtlLang } from '../ui';
+import { tUI, isRtlLang, toPersianDigits } from '../ui';
 import { TeamMascot } from '../components/Mascots';
 import { sound } from '../soundManager';
 import ExitConfirmModal from '../components/ExitConfirmModal';
@@ -379,7 +379,7 @@ export const SeatingConfirmScreen: React.FC<Props> = ({
                 <span className="text-2xl">{editAvatarSelected}</span>
                 <div>
                   <h3 className="text-sm sm:text-base font-black text-[var(--ink)]">
-                    {isRTL ? `ویرایش بازیکن ${editingPlayerIndex + 1}` : `Edit Player ${editingPlayerIndex + 1}`}
+                    {isRTL ? `ویرایش بازیکن ${toPersianDigits(editingPlayerIndex + 1)}` : `Edit Player ${editingPlayerIndex + 1}`}
                   </h3>
                   <span className="text-[10.5px] font-bold text-[var(--mute)]">
                     {isRTL ? 'انتخاب نام و آواتار دلخواه' : 'Change name and avatar'}

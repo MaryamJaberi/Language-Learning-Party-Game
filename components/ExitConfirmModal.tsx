@@ -9,6 +9,8 @@ interface Props {
   message?: string;
   cancelLabel?: string;
   confirmLabel?: string;
+  homeLabel?: string;
+  setupLabel?: string;
   onCancel: () => void;
   onConfirm?: () => void;
   onExitHome?: () => void;
@@ -20,6 +22,10 @@ export const ExitConfirmModal: React.FC<Props> = ({
   isRTL = true,
   title,
   message,
+  cancelLabel,
+  confirmLabel,
+  homeLabel,
+  setupLabel,
   onCancel,
   onConfirm,
   onExitHome,
@@ -95,7 +101,7 @@ export const ExitConfirmModal: React.FC<Props> = ({
             className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white text-xs font-black shadow-sm cursor-pointer active:scale-98 transition-all flex items-center justify-center gap-2"
           >
             <Home size={15} />
-            <span>{isRTL ? 'برگشت به صفحه اول' : 'Return to Home Screen'}</span>
+            <span>{homeLabel || (isRTL ? 'برگشت به صفحه اول' : 'Return to Home Screen')}</span>
           </button>
 
           {/* Button 2: Return to Settings / Setup */}
@@ -105,7 +111,8 @@ export const ExitConfirmModal: React.FC<Props> = ({
             className="w-full py-2.5 px-3 rounded-xl bg-[var(--bg)] hover:bg-[var(--line)]/50 border border-[var(--line)] text-[var(--ink)] text-xs font-black shadow-2xs cursor-pointer active:scale-98 transition-all flex items-center justify-center gap-2"
           >
             <Sliders size={15} className="text-[var(--lapis)]" />
-            <span>{isRTL ? 'برگشت به صفحه تنظیمات' : 'Return to Game Settings'}</span>
+            <span>{setupLabel || (isRTL ? 'برگشت به صفحه تنظیمات' : 'Return to Game Settings')}</span>
+            {setupLabel && isRTL && <span className="sr-only">برگشت به صفحه تنظیمات</span>}
           </button>
 
           {/* Button 3: Cancel / Keep Playing */}
