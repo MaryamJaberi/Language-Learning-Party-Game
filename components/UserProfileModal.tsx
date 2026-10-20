@@ -767,7 +767,7 @@ export const UserProfileModal: React.FC<Props> = ({
                         {isRTL ? 'دانلود مستقیم فایل AAB (مخصوص گوگل پلی)' : 'Download Google Play AAB (.aab)'}
                       </h4>
                       <span className="text-xs text-[var(--mute)] font-medium">
-                        {isRTL ? 'فرمت Android App Bundle (.aab) • حجم ۱.۳ مگابایت • نسخه ۱.۱.۱' : 'Format: Android App Bundle (.aab) • Size: 1.3 MB • v1.1.1'}
+                        {isRTL ? 'فرمت Android App Bundle (.aab) • حجم ۱.۳ مگابایت • نسخه ۱.۱.۲' : 'Format: Android App Bundle (.aab) • Size: 1.3 MB • v1.1.2'}
                       </span>
                     </div>
                   </div>
@@ -778,7 +778,7 @@ export const UserProfileModal: React.FC<Props> = ({
 
                 <div className="text-xs text-[var(--mute)] space-y-0.5 font-mono bg-[var(--panel)] p-2.5 rounded-[14px] border border-[var(--line)]">
                   <div><strong>Package:</strong> <code className="text-[var(--lapis)]">com.solonovate.dour</code></div>
-                  <div><strong>Version:</strong> 1.1.1 (VersionCode: 10011) • Min SDK: 24 (Android 7.0+) • Target SDK: 36</div>
+                  <div><strong>Version:</strong> 1.1.2 (VersionCode: 10012) • Min SDK: 24 (Android 7.0+) • Target SDK: 36</div>
                 </div>
 
                 <button
@@ -822,7 +822,7 @@ export const UserProfileModal: React.FC<Props> = ({
                         {isRTL ? 'دانلود مستقیم فایل APK اندروید' : 'Direct Android APK Installer'}
                       </h4>
                       <span className="text-xs text-[var(--mute)] font-medium">
-                        {isRTL ? 'نصب مستقیم روی گوشی • حجم ۱.۳ مگابایت • نسخه ۱.۱.۱' : 'Direct Install on Android • 1.3 MB • v1.1.1'}
+                        {isRTL ? 'نصب مستقیم روی گوشی • حجم ۱.۳ مگابایت • نسخه ۱.۱.۲' : 'Direct Install on Android • 1.3 MB • v1.1.2'}
                       </span>
                     </div>
                   </div>

@@ -12,17 +12,23 @@ def update_aab_manifest(manifest_bytes: bytes) -> bytes:
     if old_min_sdk in manifest_bytes:
         manifest_bytes = manifest_bytes.replace(old_min_sdk, new_min_sdk)
 
-    # 2. Replace versionCode
-    old_vcode = b'versionCode\x1a\x0510003"\x02\x08\x02(\x9b\x84\x84\x082\x05:\x030\x93N'
-    new_vcode = b'versionCode\x1a\x0510011"\x02\x08\x02(\x9b\x84\x84\x082\x05:\x030\x9bN'
-    if old_vcode in manifest_bytes:
-        manifest_bytes = manifest_bytes.replace(old_vcode, new_vcode)
+    # 2. Replace versionCode (from either 10003 or 10011) to 10012
+    v10003 = b'versionCode\x1a\x0510003"\x02\x08\x02(\x9b\x84\x84\x082\x05:\x030\x93N'
+    v10011 = b'versionCode\x1a\x0510011"\x02\x08\x02(\x9b\x84\x84\x082\x05:\x030\x9bN'
+    new_vcode = b'versionCode\x1a\x0510012"\x02\x08\x02(\x9b\x84\x84\x082\x05:\x030\x9cN'
+    if v10011 in manifest_bytes:
+        manifest_bytes = manifest_bytes.replace(v10011, new_vcode)
+    elif v10003 in manifest_bytes:
+        manifest_bytes = manifest_bytes.replace(v10003, new_vcode)
 
-    # 3. Replace versionName
-    old_vname = b'versionName\x1a\x051.0.3'
-    new_vname = b'versionName\x1a\x051.1.1'
-    if old_vname in manifest_bytes:
-        manifest_bytes = manifest_bytes.replace(old_vname, new_vname)
+    # 3. Replace versionName (from either 1.0.3 or 1.1.1) to 1.1.2
+    vname_103 = b'versionName\x1a\x051.0.3'
+    vname_111 = b'versionName\x1a\x051.1.1'
+    new_vname = b'versionName\x1a\x051.1.2'
+    if vname_111 in manifest_bytes:
+        manifest_bytes = manifest_bytes.replace(vname_111, new_vname)
+    elif vname_103 in manifest_bytes:
+        manifest_bytes = manifest_bytes.replace(vname_103, new_vname)
 
     return manifest_bytes
 
