@@ -132,6 +132,7 @@ const GameplayScreen: React.FC<Props> = ({
   const isActionLockedRef = useRef<boolean>(false);
 
   // Gameplay Interactive States
+  const [isUserPaused, setIsUserPaused] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [showGrammar, setShowGrammar] = useState(false);
   const [showAlmostModal, setShowAlmostModal] = useState(false);
@@ -142,6 +143,12 @@ const GameplayScreen: React.FC<Props> = ({
   const [bonusNotification, setBonusNotification] = useState<string | null>(null);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [isAICoachOpen, setIsAICoachOpen] = useState(false);
+
+  useEffect(() => {
+    if (gameStatus === GameStatus.ActiveTurn) {
+      setIsUserPaused(false);
+    }
+  }, [gameStatus]);
 
   // Equal Challenge Card Allocation per Team per Round
   const [teamChallengesInRound, setTeamChallengesInRound] = useState<Record<number, number>>({});
@@ -688,6 +695,7 @@ const GameplayScreen: React.FC<Props> = ({
             aria-label="Pause"
             onClick={() => {
               sound.playClick();
+              setIsUserPaused(true);
               setGameStatus(GameStatus.Paused);
             }}
             className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer"
@@ -1082,8 +1090,15 @@ const GameplayScreen: React.FC<Props> = ({
       )}
 
       {/* PAUSE MODAL */}
-      {gameStatus === GameStatus.Paused && (
-        <Modal isOpen={true} onClose={() => setGameStatus(GameStatus.ActiveTurn)} title={t.paused}>
+      {isUserPaused && gameStatus === GameStatus.Paused && !revealCard && (
+        <Modal 
+          isOpen={true} 
+          onClose={() => {
+            setIsUserPaused(false);
+            setGameStatus(GameStatus.ActiveTurn);
+          }} 
+          title={t.paused}
+        >
           <div className="p-4 text-center space-y-3 font-ui" dir={isRTL ? 'rtl' : 'ltr'}>
             <p className="text-xs font-bold text-slate-600">
               {isRTL ? 'بازی موقتاً متوقف شده است.' : 'Game is temporarily paused.'}
@@ -1093,6 +1108,7 @@ const GameplayScreen: React.FC<Props> = ({
                 type="button"
                 onClick={() => {
                   sound.playClick();
+                  setIsUserPaused(false);
                   setGameStatus(GameStatus.ActiveTurn);
                 }}
                 className="pixel-btn pixel-btn-lime flex-1 py-2.5 text-xs font-black uppercase"

@@ -744,7 +744,7 @@ export const UserProfileModal: React.FC<Props> = ({
                         {isRTL ? 'دانلود مستقیم فایل AAB (مخصوص گوگل پلی)' : 'Download Google Play AAB (.aab)'}
                       </h4>
                       <span className="text-xs text-[var(--mute)] font-medium">
-                        {isRTL ? 'فرمت Android App Bundle (.aab) • حجم ۲.۲ مگابایت • نسخه ۱.۰.۴' : 'Format: Android App Bundle (.aab) • Size: 2.2 MB • v1.0.4'}
+                        {isRTL ? 'فرمت Android App Bundle (.aab) • حجم ۱.۳ مگابایت • نسخه ۱.۱.۰' : 'Format: Android App Bundle (.aab) • Size: 1.3 MB • v1.1.0'}
                       </span>
                     </div>
                   </div>
@@ -755,17 +755,17 @@ export const UserProfileModal: React.FC<Props> = ({
 
                 <div className="text-xs text-[var(--mute)] space-y-0.5 font-mono bg-[var(--panel)] p-2.5 rounded-[14px] border border-[var(--line)]">
                   <div><strong>Package:</strong> <code className="text-[var(--lapis)]">com.solonovate.dour</code></div>
-                  <div><strong>Version:</strong> 1.0.4 (VersionCode: 10004) • Target SDK: 36</div>
+                  <div><strong>Version:</strong> 1.1.0 (VersionCode: 10010) • Target SDK: 36</div>
                 </div>
 
                 <button
                   type="button"
-                  disabled={downloadingFile === 'dor-zaban-v1.0.aab'}
+                  disabled={downloadingFile === 'dor-zaban-google-play.aab'}
                   onClick={async () => {
                     sound.playClick();
-                    setDownloadingFile('dor-zaban-v1.0.aab');
+                    setDownloadingFile('dor-zaban-google-play.aab');
                     setDownloadMsg(isRTL ? 'در حال دریافت بسته باندل گوگل‌پلی...' : 'Downloading AAB...');
-                    const res = await downloadFileWithBlob('./downloads/dor-zaban-v1.0.aab', 'dor-zaban-v1.0.aab', (s, msg) => {
+                    const res = await downloadFileWithBlob('./downloads/dor-zaban-google-play.aab', 'dor-zaban-google-play.aab', (s, msg) => {
                       if (msg) setDownloadMsg(msg);
                     });
                     setDownloadingFile(null);
@@ -773,7 +773,7 @@ export const UserProfileModal: React.FC<Props> = ({
                   }}
                   className="w-full h-11 bg-[var(--lapis)] hover:bg-[#1a38a0] text-white rounded-full font-bold text-xs flex items-center justify-center gap-2 shadow-xs active:scale-98 transition-all cursor-pointer disabled:opacity-75"
                 >
-                  {downloadingFile === 'dor-zaban-v1.0.aab' ? (
+                  {downloadingFile === 'dor-zaban-google-play.aab' ? (
                     <>
                       <Loader2 size={16} className="animate-spin" />
                       <span>{isRTL ? 'در حال دریافت فایل AAB...' : 'Downloading AAB...'}</span>
@@ -781,7 +781,7 @@ export const UserProfileModal: React.FC<Props> = ({
                   ) : (
                     <>
                       <Download size={16} strokeWidth={2} />
-                      <span>{isRTL ? 'دانلود بسته رسمی AAB اندروید (۲.۲ مگابایت)' : 'Download Official Android AAB (2.2 MB)'}</span>
+                      <span>{isRTL ? 'دانلود بسته رسمی AAB اندروید (۱.۳ مگابایت)' : 'Download Official Android AAB (1.3 MB)'}</span>
                     </>
                   )}
                 </button>
@@ -799,7 +799,7 @@ export const UserProfileModal: React.FC<Props> = ({
                         {isRTL ? 'دانلود مستقیم فایل APK اندروید' : 'Direct Android APK Installer'}
                       </h4>
                       <span className="text-xs text-[var(--mute)] font-medium">
-                        {isRTL ? 'نصب مستقیم روی گوشی • حجم ۵.۸ مگابایت • نسخه ۱.۰.۴' : 'Direct Install on Android • 5.8 MB • v1.0.4'}
+                        {isRTL ? 'نصب مستقیم روی گوشی • حجم ۱.۳ مگابایت • نسخه ۱.۱.۰' : 'Direct Install on Android • 1.3 MB • v1.1.0'}
                       </span>
                     </div>
                   </div>

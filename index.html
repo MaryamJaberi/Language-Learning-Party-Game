@@ -4,6 +4,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
+    <script>
+      // AI Studio Preview: HMR is disabled in this environment.
+      // Suppress and gracefully handle Vite's HMR WebSocket reconnection errors.
+      window.addEventListener('unhandledrejection', function(event) {
+        if (event && event.reason && (
+          (event.reason.message && event.reason.message.includes('WebSocket')) ||
+          (event.reason.stack && event.reason.stack.includes('@vite/client'))
+        )) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+        }
+      });
+      window.addEventListener('error', function(event) {
+        if (event && (
+          (event.message && event.message.includes('WebSocket')) ||
+          (event.filename && event.filename.includes('@vite/client'))
+        )) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+        }
+      });
+
+      if (typeof window !== 'undefined' && window.WebSocket) {
+        var OriginalWebSocket = window.WebSocket;
+        var DummyWebSocket = function(url, protocols) {
+          if (protocols === 'vite-hmr' || (typeof url === 'string' && url.includes('token='))) {
+            var dummy = new EventTarget();
+            dummy.readyState = 1;
+            dummy.OPEN = 1;
+            dummy.CLOSED = 3;
+            dummy.send = function() {};
+            dummy.close = function() {};
+            dummy.addEventListener = EventTarget.prototype.addEventListener.bind(dummy);
+            dummy.removeEventListener = EventTarget.prototype.removeEventListener.bind(dummy);
+            dummy.dispatchEvent = EventTarget.prototype.dispatchEvent.bind(dummy);
+            setTimeout(function() {
+              dummy.dispatchEvent(new Event('open'));
+            }, 10);
+            return dummy;
+          }
+          return new OriginalWebSocket(url, protocols);
+        };
+        DummyWebSocket.prototype = OriginalWebSocket.prototype;
+        DummyWebSocket.CONNECTING = 0;
+        DummyWebSocket.OPEN = 1;
+        DummyWebSocket.CLOSING = 2;
+        DummyWebSocket.CLOSED = 3;
+        window.WebSocket = DummyWebSocket;
+      }
+    </script>
     <title>Dour: Language Party Game - Learn Languages Together</title>
     <meta name="description" content="Multiplayer party game for learning languages with 4, 6, or 8 players passing one phone hand-to-hand.">
     <meta property="og:title" content="Dour: Language Party Game">
