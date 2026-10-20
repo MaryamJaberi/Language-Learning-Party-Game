@@ -11,6 +11,15 @@ import { TeamColor, Player, Team } from '../types';
 describe('Comprehensive Usability, Quality, and End-to-End Audit', () => {
   beforeEach(() => {
     localStorage.clear();
+    localStorage.setItem('dor_settings', JSON.stringify({
+      language: 'fa',
+      nativeLanguage: 'fa',
+      targetLanguages: ['nl'],
+      playerCount: 4,
+      roundsCount: 3,
+      roundDuration: 60,
+      cardGameMode: 'mixed'
+    }));
     vi.clearAllMocks();
   });
 

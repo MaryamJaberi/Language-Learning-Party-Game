@@ -68,11 +68,11 @@ export const LeitnerScreen: React.FC<Props> = ({
     return generateChallengingReflexOptions(currentDueItem.item.card, pool, leitnerState.targetLanguage);
   }, [currentDueItem?.item?.cardId, leitnerState.targetLanguage, leitnerState.cards]);
 
-  // Compartment card counts
+  // Compartment card counts (3 Boxes: 1 day, 3 days, 7 days)
   const boxCounts = useMemo(() => {
-    const counts = [0, 0, 0, 0, 0];
+    const counts = [0, 0, 0];
     leitnerState.cards.forEach(c => {
-      const idx = Math.min(Math.max(0, c.boxIndex), 4);
+      const idx = Math.min(Math.max(0, c.boxIndex), 2);
       counts[idx] += 1;
     });
     return counts;
@@ -187,10 +187,10 @@ export const LeitnerScreen: React.FC<Props> = ({
               </div>
               <div>
                 <h1 className="text-sm font-black text-[var(--ink)] leading-none">
-                  {isRTL ? 'جعبه لایتنر ۵ خانه' : '5-Box Leitner Spaced Repetition'}
+                  {isRTL ? 'جعبه لایتنر ۳ خانه' : '3-Box Leitner Spaced Repetition'}
                 </h1>
                 <span className="text-[10px] font-bold text-[var(--mute)]">
-                  {isRTL ? 'مرور هوشمند و ملکه شدن در حافظه' : 'Smart spaced memory review'}
+                  {isRTL ? 'مرور هوشمند و ملکه شدن در حافظه' : 'Smart spaced memory review (1, 3, 7 days)'}
                 </span>
               </div>
             </div>
@@ -238,12 +238,12 @@ export const LeitnerScreen: React.FC<Props> = ({
           </div>
         )}
 
-        {/* 5-Boxes Visual Grid */}
+        {/* 3-Boxes Visual Grid */}
         <div className="bg-[var(--panel)] p-3 rounded-2xl border border-[var(--line)] shadow-xs space-y-2">
           <div className="flex items-center justify-between text-xs font-black">
             <span className="flex items-center gap-1 text-[var(--ink)]">
               <Layers size={14} className="text-[var(--lapis)]" />
-              <span>{isRTL ? 'وضعیت ۵ خانه لایتنر:' : 'Leitner Compartments:'}</span>
+              <span>{isRTL ? 'وضعیت ۳ خانه لایتنر:' : 'Leitner 3-Box Compartments:'}</span>
             </span>
             <span className="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
               <Trophy size={13} />
@@ -251,26 +251,26 @@ export const LeitnerScreen: React.FC<Props> = ({
             </span>
           </div>
 
-          <div className="grid grid-cols-5 gap-1.5 text-center">
+          <div className="grid grid-cols-3 gap-2 text-center">
             {LEITNER_INTERVALS.map((interval, idx) => {
-              const count = boxCounts[idx];
-              const isMasterBox = idx === 4;
+              const count = boxCounts[idx] || 0;
+              const isMasterBox = idx === 2;
               return (
                 <div 
                   key={`box-${idx}`}
-                  className={`p-2 rounded-xl border flex flex-col items-center justify-between transition-all ${
+                  className={`p-2.5 rounded-xl border flex flex-col items-center justify-between transition-all ${
                     isMasterBox 
                       ? 'bg-amber-500/10 border-amber-500/30' 
                       : 'bg-[var(--bg)] border-[var(--line)]'
                   }`}
                 >
                   <span className="text-[10px] font-bold text-[var(--mute)]">
-                    {idx === 0 ? (isRTL ? '۱ روزه' : '1 Day') : `${interval} ${isRTL ? 'روزه' : 'd'}`}
+                    {interval} {isRTL ? 'روزه' : 'day'}
                   </span>
                   <span className={`text-base font-black my-0.5 ${isMasterBox ? 'text-amber-500' : 'text-[var(--ink)]'}`}>
                     {count}
                   </span>
-                  <span className="text-[9px] font-bold text-[var(--mute)]">
+                  <span className="text-[10px] font-bold text-[var(--mute)]">
                     {isRTL ? `خانه ${idx + 1}` : `Box ${idx + 1}`}
                   </span>
                 </div>

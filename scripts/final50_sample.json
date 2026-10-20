@@ -1,0 +1,502 @@
+[
+  {
+    "index": 1,
+    "id": "A1_35_de",
+    "targetLang": "de",
+    "level": "A1",
+    "type": "Situation",
+    "topic": "RESTAURANT",
+    "targetText": "Ich hätte gerne einen Kaffee",
+    "translation": "یک قهوه می‌خوام لطفاً"
+  },
+  {
+    "index": 2,
+    "id": "A1_35_pl",
+    "targetLang": "pl",
+    "level": "A1",
+    "type": "Situation",
+    "topic": "RESTAURANT",
+    "targetText": "Poproszę kawę",
+    "translation": "یک قهوه می‌خوام لطفاً"
+  },
+  {
+    "index": 3,
+    "id": "A1_35_ko",
+    "targetLang": "ko",
+    "level": "A1",
+    "type": "Situation",
+    "topic": "RESTAURANT",
+    "targetText": "커피 한 잔 주세요",
+    "translation": "یک قهوه می‌خوام لطفاً"
+  },
+  {
+    "index": 4,
+    "id": "A1_35_hi",
+    "targetLang": "hi",
+    "level": "A1",
+    "type": "Situation",
+    "topic": "RESTAURANT",
+    "targetText": "मुझे एक कॉफी चाहिए",
+    "translation": "یک قهوه می‌خوام لطفاً"
+  },
+  {
+    "index": 5,
+    "id": "EN_A2_HOTEL_01",
+    "targetLang": "en",
+    "level": "A2",
+    "type": "Situation",
+    "topic": "TRAVEL",
+    "targetText": "Hello, I have a reservation under the name Smith.",
+    "translation": "سلام، من یک رزرو به نام اسمیت دارم."
+  },
+  {
+    "index": 6,
+    "id": "A2_812_ja",
+    "targetLang": "ja",
+    "level": "A2",
+    "type": "Question",
+    "topic": "SOCIAL",
+    "targetText": "スマートカジュアルですか？",
+    "translation": "اسمارت‌کژوال هست؟"
+  },
+  {
+    "index": 7,
+    "id": "A1_203_ja",
+    "targetLang": "ja",
+    "level": "A1",
+    "type": "Phrase",
+    "topic": "RESTAURANT",
+    "targetText": "お会計をお願いします",
+    "translation": "حساب لطفاً"
+  },
+  {
+    "index": 8,
+    "id": "A1_420_ja",
+    "targetLang": "ja",
+    "level": "A1",
+    "type": "Vocabulary",
+    "topic": "EVERYDAY",
+    "targetText": "今",
+    "translation": "الان"
+  },
+  {
+    "index": 9,
+    "id": "B1_104_ko",
+    "targetLang": "ko",
+    "level": "B1",
+    "type": "Sentence",
+    "topic": "EVERYDAY",
+    "targetText": "막 학위를 땄어요",
+    "translation": "تازه مدرکش رو گرفته"
+  },
+  {
+    "index": 10,
+    "id": "A1_153_ko",
+    "targetLang": "ko",
+    "level": "A1",
+    "type": "Vocabulary",
+    "topic": "FAMILY",
+    "targetText": "문",
+    "translation": "در"
+  },
+  {
+    "index": 11,
+    "id": "A2_13_ko",
+    "targetLang": "ko",
+    "level": "A2",
+    "type": "Question",
+    "topic": "EVERYDAY",
+    "targetText": "파티에 올 거예요?",
+    "translation": "میای مهمونی؟"
+  },
+  {
+    "index": 12,
+    "id": "A2_466_zh",
+    "targetLang": "zh",
+    "level": "A2",
+    "type": "Question",
+    "topic": "EVERYDAY",
+    "targetText": "这个怎么拼？",
+    "translation": "این چطور نوشته می‌شه؟"
+  },
+  {
+    "index": 13,
+    "id": "A2_815_zh",
+    "targetLang": "zh",
+    "level": "A2",
+    "type": "Question",
+    "topic": "SOCIAL",
+    "targetText": "这样会不会太过？",
+    "translation": "این زیادی نیست؟"
+  },
+  {
+    "index": 14,
+    "id": "A2_438_zh",
+    "targetLang": "zh",
+    "level": "A2",
+    "type": "Question",
+    "topic": "EVERYDAY",
+    "targetText": "最近的取款机在哪里？",
+    "translation": "نزدیک‌ترین عابر بانک کجاست؟"
+  },
+  {
+    "index": 15,
+    "id": "A2_711_hi",
+    "targetLang": "hi",
+    "level": "A2",
+    "type": "Phrase",
+    "topic": "TRAVEL",
+    "targetText": "इसे कमरे के बिल में डाल दो",
+    "translation": "اینو بندازین رو حساب اتاق"
+  },
+  {
+    "index": 16,
+    "id": "B1_901_hi",
+    "targetLang": "hi",
+    "level": "B1",
+    "type": "Sentence",
+    "topic": "EVERYDAY",
+    "targetText": "एम्बुलेंस बुलानी है",
+    "translation": "باید آمبولانس خبر کنم"
+  },
+  {
+    "index": 17,
+    "id": "B1_207_hi",
+    "targetLang": "hi",
+    "level": "B1",
+    "type": "Sentence",
+    "topic": "EVERYDAY",
+    "targetText": "प्रदर्शनी महीने के अंत तक चलेगी",
+    "translation": "نمایشگاه تا آخر ماهه"
+  },
+  {
+    "index": 18,
+    "id": "C1_SENT_4_13_en",
+    "targetLang": "en",
+    "level": "C1",
+    "type": "Sentence",
+    "topic": "WORK",
+    "targetText": "One would be hard-pressed to argue that the dwindling room for compromise is merely incidental.",
+    "translation": "به‌سختی بتوان ادعا کرد که کاهش فضای سازش و مصالحه صرفاً امری اتفاقی و کم‌اهمیت است."
+  },
+  {
+    "index": 19,
+    "id": "B1_120_de",
+    "targetLang": "de",
+    "level": "B1",
+    "type": "Sentence",
+    "topic": "EVERYDAY",
+    "targetText": "Das Problem wird gerade bearbeitet",
+    "translation": "دارن مشکل رو رسیدگی می‌کنن"
+  },
+  {
+    "index": 20,
+    "id": "B1_882_pl",
+    "targetLang": "pl",
+    "level": "B1",
+    "type": "Phrase",
+    "topic": "EVERYDAY",
+    "targetText": "Żeby długo nie mówić",
+    "translation": "خلاصه کنم"
+  },
+  {
+    "index": 21,
+    "id": "A2_109_uk",
+    "targetLang": "uk",
+    "level": "A2",
+    "type": "Phrase",
+    "topic": "EVERYDAY",
+    "targetText": "Я розумію, що ти маєш на увазі",
+    "translation": "می‌فهمم چی می‌گی"
+  },
+  {
+    "index": 22,
+    "id": "B1_985_nl",
+    "targetLang": "nl",
+    "level": "B1",
+    "type": "Phrase",
+    "topic": "EVERYDAY",
+    "targetText": "Ik hang een briefje op de deur",
+    "translation": "یه یادداشت می‌ذارم رو در"
+  },
+  {
+    "index": 23,
+    "id": "A2_971_nl",
+    "targetLang": "nl",
+    "level": "A2",
+    "type": "Phrase",
+    "topic": "EVERYDAY",
+    "targetText": "Kijk hoe ver je al bent",
+    "translation": "ببین تا کجا اومدی"
+  },
+  {
+    "index": 24,
+    "id": "A2_311_it",
+    "targetLang": "it",
+    "level": "A2",
+    "type": "Sentence",
+    "topic": "EVERYDAY",
+    "targetText": "Prima vivevo lì",
+    "translation": "قبلاً اونجا زندگی می‌کردم"
+  },
+  {
+    "index": 25,
+    "id": "A2_815_it",
+    "targetLang": "it",
+    "level": "A2",
+    "type": "Question",
+    "topic": "SOCIAL",
+    "targetText": "È troppo?",
+    "translation": "این زیادی نیست؟"
+  },
+  {
+    "index": 26,
+    "id": "C1_SENT_6_12_es",
+    "targetLang": "es",
+    "level": "C1",
+    "type": "Sentence",
+    "topic": "WORK",
+    "targetText": "Lejos de resolver la cuestión, un clima de cautela institucional no ha hecho sino agravarla.",
+    "translation": "نه تنها مسئله را حل نکرده، بلکه فضای احتیاط سازمانی چه بسا اوضاع را پیچیده‌تر و وخیم‌تر ساخته است."
+  },
+  {
+    "index": 27,
+    "id": "A2_203_uk",
+    "targetLang": "uk",
+    "level": "A2",
+    "type": "Phrase",
+    "topic": "TRAVEL",
+    "targetText": "Я хотів би квиток в один бік до Лондона",
+    "translation": "یه بلیت یک‌طرفه به لندن می‌خوام"
+  },
+  {
+    "index": 28,
+    "id": "A1_249_ja",
+    "targetLang": "ja",
+    "level": "A1",
+    "type": "Vocabulary",
+    "topic": "FOOD",
+    "targetText": "サンドイッチ",
+    "translation": "ساندویچ"
+  },
+  {
+    "index": 29,
+    "id": "A1_21_de",
+    "targetLang": "de",
+    "level": "A1",
+    "type": "Vocabulary",
+    "topic": "FAMILY",
+    "targetText": "Schlafzimmer",
+    "translation": "اتاق خواب"
+  },
+  {
+    "index": 30,
+    "id": "A2_682_es",
+    "targetLang": "es",
+    "level": "A2",
+    "type": "Phrase",
+    "topic": "EVERYDAY",
+    "targetText": "Todavía estoy indeciso",
+    "translation": "هنوز دو دلم"
+  },
+  {
+    "index": 31,
+    "id": "B1_272_hi",
+    "targetLang": "hi",
+    "level": "B1",
+    "type": "Question",
+    "topic": "EVERYDAY",
+    "targetText": "पास में कोई फार्मेसी अभी खुली है?",
+    "translation": "نزدیک اینجا داروخانه باز هست؟"
+  },
+  {
+    "index": 32,
+    "id": "A1_327_pl",
+    "targetLang": "pl",
+    "level": "A1",
+    "type": "Vocabulary",
+    "topic": "NATURE",
+    "targetText": "słońce",
+    "translation": "خورشید"
+  },
+  {
+    "index": 33,
+    "id": "A1_7_es",
+    "targetLang": "es",
+    "level": "A1",
+    "type": "Vocabulary",
+    "topic": "SOCIAL",
+    "targetText": "Por favor",
+    "translation": "لطفاً"
+  },
+  {
+    "index": 34,
+    "id": "A2_555_en",
+    "targetLang": "en",
+    "level": "A2",
+    "type": "Sentence",
+    "topic": "TRAVEL",
+    "targetText": "I took the wrong bus",
+    "translation": "اتوبوس اشتباه سوار شدم"
+  },
+  {
+    "index": 35,
+    "id": "A1_351_ja",
+    "targetLang": "ja",
+    "level": "A1",
+    "type": "Vocabulary",
+    "topic": "FAMILY",
+    "targetText": "家",
+    "translation": "خانه"
+  },
+  {
+    "index": 36,
+    "id": "B1_875_it",
+    "targetLang": "it",
+    "level": "B1",
+    "type": "Phrase",
+    "topic": "EVERYDAY",
+    "targetText": "Non basta",
+    "translation": "این کافی نیست"
+  },
+  {
+    "index": 37,
+    "id": "A2_499_hi",
+    "targetLang": "hi",
+    "level": "A2",
+    "type": "Sentence",
+    "topic": "SMALLTALK",
+    "targetText": "कुल मिलाकर अच्छा दिन था",
+    "translation": "در کل روز خوبی بود"
+  },
+  {
+    "index": 38,
+    "id": "A2_591_nl",
+    "targetLang": "nl",
+    "level": "A2",
+    "type": "Phrase",
+    "topic": "EVERYDAY",
+    "targetText": "Stap voor stap",
+    "translation": "قدم‌به‌قدم"
+  },
+  {
+    "index": 39,
+    "id": "B1_685_ja",
+    "targetLang": "ja",
+    "level": "B1",
+    "type": "Phrase",
+    "topic": "WORK",
+    "targetText": "5時に上がります",
+    "translation": "ساعت پنج تموم می‌کنم"
+  },
+  {
+    "index": 40,
+    "id": "B1_526_hi",
+    "targetLang": "hi",
+    "level": "B1",
+    "type": "Phrase",
+    "topic": "SOCIAL",
+    "targetText": "पांच मिनट पहले मैसेज करूँगा",
+    "translation": "پنج دقیقه مونده پیام می‌دم"
+  },
+  {
+    "index": 41,
+    "id": "A2_264_zh",
+    "targetLang": "zh",
+    "level": "A2",
+    "type": "Phrase",
+    "topic": "SMALLTALK",
+    "targetText": "出了点事",
+    "translation": "یه کاری پیش اومد"
+  },
+  {
+    "index": 42,
+    "id": "A1_248_hi",
+    "targetLang": "hi",
+    "level": "A1",
+    "type": "Vocabulary",
+    "topic": "FOOD",
+    "targetText": "रात का खाना",
+    "translation": "شام"
+  },
+  {
+    "index": 43,
+    "id": "A2_211_en",
+    "targetLang": "en",
+    "level": "A2",
+    "type": "Phrase",
+    "topic": "WORK",
+    "targetText": "I'm looking for a job",
+    "translation": "دنبال کار می‌گردم"
+  },
+  {
+    "index": 44,
+    "id": "A2_427_nl",
+    "targetLang": "nl",
+    "level": "A2",
+    "type": "Question",
+    "topic": "HEALTH",
+    "targetText": "Hoe vaak moet ik dit innemen?",
+    "translation": "اینو چند بار باید بخورم؟"
+  },
+  {
+    "index": 45,
+    "id": "B1_929_zh",
+    "targetLang": "zh",
+    "level": "B1",
+    "type": "Sentence",
+    "topic": "EVERYDAY",
+    "targetText": "她说她会晚到",
+    "translation": "گفت دیر می‌رسه"
+  },
+  {
+    "index": 46,
+    "id": "B1_806_uk",
+    "targetLang": "uk",
+    "level": "B1",
+    "type": "Sentence",
+    "topic": "EVERYDAY",
+    "targetText": "Оренда — першого числа",
+    "translation": "اجاره اول ماهه"
+  },
+  {
+    "index": 47,
+    "id": "A2_630_ja",
+    "targetLang": "ja",
+    "level": "A2",
+    "type": "Phrase",
+    "topic": "HEALTH",
+    "targetText": "悪化したら電話してください",
+    "translation": "اگه بدتر شد زنگ بزن"
+  },
+  {
+    "index": 48,
+    "id": "B1_670_ja",
+    "targetLang": "ja",
+    "level": "B1",
+    "type": "Phrase",
+    "topic": "FOOD",
+    "targetText": "チップを置きます",
+    "translation": "انعام می‌ذارم"
+  },
+  {
+    "index": 49,
+    "id": "A1_448_pl",
+    "targetLang": "pl",
+    "level": "A1",
+    "type": "Sentence",
+    "topic": "EVERYDAY",
+    "targetText": "Nie mówię dobrze po niderlandzku",
+    "translation": "هلندی خوب بلد نیستم"
+  },
+  {
+    "index": 50,
+    "id": "A2_644_nl",
+    "targetLang": "nl",
+    "level": "A2",
+    "type": "Phrase",
+    "topic": "SOCIAL",
+    "targetText": "Deze keer doe ik niet mee",
+    "translation": "این دفعه منو حساب نکن"
+  }
+]

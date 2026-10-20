@@ -6,6 +6,8 @@
  * - Audio Transcription via gemini-3.5-transcribe
  */
 
+import { auth } from './firebase';
+
 export interface MapPlace {
   title: string;
   uri: string;
@@ -25,14 +27,31 @@ export interface ChatMessage {
   modelUsed?: string;
 }
 
+async function getAuthHeaders(): Promise<Record<string, string>> {
+  try {
+    const user = auth.currentUser;
+    if (user) {
+      const token = await user.getIdToken();
+      return { Authorization: `Bearer ${token}` };
+    }
+  } catch (err) {
+    console.warn('Could not retrieve Firebase auth token for API request:', err);
+  }
+  return {};
+}
+
 export async function searchVenuesWithMaps(
   location?: string,
   latLng?: { latitude: number; longitude: number },
   query?: string
 ): Promise<{ text: string; places: MapPlace[] }> {
+  const authHeaders = await getAuthHeaders();
   const res = await fetch('/api/meetups/search-venues', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      ...authHeaders
+    },
     body: JSON.stringify({ location, latLng, query }),
   });
 
@@ -52,9 +71,10 @@ export async function searchPhraseWithGoogle(
   language = 'fa',
   targetLanguage = 'en'
 ): Promise<{ text: string; sources: WebSource[] }> {
+  const authHeaders = await getAuthHeaders();
   const res = await fetch('/api/ai/search-phrase', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...authHeaders },
     body: JSON.stringify({ phrase, language, targetLanguage }),
   });
 
@@ -75,9 +95,10 @@ export async function chatWithGemini(
   learningLanguage = 'English',
   guideLanguage = 'Persian'
 ): Promise<{ text: string; model: string }> {
+  const authHeaders = await getAuthHeaders();
   const res = await fetch('/api/ai/chat', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...authHeaders },
     body: JSON.stringify({ messages, taskType, learningLanguage, guideLanguage }),
   });
 
@@ -106,9 +127,10 @@ export async function transcribeAudioBlob(
   const audioBase64 = btoa(binary);
   const mimeType = audioBlob.type || 'audio/webm';
 
+  const authHeaders = await getAuthHeaders();
   const res = await fetch('/api/ai/transcribe', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...authHeaders },
     body: JSON.stringify({ audioBase64, mimeType, targetLanguage }),
   });
 

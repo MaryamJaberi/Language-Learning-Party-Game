@@ -5,6 +5,7 @@ import { tUI, isRtlLang } from '../ui';
 import { TeamMascot } from '../components/Mascots';
 import { sound } from '../soundManager';
 import { markCardsAsSeen, saveWeakCards } from '../contentEngine';
+import { enrollMissedCardsInLeitner } from '../leitnerBoxService';
 import { 
   Trophy, 
   Crown, 
@@ -31,6 +32,7 @@ interface Props {
   onRestart: () => void;
   language: Language;
   isPoolExhausted?: boolean;
+  onOpenLeitner?: () => void;
 }
 
 const EndGameScreen: React.FC<Props> = ({ 
@@ -39,7 +41,8 @@ const EndGameScreen: React.FC<Props> = ({
   playedCards = [], 
   onRestart, 
   language, 
-  isPoolExhausted 
+  isPoolExhausted,
+  onOpenLeitner
 }) => {
   const t = tUI(language);
   const isRTL = isRtlLang(language);
@@ -60,6 +63,7 @@ const EndGameScreen: React.FC<Props> = ({
       const missed = playedCards.filter(p => !p.guessedCorrectly).map(p => p.card);
       if (missed.length > 0) {
         saveWeakCards(missed).catch(console.error);
+        enrollMissedCardsInLeitner(missed);
       }
       const learned = playedCards.filter(p => p.guessedCorrectly).map(p => p.card.id);
       try {
@@ -323,6 +327,25 @@ const EndGameScreen: React.FC<Props> = ({
         {/* TAB 3: REVIEW ALL PLAYED CARDS */}
         {activeTab === 'cards' && (
           <div className="space-y-2 text-start font-ui">
+            {/* Practice Missed Cards in Leitner CTA if any missed */}
+            {missedCards.length > 0 && (
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playClick();
+                  if (onOpenLeitner) onOpenLeitner();
+                }}
+                className="w-full py-2.5 px-3 rounded-xl bg-[var(--saffron)] text-[var(--ink)] font-black text-xs shadow-xs hover:brightness-105 active:scale-98 transition-all flex items-center justify-center gap-2 mb-2 cursor-pointer"
+              >
+                <Flame size={15} />
+                <span>
+                  {isRTL 
+                    ? `مرور ${missedCards.length} کلمه اشتباه در جعبه لایتنر 📥` 
+                    : `Practice ${missedCards.length} Missed Words in Leitner Box 📥`}
+                </span>
+              </button>
+            )}
+
             {playedCards.length === 0 ? (
               <div className="bg-[var(--panel)] p-4 rounded-2xl border border-[var(--line)] text-center text-xs font-bold text-[var(--mute)]">
                 {isRTL ? 'هنوز کارتی در این مسابقه بازی نشده است.' : 'No cards played yet in this match.'}
@@ -330,56 +353,64 @@ const EndGameScreen: React.FC<Props> = ({
             ) : (
               playedCards.map((record, index) => {
                 const isExpanded = expandedCardId === record.card.id || expandedCardId === String(index);
+                const teamColor = record.answeringTeamColor || TeamColor.Blue;
+                const teamMeta = COLORS_MAP[teamColor];
 
                 return (
                   <div 
                     key={index} 
-                    className="bg-[var(--panel)] p-2.5 rounded-xl border border-[var(--line)] shadow-xs"
+                    className={`bg-[var(--panel)] p-2.5 rounded-xl border-2 transition-all shadow-xs ${
+                      !record.guessedCorrectly 
+                        ? 'border-rose-500/60 bg-rose-500/5' 
+                        : 'border-[var(--line)]'
+                    }`}
                   >
                     <div 
-                      className="flex items-center justify-between cursor-pointer"
+                      className="flex items-center justify-between cursor-pointer gap-2"
                       onClick={() => setExpandedCardId(isExpanded ? null : String(index))}
                     >
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
                         {record.guessedCorrectly ? (
                           <CheckCircle2 size={18} className="text-[var(--turq)] shrink-0" />
                         ) : (
                           <XCircle size={18} className="text-red-500 shrink-0" />
                         )}
-                        <div>
-                          <div className="flex items-center gap-1.5">
-                            <FlagIcon language={record.card.targetLanguage} size={15} />
-                            <span className="font-bold text-xs text-[var(--ink)]">{record.card.targetText}</span>
-                            <button
-                              type="button"
-                              title={isRTL ? "تلفظ زبان هدف" : "Target language audio"}
-                              onClick={(e) => {
-                                 e.stopPropagation();
-                                 sound.speak(record.card.targetText, record.card.targetLanguage, { force: true });
-                              }}
-                              className="p-1 rounded-full bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] cursor-pointer"
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            {/* Answering Team Tag */}
+                            <span 
+                              className="px-1.5 py-0.5 rounded text-[8.5px] font-black text-white shrink-0 shadow-2xs leading-none"
+                              style={{ backgroundColor: teamMeta?.hex || '#2347C5' }}
                             >
-                              <Volume2 size={12} />
-                            </button>
+                              {teamMeta?.name || teamColor}
+                            </span>
+                            <FlagIcon language={record.card.targetLanguage} size={14} />
+                            {sound.hasVoice(record.card.targetLanguage) && (
+                              <button
+                                type="button"
+                                title={isRTL ? "پخش صوتی تلفظ" : "Target language audio"}
+                                onClick={(e) => {
+                                   e.stopPropagation();
+                                   sound.speak(record.card.targetText, record.card.targetLanguage, { force: true });
+                                }}
+                                className="p-1 rounded-full bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] cursor-pointer hover:scale-105 active:scale-95 transition-all shrink-0"
+                              >
+                                <Volume2 size={12} />
+                              </button>
+                            )}
+                            {!record.guessedCorrectly && (
+                              <span className="px-1.5 py-0.2 rounded text-[8.5px] font-bold bg-rose-500/20 text-rose-600 dark:text-rose-400 shrink-0">
+                                {isRTL ? 'رد شده' : 'Missed'}
+                              </span>
+                            )}
                           </div>
-                          <div className="flex items-center gap-1">
-                            <span className="text-[10px] text-[var(--mute)] font-medium">{record.card.translation}</span>
-                            <button
-                              type="button"
-                              title={isRTL ? "تلفظ زبان من" : "My language audio"}
-                              onClick={(e) => {
-                                 e.stopPropagation();
-                                 sound.speak(record.card.translation, record.card.nativeLanguage || language, { force: true });
-                              }}
-                              className="p-0.5 rounded-full text-[var(--mute)] cursor-pointer"
-                            >
-                              <Volume2 size={11} />
-                            </button>
+                          <div className="flex items-center gap-1 mt-0.5">
+                            <span className="text-[10.5px] text-[var(--mute)] font-medium truncate">{record.card.translation}</span>
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1.5 shrink-0">
                         <span className="text-[9.5px] bg-[var(--lapis-soft)] text-[var(--lapis)] px-1.5 py-0.5 rounded-md font-bold">
                           {record.card.cefrLevel}
                         </span>
@@ -387,24 +418,24 @@ const EndGameScreen: React.FC<Props> = ({
                       </div>
                     </div>
 
-                    {/* Expanded details (Grammar & Pronunciation) */}
+                    {/* Expanded details (Grammar & Example Sentence without fake phonetics) */}
                     {isExpanded && (
                       <div className="mt-2 pt-2 border-t border-[var(--line)] text-[10.5px] space-y-1 bg-[var(--bg)] p-2 rounded-lg">
                         {record.card.grammarPoint && (
                           <div>
-                            <span className="font-bold text-[var(--saffron)]">{isRTL ? 'نکته گرامری / الگو: ' : 'Grammar Note / Pattern: '}</span>
+                            <span className="font-bold text-[var(--saffron)]">{isRTL ? 'الگو / نکته: ' : 'Grammar Note / Pattern: '}</span>
                             <span className="text-[var(--ink)]">{record.card.grammarPoint}</span>
                           </div>
                         )}
-                        {record.card.pronunciation && (
+                        {record.card.prompt && record.card.contentType === 'Vocabulary' && (
                           <div>
-                            <span className="font-bold text-[var(--turq)]">{isRTL ? 'راهنمای تلفظ: ' : 'Pronunciation Guide: '}</span>
-                            <span className="text-[var(--ink)] font-mono">{record.card.pronunciation}</span>
+                            <span className="font-bold text-[var(--turq)]">{isRTL ? 'جمله نمونه: ' : 'Example Sentence: '}</span>
+                            <span className="text-[var(--ink)]">{record.card.prompt}</span>
                           </div>
                         )}
                         <div>
                           <span className="font-bold text-[var(--mute)]">{isRTL ? 'پاسخ‌دهنده: ' : 'Answered By: '}</span>
-                          <span className="text-[var(--ink)] font-bold">{record.answeringPlayerName}</span>
+                          <span className="text-[var(--ink)] font-bold">{record.answeringPlayerName} ({teamMeta?.name || teamColor})</span>
                         </div>
                       </div>
                     )}

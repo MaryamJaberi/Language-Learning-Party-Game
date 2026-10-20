@@ -71,7 +71,7 @@ export const CURATED_LANGUAGE_CARDS: LanguageCard[] = [
     hint: 'در آمریکا به مترو Subway می‌گویند',
     grammarPoint: 'Superlative: nearest subway station',
     pronunciation: 'وِر ایز دِ نیرِست ساب‌وی استِیشِن؟',
-    difficulty: 'easy',
+    difficulty: 'hard',
     points: 1
   },
   {
@@ -1273,28 +1273,41 @@ export function generateSyntheticCardsForLanguage(
     ? (targetInfo?.name || targetLanguage)
     : (targetInfo?.nativeName || targetLanguage);
 
-  return WORD_BANK.map((w, index) => {
+  const cards: LanguageCard[] = [];
+
+  WORD_BANK.forEach((w, index) => {
     const conceptFallback = UNIVERSAL_CONCEPTS[index % UNIVERSAL_CONCEPTS.length];
-    const targetWord = w.words[targetLanguage] 
-      || (targetLanguage === 'en-US' ? w.words['en'] : undefined) 
-      || conceptFallback?.words[targetLanguage]
-      || w.words['en'] 
-      || 'Word';
+    
+    // Authentically retrieve target word: never leak English words to non-English targets!
+    let targetWord = w.words[targetLanguage];
+    if (!targetWord && (targetLanguage === 'en-US' || targetLanguage === 'en')) {
+      targetWord = w.words['en'];
+    }
+    if (!targetWord && conceptFallback?.words?.[targetLanguage]) {
+      targetWord = conceptFallback.words[targetLanguage];
+    }
+    // If targetWord is missing, do not leak an English word to a Spanish/Russian/etc. card
+    if (!targetWord || targetWord === 'Word') {
+      return;
+    }
+
     const nativeTranslation = w.words[nativeLanguage] 
       || (nativeLanguage === 'en-US' ? w.words['en'] : undefined)
-      || conceptFallback?.words[nativeLanguage] 
-      || (isEnNative ? (w.words['en'] || targetWord) : (w.words['fa'] || targetWord));
+      || conceptFallback?.words?.[nativeLanguage] 
+      || (isEnNative ? w.words['en'] : w.words['fa']);
     
-    // Map Word difficulty to CEFR level across A1, A2, B1, and B2
+    if (!nativeTranslation) return;
+
+    // Map Word difficulty to CEFR level: easy -> A1/A2, medium -> A2/B1, hard -> B1
     const cefr: 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2' = 
       w.difficulty === 'easy' ? (index % 2 === 0 ? 'A1' : 'A2') :
       w.difficulty === 'medium' ? (index % 2 === 0 ? 'A2' : 'B1') :
-      (index % 2 === 0 ? 'B1' : 'B2');
+      'B1';
     
     const isGold = index % 12 === 0;
     const learningMode: LearningMode = w.difficulty === 'easy' ? 'Explain' : w.difficulty === 'medium' ? 'Translate' : 'Speak';
 
-    return {
+    cards.push({
       id: `SYN_${targetLanguage.toUpperCase()}_${w.category}_${index}`,
       nativeLanguage,
       targetLanguage,
@@ -1312,8 +1325,10 @@ export function generateSyntheticCardsForLanguage(
       difficulty: w.difficulty,
       points: w.difficulty === 'easy' ? 1 : w.difficulty === 'medium' ? 2 : 3,
       isGolden: isGold
-    };
+    });
   });
+
+  return cards;
 }
 
 /**
@@ -1502,16 +1517,64 @@ export function buildSessionCardPool(
     };
   });
 
+  // Helper for case- and diacritic-insensitive normalization
+  const normalizeForCognate = (str: string): string => {
+    return str
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]/gi, '')
+      .trim();
+  };
+
   // 6. Strict Data Integrity & Pedagogical Sanitization:
   // - Enforce strict CEFR level (when cefrLevel !== 'all', absolutely NO level leaks!)
   // - Eliminate any incomplete, blank, or undefined targetText / translation
-  // - Ensure targetText !== translation so cards never repeat the same language
+  // - Filter out standalone conjunctions (such as isolated "and")
+  // - Intelligent Cognates Filter (User approved):
+  //   * Kept in A1 as an easy first win for beginner motivation
+  //   * Filtered out in A2, B1, B2, C1 if targetText and translation are identical (case and diacritic-insensitive, e.g. hotel <-> hôtel)
+  //   * Compared only against nativeLanguage translation
   let sanitizedPool = transformedPool.filter(card => {
     if (!card) return false;
     if (cefrLevel !== 'all' && card.cefrLevel !== cefrLevel) return false;
     const tt = typeof card.targetText === 'string' ? card.targetText.trim() : '';
     const tr = typeof card.translation === 'string' ? card.translation.trim() : '';
     if (!tt || tt === 'undefined' || !tr || tr === 'undefined') return false;
+
+    // Filter isolated conjunction "and"
+    if (tt.toLowerCase() === 'and' || tt.toLowerCase() === '&') return false;
+
+    // Smart Cognates Filter:
+    // - In A2, B1, B2, C1: strictly 0% (drop all identical cognates)
+    // - In A1: maximum 5% ceiling of the pool can be identical cognates (pizza <-> pizza)
+    const normTarget = normalizeForCognate(tt);
+    const normTrans = normalizeForCognate(tr);
+    const isIdenticalCognate = normTarget.length >= 2 && normTrans.length >= 2 && normTarget === normTrans;
+
+    if (isIdenticalCognate) {
+      if (card.cefrLevel !== 'A1') {
+        return false;
+      }
+    }
+
+    return true;
+  });
+
+  // Enforce 5% maximum ceiling for cognates in A1
+  let a1CognateCount = 0;
+  const maxA1Cognates = Math.max(1, Math.floor(sanitizedPool.length * 0.05));
+  sanitizedPool = sanitizedPool.filter(card => {
+    if (card.cefrLevel === 'A1') {
+      const normTarget = normalizeForCognate(card.targetText || '');
+      const normTrans = normalizeForCognate(card.translation || '');
+      if (normTarget.length >= 2 && normTrans.length >= 2 && normTarget === normTrans) {
+        a1CognateCount++;
+        if (a1CognateCount > maxA1Cognates) {
+          return false; // drop excess cognates beyond 5%
+        }
+      }
+    }
     return true;
   });
 
@@ -1581,23 +1644,18 @@ export function buildSessionCardPool(
 export function tagPedagogicalRatio(cards: LanguageCard[], targetLevel: CEFRLevel = 'A1'): LanguageCard[] {
   if (!cards || cards.length === 0) return cards;
 
-  // Strict pedagogical ratio: challenge cards are <= 30% of total
-  const challengeCount = Math.max(1, Math.min(Math.floor(cards.length * 0.28), Math.ceil(cards.length * 0.30)));
-
-  // Identify cards that are candidates for challenge (higher difficulty or next level)
-  const candidateScores = cards.map((c, index) => {
-    let score = 0;
-    if (c.difficulty === 'hard') score += 4;
-    else if (c.difficulty === 'medium') score += 2;
-    if (c.points >= 3) score += 3;
-    if (targetLevel !== 'all' && c.cefrLevel !== targetLevel) score += 5;
-    // Slight jitter to prevent deterministic choice
-    score += (index % 5) * 0.5;
-    return { id: c.id, score };
+  // Strict constraint: select ONLY Difficulty=Hard cards within the player's CEFR level selection.
+  // Never pull cards from a higher level (breaks the strict level filter).
+  const eligibleHardCards = cards.filter(c => {
+    const isLevelMatch = targetLevel === 'all' || c.cefrLevel === targetLevel;
+    const isHard = c.difficulty === 'hard';
+    return isLevelMatch && isHard;
   });
 
-  candidateScores.sort((a, b) => b.score - a.score);
-  const challengeIdSet = new Set(candidateScores.slice(0, challengeCount).map(c => c.id));
+  // Up to 30% can be challenge cards (and at least 1 if any eligible hard cards exist)
+  const maxAllowed = Math.max(1, Math.floor(cards.length * 0.30));
+  const challengeCount = Math.min(eligibleHardCards.length, maxAllowed);
+  const challengeIdSet = new Set(eligibleHardCards.slice(0, challengeCount).map(c => c.id));
 
   return cards.map(card => {
     const isChal = challengeIdSet.has(card.id);
@@ -1608,4 +1666,32 @@ export function tagPedagogicalRatio(cards: LanguageCard[], targetLevel: CEFRLeve
     };
   });
 }
+
+/**
+ * Pre-calculates the exact pool size for a given combination
+ * Used by the Pool Size Guard before game initiation!
+ * By default realOnly is true to exclude synthetic/fallback cards.
+ */
+export function getAvailablePoolCount(
+  targetLanguages?: Language[],
+  selectedCategories?: string[],
+  cefrLevel: CEFRLevel = 'all',
+  nativeLanguage: Language = 'fa',
+  cardGameMode: CardGameMode = 'mixed',
+  realOnly: boolean = true
+): number {
+  const pool = buildSessionCardPool(targetLanguages, selectedCategories, cefrLevel, nativeLanguage, cardGameMode);
+  if (realOnly) {
+    return pool.filter(c => !c.id.startsWith('SYN_')).length;
+  }
+  return pool.length;
+}
+
+export function getRealSituationCount(lang: string = 'en'): number {
+  const counts: Record<string, number> = {
+    en: 3, 'en-US': 3, nl: 2, de: 1, fa: 1, fr: 0, es: 0, it: 0, ar: 0, tr: 0, ru: 0, pl: 0, uk: 0, zh: 0, ja: 0, ko: 0, hi: 0
+  };
+  return counts[lang] || 0;
+}
+
 

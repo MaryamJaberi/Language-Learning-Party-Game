@@ -1,0 +1,449 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.10 [39m[90m/app/applet[39m
+
+ [32m✓[39m tests/gameLogic.test.ts [2m([22m[2m24 tests[22m[2m)[22m[33m 1043[2mms[22m[39m
+     [33m[2m✓[22m[39m Simulating 10 complete rounds with 4 players (2 teams) [33m 306[2mms[22m[39m
+     [33m[2m✓[22m[39m Simulating 10 complete rounds with 6 players (3 teams) [33m 574[2mms[22m[39m
+ [32m✓[39m tests/firestoreRulesSimulation.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m tests/tenAgentsLearningSimulation.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 71[2mms[22m[39m
+ [32m✓[39m tests/recapRevealLeitner.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[33m 749[2mms[22m[39m
+     [33m[2m✓[22m[39m all played cards tagged by team and missed ones highlighted [33m 307[2mms[22m[39m
+ [32m✓[39m tests/duelAndDiverseScenarios.test.tsx [2m([22m[2m14 tests[22m[2m)[22m[33m 1160[2mms[22m[39m
+       [33m[2m✓[22m[39m 1. DuelSetupModal renders with Local and Online 2-phones tabs [33m 575[2mms[22m[39m
+       [33m[2m✓[22m[39m 2. DuelSetupModal toggles to 2-Phones Online mode and allows room hosting and joining [33m 316[2mms[22m[39m
+[90mstderr[2m | tests/userFlows.test.tsx[2m > [22m[2mComplete End-to-End User Flow Tests[2m > [22m[2mFlow 1: Intro screen renders cleanly with "دور" title, language selector, help, and history
+[22m[39mAn update to UserProfileModal inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to UserProfileModal inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+Not implemented: HTMLMediaElement's play() method
+[90mstderr[2m | tests/userFlows.test.tsx[2m > [22m[2mComplete End-to-End User Flow Tests[2m > [22m[2mFlow 6: PWA and Mobile App Installation inline tab in profile
+[22m[39mAn update to UserProfileModal inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to UserProfileModal inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+Not implemented: HTMLMediaElement's pause() method
+Not implemented: HTMLMediaElement's play() method
+Not implemented: HTMLMediaElement's pause() method
+Not implemented: HTMLMediaElement's play() method
+ [32m✓[39m tests/userFlows.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[33m 6746[2mms[22m[39m
+     [33m[2m✓[22m[39m Flow 1: Intro screen renders cleanly with "دور" title, language selector, help, and history [33m 870[2mms[22m[39m
+     [33m[2m✓[22m[39m Flow 2: Complete Setup, Player Count, and Seating Table Confirmation [33m 952[2mms[22m[39m
+     [33m[2m✓[22m[39m Flow 3: Gameplay mechanics - Guessing, Clockwise Turns, Undo, Word Swapping, and Pausing [33m 1218[2mms[22m[39m
+     [33m[2m✓[22m[39m Flow 4: Language switcher on Intro updates the entire interface seamlessly [33m 583[2mms[22m[39m
+     [33m[2m✓[22m[39m Flow 5: Pause and Exit to Intro screen [33m 831[2mms[22m[39m
+     [33m[2m✓[22m[39m Flow 7: 6 Players (3 Teams) Setup, and gameplay turn rotation [33m 851[2mms[22m[39m
+     [33m[2m✓[22m[39m Flow 8: 8 Players (4 Teams) Setup, and full rotation [33m 818[2mms[22m[39m
+     [33m[2m✓[22m[39m Flow 9: Exiting Single Player to settings opens SinglePlayerSetupModal and does NOT open multiplayer SetupScreen [33m 426[2mms[22m[39m
+ [32m✓[39m tests/comprehensiveUsabilityAndQualityAudit.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 2195[2mms[22m[39m
+     [33m[2m✓[22m[39m 1. SetupScreen enforces strictly single learning language tag with instant select and removal cross [33m 1052[2mms[22m[39m
+     [33m[2m✓[22m[39m 5. Complete party game flow: Setup -> Seating -> Game -> Exit to Setup [33m 847[2mms[22m[39m
+Not implemented: HTMLMediaElement's play() method
+Not implemented: HTMLMediaElement's pause() method
+Not implemented: HTMLMediaElement's play() method
+Not implemented: HTMLMediaElement's pause() method
+Not implemented: HTMLMediaElement's play() method
+Not implemented: HTMLMediaElement's pause() method
+Not implemented: HTMLMediaElement's play() method
+[90mstderr[2m | tests/challengeAndComboSystem.test.tsx[2m > [22m[2mChallenge Cards & Combo System Specifications[2m > [22m[2m2. Visual-only Combo Badge with No Bonus Points and Resets[2m > [22m[2mdisplays 🔥 xN badge visually and gives NO bonus points for combo
+[22m[39mAn update to GameplayScreen inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to GameplayScreen inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to GameplayScreen inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to GameplayScreen inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to GameplayScreen inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to GameplayScreen inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to GameplayScreen inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to GameplayScreen inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to GameplayScreen inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to GameplayScreen inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to GameplayScreen inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to GameplayScreen inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to GameplayScreen inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to GameplayScreen inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to GameplayScreen inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to GameplayScreen inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to GameplayScreen inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to GameplayScreen inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+Not implemented: HTMLMediaElement's pause() method
+Not implemented: HTMLMediaElement's play() method
+Not implemented: HTMLMediaElement's pause() method
+Not implemented: HTMLMediaElement's play() method
+ [32m✓[39m tests/challengeAndComboSystem.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 1662[2mms[22m[39m
+       [33m[2m✓[22m[39m gives each team the same number of challenge cards per round [33m 437[2mms[22m[39m
+       [33m[2m✓[22m[39m renders challenge and combo rules correctly for multiple languages [33m 923[2mms[22m[39m
+ [32m✓[39m tests/setupScreenFull.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[33m 2871[2mms[22m[39m
+     [33m[2m✓[22m[39m 1. Renders single tagged learning language chip with removal cross, instant select, and no confirm button [33m 539[2mms[22m[39m
+     [33m[2m✓[22m[39m 2. Player count (4 / 6 / 8) is single-select and switches active state cleanly [33m 415[2mms[22m[39m
+     [33m[2m✓[22m[39m 8. Guide bottom sheet opens and closes with outside click and with "فهمیدم" button [33m 440[2mms[22m[39m
+     [33m[2m✓[22m[39m 9. UI language menu opens and saves selection [33m 322[2mms[22m[39m
+ [32m✓[39m tests/comprehensivePedagogicalAudit.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 1246[2mms[22m[39m
+     [33m[2m✓[22m[39m 3. LanguagePickerModal has NO "popular" / "پیشنهاد زبان" tab [33m 863[2mms[22m[39m
+ [32m✓[39m tests/gameSimulation.test.ts [2m([22m[2m10 tests[22m[2m)[22m[33m 3397[2mms[22m[39m
+     [33m[2m✓[22m[39m Simulate Game 1: 4 Players, 3 Rounds, Mixed Mode, Dutch & English [33m 526[2mms[22m[39m
+     [33m[2m✓[22m[39m Simulate Game 3: 6 Players, 3 Teams, 3 Rounds, German & French [33m 452[2mms[22m[39m
+     [33m[2m✓[22m[39m Simulate Game 4: 8 Players, 4 Teams, 4 Rounds, Turkish & Arabic [33m 454[2mms[22m[39m
+     [33m[2m✓[22m[39m Simulate Game 6: 6 Players, 2 Rounds, Polish & Ukrainian, High-Speed Turns [33m 350[2mms[22m[39m
+     [33m[2m✓[22m[39m Simulate Game 8: 8 Players, 4 Teams, 2 Rounds, Extended Vocabulary [33m 645[2mms[22m[39m
+     [33m[2m✓[22m[39m Simulate Game 10: 6 Players, 3 Teams, 5 Rounds Championship [33m 705[2mms[22m[39m
+ [32m✓[39m tests/userPromptLanguageAndButtons.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 938[2mms[22m[39m
+     [33m[2m✓[22m[39m 1. Three buttons (نوشتن، رد کردن، لمس برای صحبت) are present side by side in SinglePlayerScreen [33m 387[2mms[22m[39m
+ [32m✓[39m tests/pedagogicalRatioAndGameSim.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 63[2mms[22m[39m
+ [32m✓[39m tests/languageSwitchScenario.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 63[2mms[22m[39m
+Not implemented: HTMLMediaElement's play() method
+Not implemented: HTMLMediaElement's pause() method
+Not implemented: HTMLMediaElement's play() method
+Not implemented: HTMLMediaElement's pause() method
+Not implemented: HTMLMediaElement's play() method
+Not implemented: HTMLMediaElement's pause() method
+Not implemented: HTMLMediaElement's play() method
+ [32m✓[39m tests/focusErgonomicsAndLearning.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[33m 683[2mms[22m[39m
+     [33m[2m✓[22m[39m 3. SinglePlayerScreen renders slow audio 0.7x button and plays slow speech [33m 359[2mms[22m[39m
+ [32m✓[39m tests/userFeedbackAndLearningModes.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 467[2mms[22m[39m
+     [33m[2m✓[22m[39m 4. Single Player Screen applies selected learning mode and shows 4 options [33m 329[2mms[22m[39m
+ [31m❯[39m tests/firestore.rules.test.ts [2m([22m[2m6 tests[22m[2m | [22m[33m6 skipped[39m[2m)[22m[32m 70[2mms[22m[39m
+     [2m[90m↓[39m[22m self-escalation: regular user cannot create or update profile with isAdmin: true or role: admin
+     [2m[90m↓[39m[22m rooms: non-member cannot overwrite or delete a room
+     [2m[90m↓[39m[22m rooms: read access is public for room discovery
+     [2m[90m↓[39m[22m cards and settings: public read, admin-only write
+     [2m[90m↓[39m[22m logs and reports: strictly admin-only access
+     [2m[90m↓[39m[22m leaderboard: create requires signed-in, matching uid, and valid score
+[90mstderr[2m | tests/adminRoleAndDownloadAccess.test.tsx[2m > [22m[2mAdmin Role and Download Visibility Protection[2m > [22m[2mUserProfileModal hides Downloads tab for regular users
+[22m[39mAn update to UserProfileModal inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to UserProfileModal inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to UserProfileModal inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to UserProfileModal inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+[90mstderr[2m | tests/adminRoleAndDownloadAccess.test.tsx[2m > [22m[2mAdmin Role and Download Visibility Protection[2m > [22m[2mUserProfileModal displays Downloads tab and Admin badge for admin user
+[22m[39mAn update to UserProfileModal inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to UserProfileModal inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to UserProfileModal inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to UserProfileModal inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+ [32m✓[39m tests/adminRoleAndDownloadAccess.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 254[2mms[22m[39m
+ [32m✓[39m tests/soundSystem.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 68[2mms[22m[39m
+ [32m✓[39m tests/pronunciationService.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m tests/defaultEnglishGooglePlay.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 884[2mms[22m[39m
+     [33m[2m✓[22m[39m 2. Fresh launch renders English UI by default on Google Play devices [33m 459[2mms[22m[39m
+     [33m[2m✓[22m[39m 3. Open Setup from English Intro presents English labels and settings [33m 416[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/firestore.rules.test.ts[2m > [22mFirestore Security Rules Unit Tests (Emulator)
+{
+  stack: 'Error: \n' +
+    '    at loadFirestoreRules (file:///app/applet/node_modules/@firebase/rules-unit-testing/dist/esm/index.esm.js:402:15)\n' +
+    '    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n' +
+    '    at initializeTestEnvironment (file:///app/applet/node_modules/@firebase/rules-unit-testing/dist/esm/index.esm.js:486:9)\n' +
+    '    at /app/applet/tests/firestore.rules.test.ts:15:15',
+  message: '',
+  constructor: 'Function<Error>',
+  name: 'Error',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      line: 63,
+      column: 10,
+      file: '/app/applet/node_modules/@firebase/rules-unit-testing/src/impl/rules.ts',
+      method: 'loadFirestoreRules'
+    },
+    {
+      line: 94,
+      column: 4,
+      file: '/app/applet/node_modules/@firebase/rules-unit-testing/src/initialize.ts',
+      method: 'initializeTestEnvironment'
+    },
+    {
+      method: '',
+      file: '/app/applet/tests/firestore.rules.test.ts',
+      line: 15,
+      column: 15
+    }
+  ]
+}
+[90m [2m❯[22m loadFirestoreRules node_modules/@firebase/rules-unit-testing/src/impl/rules.ts:[2m63:10[22m[39m
+[90m [2m❯[22m initializeTestEnvironment node_modules/@firebase/rules-unit-testing/src/initialize.ts:[2m94:4[22m[39m
+[36m [2m❯[22m tests/firestore.rules.test.ts:[2m15:15[22m[39m
+    [90m 13|[39m   [34mbeforeAll[39m([35masync[39m () [33m=>[39m {
+    [90m 14|[39m     [35mconst[39m rules [33m=[39m fs[33m.[39m[34mreadFileSync[39m([32m'firestore.rules'[39m[33m,[39m [32m'utf8'[39m)[33m;[39m
+    [90m 15|[39m     testEnv [33m=[39m [35mawait[39m [34minitializeTestEnvironment[39m({
+    [90m   |[39m               [31m^[39m
+    [90m 16|[39m       projectId[33m:[39m [32m'demo-dour-rules-test'[39m[33m,[39m
+    [90m 17|[39m       firestore[33m:[39m {
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m20 passed[39m[22m[90m (21)[39m
+[2m      Tests [22m [1m[32m164 passed[39m[22m[2m | [22m[33m6 skipped[39m[90m (170)[39m
+[2m   Start at [22m 13:38:47
+[2m   Duration [22m 83.59s[2m (transform 3.05s, setup 6.70s, import 9.81s, tests 24.65s, environment 35.03s)[22m
+

@@ -114,7 +114,7 @@ export async function saveWeakCards(cards: LanguageCard[]): Promise<void> {
     // Also sync to Firestore if user is authenticated
     if (auth.currentUser) {
       const uid = auth.currentUser.uid;
-      for (const card of cards) {
+      for (const card of cards.slice(0, 100)) {
         const ref = doc(db, 'users', uid, 'weak_cards', card.id);
         await setDoc(ref, {
           cardId: card.id,
@@ -129,6 +129,54 @@ export async function saveWeakCards(cards: LanguageCard[]): Promise<void> {
     }
   } catch (e) {
     console.warn('Failed to save weak cards:', e);
+  }
+}
+
+/**
+ * Migrate guest weak cards from localStorage to Firestore after Google sign-in
+ * Ensures no cards are lost, avoids duplicates via docId, and enforces 100-card cap
+ */
+export async function migrateGuestWeakCardsToCloud(uid: string): Promise<void> {
+  try {
+    const local = getSavedWeakCards();
+    if (!local || local.length === 0) return;
+
+    // 1. Count existing cloud cards first
+    const existingSnap = await getDocs(collection(db, 'users', uid, 'weak_cards'));
+    const existingIds = new Set<string>();
+    existingSnap.forEach(d => existingIds.add(d.id));
+    const existingCount = existingIds.size;
+
+    // 2. Enforce total 100-card cap on the cloud
+    const availableSlots = Math.max(0, 100 - existingCount);
+    let addedCount = 0;
+
+    for (const item of local) {
+      const isExisting = existingIds.has(item.cardId);
+      if (!isExisting && addedCount >= availableSlots) {
+        continue;
+      }
+      const ref = doc(db, 'users', uid, 'weak_cards', item.cardId);
+      await setDoc(ref, {
+        cardId: item.cardId,
+        targetText: item.card.targetText,
+        targetLanguage: item.card.targetLanguage,
+        translation: item.card.translation,
+        topic: item.card.topic,
+        cefrLevel: item.card.cefrLevel,
+        mistakeCount: item.mistakeCount || 1,
+        lastPracticed: serverTimestamp()
+      }, { merge: true });
+      if (!isExisting) {
+        existingIds.add(item.cardId);
+        addedCount++;
+      }
+    }
+
+    // 3. Clear localStorage after successful migration so it never re-runs
+    localStorage.removeItem(STORAGE_WEAK_CARDS);
+  } catch (e) {
+    console.warn('Failed to migrate guest weak cards to cloud:', e);
   }
 }
 
@@ -342,6 +390,19 @@ export function getUniqueCardsForSession(
       if (finalSelection.length >= requestedCount) break;
       if (!finalSelection.some(c => c.id === cc.id)) {
         finalSelection.push(cc);
+      }
+    }
+  }
+
+  // 4.6 Include hard cards of the requested level for challenge card pedagogical ratio
+  const hardCandidates = pool.filter(c => (cefrLevel === 'all' || c.cefrLevel === cefrLevel) && c.difficulty === 'hard');
+  if (hardCandidates.length > 0) {
+    const targetHardCount = Math.max(1, Math.min(3, Math.floor(requestedCount * 0.25)));
+    const shuffledHard = [...hardCandidates].sort(() => Math.random() - 0.5);
+    for (const hc of shuffledHard.slice(0, targetHardCount)) {
+      if (finalSelection.length >= requestedCount) break;
+      if (!finalSelection.some(c => c.id === hc.id)) {
+        finalSelection.push(hc);
       }
     }
   }

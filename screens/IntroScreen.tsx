@@ -60,6 +60,8 @@ interface Props {
   onOpenHistory: () => void;
   onOpenLeaderboard?: () => void;
   onOpenHelp?: () => void;
+  onResumeSession?: () => void;
+  onDiscardSession?: () => void;
 }
 
 const IntroScreen: React.FC<Props> = ({ 
@@ -73,7 +75,9 @@ const IntroScreen: React.FC<Props> = ({
   onOpenOnline,
   onOpenLeitner,
   onOpenHistory, 
-  onOpenHelp 
+  onOpenHelp,
+  onResumeSession,
+  onDiscardSession
 }) => {
   const t = tUI(language);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
@@ -91,6 +95,23 @@ const IntroScreen: React.FC<Props> = ({
   const [isAdminMeetupMapOpen, setIsAdminMeetupMapOpen] = useState(false);
   const [isAICoachOpen, setIsAICoachOpen] = useState(false);
   const [isPartyChoiceModalOpen, setIsPartyChoiceModalOpen] = useState(false);
+
+  // Check for restorable game session saved in localStorage
+  const [savedSession, setSavedSession] = useState<{ round: number; maxRounds: number; timestamp: number } | null>(() => {
+    try {
+      const raw = localStorage.getItem('dour_active_session');
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.timestamp && (Date.now() - parsed.timestamp < 24 * 60 * 60 * 1000)) {
+        return {
+          round: parsed.currentRound || 1,
+          maxRounds: parsed.settings?.roundsCount || 3,
+          timestamp: parsed.timestamp
+        };
+      }
+    } catch {}
+    return null;
+  });
 
   // Animated gentle guide invitation nudge
   const [hasSeenGuideNudge, setHasSeenGuideNudge] = useState<boolean>(() => {
@@ -372,11 +393,70 @@ const IntroScreen: React.FC<Props> = ({
 
       {/* 3 EQUAL-VALUE GAME MODES (سه حالت بازی هم‌ارزش) */}
       <div className="w-full max-w-sm sm:max-w-md space-y-2.5 my-auto shrink-0 font-ui">
+        {/* RECOVERY BANNER: Resume previous active session */}
+        {savedSession && (
+          <div className="w-full p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-orange-500/15 to-amber-500/15 border border-amber-500/35 text-start space-y-2 animate-fade-in shadow-xs">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-base">⏳</span>
+                <span className="text-xs sm:text-sm font-black text-[var(--ink)]">
+                  {isRTL 
+                    ? `ادامه بازی دورهمی قبلی (راند ${savedSession.round} از ${savedSession.maxRounds})`
+                    : `Resume Previous Match (Round ${savedSession.round} of ${savedSession.maxRounds})`}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  try {
+                    localStorage.removeItem('dour_active_session');
+                  } catch {}
+                  setSavedSession(null);
+                  onDiscardSession?.();
+                }}
+                className="text-xs font-bold text-[var(--mute)] hover:text-rose-500 p-1"
+                title={isRTL ? 'حذف و شروع تازه' : 'Discard'}
+              >
+                ✕
+              </button>
+            </div>
+            <div className="flex items-center gap-2 pt-0.5">
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playClick();
+                  onResumeSession?.();
+                }}
+                className="flex-1 py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs cursor-pointer active:scale-98 transition-all"
+              >
+                <span>{isRTL ? 'ادامه بازی (مکث‌شده)' : 'Resume Match'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  try {
+                    localStorage.removeItem('dour_active_session');
+                  } catch {}
+                  setSavedSession(null);
+                  onDiscardSession?.();
+                }}
+                className="py-2 px-3 rounded-xl bg-[var(--panel)] hover:bg-[var(--line)] border border-[var(--line)] text-[var(--mute)] font-bold text-xs cursor-pointer"
+              >
+                <span>{isRTL ? 'شروع تازه' : 'Start Fresh'}</span>
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* MODE 1: بازی دورهمی گروهی (Group Party - Local Pass&Play + Online Multiplayer Room) */}
         <div 
+          id="intro-party-btn"
+          role="button"
+          tabIndex={0}
+          aria-label={isRTL ? 'شروع بازی دورهمی' : 'Start Party Game'}
           onClick={() => {
             sound.playStartGame();
-            setIsPartyChoiceModalOpen(true);
+            onNext();
           }}
           className="group relative w-full p-3.5 sm:p-4 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] border border-[var(--line)] hover:border-[var(--lapis)] shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center justify-between gap-3 text-start"
         >
@@ -387,7 +467,7 @@ const IntroScreen: React.FC<Props> = ({
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 flex-wrap">
                 <span className="text-sm sm:text-base font-black text-[var(--ink)] leading-tight">
-                  {isRTL ? 'دورهمی گروهی' : 'Group Party Game'}
+                  {isRTL ? 'شروع بازی دورهمی' : (t.startNewGame || 'Start New Game')}
                 </span>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--lapis-soft)] text-[var(--lapis)] shrink-0">
                   {isRTL ? '۴ تا ۸ نفره' : '4-8 Players'}
@@ -416,9 +496,8 @@ const IntroScreen: React.FC<Props> = ({
               <span>{isRTL ? 'آنلاین' : 'Online'}</span>
             </button>
 
-            <div className="flex items-center gap-1 bg-[var(--lapis-soft)] text-[var(--lapis)] px-3 py-1.5 rounded-xl text-xs font-bold shrink-0">
-              <Users size={13} />
-              <span>{isRTL ? 'دورهمی' : 'Party'}</span>
+            <div className="w-8 h-8 rounded-full bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center shrink-0">
+              {isRTL ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
             </div>
           </div>
         </div>

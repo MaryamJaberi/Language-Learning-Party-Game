@@ -227,12 +227,11 @@ describe('Diverse Scenarios & Deep Feature Testing', () => {
       const state = getLeitnerState();
       const card = state.cards[0];
 
-      // Move to Box 3
-      recordLeitnerCardReview(card.id, true);
+      // Move to Box 2 (3-box Leitner system)
       recordLeitnerCardReview(card.id, true);
       recordLeitnerCardReview(card.id, true);
       let currentState = getLeitnerState();
-      expect(currentState.cards.find(c => c.id === card.id)?.boxIndex).toBe(3);
+      expect(currentState.cards.find(c => c.id === card.id)?.boxIndex).toBe(2);
 
       // Mistake made: demote back to Box 0
       const resMistake = recordLeitnerCardReview(card.id, false);

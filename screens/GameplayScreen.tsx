@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { GameSettings, GameStatus, Team, Player, GameHistoryEntry, TeamColor, LanguageCard, PlayedCardRecord } from '../types';
 import { COLORS_MAP, SUPPORTED_LANGUAGES } from '../constants';
 import { TRANSLATIONS } from '../translations';
@@ -23,6 +23,8 @@ import {
   RotateCcw, 
   Check, 
   X, 
+  CheckCircle2,
+  XCircle,
   Smartphone, 
   Sparkles, 
   AlertTriangle,
@@ -73,6 +75,7 @@ interface Props {
   onExitHome?: () => void;
   onExitSetup?: () => void;
   onOpenHelp?: () => void;
+  onOpenLeitner?: () => void;
   playedCards?: PlayedCardRecord[];
   setPlayedCards?: React.Dispatch<React.SetStateAction<PlayedCardRecord[]>>;
   onRequeueCard?: (card: LanguageCard) => void;
@@ -104,7 +107,8 @@ const GameplayScreen: React.FC<Props> = ({
   onOpenHelp,
   playedCards = [],
   setPlayedCards,
-  onRequeueCard
+  onRequeueCard,
+  onOpenLeitner
 }) => {
   const language = settings.language;
   const t = TRANSLATIONS[language] || TRANSLATIONS.fa;
@@ -138,6 +142,62 @@ const GameplayScreen: React.FC<Props> = ({
   const [bonusNotification, setBonusNotification] = useState<string | null>(null);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [isAICoachOpen, setIsAICoachOpen] = useState(false);
+
+  // Equal Challenge Card Allocation per Team per Round
+  const [teamChallengesInRound, setTeamChallengesInRound] = useState<Record<number, number>>({});
+
+  useEffect(() => {
+    // Reset round quota when currentRound changes
+    setTeamChallengesInRound({});
+  }, [currentRound]);
+
+  // Reset streak on turn end / activePlayer change
+  useEffect(() => {
+    setStreakCount(0);
+  }, [activePlayerIndex]);
+
+  const activePlayer = players[activePlayerIndex];
+  const activeTeamId = activePlayer?.teamId;
+  const isCurrentCardChallenge = useMemo(() => {
+    if (!currentCard?.isChallenge || activeTeamId === undefined) return false;
+    const myCount = teamChallengesInRound[activeTeamId] || 0;
+    const otherCounts = teams
+      .filter(t => t.id !== activeTeamId && !t.isEliminated)
+      .map(t => teamChallengesInRound[t.id] || 0);
+    const minOther = otherCounts.length > 0 ? Math.min(...otherCounts) : myCount;
+    return myCount <= minOther;
+  }, [currentCard, activeTeamId, teamChallengesInRound, teams]);
+
+  // Card Reveal on Correct/Skip State (Pauses timer, dismisses on tap or 2.5s)
+  const [revealCard, setRevealCard] = useState<{
+    card: LanguageCard;
+    isCorrect: boolean;
+    nextIndex: number;
+    snapshot?: UndoSnapshot;
+  } | null>(null);
+  const revealTimeoutRef = useRef<any>(null);
+
+  const dismissRevealCard = () => {
+    if (revealTimeoutRef.current) clearTimeout(revealTimeoutRef.current);
+    if (!revealCard) return;
+
+    const { nextIndex, snapshot } = revealCard;
+    setRevealCard(null);
+
+    setActivePlayerIndex(nextIndex);
+    triggerTurnFlash(nextIndex);
+    onGetNextWord();
+
+    if (settings.passPhoneScreenEnabled) {
+      setGameStatus(GameStatus.PassPhone);
+    } else {
+      setGameStatus(GameStatus.ActiveTurn);
+    }
+
+    if (snapshot) {
+      triggerUndoWindow(snapshot);
+    }
+  };
 
   const vibrate = (ms: number | number[]) => {
     if ('vibrate' in navigator) {
@@ -314,11 +374,16 @@ const GameplayScreen: React.FC<Props> = ({
     const isSpeedBonus = timeSpent < 6;
     let basePoints = currentCard?.points || 1;
     if (currentCard?.isGolden) basePoints *= 2;
-    if (currentCard?.isChallenge) basePoints += (currentCard.challengeBonus || 2);
+    if (isCurrentCardChallenge) {
+      basePoints += (currentCard?.challengeBonus || 2);
+      if (activeTeamId !== undefined) {
+        setTeamChallengesInRound(prev => ({ ...prev, [activeTeamId]: (prev[activeTeamId] || 0) + 1 }));
+      }
+    }
     if (isSpeedBonus) basePoints += 1;
 
     // Bonus notification banner
-    if (currentCard?.isChallenge) {
+    if (isCurrentCardChallenge) {
       const note = isRTL 
         ? '⭐ آفرین! پاسخ عالی به کارت چالش (+۲ امتیاز تشویقی)' 
         : '⭐ Great job! Challenge card answered (+2 Bonus PTS)';
@@ -327,7 +392,7 @@ const GameplayScreen: React.FC<Props> = ({
     } else if (currentCard?.isGolden || isSpeedBonus || streakCount >= 2) {
       const note = currentCard?.isGolden 
         ? '🌟 کارت طلایی! (۲ برابر امتیاز)' 
-        : isSpeedBonus ? '⚡ پاداش سرعت! (+۱ امتیاز)' : `🔥 کمبو ${streakCount + 1}!`;
+        : isSpeedBonus ? '⚡ پاداش سرعت! (+۱ امتیاز)' : `🔥 x${streakCount + 1}`;
       setBonusNotification(note);
       setTimeout(() => setBonusNotification(null), 1500);
     }
@@ -366,6 +431,23 @@ const GameplayScreen: React.FC<Props> = ({
     }
 
     const nextIndex = getNextActivePlayerIndex(activePlayerIndex);
+
+    // Card Reveal on Correct (default ON, pauses timer, auto-dismiss 2.5s)
+    if (settings.cardRevealEnabled !== false && currentCard) {
+      setGameStatus(GameStatus.Paused);
+      setRevealCard({
+        card: currentCard,
+        isCorrect: true,
+        nextIndex,
+        snapshot
+      });
+      if (revealTimeoutRef.current) clearTimeout(revealTimeoutRef.current);
+      revealTimeoutRef.current = setTimeout(() => {
+        dismissRevealCard();
+      }, 2500);
+      return;
+    }
+
     setActivePlayerIndex(nextIndex);
     triggerTurnFlash(nextIndex);
     onGetNextWord();
@@ -393,7 +475,10 @@ const GameplayScreen: React.FC<Props> = ({
     setStreakCount(0);
 
     if (currentCard) {
-      if (currentCard.isChallenge) {
+      if (isCurrentCardChallenge) {
+        if (activeTeamId !== undefined) {
+          setTeamChallengesInRound(prev => ({ ...prev, [activeTeamId]: (prev[activeTeamId] || 0) + 1 }));
+        }
         const note = isRTL 
           ? '🛡️ کارت چالش بدون امتیاز منفی رد شد! (برای یادگیری و تکرار ذخیره شد)' 
           : '🛡️ Challenge card skipped with 0 penalty! (Saved for review)';
@@ -401,12 +486,7 @@ const GameplayScreen: React.FC<Props> = ({
         setTimeout(() => setBonusNotification(null), 2500);
       }
 
-      // Re-queue card to repeat later so users master it!
-      if (onRequeueCard) {
-        onRequeueCard(currentCard);
-      }
-
-      // Record in mistake bank for review
+      // Record in mistake bank for end-of-game review only (no re-queue into active game)
       recordMistake(currentCard, '(رد شده / کارت چالش)', 'party');
     }
 
@@ -427,6 +507,22 @@ const GameplayScreen: React.FC<Props> = ({
     }
 
     const nextIndex = getNextActivePlayerIndex(activePlayerIndex);
+
+    // Card Reveal on Skip (default ON, pauses timer, auto-dismiss 2.5s)
+    if (settings.cardRevealEnabled !== false && currentCard) {
+      setGameStatus(GameStatus.Paused);
+      setRevealCard({
+        card: currentCard,
+        isCorrect: false,
+        nextIndex
+      });
+      if (revealTimeoutRef.current) clearTimeout(revealTimeoutRef.current);
+      revealTimeoutRef.current = setTimeout(() => {
+        dismissRevealCard();
+      }, 2500);
+      return;
+    }
+
     setActivePlayerIndex(nextIndex);
     triggerTurnFlash(nextIndex);
     onGetNextWord();
@@ -456,7 +552,6 @@ const GameplayScreen: React.FC<Props> = ({
   };
 
   // Determine current active team
-  const activePlayer = players[activePlayerIndex];
   const activeTeam = teams.find(t => t.id === activePlayer?.teamId);
   const activeColor = activePlayer?.teamColor || TeamColor.Blue;
   const activeConfig = COLORS_MAP[activeColor] || { bg: 'bg-[#00F0FF]', text: 'text-[#1a0833]', hex: '#00F0FF' };
@@ -492,6 +587,7 @@ const GameplayScreen: React.FC<Props> = ({
         onRestart={onExit} 
         language={settings.language} 
         isPoolExhausted={isPoolExhausted} 
+        onOpenLeitner={onOpenLeitner}
       />
     );
   }
@@ -638,11 +734,14 @@ const GameplayScreen: React.FC<Props> = ({
               <span className="text-[10px] text-[var(--mute)]">({t.teamNames[activeColor]})</span>
             </div>
 
-            {/* Streak Counter 🔥 */}
+            {/* Combo Streak Counter 🔥 (Visual Only, No extra points) */}
             {streakCount > 1 && (
-              <div className="flex items-center gap-1 bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-lg border border-amber-200 dark:border-amber-800/40 text-[11px] font-bold">
-                <Flame size={13} className="text-amber-500 fill-amber-500" />
-                <span>{isRTL ? `کمبو x${streakCount}!` : `Combo x${streakCount}!`}</span>
+              <div 
+                data-testid="combo-badge"
+                className="flex items-center gap-1 bg-amber-500/15 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-lg border border-amber-300 dark:border-amber-800 text-[11px] font-black"
+              >
+                <Flame size={13} className="text-amber-500 fill-amber-500 animate-pulse" />
+                <span>🔥 x{streakCount}</span>
               </div>
             )}
 
@@ -661,7 +760,7 @@ const GameplayScreen: React.FC<Props> = ({
           </div>
 
           {/* 70/30 Pedagogical Rule: Challenge Card Badge (Bonus pts, No penalty on skip/fail) */}
-          {currentCard?.isChallenge && (
+          {isCurrentCardChallenge && (
             <div className="w-full my-1 px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-400/50 text-amber-800 dark:text-amber-200 text-xs font-bold flex items-center justify-between shrink-0 shadow-xs">
               <div className="flex items-center gap-1.5">
                 <Sparkles size={14} className="text-amber-500 shrink-0" />
@@ -1100,6 +1199,83 @@ const GameplayScreen: React.FC<Props> = ({
             </button>
           </div>
         </Modal>
+      )}
+
+      {/* 2.5s Card Reveal Overlay on Correct / Skip */}
+      {revealCard && (
+        <div 
+          onClick={dismissRevealCard}
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in cursor-pointer select-none"
+        >
+          <div 
+            onClick={dismissRevealCard}
+            className="w-full max-w-sm bg-[var(--panel)] border-2 border-[var(--line)] rounded-3xl p-5 shadow-2xl flex flex-col items-center text-center space-y-3 relative animate-scale-up"
+          >
+            {/* Status chip */}
+            <div className={`px-3 py-1 rounded-full text-xs font-black flex items-center gap-1.5 shadow-xs ${
+              revealCard.isCorrect ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30'
+            }`}>
+              {revealCard.isCorrect ? (
+                <>
+                  <CheckCircle2 size={14} className="text-emerald-500" />
+                  <span>{isRTL ? 'پاسخ درست! 🎉' : 'Correct! 🎉'}</span>
+                </>
+              ) : (
+                <>
+                  <XCircle size={14} className="text-rose-500" />
+                  <span>{isRTL ? 'کارت رد شد ⏭️' : 'Skipped ⏭️'}</span>
+                </>
+              )}
+            </div>
+
+            {/* Target text & Audio */}
+            <div className="w-full">
+              <div className="flex items-center justify-center gap-2">
+                <h3 className="text-2xl font-black text-[var(--ink)] tracking-tight">
+                  {revealCard.card.targetText}
+                </h3>
+                {sound.hasVoice(revealCard.card.targetLanguage) && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      sound.speak(revealCard.card.targetText, revealCard.card.targetLanguage, { force: true });
+                    }}
+                    className="w-8 h-8 rounded-full bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                    title={isRTL ? 'پخش صوتی تلفظ' : 'Play audio pronunciation'}
+                  >
+                    <Volume2 size={16} />
+                  </button>
+                )}
+              </div>
+              <p className="text-sm font-bold text-[var(--mute)] mt-1">
+                {revealCard.card.translation}
+              </p>
+            </div>
+
+            {/* Example sentence: ONLY for Vocabulary cards as requested */}
+            {revealCard.card.contentType === 'Vocabulary' && (revealCard.card.grammarPoint || revealCard.card.prompt) && (
+              <div className="w-full p-2.5 bg-[var(--bg)] rounded-xl border border-[var(--line)] text-start space-y-1">
+                <span className="text-[10px] font-black uppercase text-[var(--lapis)] block tracking-wider">
+                  {isRTL ? 'جمله نمونه (Example Sentence):' : 'Example Sentence:'}
+                </span>
+                <p className="text-xs text-[var(--ink)] font-medium leading-relaxed">
+                  {revealCard.card.grammarPoint || revealCard.card.prompt}
+                </p>
+              </div>
+            )}
+
+            {/* Dismiss CTA */}
+            <button
+              type="button"
+              onClick={dismissRevealCard}
+              className="w-full py-2.5 px-4 rounded-xl bg-[var(--lapis)] text-[var(--on-lapis)] font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <span>{isRTL ? 'ادامه بازی (یا لمس صفحه)' : 'Continue (or tap anywhere)'}</span>
+              <span className="text-[10px] opacity-75 font-mono">2.5s</span>
+            </button>
+          </div>
+        </div>
       )}
 
       {/* In-Game AI Referee & Coach Chatbot (Gemini AI) */}

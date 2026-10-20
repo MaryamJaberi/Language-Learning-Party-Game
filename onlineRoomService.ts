@@ -11,7 +11,7 @@ import {
   serverTimestamp,
   arrayUnion
 } from 'firebase/firestore';
-import { db } from './firebase';
+import { db, auth } from './firebase';
 import { 
   OnlineRoomState, 
   OnlinePlayer, 
@@ -104,10 +104,13 @@ export const createOnlineRoom = async (
     initialTeams.push({ id: 3, color: TeamColor.Yellow, timeRemaining: settings.roundDuration * 1000, isEliminated: false, playerIds: [], score: 0, comboStreak: 0 });
   }
 
+  const currentUid = auth.currentUser?.uid || deviceId;
   const roomState: OnlineRoomState = {
     id: roomId,
     code: roomCode,
     hostId: deviceId,
+    hostUid: currentUid,
+    participantUids: [currentUid],
     hostName: hostPlayer.name,
     status: 'lobby',
     currentRound: 1,

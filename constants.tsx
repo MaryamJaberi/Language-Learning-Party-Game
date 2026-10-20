@@ -1,4 +1,4 @@
-import { TeamColor, Language, CEFRLevel } from './types';
+import { TeamColor, Language, CEFRLevel, GameSettings } from './types';
 
 export const COLORS_MAP: Record<TeamColor, { bg: string, text: string, hex: string, surface: string, border: string, glow: string, name: string, faName: string }> = {
   [TeamColor.Blue]: { 
@@ -81,7 +81,7 @@ export const TEAM_HEX_COLORS: Record<TeamColor, string> = {
   [TeamColor.Yellow]: '#F5B52E',
 };
 
-// "Turn · Game night" Modern Color Palette (Based on HTML design)
+// DOŪR Language Party Game Modern Color Palette (Based on HTML design)
 export const UI_COLORS = {
   ink: '#15204A',              // text, borders
   paper: '#EEF3FA',            // background
@@ -140,7 +140,7 @@ export const SUPPORTED_LANGUAGES: LanguageInfo[] = [
   { code: 'fr', name: 'French', nativeName: 'Français', persianName: 'فرانسوی', flag: '🇫🇷', direction: 'ltr', popular: true, region: 'europe', speechCode: 'fr-FR' },
   { code: 'es', name: 'Spanish', nativeName: 'Español', persianName: 'اسپانیایی', flag: '🇪🇸', direction: 'ltr', popular: true, region: 'europe', speechCode: 'es-ES' },
   { code: 'it', name: 'Italian', nativeName: 'Italiano', persianName: 'ایتالیایی', flag: '🇮🇹', direction: 'ltr', popular: true, region: 'europe', speechCode: 'it-IT' },
-  { code: 'ru', name: 'Russian', nativeName: 'Русский', persianName: 'روسی', flag: '🇷🇺', direction: 'ltr', popular: true, region: 'europe', speechCode: 'ru-RU' },
+  { code: 'ru', name: 'Russian (Beta - Limited)', nativeName: 'Русский (Бета)', persianName: 'روسی (بتا — محتوای محدود)', flag: '🇷🇺', direction: 'ltr', popular: false, region: 'europe', speechCode: 'ru-RU' },
   { code: 'pt', name: 'Portuguese', nativeName: 'Português', persianName: 'پرتغالی', flag: '🇵🇹', direction: 'ltr', region: 'europe', speechCode: 'pt-PT' },
   { code: 'sv', name: 'Swedish', nativeName: 'Svenska', persianName: 'سوئدی', flag: '🇸🇪', direction: 'ltr', region: 'europe', speechCode: 'sv-SE' },
   { code: 'no', name: 'Norwegian', nativeName: 'Norsk', persianName: 'نروژی', flag: '🇳🇴', direction: 'ltr', region: 'europe', speechCode: 'nb-NO' },
@@ -220,15 +220,15 @@ export const CEFR_LEVELS: CEFRLevelInfo[] = [
   {
     id: 'B2',
     code: 'B2',
-    name: { fa: 'فوق متوسط (B2)', en: 'Upper-Intermediate (B2)', nl: 'Hoger Gemiddeld (B2)' },
+    name: { fa: 'متوسط پیشرفته (B1+)', en: 'Intermediate+ (B1+)', nl: 'Gevorderd+ (B1+)' },
     desc: { 
-      fa: 'بحث‌های تخصصی‌تر، اصطلاحات محاوره‌ای و تحلیل موضوعات', 
-      en: 'Specialized discussions, idioms, and fluent debates',
-      nl: 'Vloeiende discussies, uitdrukkingen en debatten'
+      fa: 'واژگان غنی‌تر، اصطلاحات کاربردی و تقویت روان‌زبانی', 
+      en: 'Extended vocabulary, practical idioms, and fluency building',
+      nl: 'Uitgebreide woordenschat en praktische idiomen'
     },
-    example: { fa: 'مثال: قرارداد کاری، مذاکره، بحث اجتماعی', en: 'e.g. Contract, Negotiation, Social debate', nl: 'bijv. Onderhandelen, Werkcontract bespreken' },
+    example: { fa: 'مثال: قرارداد کاری، مذاکره، بحث روزمره', en: 'e.g. Contract, Negotiation, Everyday debate', nl: 'bijv. Onderhandelen, Werkcontract bespreken' },
     color: '#FF007F',
-    badge: '🟣 B2'
+    badge: '🟣 B1+'
   },
   {
     id: 'C1',
@@ -301,8 +301,8 @@ export const DEFAULT_SETTINGS: GameSettings = {
   roundDuration: 60,
   difficulty: 'easy',
   cefrLevel: 'all',
-  nativeLanguage: 'fa',
-  targetLanguages: ['nl', 'en'],
+  nativeLanguage: 'en',
+  targetLanguages: ['es', 'nl'],
   cardGameMode: 'mixed',
   autoPronounceOnCorrect: true,
   selectedCategories: [
@@ -314,10 +314,13 @@ export const DEFAULT_SETTINGS: GameSettings = {
     "CAT_WORK",
     "CAT_SMALLTALK"
   ],
-  playerNames: ['سارا', 'علی', 'مریم', 'رضا', 'نیما', 'مهسا', 'پوریا', 'هدیه'],
-  language: 'fa',
+  playerNames: ['Alex', 'Sam', 'Emma', 'Liam', 'Olivia', 'Noah', 'Sophia', 'Lucas'],
+  language: 'en',
   passPhoneScreenEnabled: false,
   soundEnabled: true,
-  powerCardsEnabled: true
+  powerCardsEnabled: true,
+  cardRevealEnabled: true
 };
+
+
 

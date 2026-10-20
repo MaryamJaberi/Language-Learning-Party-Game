@@ -5,15 +5,33 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    // Admin authorization: checks verified email or dedicated custom claim
     function isAdmin() {
       return isSignedIn() && (
-        request.auth.token.email == 'm.jaberi1212@gmail.com'
+        (request.auth.token.email == 'm.jaberi1212@gmail.com' && request.auth.token.email_verified == true) ||
+        request.auth.token.admin == true
       );
     }
 
-    // User profile and private game matches
+    // User profiles & private game matches
     match /users/{userId} {
-      allow read, write: if (isSignedIn() && request.auth.uid == userId) || isAdmin();
+      function isOwner() {
+        return isSignedIn() && request.auth.uid == userId;
+      }
+
+      function isValidUserCreate() {
+        return (!('isAdmin' in request.resource.data) || request.resource.data.isAdmin == false) &&
+               (!('role' in request.resource.data) || request.resource.data.role == 'user');
+      }
+
+      function doesNotTouchPrivilegedFields() {
+        return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'isAdmin']);
+      }
+
+      allow read: if isOwner() || isAdmin();
+      allow create: if isAdmin() || (isOwner() && isValidUserCreate());
+      allow update: if isAdmin() || (isOwner() && doesNotTouchPrivilegedFields());
+      allow delete: if isAdmin() || isOwner();
       
       match /matches/{matchId} {
         allow read, write: if (isSignedIn() && request.auth.uid == userId) || isAdmin();
@@ -24,14 +42,67 @@ service cloud.firestore {
       }
     }
 
-    // Public Leaderboard for single-player & multiplayer achievements
-    match /leaderboard/{entryId} {
-      allow read, write: if true;
+    // Global Settings collection: Read-only for players, write strictly for Admin
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
     }
 
-    // Multiplayer game rooms for remote / Discord / Meet play
+    // Cards collection: Read-only for players, write strictly for Admin
+    match /cards/{cardId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // System Logs & Test Reports: Strictly restricted to Admin only
+    match /logs/{logId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /reports/{reportId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Public Leaderboard: Anyone can read, only signed-in players can post valid scores
+    match /leaderboard/{entryId} {
+      allow read: if true;
+      allow create: if isSignedIn() &&
+        request.resource.data.uid == request.auth.uid &&
+        request.resource.data.score is number &&
+        request.resource.data.score >= 0 &&
+        request.resource.data.score <= 100000;
+      allow update, delete: if isAdmin();
+    }
+
+    // Multiplayer game rooms: create requires signed-in with validated fields, update/delete by participants/host
     match /rooms/{roomId} {
-      allow read, write: if true;
+      function isHost() {
+        return isSignedIn() && (
+          (resource.data.hostUid != null && resource.data.hostUid == request.auth.uid) ||
+          (resource.data.hostId != null && resource.data.hostId == request.auth.uid)
+        );
+      }
+
+      function isParticipant() {
+        return isSignedIn() && (
+          isHost() ||
+          (resource.data.participantUids != null && resource.data.participantUids.hasAny([request.auth.uid])) ||
+          (resource.data.players != null && resource.data.players.hasAny([request.auth.uid])) ||
+          (request.resource.data.participantUids != null && request.resource.data.participantUids.hasAny([request.auth.uid]))
+        );
+      }
+
+      function isValidRoomCreate() {
+        return isSignedIn() &&
+          request.resource.data.id is string &&
+          request.resource.data.code is string &&
+          request.resource.data.status is string;
+      }
+
+      allow read: if true;
+      allow create: if isValidRoomCreate();
+      allow update: if isAdmin() || isParticipant();
+      allow delete: if isAdmin() || isHost();
     }
   }
 }

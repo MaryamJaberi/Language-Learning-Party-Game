@@ -5,8 +5,9 @@ import { getUniqueCardsForSession } from './contentEngine';
 
 const STORAGE_LEITNER = 'dor_leitner_box_state';
 
-// Leitner Review Intervals in days: [Box 1, Box 2, Box 3, Box 4, Box 5]
-export const LEITNER_INTERVALS = [1, 2, 4, 8, 15];
+// Leitner Review Intervals in days: [Box 1 (1 day), Box 2 (3 days), Box 3 (7 days)], capped at 100 cards
+export const LEITNER_INTERVALS = [1, 3, 7];
+export const MAX_LEITNER_CARDS = 100;
 
 /**
  * Format today's date in YYYY-MM-DD local time
@@ -263,18 +264,18 @@ export function recordLeitnerCardReview(
   item.reviewHistory.push({ date: today, success: isCorrect });
 
   if (isCorrect) {
-    // Advance to next box
-    const nextBox = Math.min(item.boxIndex + 1, 4);
+    // Advance to next box (max Box 3, index 2)
+    const nextBox = Math.min(item.boxIndex + 1, 2);
     item.boxIndex = nextBox;
-    const intervalDays = LEITNER_INTERVALS[nextBox];
+    const intervalDays = LEITNER_INTERVALS[nextBox] || 7;
     item.nextReviewDate = addDaysToDateString(today, intervalDays);
 
-    if (nextBox === 4) {
+    if (nextBox === 2) {
       state.totalCardsMastered += 1;
     }
 
     saveLeitnerState(state);
-    return { promotedToBox: nextBox + 1, isMastered: nextBox === 4 };
+    return { promotedToBox: nextBox + 1, isMastered: nextBox === 2 };
   } else {
     // Demote back to Box 0 (House 1) for spaced re-learning
     item.boxIndex = 0;
@@ -282,6 +283,42 @@ export function recordLeitnerCardReview(
     saveLeitnerState(state);
     return { promotedToBox: 1, isMastered: false };
   }
+}
+
+/**
+ * Enroll missed session cards into Leitner review (Box 1, due today, cap 100)
+ */
+export function enrollMissedCardsInLeitner(missedCards: LanguageCard[]): void {
+  const state = getLeitnerState();
+  const today = getTodayDateString();
+  const existingMap = new Map<string, LeitnerCardItem>();
+  state.cards.forEach(c => existingMap.set(c.card?.id || c.cardId || c.id, c));
+
+  for (const card of missedCards) {
+    const id = card.id;
+    if (existingMap.has(id)) {
+      const existing = existingMap.get(id)!;
+      existing.boxIndex = 0;
+      existing.nextReviewDate = today;
+      existing.mistakeCount = (existing.mistakeCount || 0) + 1;
+    } else {
+      if (existingMap.size >= MAX_LEITNER_CARDS) break;
+      existingMap.set(id, {
+        id,
+        cardId: id,
+        card,
+        boxIndex: 0,
+        dateAdded: today,
+        nextReviewDate: today,
+        lastReviewedDate: '',
+        reviewHistory: [],
+        mistakeCount: 1
+      });
+    }
+  }
+
+  state.cards = Array.from(existingMap.values()).slice(0, MAX_LEITNER_CARDS);
+  saveLeitnerState(state);
 }
 
 /**

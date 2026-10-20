@@ -1,7 +1,7 @@
 {
-  "name": "Language app Dour - بازی دورهمی یادگیری زبان",
-  "short_name": "Language app Dour",
-  "description": "بازی گروهی کلمات و حدس هیجان‌انگیز کلمات در دورهمی‌ها",
+  "name": "Dour: Language Party Game",
+  "short_name": "Dour Game",
+  "description": "Multiplayer party game for learning languages with friends and family passing one phone.",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#241442",

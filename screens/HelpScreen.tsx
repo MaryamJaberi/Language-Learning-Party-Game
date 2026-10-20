@@ -21,19 +21,215 @@ import {
   Layers,
   CheckCircle2,
   HelpCircle,
-  Smartphone
+  Smartphone,
+  Flame
 } from 'lucide-react';
 import { useGoogleScrollBars } from '../useGoogleScrollBars';
 import { FlagIcon } from '../components/FlagIcon';
 import { SUPPORTED_LANGUAGES } from '../constants';
 import { LanguagePickerModal } from '../components/LanguagePickerModal';
 
-interface Props {
+const RULES_CHALLENGE_AND_COMBO: Record<string, { challenge: string; combo: string; title: string }> = {
+  fa: {
+    title: 'کارت‌های چالش و کمبو',
+    challenge: 'کارت‌های چالش ⭐: برخی کارت‌ها دشوارترند و در صورت حدس درست ۲+ امتیاز دارند.',
+    combo: 'کمبو 🔥: حدس‌های متوالی درست زنجیره می‌سازند؛ رد کردن آن را ریست می‌کند. بدون امتیاز اضافی.'
+  },
+  en: {
+    title: 'Challenge Cards & Combo',
+    challenge: 'Challenge cards ⭐: some cards are harder and score +2 when guessed right.',
+    combo: 'Combo 🔥: guess correctly in a row to build a streak; skipping resets it. No extra points.'
+  },
+  'en-US': {
+    title: 'Challenge Cards & Combo',
+    challenge: 'Challenge cards ⭐: some cards are harder and score +2 when guessed right.',
+    combo: 'Combo 🔥: guess correctly in a row to build a streak; skipping resets it. No extra points.'
+  },
+  nl: {
+    title: 'Uitdaagkaarten & Combo',
+    challenge: 'Uitdaagkaarten ⭐: sommige kaarten zijn moeilijker en leveren +2 punten op bij een goed antwoord.',
+    combo: 'Combo 🔥: raad achter elkaar goed voor een reeks; overslaan reset dit. Geen extra punten.'
+  },
+  de: {
+    title: 'Herausforderungskarten & Kombo',
+    challenge: 'Herausforderungskarten ⭐: Manche Karten sind schwerer und bringen +2 Punkte bei richtiger Antwort.',
+    combo: 'Kombo 🔥: Richtig in Folge raten für eine Serie; Überspringen setzt sie zurück. Keine Extrapunkte.'
+  },
+  fr: {
+    title: 'Cartes défi & Combo',
+    challenge: 'Cartes défi ⭐ : certaines cartes sont plus difficiles et rapportent +2 si elles sont réussies.',
+    combo: 'Combo 🔥 : devinez correctement d\'affilée pour une série ; passer réinitialise. Pas de points bonus.'
+  },
+  es: {
+    title: 'Tarjetas de desafío y Combo',
+    challenge: 'Tarjetas de desafío ⭐: algunas tarjetas son más difíciles y dan +2 si se aciertan.',
+    combo: 'Combo 🔥: acierta seguido para crear una racha; pasar la reinicia. Sin puntos extra.'
+  },
+  it: {
+    title: 'Carte sfida & Combo',
+    challenge: 'Carte sfida ⭐: alcune carte sono più difficili e valgono +2 punti se indovinate.',
+    combo: 'Combo 🔥: indovina di fila per creare una serie; passare la azzera. Nessun punto extra.'
+  },
+  tr: {
+    title: 'Meydan Okuma Kartları ve Kombo',
+    challenge: 'Meydan okuma kartları ⭐: bazı kartlar daha zordur ve doğru bilinirse +2 puan kazandırır.',
+    combo: 'Kombo 🔥: seri yapmak için peş peşe doğru bilin; pas geçmek sıfırlar. Ekstra puan yok.'
+  },
+  ar: {
+    title: 'بطاقات التحدي والكومبو',
+    challenge: 'بطاقات التحدي ⭐: بعض البطاقات أصعب وتمنح +2 نقطة عند تخمينها بشكل صحيح.',
+    combo: 'كومبو 🔥: خمّن بشكل صحيح متتالٍ لبناء سلسلة؛ التخطي يعيد ضبطها. بدون نقاط إضافية.'
+  },
+  ru: {
+    title: 'Карты-вызовы и Комбо',
+    challenge: 'Карты-вызовы ⭐: некоторые карты сложнее и дают +2 очка при правильном ответе.',
+    combo: 'Комбо 🔥: угадывайте подряд для серии; пропуск сбрасывает ее. Без дополнительных очков.'
+  },
+  zh: {
+    title: '挑战卡与连击',
+    challenge: '挑战卡 ⭐：部分卡片难度更高，猜对可得+2分。',
+    combo: '连击 🔥：连续猜对可累积连击；跳过则重置连击。无额外加分。'
+  },
+  ja: {
+    title: 'チャレンジカード＆コンボ',
+    challenge: 'チャレンジカード ⭐：難易度が高いカードで、正解すると+2点獲得できます。',
+    combo: 'コンボ 🔥：連続正解でストリークを構築。スキップでリセット。追加点はありません。'
+  },
+  ko: {
+    title: '챌린지 카드 & 콤보',
+    challenge: '챌린지 카드 ⭐: 더 어려운 카드이며 정답 시 +2점을 획득합니다.',
+    combo: '콤보 🔥: 연속으로 맞히면 연속 기록이 쌓이며, 건너뛰면 초기화됩니다. 추가 점수 없음.'
+  },
+  sv: {
+    title: 'Utmaningskort & Combo',
+    challenge: 'Utmaningskort ⭐: vissa kort är svårare och ger +2 poäng vid rätt svar.',
+    combo: 'Combo 🔥: gissa rätt i rad för en svit; att hoppa över återställer den. Inga extrapoäng.'
+  },
+  pl: {
+    title: 'Karty wyzwań i Kombinacja',
+    challenge: 'Karty wyzwań ⭐: niektóre karty są trudniejsze i dają +2 punkty za poprawną odpowiedź.',
+    combo: 'Kombinacja 🔥: odgaduj poprawnie z rzędu; pominięcie resetuje serię. Bez dodatkowych punktów.'
+  },
+  uk: {
+    title: 'Картки-виклики та Комбо',
+    challenge: 'Картки-виклики ⭐: деякі картки складніші й дають +2 бали за правильну відповідь.',
+    combo: 'Комбо 🔥: відгадуйте поспіль для серії; пропуск скидає її. Без дополнительных балів.'
+  },
+  pt: {
+    title: 'Cartões de Desafio e Combo',
+    challenge: 'Cartões de desafio ⭐: alguns cartões são mais difíceis e valem +2 ao acertar.',
+    combo: 'Combo 🔥: acerte em sequência para criar uma sequência; pular reinicia. Sem pontos extras.'
+  },
+  no: {
+    title: 'Utfordringskort og Combo',
+    challenge: 'Utfordringskort ⭐: noen kort er vanskeligere og gir +2 poeng ved riktig svar.',
+    combo: 'Combo 🔥: gjett riktig på rad for en rekke; hopping over tilbakestiller den. Ingen ekstra poeng.'
+  },
+  da: {
+    title: 'Udfordringskort & Combo',
+    challenge: 'Udfordringskort ⭐: nogle kort er sværere og giver +2 point ved rigtigt svar.',
+    combo: 'Combo 🔥: gæt rigtigt i træk for en stime; spring over nulstiller. Ingen ekstra point.'
+  },
+  fi: {
+    title: 'Haastekortit ja Combo',
+    challenge: 'Haastekortit ⭐: jotkin kortit ovat vaikeampia ja antavat +2 pistettä oikeasta vastauksesta.',
+    combo: 'Combo 🔥: arvaa oikein peräkkäin sarjaa varten; ohittaminen nollaa. Ei lisäpisteitä.'
+  },
+  el: {
+    title: 'Κάρτες Πρόκλησης & Combo',
+    challenge: 'Κάρτες πρόκλησης ⭐: ορισμένες κάρτες είναι δυσκολότερες και δίνουν +2 πόντους αν απαντηθούν σωστά.',
+    combo: 'Combo 🔥: μαντέψτε σωστά στη σειρά για σερί. Η παράκαμψη επαναφέρει. Χωρίς επιπλέον πόντους.'
+  },
+  cs: {
+    title: 'Karty výzev a Combo',
+    challenge: 'Karty výzev ⭐: některé karty jsou těžší a za správnou odpověď dávají +2 body.',
+    combo: 'Combo 🔥: hádejte správně v řadě pro sérii; přeskočení ji resetuje. Žádné body navíc.'
+  },
+  ro: {
+    title: 'Carduri Provocare și Combo',
+    challenge: 'Carduri de provocare ⭐: unele carduri sunt mai grele și aduc +2 puncte dacă sunt ghicite corect.',
+    combo: 'Combo 🔥: ghicește corect consecutiv pentru o serie; trecerea peste resetează. Fără puncte în plus.'
+  },
+  hu: {
+    title: 'Kihíváskártyák és Combo',
+    challenge: 'Kihíváskártyák ⭐: néhány kártya nehezebb és helyes válasz esetén +2 pontot ér.',
+    combo: 'Combo 🔥: találj el többet egymás után a sorozathoz; a kihagyás visszaállítja. Nincs plusz pont.'
+  },
+  hi: {
+    title: 'चैलेंज कार्ड और कॉम्बो',
+    challenge: 'चैलेंज कार्ड ⭐: कुछ कार्ड कठिन होते हैं और सही अनुमान पर +2 अंक मिलते हैं।',
+    combo: 'कॉम्बो 🔥: स्ट्रीक बनाने के लिए लगातार सही अनुमान लगाएं; छोड़ना इसे रीसेट करता है। कोई अतिरिक्त अंक नहीं।'
+  },
+  ur: {
+    title: 'چیلنج کارڈز اور کمبو',
+    challenge: 'چیلنج کارڈز ⭐: کچھ کارڈز مشکل ہوتے ہیں اور صحیح جواب پر +2 پوائنٹس ملتے ہیں۔',
+    combo: 'کمبو 🔥: سٹریک بنانے کے لیے مسلسل درست جواب دیں؛ چھوڑنا اسے ری سیٹ کر دیتا ہے۔ کوئی اضافی پوائنٹس نہیں۔'
+  },
+  id: {
+    title: 'Kartu Tantangan & Kombo',
+    challenge: 'Kartu tantangan ⭐: beberapa kartu lebih sulit dan bernilai +2 poin jika dijawab benar.',
+    combo: 'Kombo 🔥: tebak benar beruntun untuk membangun streak; melewati akan meresetnya. Tanpa poin ekstra.'
+  },
+  ms: {
+    title: 'Kad Cabaran & Kombo',
+    challenge: 'Kad cabaran ⭐: sesetengah kad lebih sukar dan memberi +2 mata jika dijawab betul.',
+    combo: 'Kombo 🔥: teka betul berturut-turut untuk membina rentak; langkau menetapkannya semula. Tiada mata tambahan.'
+  },
+  vi: {
+    title: 'Thẻ Thử Thách & Combo',
+    challenge: 'Thẻ thử thách ⭐: một số thẻ khó hơn và được +2 điểm khi đoán đúng.',
+    combo: 'Combo 🔥: đoán đúng liên tiếp để tạo chuỗi; bỏ qua sẽ đặt lại. Không có điểm thưởng.'
+  },
+  th: {
+    title: 'การ์ดท้าทายและคอมโบ',
+    challenge: 'การ์ดท้าทาย ⭐: การ์ดยากกว่าและได้ +2 คะแนนเมื่อทายถูก',
+    combo: 'คอมโบ 🔥: ทายถูกติดต่อกันเพื่อสะสมสตรีค การข้ามจะรีเซ็ต ไม่มีคะแนนพิเศษ'
+  },
+  tl: {
+    title: 'Challenge Cards at Combo',
+    challenge: 'Mga challenge card ⭐: mas mahirap ang ilan at may +2 puntos kapag nahulaan nang tama.',
+    combo: 'Combo 🔥: hulaan nang sunod-sunod para sa streak; pag-skip ay nagre-reset nito. Walang dagdag na puntos.'
+  },
+  ku: {
+    title: 'کارتەکانی ئاڵنگاری و کۆمبۆ',
+    challenge: 'کارتەکانی ئاڵنگاری ⭐: هەندێک کارت سەختترن و ئەگەر دروست بوون +٢ خاڵیان هەیە.',
+    combo: 'کۆمبۆ 🔥: لەسەریەک دروست بزانە بۆ دروستکردنی زنجیرە؛ تێپەڕاندن سفر دەکاتەوە. بەبێ خاڵی زیادە.'
+  },
+  az: {
+    title: 'Meydan Oxuma Kartları və Kombo',
+    challenge: 'Meydan oxuma kartları ⭐: bəzi kartlar daha çətindir və düzgün cavabda +2 xal qazandırır.',
+    combo: 'Kombo 🔥: silsilə üçün ardıcıl düzgün tapın; ötürmək onu sıfırlayır. Əlavə xal yoxdur.'
+  },
+  he: {
+    title: 'כרטיסי אתגר וקומבו',
+    challenge: 'כרטיסי אתגר ⭐: חלק מהכרטיסים קשים יותר ומעניקים +2 נקודות על תשובה נכונה.',
+    combo: 'קומבו 🔥: נחשו נכון ברצף כדי לבנות רצף; דילוג מאפס אותו. ללא נקודות נוספות.'
+  },
+  hy: {
+    title: 'Մարտահրավերի քարտեր և Կոմբո',
+    challenge: 'Մարտահրավերի քարտեր ⭐. որոշ քարտեր ավելի բարդ են և ճիշտ պատասխանի դեպքում տալիս են +2 միավոր:',
+    combo: 'Կոմբո 🔥. շարք կազմելու համար անընդմեջ ճիշտ գուշակեք, բաց թողնելը զրոյացնում է: Առանց հավելյալ միավորների:'
+  },
+  ka: {
+    title: 'გამოწვევის ბარათები და კომბო',
+    challenge: 'გამოწვევის ბარათები ⭐: ზოგიერთი ბარათი უფრო რთულია და სწორ პასუხზე +2 ქულას იძლევა.',
+    combo: 'კომბო 🔥: გამოიცანით ზედიზედ სერიის შესაქმნელად; გამოტოვება ანულებს მას. დამატებითი ქულების გარეშე.'
+  },
+  bn: {
+    title: 'চ্যালেঞ্জ কার্ড এবং কম্বো',
+    challenge: 'চ্যালেঞ্জ কার্ড ⭐: কিছু কার্ড কঠিন এবং সঠিকভাবে অনুমান করলে +২ পয়েন্ট পাওয়া যায়।',
+    combo: 'কম্বো 🔥: স্ট্রিক তৈরি করতে পরপর সঠিক অনুমান করুন; এড়িয়ে গেলে এটি রিসেট হয়। কোনো অতিরিক্ত পয়েন্ট নেই।'
+  }
+};
+
+export interface HelpScreenProps {
   language: Language;
   onClose: () => void;
   initialSection?: string;
   onLanguageChange?: (lang: Language) => void;
 }
+
+type Props = HelpScreenProps;
 
 export const HelpScreen: React.FC<Props> = ({ 
   language, 
@@ -547,6 +743,23 @@ export const HelpScreen: React.FC<Props> = ({
                   : 'In single player, points scale with card CEFR difficulty: A1 (1.0x), A2 (1.35x), B1 (1.8x), B2 (2.4x), C1 (3.2x), boosting your leaderboard rank.'}
               </p>
             </section>
+
+            {/* Rule 4: Challenge Cards & Combo in every UI language */}
+            {(() => {
+              const ruleData = RULES_CHALLENGE_AND_COMBO[language] || RULES_CHALLENGE_AND_COMBO['en'];
+              return (
+                <section className="bg-[var(--panel)] p-3.5 rounded-2xl border border-[var(--line)] shadow-xs relative">
+                  <div className="bg-amber-500 inline-flex items-center gap-1.5 font-black text-white px-2.5 py-1 text-xs rounded-xl shadow-xs mb-2">
+                    <Flame size={13} className="text-white fill-white" />
+                    <span>{ruleData.title}</span>
+                  </div>
+                  <div className="bg-[var(--bg)] p-3 border border-[var(--line)] rounded-xl space-y-2 text-xs font-medium text-[var(--ink)] leading-relaxed">
+                    <p>{ruleData.challenge}</p>
+                    <p>{ruleData.combo}</p>
+                  </div>
+                </section>
+              );
+            })()}
           </div>
         )}
 

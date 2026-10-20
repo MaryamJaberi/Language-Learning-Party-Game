@@ -1018,6 +1018,18 @@ class SoundManager {
   /**
    * High-clarity native speech pronunciation using Web Speech Synthesis API with auto-fallback
    */
+  public hasVoice(lang: string = 'en-US'): boolean {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return false;
+    const targetBCP = SoundManager.BCP47_MAP[lang] || lang || 'en-US';
+    const voices = this.cachedVoices.length > 0 ? this.cachedVoices : window.speechSynthesis.getVoices();
+    if (!voices || voices.length === 0) return false;
+    const targetPrefix = targetBCP.split('-')[0].toLowerCase();
+    return voices.some(v => {
+      const vLang = v.lang.toLowerCase().replace('_', '-');
+      return vLang === targetBCP.toLowerCase() || vLang.startsWith(targetPrefix);
+    });
+  }
+
   public speak(
     text: string, 
     lang: string = 'en-US', 

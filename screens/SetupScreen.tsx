@@ -4,8 +4,9 @@ import { sound } from '../soundManager';
 import { getRandomCharacters } from '../characters';
 import { tUI, isRtlLang } from '../ui';
 import { CEFR_LEVELS } from '../constants';
+import { getAvailablePoolCount, getRealSituationCount } from '../cardsData';
 import { SoundHeaderButton } from '../components/SoundHeaderButton';
-import { ArrowLeft, ArrowRight, Check, Search, X, ChevronDown, ChevronUp, Settings, Award } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Search, X, ChevronDown, ChevronUp, Settings, Award, AlertTriangle } from 'lucide-react';
 
 interface Props {
   settings: GameSettings;
@@ -205,6 +206,31 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
   const activeCefrInfo = useMemo(() => {
     return CEFR_LEVELS.find(l => l.id === currentCefr) || CEFR_LEVELS[CEFR_LEVELS.length - 1];
   }, [currentCefr]);
+
+  // Pool Size Guard: Pre-calculate available cards and safety threshold
+  const availablePoolCount = useMemo(() => {
+    return getAvailablePoolCount(
+      settings.targetLanguages,
+      settings.selectedCategories,
+      settings.cefrLevel,
+      settings.nativeLanguage,
+      settings.cardGameMode
+    );
+  }, [settings.targetLanguages, settings.selectedCategories, settings.cefrLevel, settings.nativeLanguage, settings.cardGameMode]);
+
+  const requiredCardCount = useMemo(() => {
+    return Math.ceil(settings.playerCount * settings.roundsCount * 1.5);
+  }, [settings.playerCount, settings.roundsCount]);
+
+  const realSituationCount = useMemo(() => {
+    const targetCode = (settings.targetLanguages && settings.targetLanguages[0]) || 'en';
+    return getRealSituationCount(targetCode);
+  }, [settings.targetLanguages]);
+
+  const isSituationDisabled = realSituationCount < requiredCardCount;
+
+  const isPoolEmpty = availablePoolCount === 0;
+  const isPoolInsufficient = availablePoolCount < requiredCardCount;
 
   // Sync with global sound manager
   useEffect(() => {
@@ -1193,6 +1219,29 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
 
         <hr className="border-0 border-t border-[var(--line)] my-2" />
 
+        {/* Row 3: Card Reveal on Correct/Skip */}
+        <div className="row-ux">
+          <div className="min-w-0 pr-2 rtl:pr-0 rtl:pl-2">
+            <b className="whitespace-nowrap">{isRTL ? 'نمایش کارت پس از حدس/رد' : 'Card Reveal on Guess'}</b>
+            <small className="block text-xs text-[var(--mute)] leading-tight mt-0.5">
+              {isRTL ? 'توقف زمان و نمایش ترجمه و مثال برای یادگیری عمیق' : 'Pause timer and display translation & example'}
+            </small>
+          </div>
+          <button 
+            type="button"
+            className="sw shrink-0" 
+            role="switch" 
+            aria-checked={settings.cardRevealEnabled !== false}
+            aria-label={isRTL ? 'نمایش کارت پس از حدس/رد' : 'Card Reveal on Guess'}
+            onClick={() => {
+              sound.playToggle();
+              updateSettings('cardRevealEnabled', settings.cardRevealEnabled === false);
+            }}
+          />
+        </div>
+
+        <hr className="border-0 border-t border-[var(--line)] my-2" />
+
         {/* Direction Segment: Dynamic Human Language Names without "Native" / "Target" */}
         <div className="lab whitespace-nowrap truncate">{t.cardDirection || (isRTL ? 'جهت ترجمه کارت‌ها' : 'Card Translation Direction')}</div>
         <div className="seg sm" id="dir" role="radiogroup" aria-label={t.cardDirection || 'Card Translation Direction'}>
@@ -1216,7 +1265,86 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
             );
           })}
         </div>
+
+        <hr className="border-0 border-t border-[var(--line)] my-2" />
+
+        {/* Content Type Filter with Situation Guard */}
+        <div className="flex items-center justify-between mb-1">
+          <div className="lab whitespace-nowrap truncate">{isRTL ? 'نوع کارت‌ها' : 'Card Content Type'}</div>
+          {isSituationDisabled && (
+            <span className="text-[10px] text-amber-700 dark:text-amber-400 font-bold whitespace-nowrap">
+              {isRTL ? `Situation غیرفعال (${toPersian(realSituationCount, isRTL)} از ${toPersian(requiredCardCount, isRTL)} کارت)` : `Situation disabled (${realSituationCount}/${requiredCardCount} cards)`}
+            </span>
+          )}
+        </div>
+        <div className="seg sm" id="contentType" role="radiogroup" aria-label={isRTL ? 'نوع محتوا' : 'Content Type'}>
+          <button
+            type="button"
+            role="radio"
+            aria-checked={(settings.selectedContentType || 'all') === 'all'}
+            className="whitespace-nowrap truncate px-1 text-[10px] sm:text-[11.5px] font-bold leading-none min-w-0"
+            onClick={() => {
+              sound.playToggle();
+              updateSettings('selectedContentType', 'all');
+            }}
+          >
+            {isRTL ? 'همه انواع' : 'All Types'}
+          </button>
+          <button
+            type="button"
+            role="radio"
+            aria-checked={settings.selectedContentType === 'Phrase'}
+            className="whitespace-nowrap truncate px-1 text-[10px] sm:text-[11.5px] font-bold leading-none min-w-0"
+            onClick={() => {
+              sound.playToggle();
+              updateSettings('selectedContentType', 'Phrase');
+            }}
+          >
+            {isRTL ? 'واژگان و جملات' : 'Vocab & Sentences'}
+          </button>
+          <button
+            type="button"
+            role="radio"
+            aria-checked={settings.selectedContentType === 'Situation'}
+            disabled={isSituationDisabled}
+            className={`whitespace-nowrap truncate px-1 text-[10px] sm:text-[11.5px] font-bold leading-none min-w-0 ${
+              isSituationDisabled ? 'opacity-35 cursor-not-allowed line-through' : ''
+            }`}
+            title={isSituationDisabled ? (isRTL ? 'کارت کافی برای این زبان موجود نیست' : 'Insufficient real cards') : 'Situation'}
+            onClick={() => {
+              if (isSituationDisabled) {
+                sound.playBuzzer();
+                return;
+              }
+              sound.playToggle();
+              updateSettings('selectedContentType', 'Situation');
+            }}
+          >
+            {isRTL ? 'موقعیت (Situation)' : 'Situation'}
+          </button>
+        </div>
       </section>
+
+      {/* POOL SIZE GUARD WARNING BANNER */}
+      {isPoolEmpty ? (
+        <div className="mx-4 sm:mx-6 mb-3 p-3 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs font-bold flex items-center gap-2 animate-fade-in text-start">
+          <AlertTriangle size={18} className="shrink-0 text-rose-600" />
+          <span>
+            {isRTL
+              ? `ترکیب سطح (${activeCefrInfo?.title || settings.cefrLevel}) و موضوعات انتخابی هیچ کارتی ندارد (۰ کارت). لطفاً دسته‌های موضوعی دیگری را اضافه کنید یا سطح را به «همه سطوح» تغییر دهید.`
+              : `No cards available for this CEFR level and topic selection (0 cards). Please choose more categories or select All levels.`}
+          </span>
+        </div>
+      ) : isPoolInsufficient ? (
+        <div className="mx-4 sm:mx-6 mb-3 p-2.5 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-800 dark:text-amber-300 text-[11px] font-semibold flex items-center gap-2 animate-fade-in text-start">
+          <AlertTriangle size={16} className="shrink-0 text-amber-600" />
+          <span>
+            {isRTL
+              ? `کارت‌های موجود (${toPersian(availablePoolCount, isRTL)}) از حد نصاب استاندارد (${toPersian(requiredCardCount, isRTL)}) کمتر است و ممکن است در راندهای پایانی تکرار شوند.`
+              : `Available cards (${availablePoolCount}) is below the recommended threshold (${requiredCardCount}). Some cards may repeat.`}
+          </span>
+        </div>
+      ) : null}
 
       {/* STICKY BOTTOM ACTION BAR */}
       <div className="start-bar">
@@ -1225,6 +1353,10 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
           className="start-btn disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label={t.nextStartGame || (isRTL ? 'مرحله بعد: شروع بازی' : 'Next: Start Game')}
           onClick={() => {
+            if (isPoolEmpty) {
+              sound.playBuzzer();
+              return;
+            }
             const hasValidTargets = Array.isArray(settings.targetLanguages) && settings.targetLanguages.length > 0 && settings.targetLanguages[0];
             if (!hasValidTargets) {
               setLangError(isRTL ? 'لطفاً حداقل یک زبان برای یادگیری انتخاب کنید' : 'Please select at least one learning language');
@@ -1235,7 +1367,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
             sound.playStartGame();
             onNext();
           }}
-          disabled={!settings.targetLanguages || settings.targetLanguages.length === 0}
+          disabled={!settings.targetLanguages || settings.targetLanguages.length === 0 || isPoolEmpty}
         >
           <span className="whitespace-nowrap">{t.nextStartGame || (isRTL ? 'مرحله بعد: شروع بازی' : 'Next: Start Game')}</span>
           {isRTL ? <ArrowLeft size={20} className="shrink-0" /> : <ArrowRight size={20} className="shrink-0" />}

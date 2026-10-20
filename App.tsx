@@ -31,6 +31,7 @@ import SinglePlayerScreen from './screens/SinglePlayerScreen';
 import SinglePlayerReportScreen from './screens/SinglePlayerReportScreen';
 import DuelScreen from './screens/DuelScreen';
 import OnlineDuelScreen from './screens/OnlineDuelScreen';
+import { LeitnerScreen } from './screens/LeitnerScreen';
 import ArcadeBackground from './components/ArcadeBackground';
 import SinglePlayerSetupModal from './components/SinglePlayerSetupModal';
 import { DuelSetupModal, DuelSettings } from './components/DuelSetupModal';
@@ -43,6 +44,7 @@ import { buildMistakeReviewSession } from './mistakeReviewService';
 import { auth, saveMatchToCloud, syncSettingsToCloud } from './firebase';
 import { createOnlineDuelRoom, joinOnlineDuelRoom, findOnlineDuelMatch } from './onlineRoomService';
 import { onAuthStateChanged } from 'firebase/auth';
+import { migrateGuestWeakCardsToCloud } from './contentEngine';
 import { getRandomCharacters } from './characters';
 import { isRtlLang } from './ui';
 import { PLAYER_AVATARS } from './constants';
@@ -53,8 +55,8 @@ const DEFAULT_SETTINGS: GameSettings = {
   roundDuration: 60,
   difficulty: 'easy',
   cefrLevel: 'all',
-  nativeLanguage: 'fa',
-  targetLanguages: ['nl', 'en'],
+  nativeLanguage: 'en',
+  targetLanguages: ['es', 'nl'],
   cardGameMode: 'mixed',
   autoPronounceOnCorrect: true,
   selectedCategories: [
@@ -66,14 +68,15 @@ const DEFAULT_SETTINGS: GameSettings = {
     "CAT_WORK",
     "CAT_SMALLTALK"
   ],
-  playerNames: getRandomCharacters('fa', 8),
-  language: 'fa',
+  playerNames: getRandomCharacters('en', 8),
+  language: 'en',
   passPhoneScreenEnabled: false,
   soundEnabled: true,
-  powerCardsEnabled: true
+  powerCardsEnabled: true,
+  cardRevealEnabled: true
 };
 
-type ScreenType = 'INTRO' | 'LANGUAGE_SELECT' | 'CATEGORIES' | 'SETUP' | 'PLAYERS' | 'SEATING_CONFIRM' | 'GAME' | 'HISTORY' | 'HELP' | 'ONLINE_LOBBY' | 'ONLINE_GAME' | 'SINGLE_PLAYER' | 'SINGLE_REPORT' | 'DUEL_GAME' | 'ONLINE_DUEL';
+type ScreenType = 'INTRO' | 'LANGUAGE_SELECT' | 'CATEGORIES' | 'SETUP' | 'PLAYERS' | 'SEATING_CONFIRM' | 'GAME' | 'HISTORY' | 'HELP' | 'ONLINE_LOBBY' | 'ONLINE_GAME' | 'SINGLE_PLAYER' | 'SINGLE_REPORT' | 'DUEL_GAME' | 'ONLINE_DUEL' | 'LEITNER';
 
 const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('INTRO');
@@ -95,8 +98,8 @@ const App: React.FC = () => {
   const [isSingleSetupOpen, setIsSingleSetupOpen] = useState(false);
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
   const [singlePlayerSettings, setSinglePlayerSettings] = useState<SinglePlayerSettings>({
-    targetLanguage: 'nl',
-    nativeLanguage: 'fa',
+    targetLanguage: 'es',
+    nativeLanguage: 'en',
     cefrLevel: 'all',
     displayMode: 'text_and_audio',
     questionCount: 10,
@@ -176,30 +179,26 @@ const App: React.FC = () => {
     if (savedSettings) {
       try {
         const parsed = JSON.parse(savedSettings);
-        let uiLang = parsed?.language || 'fa';
-        const isEnglish = uiLang === 'en' || uiLang === 'en-US' || parsed?.nativeLanguage === 'en' || parsed?.nativeLanguage === 'en-US';
-        const nativeLang = isEnglish ? 'en' : (parsed?.nativeLanguage || uiLang || 'fa');
-        const isEnglishNative = isEnglish;
+        let uiLang = parsed?.language || 'en';
+        if (uiLang === 'en-US') uiLang = 'en';
+        const isEnglish = uiLang === 'en' || parsed?.nativeLanguage === 'en' || parsed?.nativeLanguage === 'en-US';
+        const nativeLang = parsed?.nativeLanguage === 'fa' ? 'fa' : (isEnglish ? 'en' : (parsed?.nativeLanguage || uiLang || 'en'));
+        const isEnglishNative = nativeLang === 'en' || nativeLang === 'en-US';
         
         // Normalize player names: if native language is English, ensure no leftover Persian names
         let loadedNames: string[] = Array.isArray(parsed?.playerNames) ? parsed.playerNames : [];
         const hasPersianNames = loadedNames.some(name => typeof name === 'string' && /[\u0600-\u06FF]/.test(name));
         if (isEnglishNative && (hasPersianNames || loadedNames.length === 0)) {
-          loadedNames = getRandomCharacters('en-US', 8);
-        }
-
-        // Normalize UI language: if native is English and language was 'fa', switch to 'en-US'
-        if (isEnglishNative && uiLang === 'fa') {
-          uiLang = 'en-US';
+          loadedNames = getRandomCharacters('en', 8);
         }
 
         // Target languages
         let targets = Array.isArray(parsed?.targetLanguages) && parsed.targetLanguages.length > 0 
           ? parsed.targetLanguages 
-          : (isEnglishNative ? ['nl', 'es'] : ['nl', 'en']);
+          : (isEnglishNative ? ['es', 'nl'] : ['nl', 'en']);
         if (isEnglishNative) {
           targets = targets.filter((t: string) => t !== 'en' && t !== 'en-US');
-          if (targets.length === 0) targets = ['nl', 'es'];
+          if (targets.length === 0) targets = ['es', 'nl'];
         }
 
         // Validate numbers and enums against corrupted or outdated data
@@ -248,6 +247,7 @@ const App: React.FC = () => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         syncSettingsToCloud(user.uid, settingsRef.current).catch(console.error);
+        migrateGuestWeakCardsToCloud(user.uid).catch(console.error);
       }
     });
     return () => unsubscribe();
@@ -510,8 +510,64 @@ const App: React.FC = () => {
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [gameStatus]);
 
+  // Session Persistence: save active game state to localStorage for refresh recovery
+  useEffect(() => {
+    if (currentScreen === 'GAME' && (gameStatus === GameStatus.ActiveTurn || gameStatus === GameStatus.Paused || gameStatus === GameStatus.BetweenRounds)) {
+      try {
+        const sessionPayload = {
+          timestamp: Date.now(),
+          settings,
+          teams,
+          players,
+          currentRound,
+          activePlayerIndex,
+          roundTimer,
+          sessionCardPool,
+          poolPointer,
+          currentCard,
+          playedCards
+        };
+        localStorage.setItem('dour_active_session', JSON.stringify(sessionPayload));
+      } catch (e) {
+        // ignore
+      }
+    }
+  }, [currentScreen, gameStatus, teams, players, currentRound, activePlayerIndex, roundTimer, sessionCardPool, poolPointer, currentCard, playedCards, settings]);
+
+  const handleResumeActiveSession = () => {
+    try {
+      const raw = localStorage.getItem('dour_active_session');
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      if (parsed) {
+        if (parsed.settings) setSettings(parsed.settings);
+        if (parsed.teams) setTeams(parsed.teams);
+        if (parsed.players) setPlayers(parsed.players);
+        if (parsed.currentRound) setCurrentRound(parsed.currentRound);
+        if (typeof parsed.activePlayerIndex === 'number') setActivePlayerIndex(parsed.activePlayerIndex);
+        if (typeof parsed.roundTimer === 'number') setRoundTimer(parsed.roundTimer);
+        if (parsed.sessionCardPool) setSessionCardPool(parsed.sessionCardPool);
+        if (typeof parsed.poolPointer === 'number') setPoolPointer(parsed.poolPointer);
+        if (parsed.currentCard) setCurrentCard(parsed.currentCard);
+        if (parsed.playedCards) setPlayedCards(parsed.playedCards);
+        // Start paused so team timer doesn't run during load
+        setGameStatus(GameStatus.Paused);
+        setCurrentScreen('GAME');
+      }
+    } catch (e) {
+      console.error('Failed to restore active session:', e);
+    }
+  };
+
+  const handleDiscardActiveSession = () => {
+    try {
+      localStorage.removeItem('dour_active_session');
+    } catch (e) {}
+  };
+
   // Record Game to Local & Firebase History
   const handleGameFinish = (entry: GameHistoryEntry) => {
+    handleDiscardActiveSession();
     const updated = [entry, ...history];
     setHistory(updated);
     localStorage.setItem('dor_history', JSON.stringify(updated));
@@ -521,16 +577,19 @@ const App: React.FC = () => {
   };
 
   const handleExitGame = () => {
+    handleDiscardActiveSession();
     setGameStatus(GameStatus.Setup);
     setCurrentScreen('INTRO');
   };
 
   const handleExitToHome = () => {
+    handleDiscardActiveSession();
     setGameStatus(GameStatus.Setup);
     setCurrentScreen('INTRO');
   };
 
   const handleExitToSetup = () => {
+    handleDiscardActiveSession();
     setGameStatus(GameStatus.Setup);
     setCurrentScreen('SETUP');
   };
@@ -789,6 +848,9 @@ const App: React.FC = () => {
           onOpenOnline={() => setCurrentScreen('ONLINE_LOBBY')}
           onOpenHistory={() => setCurrentScreen('HISTORY')}
           onOpenHelp={() => openHelp('intro')}
+          onOpenLeitner={() => setCurrentScreen('LEITNER')}
+          onResumeSession={handleResumeActiveSession}
+          onDiscardSession={handleDiscardActiveSession}
         />
       )}
 
@@ -914,6 +976,7 @@ const App: React.FC = () => {
           playedCards={playedCards}
           setPlayedCards={setPlayedCards}
           onRequeueCard={handleRequeueCard}
+          onOpenLeitner={() => setCurrentScreen('LEITNER')}
         />
       )}
 
@@ -988,6 +1051,15 @@ const App: React.FC = () => {
             setOnlineDuelRoom(null);
             setCurrentScreen('INTRO');
           }}
+          isRTL={isRtlLang(settings.language)}
+        />
+      )}
+
+      {/* 14. LEITNER SPACED REPETITION SCREEN */}
+      {currentScreen === 'LEITNER' && (
+        <LeitnerScreen
+          language={settings.language}
+          onExit={() => setCurrentScreen('INTRO')}
           isRTL={isRtlLang(settings.language)}
         />
       )}

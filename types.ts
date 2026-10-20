@@ -86,6 +86,7 @@ export interface GameSettings {
   difficulty?: DifficultyLevel;
   cefrLevel?: CEFRLevel;
   selectedCategories: string[];
+  selectedContentType?: ContentType | 'all';
   playerNames: string[];
   playerAvatars?: string[];
   language: Language; // App UI language / Native reference language
@@ -98,6 +99,7 @@ export interface GameSettings {
   passPhoneScreenEnabled?: boolean;
   powerCardsEnabled?: boolean;
   coachModeEnabled?: boolean;
+  cardRevealEnabled?: boolean; // Card reveal overlay on correct/skip (default true)
 }
 
 export interface PlayedCardRecord {
@@ -155,6 +157,7 @@ export enum GameStatus {
   RoundStarting = 'PASS_PHONE',
   Playing = 'ACTIVE_TURN',
   RoundFinished = 'ROUND_ENDED',
+  BetweenRounds = 'ROUND_ENDED',
   GameOver = 'WINNER_SCREEN',
   Help = 'PAUSED'
 }
@@ -182,6 +185,8 @@ export interface OnlineRoomState {
   id: string;
   code: string;
   hostId: string;
+  hostUid?: string;
+  participantUids?: string[];
   hostName: string;
   status: 'lobby' | 'seating' | 'playing' | 'round_ended' | 'game_over';
   currentRound: number;
@@ -334,6 +339,7 @@ export interface LeitnerCardItem {
   lastReviewedDate: string; // YYYY-MM-DD
   nextReviewDate: string;   // YYYY-MM-DD
   reviewHistory: Array<{ date: string; success: boolean }>;
+  mistakeCount?: number;
 }
 
 export interface LeitnerState {

@@ -6,6 +6,15 @@ import App from '../App';
 describe('Complete End-to-End User Flow Tests', () => {
   beforeEach(() => {
     localStorage.clear();
+    localStorage.setItem('dor_settings', JSON.stringify({
+      language: 'fa',
+      nativeLanguage: 'fa',
+      targetLanguages: ['nl', 'en'],
+      playerCount: 4,
+      roundsCount: 3,
+      roundDuration: 60,
+      cardGameMode: 'mixed'
+    }));
     vi.clearAllMocks();
   });
 
@@ -47,7 +56,7 @@ describe('Complete End-to-End User Flow Tests', () => {
     fireEvent.click(closeHelpBtn);
 
     // Verify we returned to Intro Screen
-    expect(screen.getByText(/شروع بازی (دورهمی|جدید)/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/شروع بازی دورهمی/i)).toBeInTheDocument();
 
     // 3. Open History Screen
     const historyBtn = screen.getByRole('button', { name: /تاریخچه/i });
@@ -109,6 +118,9 @@ describe('Complete End-to-End User Flow Tests', () => {
     // Record player 1 guessing correctly
     fireEvent.click(correctBtn);
 
+    const cardDismiss = screen.queryByText(/لمس صفحه|tap anywhere/i);
+    if (cardDismiss) fireEvent.click(cardDismiss);
+
     // Floating Undo button appears
     const undoBtn = screen.getByRole('button', { name: /بازگشت کارت قبلی/i });
     expect(undoBtn).toBeInTheDocument();
@@ -119,6 +131,8 @@ describe('Complete End-to-End User Flow Tests', () => {
 
     // Advance again
     fireEvent.click(correctBtn);
+    const cardDismiss2 = screen.queryByText(/لمس صفحه|tap anywhere/i);
+    if (cardDismiss2) fireEvent.click(cardDismiss2);
 
     // Test Pause Game
     const pauseBtn = screen.getByLabelText('Pause');
@@ -259,7 +273,7 @@ describe('Complete End-to-End User Flow Tests', () => {
     render(<App />);
 
     // 1. Intro -> Setup Screen
-    fireEvent.click(screen.getByText(/شروع بازی دورهمی/i));
+    fireEvent.click(screen.getByLabelText(/شروع بازی دورهمی/i));
 
     // 2. Select 8 Players (4 Teams: Blue, Red, Green, Yellow)
     const p8Btn = document.getElementById('players')?.querySelectorAll('button')[2];
