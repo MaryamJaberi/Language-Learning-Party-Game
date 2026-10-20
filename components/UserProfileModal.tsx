@@ -34,7 +34,9 @@ import {
   ExternalLink,
   ShieldAlert,
   Box,
-  MapPin
+  MapPin,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 export type ProfileTab = 'history' | 'records' | 'leitner' | 'leaderboard' | 'install' | 'downloads' | 'privacy';
@@ -84,6 +86,27 @@ export const UserProfileModal: React.FC<Props> = ({
 
   const { isInstallable, isInstalled, install } = usePWAInstall();
   const isRTL = isRtlLang(language);
+
+  // Tab auto-centering & smooth navigation refs
+  const tabsContainerRef = React.useRef<HTMLDivElement>(null);
+  const tabButtonsRef = React.useRef<Record<string, HTMLButtonElement | null>>({});
+
+  useEffect(() => {
+    if (isOpen && tabButtonsRef.current[activeTab]) {
+      tabButtonsRef.current[activeTab]?.scrollIntoView({
+        behavior: 'smooth',
+        inline: 'center',
+        block: 'nearest'
+      });
+    }
+  }, [activeTab, isOpen]);
+
+  const scrollTabs = (direction: 'left' | 'right') => {
+    if (tabsContainerRef.current) {
+      const offset = direction === 'left' ? -150 : 150;
+      tabsContainerRef.current.scrollBy({ left: offset, behavior: 'smooth' });
+    }
+  };
 
   const loadLocalHistory = () => {
     try {
