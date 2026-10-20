@@ -8,10 +8,10 @@ android {
 
     defaultConfig {
         applicationId "com.solonovate.dour"
-        minSdk 21
+        minSdk 24
         targetSdk 36
-        versionCode 10010
-        versionName "1.1.0"
+        versionCode 10011
+        versionName "1.1.1"
     }
 
     signingConfigs {

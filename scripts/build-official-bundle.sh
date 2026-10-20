@@ -38,7 +38,7 @@ EOF
 mkdir -p /tmp/r8_out
 $JAVA_CMD -cp $R8_JAR com.android.tools.r8.R8 \
   --release \
-  --min-api 21 \
+  --min-api 24 \
   --lib $ANDROID_JAR \
   --pg-conf /tmp/proguard-rules.pro \
   --pg-map-output /tmp/proguard.map \
