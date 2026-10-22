@@ -302,7 +302,11 @@ describe('Complete End-to-End User Flow Tests', () => {
     expect(singleBtn).toBeInTheDocument();
     fireEvent.click(singleBtn!);
 
-    // 2. Start Single Player
+    // 2. Select level first (required per user request: no default level)
+    const levelBtn = screen.getByText('A1');
+    fireEvent.click(levelBtn);
+
+    // 3. Start Single Player
     const startSingleBtn = screen.getByRole('button', { name: /شروع تمرین/i });
     fireEvent.click(startSingleBtn);
 

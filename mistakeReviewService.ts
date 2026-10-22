@@ -128,51 +128,56 @@ export function generateSimilarQuestions(
   if (!mistakeCard) return [];
 
   const lang = mistakeCard.targetLanguage;
+  const nativeLang = mistakeCard.nativeLanguage || 'en';
+  const isFaNative = nativeLang === 'fa';
   const topic = mistakeCard.topic;
   const level = mistakeCard.cefrLevel;
   const originalTarget = mistakeCard.targetText.trim();
-  const originalPrompt = mistakeCard.prompt || mistakeCard.translation;
 
   const similarList: LanguageCard[] = [];
 
   // 1. Find cards from curated database matching the same target language, topic, and level
-  const curatedMatches = CURATED_LANGUAGE_CARDS.filter(c => 
-    c.targetLanguage === lang &&
-    c.id !== mistakeCard.id &&
-    (c.topic === topic || c.cefrLevel === level)
-  );
+  // Only use curated cards if nativeLanguage is Persian or English with English override
+  if (isFaNative) {
+    const curatedMatches = CURATED_LANGUAGE_CARDS.filter(c => 
+      c.targetLanguage === lang &&
+      c.id !== mistakeCard.id &&
+      (c.topic === topic || c.cefrLevel === level)
+    );
 
-  // Shuffle curated matches
-  const shuffledCurated = [...curatedMatches].sort(() => Math.random() - 0.5);
-  for (const c of shuffledCurated) {
-    if (!similarList.some(item => item.id === c.id)) {
-      similarList.push({
-        ...c,
-        hint: `🔄 تمرین مشابه: الگوی گرامری "${mistakeCard.grammarPoint || topic.replace('CAT_', '')}"`
-      });
-      if (similarList.length >= count) break;
+    const shuffledCurated = [...curatedMatches].sort(() => Math.random() - 0.5);
+    for (const c of shuffledCurated) {
+      if (!similarList.some(item => item.id === c.id)) {
+        similarList.push({
+          ...c,
+          hint: `🔄 تمرین مشابه: الگوی گرامری "${mistakeCard.grammarPoint || topic.replace('CAT_', '')}"`
+        });
+        if (similarList.length >= count) break;
+      }
     }
   }
 
-  // 2. Synthesize grammatical and semantic variants if not enough curated matches
+  // 2. Synthesize grammatical and semantic variants if not enough matches
   if (similarList.length < count) {
     const isQ = originalTarget.endsWith('?') || /^(wat|waar|hoe|wie|what|where|how|who|wo|wann|wie|où|quand|comment)\b/i.test(originalTarget);
 
-    // Subject & Pronoun Variation 1
     if (lang === 'nl') {
       if (/ik wil/i.test(originalTarget)) {
         similarList.push({
           id: `${mistakeCard.id}_var1`,
           targetLanguage: lang,
+          nativeLanguage: nativeLang,
           cefrLevel: level,
           topic,
           contentType: 'Sentence',
           learningMode: 'Explain',
-          prompt: `همین درخواست را برای «ما» (Wij) بیان کن:`,
+          prompt: isFaNative ? `همین درخواست را برای «ما» (Wij) بیان کن:` : `Express this polite request for "We" (Wij):`,
           targetText: originalTarget.replace(/ik wil/i, 'wij willen'),
-          translation: mistakeCard.translation.replace(/می‌خواهم|می‌خوام/g, 'می‌خواهیم'),
-          grammarPoint: 'تغییر فاعل: Ik wil ➔ Wij willen',
-          hint: 'فاعل به جمع (ما) تغییر کرده است',
+          translation: isFaNative 
+            ? mistakeCard.translation.replace(/می‌خواهم|می‌خوام/g, 'می‌خواهیم')
+            : 'We want to / We would like...',
+          grammarPoint: 'Subject Variation: Ik wil ➔ Wij willen',
+          hint: isFaNative ? 'فاعل به جمع (ما) تغییر کرده است' : 'Plural subject: Wij willen',
           difficulty: 'medium',
           points: 2
         });
@@ -180,15 +185,16 @@ export function generateSimilarQuestions(
         similarList.push({
           id: `${mistakeCard.id}_var2`,
           targetLanguage: lang,
+          nativeLanguage: nativeLang,
           cefrLevel: level,
           topic,
           contentType: 'Sentence',
           learningMode: 'Explain',
-          prompt: `سؤال مشابه درباره زمان پایان یا شروع رویداد:`,
+          prompt: isFaNative ? `سؤال مشابه درباره زمان پایان یا شروع رویداد:` : `Similar question asking about event time:`,
           targetText: 'Wanneer begint het concert?',
-          translation: 'کنسرت چه زمانی شروع می‌شود؟',
-          grammarPoint: 'پرسش زمان: Wanneer begint...?',
-          hint: 'کلمه پرسشی Wanneer',
+          translation: isFaNative ? 'کنسرت چه زمانی شروع می‌شود؟' : 'When does the concert start?',
+          grammarPoint: 'Time Question: Wanneer begint...?',
+          hint: 'Wanneer begint...?',
           difficulty: 'medium',
           points: 2
         });
@@ -198,49 +204,18 @@ export function generateSimilarQuestions(
         similarList.push({
           id: `${mistakeCard.id}_var1`,
           targetLanguage: lang,
+          nativeLanguage: nativeLang,
           cefrLevel: level,
           topic,
           contentType: 'Sentence',
           learningMode: 'Explain',
-          prompt: `همین درخواست محترمانه را برای «او» (He) بیان کن:`,
+          prompt: isFaNative ? `همین درخواست محترمانه را برای «او» (He) بیان کن:` : `Express this polite request for "He":`,
           targetText: originalTarget.replace(/i('d| would) like/i, 'He would like'),
-          translation: mistakeCard.translation.replace(/می‌خواهم|می‌خوام/g, 'او می‌خواهد'),
+          translation: isFaNative 
+            ? mistakeCard.translation.replace(/می‌خواهم|می‌خوام/g, 'او می‌خواهد')
+            : 'He would like...',
           grammarPoint: 'Modal Polite Request: He would like...',
-          hint: 'Subject change to third person',
-          difficulty: 'medium',
-          points: 2
-        });
-      } else if (isQ && /where is/i.test(originalTarget)) {
-        similarList.push({
-          id: `${mistakeCard.id}_var2`,
-          targetLanguage: lang,
-          cefrLevel: level,
-          topic,
-          contentType: 'Sentence',
-          learningMode: 'Explain',
-          prompt: `پرسش مشابه با استفاده از عبارت Could you tell me:`,
-          targetText: originalTarget.replace(/where is the/i, 'Could you tell me where the') + ' is?',
-          translation: 'می‌توانید به من بگویید کجاست؟',
-          grammarPoint: 'Indirect Question Structure',
-          hint: 'Could you tell me where...',
-          difficulty: 'medium',
-          points: 2
-        });
-      }
-    } else if (lang === 'de') {
-      if (/ich möchte/i.test(originalTarget)) {
-        similarList.push({
-          id: `${mistakeCard.id}_var1`,
-          targetLanguage: lang,
-          cefrLevel: level,
-          topic,
-          contentType: 'Sentence',
-          learningMode: 'Explain',
-          prompt: `همین جمله را با فاعل «ما» (Wir) بگو:`,
-          targetText: originalTarget.replace(/ich möchte/i, 'Wir möchten'),
-          translation: mistakeCard.translation.replace(/می‌خواهم|می‌خوام/g, 'ما می‌خواهیم'),
-          grammarPoint: 'Höfliche Bitte: Wir möchten...',
-          hint: 'Wir möchten...',
+          hint: 'Third person: He would like',
           difficulty: 'medium',
           points: 2
         });
@@ -248,25 +223,26 @@ export function generateSimilarQuestions(
     }
   }
 
-  // 3. Fallback: match from universal concept dictionary
+  // 3. Fallback: match from universal concept dictionary across all languages
   if (similarList.length < count) {
     const concepts = UNIVERSAL_CONCEPTS.filter(c => c.topic === topic || c.level === level);
     for (const cp of concepts) {
       const word = cp.words?.[lang];
-      const transFa = cp.words?.['fa'] || cp.words?.['en'];
-      if (word && word !== originalTarget) {
+      const nativeTranslation = cp.words?.[nativeLang] || cp.words?.[nativeLang.split('-')[0]] || (isFaNative ? cp.words?.['fa'] : cp.words?.['en']);
+      if (word && word !== originalTarget && nativeTranslation) {
         similarList.push({
           id: `${mistakeCard.id}_concept_${cp.id}`,
           targetLanguage: lang,
+          nativeLanguage: nativeLang,
           cefrLevel: level,
           topic,
           contentType: 'Vocabulary',
           learningMode: 'Explain',
-          prompt: `کلمه هم‌خانواده در همین موضوع:`,
+          prompt: isFaNative ? `کلمه هم‌خانواده در همین موضوع:` : `Related vocabulary in this topic:`,
           targetText: word,
-          translation: transFa || word,
-          grammarPoint: `واژگان مرتبط: ${topic.replace('CAT_', '')}`,
-          hint: 'مفهوم هم‌دسته در همین موضوع',
+          translation: nativeTranslation,
+          grammarPoint: `Vocabulary Focus: ${topic.replace('CAT_', '')}`,
+          hint: isFaNative ? 'مفهوم هم‌دسته در همین موضوع' : 'Related concept',
           difficulty: 'easy',
           points: 1
         });
@@ -284,12 +260,12 @@ export function generateSimilarQuestions(
 export function buildMistakeReviewSession(): { cards: LanguageCard[]; targetLanguage: Language; nativeLanguage: Language } {
   const mistakes = getSavedMistakes().filter(m => !m.mastered);
   if (mistakes.length === 0) {
-    return { cards: [], targetLanguage: 'nl', nativeLanguage: 'fa' };
+    return { cards: [], targetLanguage: 'en', nativeLanguage: 'en' };
   }
 
   const sessionCards: LanguageCard[] = [];
-  const primaryLang = mistakes[0].card.targetLanguage || 'nl';
-  const nativeLang = mistakes[0].card.nativeLanguage || 'fa';
+  const primaryLang = mistakes[0].card.targetLanguage || 'en';
+  const nativeLang = mistakes[0].card.nativeLanguage || 'en';
 
   for (const m of mistakes.slice(0, 10)) {
     sessionCards.push(m.card);

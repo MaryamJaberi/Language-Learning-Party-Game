@@ -828,12 +828,12 @@ export function getC1CardsForSession(
       const targetEntity = getSafeText(entity.texts, targetLanguage, entity.texts['en']);
       const targetText = `${targetPrefix}${targetEntity}${targetSuffix}`.trim();
 
-      const isEnNative = nativeLanguage === 'en' || nativeLanguage === 'en-US';
-      const nativeFallback = isEnNative ? (frame.prefix['en-US'] || frame.prefix['en']) : (frame.prefix['fa'] || frame.prefix['en']);
+      const isFaNative = nativeLanguage === 'fa';
+      const nativeFallback = isFaNative ? (frame.prefix['fa'] || frame.prefix['en']) : (frame.prefix['en-US'] || frame.prefix['en']);
       const nativePrefix = getSafeText(frame.prefix, nativeLanguage, nativeFallback);
-      const suffixFallback = isEnNative ? (frame.suffix['en-US'] || frame.suffix['en']) : (frame.suffix['fa'] || frame.suffix['en']);
+      const suffixFallback = isFaNative ? (frame.suffix['fa'] || frame.suffix['en']) : (frame.suffix['en-US'] || frame.suffix['en']);
       const nativeSuffix = getSafeText(frame.suffix, nativeLanguage, suffixFallback);
-      const entityFallback = isEnNative ? (entity.texts['en-US'] || entity.texts['en']) : (entity.texts['fa'] || entity.texts['en']);
+      const entityFallback = isFaNative ? (entity.texts['fa'] || entity.texts['en']) : (entity.texts['en-US'] || entity.texts['en']);
       const nativeEntity = getSafeText(entity.texts, nativeLanguage, entityFallback);
       const nativeText = `${nativePrefix}${nativeEntity}${nativeSuffix}`.trim();
 

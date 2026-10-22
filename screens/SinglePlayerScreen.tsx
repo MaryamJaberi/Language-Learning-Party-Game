@@ -204,10 +204,10 @@ const SinglePlayerScreen: React.FC<Props> = ({
   const quickQuizOptions = useMemo(() => {
     if (!currentCard) return [];
     const targetLang = settings.displayMode === 'translate_to_native'
-      ? (currentCard.nativeLanguage || 'fa')
-      : (currentCard.targetLanguage || 'nl');
+      ? (currentCard.nativeLanguage || settings.nativeLanguage || (isRTL ? 'fa' : 'en'))
+      : (currentCard.targetLanguage || settings.targetLanguage || 'en');
     return generateChallengingReflexOptions(currentCard, cards, targetLang);
-  }, [currentCard, cards, settings.displayMode]);
+  }, [currentCard, cards, settings.displayMode, settings.nativeLanguage, settings.targetLanguage, isRTL]);
 
   // Initialize Speech Recognition
   useEffect(() => {
@@ -224,13 +224,13 @@ const SinglePlayerScreen: React.FC<Props> = ({
       recognition.maxAlternatives = 3;
 
       const isReverseToNative = settings.displayMode === 'translate_to_native';
-      const nativeCode = settings.nativeLanguage || 'fa';
+      const nativeCode = currentCard?.nativeLanguage || settings.nativeLanguage || (isRTL ? 'fa' : 'en');
       const nativeInfo = SUPPORTED_LANGUAGES.find(l => l.code === nativeCode);
-      const targetLang = currentCard?.targetLanguage || settings.targetLanguage;
+      const targetLang = currentCard?.targetLanguage || settings.targetLanguage || 'en';
       const langInfo = SUPPORTED_LANGUAGES.find(l => l.code === targetLang);
 
       const langCode = isReverseToNative
-        ? (nativeInfo?.speechCode || SPEECH_LANG_MAP[nativeCode] || 'fa-IR')
+        ? (nativeInfo?.speechCode || SPEECH_LANG_MAP[nativeCode] || (nativeCode === 'fa' ? 'fa-IR' : 'en-US'))
         : (langInfo?.speechCode || SPEECH_LANG_MAP[targetLang] || 'en-US');
       recognition.lang = langCode;
 
@@ -372,8 +372,8 @@ const SinglePlayerScreen: React.FC<Props> = ({
         try {
           const audioBlob = await geminiRecorderRef.current.stop();
           const targetLang = settings.displayMode === 'translate_to_native'
-            ? (currentCard?.nativeLanguage || settings.nativeLanguage || 'fa')
-            : (currentCard?.targetLanguage || settings.targetLanguage || 'nl');
+            ? (currentCard?.nativeLanguage || settings.nativeLanguage || (isRTL ? 'fa' : 'en'))
+            : (currentCard?.targetLanguage || settings.targetLanguage || 'en');
           const transcribed = await transcribeAudioBlob(audioBlob, targetLang);
           if (transcribed && transcribed.trim()) {
             setUserInput(transcribed.trim());
@@ -394,13 +394,13 @@ const SinglePlayerScreen: React.FC<Props> = ({
       setIsListening(true);
 
       const isReverseToNative = settings.displayMode === 'translate_to_native';
-      const nativeCode = settings.nativeLanguage || 'fa';
+      const nativeCode = currentCard?.nativeLanguage || settings.nativeLanguage || (isRTL ? 'fa' : 'en');
       const nativeInfo = SUPPORTED_LANGUAGES.find(l => l.code === nativeCode);
-      const targetLang = currentCard?.targetLanguage || settings.targetLanguage;
+      const targetLang = currentCard?.targetLanguage || settings.targetLanguage || 'en';
       const langInfo = SUPPORTED_LANGUAGES.find(l => l.code === targetLang);
 
       const langCode = isReverseToNative
-        ? (nativeInfo?.speechCode || SPEECH_LANG_MAP[nativeCode] || 'fa-IR')
+        ? (nativeInfo?.speechCode || SPEECH_LANG_MAP[nativeCode] || (nativeCode === 'fa' ? 'fa-IR' : 'en-US'))
         : (langInfo?.speechCode || SPEECH_LANG_MAP[targetLang] || 'en-US');
 
       // 1. Try starting Web Speech API for immediate streaming feedback
@@ -654,8 +654,8 @@ const SinglePlayerScreen: React.FC<Props> = ({
     if (!currentCard) return;
     sound.playPowerUp();
 
-    // The language of the hint MUST strictly match the Guide language (settings.nativeLanguage)
-    const guideLang = settings.nativeLanguage || 'fa';
+    // The language of the hint MUST strictly match the Guide language (currentCard.nativeLanguage || settings.nativeLanguage)
+    const guideLang = currentCard.nativeLanguage || settings.nativeLanguage || (isRTL ? 'fa' : 'en');
 
     const isReverse = settings.displayMode === 'translate_to_native';
     const fullText = (isReverse ? currentCard.translation : currentCard.targetText || '').trim();
@@ -1430,7 +1430,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
             <input
               ref={textInputRef}
               type="text"
-              dir={isRtlLang(settings.displayMode === 'translate_to_native' ? (currentCard?.nativeLanguage || 'fa') : (currentCard?.targetLanguage || 'nl')) ? 'rtl' : 'ltr'}
+              dir={isRtlLang(settings.displayMode === 'translate_to_native' ? (currentCard?.nativeLanguage || settings.nativeLanguage || (isRTL ? 'fa' : 'en')) : (currentCard?.targetLanguage || settings.targetLanguage || 'en')) ? 'rtl' : 'ltr'}
               value={userInput}
               onChange={e => setUserInput(e.target.value)}
               onKeyDown={e => {

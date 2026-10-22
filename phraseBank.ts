@@ -114,7 +114,7 @@ export function cardsFromPhraseBank(
       if (cats.size && !cats.has(p.topic)) return;
       const targetText = pickText(p.texts, target);
       const translation = pickText(p.texts, nativeLanguage);
-      if (!targetText) return;
+      if (!targetText || !translation) return;
       const content = typeOf(p.type);
       const reverse = shouldReverse(i);
       const forcedLevel =
@@ -138,7 +138,7 @@ export function cardsFromPhraseBank(
             ? 'عبارت را طوری توضیح بده که یارت همان جمله را بگوید'
             : 'Describe it so your partner says the exact phrase',
         targetText,
-        translation: translation || targetText,
+        translation,
         hint: p.rawTopic,
         difficulty: p.difficulty,
         points: pointsFor(p.difficulty),

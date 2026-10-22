@@ -1294,9 +1294,13 @@ export function generateSyntheticCardsForLanguage(
     const nativeTranslation = w.words[nativeLanguage] 
       || (nativeLanguage === 'en-US' ? w.words['en'] : undefined)
       || conceptFallback?.words?.[nativeLanguage] 
-      || (isEnNative ? w.words['en'] : w.words['fa']);
+      || (isEnNative ? w.words['en'] : (nativeLanguage === 'fa' ? w.words['fa'] : undefined));
     
     if (!nativeTranslation) return;
+    // Strictly prevent Persian script leak if nativeLanguage is not Persian, Arabic, Kurdish, or Urdu
+    if (nativeLanguage !== 'fa' && /[\u0600-\u06FF]/.test(nativeTranslation) && !['ar', 'ku', 'ur'].includes(nativeLanguage)) {
+      return;
+    }
 
     // Map Word difficulty to CEFR level: easy -> A1/A2, medium -> A2/B1, hard -> B1
     const cefr: 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2' = 
@@ -1398,20 +1402,17 @@ export function buildSessionCardPool(
         let hnt = enOverride?.hint || card.hint;
         let pron = card.pronunciation;
 
-        if (isEnNative) {
-          // If translation still contains Persian script, skip this card
-          if (!enOverride && /[\u0600-\u06FF]/.test(trans)) {
-            return;
-          }
-          if (/[\u0600-\u06FF]/.test(prmpt)) {
-            prmpt = `Explain this ${card.contentType.toLowerCase()} in the target language`;
-          }
-          if (hnt && /[\u0600-\u06FF]/.test(hnt)) {
-            hnt = `Category: ${card.topic.replace('CAT_', '')}`;
-          }
-          // Remove Persian-script transliteration
-          if (pron && /[\u0600-\u06FF]/.test(pron)) {
+        const isFaNative = nativeLanguage === 'fa';
+        if (!isFaNative) {
+          if (isEnNative && enOverride) {
+            trans = enOverride.translation;
+            prmpt = enOverride.prompt || `Explain this ${card.contentType.toLowerCase()} in the target language`;
+            hnt = enOverride.hint || `Category: ${card.topic.replace('CAT_', '')}`;
             pron = undefined;
+          } else {
+            // Curated cards only have Persian translations unless enOverride is present.
+            // For any other native language (nl, de, fr, es, it, etc.), skip this card!
+            return;
           }
         }
 
@@ -1586,6 +1587,31 @@ export function buildSessionCardPool(
         const levelMatch = cefrLevel === 'all' || c.cefrLevel === cefrLevel;
         if (levelMatch && sanitizedPool.length < 35 && !sanitizedPool.some(existing => existing.id === c.id)) {
           sanitizedPool.push(c);
+        }
+      });
+    });
+  }
+
+  // Strict Multi-Lingual Leak Prevention:
+  // If neither targetLanguage nor nativeLanguage uses Arabic-script (fa, ar, ku, ur),
+  // strictly purge ANY card containing Arabic/Persian script in translation, targetText, or prompt!
+  const isArabicScriptSession = ['fa', 'ar', 'ku', 'ur'].includes(nativeLanguage) || activeTargets.some(t => ['fa', 'ar', 'ku', 'ur'].includes(t));
+  if (!isArabicScriptSession) {
+    sanitizedPool = sanitizedPool.filter(c => {
+      const allText = (c.translation || '') + ' ' + (c.targetText || '') + ' ' + (c.prompt || '');
+      return !/[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]/.test(allText);
+    });
+  }
+
+  // If pool needs backfilling, pull guaranteed clean universal concepts
+  if (sanitizedPool.length < 15) {
+    activeTargets.forEach(targetLang => {
+      const conceptCards = buildCardsFromConcepts(targetLang, nativeLanguage, cefrLevel, activeCats);
+      conceptCards.forEach(c => {
+        if (sanitizedPool.length < 35 && !sanitizedPool.some(existing => existing.id === c.id)) {
+          if (isArabicScriptSession || !/[\u0600-\u06FF]/.test((c.translation || '') + (c.targetText || ''))) {
+            sanitizedPool.push(c);
+          }
         }
       });
     });

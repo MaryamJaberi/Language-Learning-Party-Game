@@ -209,10 +209,10 @@ const IntroScreen: React.FC<Props> = ({
     setIsProfileModalOpen(true);
   };
 
-  const handleLoginForHistory = async () => {
+  const handleLoginForHistory = async (mode: 'auto' | 'redirect' = 'auto') => {
     setIsAuthLoading(true);
     try {
-      const loggedUser = await signInWithGoogle();
+      const loggedUser = await signInWithGoogle({ mode });
       if (loggedUser) {
         setIsHistoryLoginModalOpen(false);
         onOpenHistory();
@@ -857,20 +857,44 @@ const IntroScreen: React.FC<Props> = ({
                   : 'Your match logs, scores, learned vocabulary, and records are saved to the cloud. Please sign in with your Google account to access your history.')}
               </p>
 
-              <button
-                type="button"
-                onClick={handleLoginForHistory}
-                disabled={isAuthLoading}
-                className="w-full py-2.5 bg-[var(--teal)] hover:bg-[#18837a] text-white font-bold text-sm rounded-[14px] shadow-[var(--shadow-sm)] active:translate-y-0.5 flex items-center justify-center gap-2 transition-all"
-              >
-                <LogIn size={16} />
-                <span>{isAuthLoading ? (t.connecting || 'Connecting...') : (t.signInWithGoogle || 'Sign in with Google')}</span>
-              </button>
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={() => handleLoginForHistory('auto')}
+                  disabled={isAuthLoading}
+                  className="w-full py-2.5 bg-[var(--teal)] hover:bg-[#18837a] text-white font-bold text-sm rounded-[14px] shadow-[var(--shadow-sm)] active:translate-y-0.5 flex items-center justify-center gap-2 transition-all cursor-pointer"
+                >
+                  <LogIn size={16} />
+                  <span>{isAuthLoading ? (t.connecting || 'Connecting...') : (t.signInWithGoogle || 'Sign in with Google')}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleLoginForHistory('redirect')}
+                  disabled={isAuthLoading}
+                  className="w-full py-2.5 bg-[var(--lapis)] hover:brightness-105 text-white font-bold text-xs rounded-[14px] shadow-xs active:translate-y-0.5 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                  title="مخصوص گوشی‌های سامسونگ S23+ و مرورگرهایی که پاپ‌آپ را مسدود می‌کنند"
+                >
+                  <Smartphone size={15} />
+                  <span>{isRTL ? 'ورود مستقیم بدون پاپ‌آپ (مخصوص سامسونگ)' : 'Direct Mobile Sign-in (No Popup)'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsHistoryLoginModalOpen(false);
+                    onOpenHistory();
+                  }}
+                  className="w-full py-2 bg-slate-100 dark:bg-slate-800 text-[var(--ink)] font-bold text-xs rounded-[12px] hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+                >
+                  <span>{isRTL ? 'مشاهده تاریخچه محلی این دستگاه (آفلاین)' : 'View Local Device History (Offline)'}</span>
+                </button>
+              </div>
 
               <button
                 type="button"
                 onClick={() => setIsHistoryLoginModalOpen(false)}
-                className="w-full py-2 text-xs font-bold text-[var(--mute)] hover:text-[var(--ink)] transition-colors"
+                className="w-full py-1.5 text-xs font-bold text-[var(--mute)] hover:text-[var(--ink)] transition-colors cursor-pointer"
               >
                 {t.cancel || (isRTL ? 'انصراف' : 'Cancel')}
               </button>

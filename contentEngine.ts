@@ -231,8 +231,9 @@ const TIME_SUBS = [
 ];
 
 function generateDynamicCards(targetLang: Language, nativeLang: Language, count: number): LanguageCard[] {
-  // If target language is non-English, draw from authentic universal multi-lingual concepts
-  if (targetLang !== 'en' && targetLang !== 'en-US') {
+  // If target language is non-English, OR nativeLanguage is not Persian/English (e.g. Dutch, German, French, etc.):
+  // draw from authentic universal multi-lingual concepts which translate directly into the exact nativeLanguage!
+  if ((targetLang !== 'en' && targetLang !== 'en-US') || (nativeLang !== 'fa' && nativeLang !== 'en' && nativeLang !== 'en-US')) {
     const concepts = buildCardsFromConcepts(targetLang, nativeLang, 'all', []);
     if (concepts.length > 0) {
       const shuffled = [...concepts].sort(() => Math.random() - 0.5);
@@ -294,6 +295,7 @@ export function getUniqueCardsForSession(
 
   // 1. Gather curated cards
   const isEnNative = nativeLanguage === 'en' || nativeLanguage === 'en-US';
+  const isFaNative = nativeLanguage === 'fa';
   CURATED_LANGUAGE_CARDS.forEach(card => {
     if (card.targetLanguage === targetLanguage || (targetLanguage === 'en' && card.targetLanguage === 'en-US')) {
       const matchTopic = selectedCategories.length === 0 || selectedCategories.includes(card.topic);
@@ -305,18 +307,17 @@ export function getUniqueCardsForSession(
         let hnt = enOverride?.hint || card.hint;
         let pron = card.pronunciation;
 
-        if (isEnNative) {
-          if (!enOverride && /[\u0600-\u06FF]/.test(trans)) {
-            return;
-          }
-          if (/[\u0600-\u06FF]/.test(prmpt)) {
-            prmpt = `Explain this ${card.contentType.toLowerCase()} in the target language`;
-          }
-          if (hnt && /[\u0600-\u06FF]/.test(hnt)) {
-            hnt = `Category: ${card.topic.replace('CAT_', '')}`;
-          }
-          if (pron && /[\u0600-\u06FF]/.test(pron)) {
+        // Strictly prevent Persian text from leaking into non-Persian sessions
+        if (!isFaNative) {
+          if (isEnNative && enOverride) {
+            trans = enOverride.translation;
+            prmpt = enOverride.prompt || `Translate or describe this ${card.contentType.toLowerCase()} in the target language`;
+            hnt = enOverride.hint || `Category: ${card.topic.replace('CAT_', '')}`;
             pron = undefined;
+          } else {
+            // Curated cards only have Persian translations unless enOverride is present.
+            // For any other native language (nl, de, fr, es, it, etc.), skip this curated card!
+            return;
           }
         }
 
@@ -370,9 +371,14 @@ export function getUniqueCardsForSession(
 
   // 4. If requested, inject weak cards that need review
   if (includeWeakCards) {
-    const weakItems = getSavedWeakCards().filter(item => 
-      item.card.targetLanguage === targetLanguage || (targetLanguage === 'en' && item.card.targetLanguage === 'en-US')
-    );
+    const weakItems = getSavedWeakCards().filter(item => {
+      const matchTarget = item.card.targetLanguage === targetLanguage || (targetLanguage === 'en' && item.card.targetLanguage === 'en-US');
+      const matchNative = item.card.nativeLanguage === nativeLanguage;
+      if (!isFaNative && (/[\u0600-\u06FF]/.test(item.card.translation || '') || /[\u0600-\u06FF]/.test(item.card.prompt || ''))) {
+        return false;
+      }
+      return matchTarget && matchNative;
+    });
     const weakCardsToInject = weakItems.slice(0, Math.max(1, Math.floor(requestedCount * 0.3))).map(w => w.card);
     weakCardsToInject.forEach(wc => {
       if (!finalSelection.some(c => c.id === wc.id)) {
@@ -437,8 +443,28 @@ export function getUniqueCardsForSession(
     }
   }
 
+  // Final Safety Sanitize: Ensure NO Persian text leaks into non-Persian sessions for any language
+  let safeSelection = finalSelection;
+  const isArabicScriptSession = ['fa', 'ar', 'ku', 'ur'].includes(nativeLanguage) || ['fa', 'ar', 'ku', 'ur'].includes(targetLanguage);
+  if (!isArabicScriptSession) {
+    safeSelection = finalSelection.filter(c => {
+      const allText = (c.translation || '') + ' ' + (c.targetText || '') + ' ' + (c.prompt || '');
+      return !/[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]/.test(allText);
+    });
+    // If filtering reduced the count, backfill from conceptCards
+    if (safeSelection.length < requestedCount) {
+      for (const cc of conceptCards) {
+        const ccAllText = (cc.translation || '') + ' ' + (cc.targetText || '') + ' ' + (cc.prompt || '');
+        if (!safeSelection.some(c => c.id === cc.id) && !/[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]/.test(ccAllText)) {
+          safeSelection.push(cc);
+          if (safeSelection.length >= requestedCount) break;
+        }
+      }
+    }
+  }
+
   // Shuffle final selection and apply 70/30 Pedagogical Ratio
-  const shuffled = finalSelection.sort(() => Math.random() - 0.5);
+  const shuffled = safeSelection.sort(() => Math.random() - 0.5);
   return tagPedagogicalRatio(shuffled, cefrLevel);
 }
 

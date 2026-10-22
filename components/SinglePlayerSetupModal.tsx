@@ -53,11 +53,13 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
   const isRTL = isRtlLang(language);
 
   const [settings, setSettings] = useState<SinglePlayerSettings>(initialSettings);
+  const [selectedLevel, setSelectedLevel] = useState<CEFRLevel | null>(null);
   const [pickerMode, setPickerMode] = useState<'target' | 'native' | null>(null);
 
   useEffect(() => {
     if (isOpen) {
       setSettings(initialSettings);
+      setSelectedLevel(null); // Never pre-set a default level! Require user selection!
     }
   }, [isOpen, initialSettings]);
 
@@ -69,8 +71,12 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
   const unmasteredCount = getSavedMistakes().filter(m => !m.mastered).length;
 
   const handleStart = () => {
+    if (!selectedLevel) return;
     sound.playStartGame();
-    onStart(settings);
+    onStart({
+      ...settings,
+      cefrLevel: selectedLevel
+    });
   };
 
   return (
@@ -250,52 +256,78 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
 
           </div>
 
-          {/* 3 & 4. Practice Style & CEFR Difficulty Level Compact Side-by-Side Menu */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-2.5 bg-[var(--bg)] border border-[var(--line)] rounded-2xl">
-            {/* Practice Style Menu */}
-            <div className="space-y-1">
-              <label htmlFor="sp-style-select" className="text-[11px] font-bold text-[var(--ink)] flex items-center gap-1">
-                <Languages size={12} className="text-[var(--lapis)]" />
-                <span>{isRTL ? 'سبک تمرین:' : 'Practice Style:'}</span>
+          {/* 3. Practice Style Dropdown */}
+          <div className="space-y-1 p-2.5 bg-[var(--bg)] border border-[var(--line)] rounded-2xl">
+            <label htmlFor="sp-style-select" className="text-[11px] font-bold text-[var(--ink)] flex items-center gap-1">
+              <Languages size={12} className="text-[var(--lapis)]" />
+              <span>{isRTL ? 'سبک تمرین:' : 'Practice Style:'}</span>
+            </label>
+            <select
+              id="sp-style-select"
+              value={settings.displayMode}
+              onChange={(e) => {
+                sound.playToggle();
+                setSettings(s => ({ ...s, displayMode: e.target.value as any }));
+              }}
+              className="w-full bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] rounded-xl px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:border-[var(--lapis)] cursor-pointer"
+            >
+              <option value="text_and_audio">{isRTL ? '📖 روخوانی و تلفظ' : '📖 Reading & Speech'}</option>
+              <option value="translate_to_target">{isRTL ? `🎯 ترجمه به ${currentTargetLangInfo.persianName}` : `🎯 To ${currentTargetLangInfo.name}`}</option>
+              <option value="translate_to_native">{isRTL ? `🔄 ترجمه به ${currentNativeLangInfo.persianName}` : `🔄 To ${currentNativeLangInfo.name}`}</option>
+              <option value="audio_only">{isRTL ? '🎧 چالش شنیداری' : '🎧 Listening Test'}</option>
+            </select>
+          </div>
+
+          {/* 4. CEFR Difficulty Level Grid - No default, user must actively choose */}
+          <div className="space-y-1.5 p-3 bg-[var(--bg)] border border-[var(--line)] rounded-2xl">
+            <div className="flex items-center justify-between">
+              <label className="text-[11px] font-bold text-[var(--ink)] flex items-center gap-1.5">
+                <Layers size={13} className="text-[var(--turq)]" />
+                <span>{isRTL ? 'انتخاب سطح دشواری (CEFR):' : 'Select Level (CEFR):'}</span>
               </label>
-              <select
-                id="sp-style-select"
-                value={settings.displayMode}
-                onChange={(e) => {
-                  sound.playToggle();
-                  setSettings(s => ({ ...s, displayMode: e.target.value as any }));
-                }}
-                className="w-full bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] rounded-xl px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:border-[var(--lapis)] cursor-pointer"
-              >
-                <option value="text_and_audio">{isRTL ? '📖 روخوانی و تلفظ' : '📖 Reading & Speech'}</option>
-                <option value="translate_to_target">{isRTL ? `🎯 ترجمه به ${currentTargetLangInfo.persianName}` : `🎯 To ${currentTargetLangInfo.name}`}</option>
-                <option value="translate_to_native">{isRTL ? `🔄 ترجمه به ${currentNativeLangInfo.persianName}` : `🔄 To ${currentNativeLangInfo.name}`}</option>
-                <option value="audio_only">{isRTL ? '🎧 چالش شنیداری' : '🎧 Listening Test'}</option>
-              </select>
+              {!selectedLevel ? (
+                <span className="text-[10px] font-black text-amber-600 dark:text-amber-400 animate-pulse">
+                  {isRTL ? '👈 لطفاً یک سطح را انتخاب کنید' : '👈 Please choose a level'}
+                </span>
+              ) : (
+                <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400">
+                  {isRTL ? 'سطح انتخاب شد ✓' : 'Level selected ✓'}
+                </span>
+              )}
             </div>
 
-            {/* CEFR Difficulty Level Menu */}
-            <div className="space-y-1">
-              <label htmlFor="sp-level-select" className="text-[11px] font-bold text-[var(--ink)] flex items-center gap-1">
-                <Layers size={12} className="text-[var(--turq)]" />
-                <span>{isRTL ? 'سطح دشواری (CEFR):' : 'Level (CEFR):'}</span>
-              </label>
-              <select
-                id="sp-level-select"
-                value={settings.cefrLevel || 'all'}
-                onChange={(e) => {
-                  sound.playToggle();
-                  setSettings(s => ({ ...s, cefrLevel: e.target.value as CEFRLevel }));
-                }}
-                className="w-full bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] rounded-xl px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:border-[var(--lapis)] cursor-pointer"
-              >
-                <option value="all">{isRTL ? '⭐ همه سطوح' : '⭐ All Levels'}</option>
-                <option value="A1">A1 {isRTL ? '(مبتدی)' : '(Beginner)'}</option>
-                <option value="A2">A2 {isRTL ? '(پایه)' : '(Elementary)'}</option>
-                <option value="B1">B1 {isRTL ? '(متوسط)' : '(Intermediate)'}</option>
-                <option value="B2">B2 {isRTL ? '(پیشرفته)' : '(Upper Intermediate)'}</option>
-                <option value="C1">C1 {isRTL ? '(تسلط کامل)' : '(Advanced)'}</option>
-              </select>
+            <div className="grid grid-cols-3 gap-1.5 pt-1">
+              {[
+                { id: 'A1' as CEFRLevel, title: 'A1', sub: isRTL ? 'مبتدی' : 'Beginner' },
+                { id: 'A2' as CEFRLevel, title: 'A2', sub: isRTL ? 'پایه' : 'Elementary' },
+                { id: 'B1' as CEFRLevel, title: 'B1', sub: isRTL ? 'متوسط' : 'Intermediate' },
+                { id: 'B2' as CEFRLevel, title: 'B2', sub: isRTL ? 'پیشرفته' : 'Upper-Int' },
+                { id: 'C1' as CEFRLevel, title: 'C1', sub: isRTL ? 'تسلط' : 'Advanced' },
+                { id: 'all' as CEFRLevel, title: '⭐ همه', sub: isRTL ? 'تمام سطوح' : 'All Levels' }
+              ].map(lvl => {
+                const isSelected = selectedLevel === lvl.id;
+                return (
+                  <button
+                    key={lvl.id}
+                    type="button"
+                    onClick={() => {
+                      sound.playToggle();
+                      setSelectedLevel(lvl.id);
+                      setSettings(s => ({ ...s, cefrLevel: lvl.id }));
+                    }}
+                    className={`py-2 px-1 rounded-xl border text-center transition-all cursor-pointer active:scale-95 ${
+                      isSelected
+                        ? 'bg-[var(--lapis)] text-white border-[var(--lapis)] shadow-xs font-black ring-2 ring-[var(--lapis)]/30'
+                        : 'bg-[var(--panel)] border-[var(--line)] text-[var(--ink)] hover:bg-[var(--line)]/30 hover:border-[var(--lapis)]/50'
+                    }`}
+                  >
+                    <div className="text-xs font-black">{lvl.title}</div>
+                    <div className={`text-[9px] ${isSelected ? 'text-white/85 font-bold' : 'text-[var(--mute)] font-medium'}`}>
+                      {lvl.sub}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
 

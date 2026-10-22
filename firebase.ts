@@ -2,6 +2,8 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import { 
   getAuth, 
   signInWithPopup, 
+  signInWithRedirect,
+  getRedirectResult,
   GoogleAuthProvider, 
   signOut, 
   onAuthStateChanged,
@@ -36,38 +38,164 @@ googleProvider.setCustomParameters({ prompt: 'select_account' });
 // Initialize Firestore with specific databaseId from config
 export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId || '(default)');
 
-// Sign In with Google
-export const signInWithGoogle = async (): Promise<User | null> => {
+// Mobile and Environment Detection Helpers
+export const isMobileDevice = (): boolean => {
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') return false;
+  const ua = navigator.userAgent || '';
+  const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|SamsungBrowser|Mobile/i.test(ua);
+  const isTouchScreen = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  const isNarrow = window.innerWidth <= 768;
+  return isMobileUA || (isTouchScreen && isNarrow);
+};
+
+export const isSamsungBrowser = (): boolean => {
+  if (typeof navigator === 'undefined') return false;
+  return /SamsungBrowser/i.test(navigator.userAgent || '');
+};
+
+export const isStandalonePWA = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+    Boolean((navigator as any)?.standalone);
+};
+
+export const isInAppBrowser = (): boolean => {
+  if (typeof navigator === 'undefined') return false;
+  const ua = (navigator.userAgent || '').toLowerCase();
+  return /fban|fbav|instagram|telegram|whatsapp|line|twitter|micromessenger|snapchat|kakaotalk|eitaa|rubika|bale|wv/.test(ua);
+};
+
+export const isInIframe = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  try {
+    return window.self !== window.top;
+  } catch {
+    return true;
+  }
+};
+
+// Safe Firestore profile sync
+export const syncUserProfileToCloud = async (user: User): Promise<void> => {
+  try {
+    const userRef = doc(db, 'users', user.uid);
+    const isAdmin = isAdminUser(user.email);
+    await setDoc(userRef, {
+      uid: user.uid,
+      displayName: user.displayName || 'Player',
+      email: user.email || '',
+      photoURL: user.photoURL || '',
+      role: isAdmin ? 'admin' : 'user',
+      isAdmin: isAdmin,
+      lastLoginAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (dbErr) {
+    console.warn('Firestore user profile sync deferred:', dbErr);
+  }
+};
+
+// Handle returning from signInWithRedirect
+export const initAuthRedirectHandler = async (): Promise<User | null> => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const result = await getRedirectResult(auth);
+    if (result && result.user) {
+      await syncUserProfileToCloud(result.user);
+      try {
+        sessionStorage.removeItem('dour_auth_redirect_pending');
+      } catch {}
+      return result.user;
+    }
+  } catch (err: any) {
+    console.warn('Redirect sign-in resolution notice:', err?.code, err?.message);
+  } finally {
+    try {
+      sessionStorage.removeItem('dour_auth_redirect_pending');
+    } catch {}
+  }
+  return null;
+};
+
+export interface SignInOptions {
+  mode?: 'auto' | 'popup' | 'redirect';
+}
+
+// Sign In with Google - Supports both Desktop Popup & Mobile/Samsung Redirect Flow
+export const signInWithGoogle = async (options: SignInOptions = {}): Promise<User | null> => {
+  const mode = options.mode || 'auto';
+  const inIframe = isInIframe();
+  const mobile = isMobileDevice();
+  const samsung = isSamsungBrowser();
+  const standalone = isStandalonePWA();
+
+  // Redirect mode is preferred on Samsung Internet, standalone PWAs, or when explicitly requested,
+  // provided we are not trapped inside a sandboxed iframe.
+  const preferRedirect = (mode === 'redirect') || (mode === 'auto' && (standalone || (samsung && !inIframe) || (mobile && !inIframe)));
+
+  if (preferRedirect && !inIframe) {
+    try {
+      sessionStorage.setItem('dour_auth_redirect_pending', '1');
+    } catch {}
+    await signInWithRedirect(auth, googleProvider);
+    return null; // Browser will navigate to accounts.google.com
+  }
+
+  // Otherwise, attempt standard popup flow
   try {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
     if (user) {
-      // Sync user profile in Firestore safely (don't block auth if offline or permission denied)
-      try {
-        const userRef = doc(db, 'users', user.uid);
-        const isAdmin = isAdminUser(user.email);
-        await setDoc(userRef, {
-          uid: user.uid,
-          displayName: user.displayName || 'Player',
-          email: user.email || '',
-          photoURL: user.photoURL || '',
-          role: isAdmin ? 'admin' : 'user',
-          isAdmin: isAdmin,
-          lastLoginAt: new Date().toISOString()
-        }, { merge: true });
-      } catch (dbErr) {
-        console.warn('Firestore user profile sync deferred:', dbErr);
-      }
+      await syncUserProfileToCloud(user);
     }
     return user;
   } catch (error: any) {
-    console.error('Error signing in with Google:', error);
-    // If user merely closed the popup, don't throw an aggressive fatal error
+    console.warn('signInWithPopup error:', error?.code, error?.message);
+
+    // If popup was blocked or closed on mobile, seamlessly fallback to redirect (if not in iframe)
+    const isPopupIssue = error?.code === 'auth/popup-blocked' || 
+                         error?.code === 'auth/cancelled-popup-request' ||
+                         error?.code === 'auth/popup-closed-by-user';
+
+    if (isPopupIssue && !inIframe) {
+      console.info('Falling back to signInWithRedirect for mobile device...');
+      try {
+        sessionStorage.setItem('dour_auth_redirect_pending', '1');
+      } catch {}
+      await signInWithRedirect(auth, googleProvider);
+      return null;
+    }
+
     if (error?.code === 'auth/popup-closed-by-user' || error?.code === 'auth/cancelled-popup-request') {
       return null;
     }
+
     throw error;
   }
+};
+
+// Local Player Profile for 100% device compatibility (without Google dependency)
+export interface LocalPlayerProfile {
+  name: string;
+  avatarId: string;
+}
+
+export const getLocalPlayerProfile = (): LocalPlayerProfile => {
+  if (typeof localStorage === 'undefined') {
+    return { name: 'بازیکن ۱', avatarId: 'cat_cyber' };
+  }
+  try {
+    const saved = localStorage.getItem('dour_local_profile');
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch {}
+  return { name: 'بازیکن ۱', avatarId: 'cat_cyber' };
+};
+
+export const saveLocalPlayerProfile = (profile: LocalPlayerProfile): void => {
+  if (typeof localStorage === 'undefined') return;
+  try {
+    localStorage.setItem('dour_local_profile', JSON.stringify(profile));
+  } catch {}
 };
 
 // Sign Out

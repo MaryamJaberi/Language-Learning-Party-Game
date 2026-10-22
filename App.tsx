@@ -41,7 +41,7 @@ import FeedbackOverlay from './components/FeedbackOverlay';
 import { feedbackDirector } from './feedbackDirector';
 import { sound } from './soundManager';
 import { buildMistakeReviewSession } from './mistakeReviewService';
-import { auth, saveMatchToCloud, syncSettingsToCloud } from './firebase';
+import { auth, saveMatchToCloud, syncSettingsToCloud, initAuthRedirectHandler } from './firebase';
 import { createOnlineDuelRoom, joinOnlineDuelRoom, findOnlineDuelMatch } from './onlineRoomService';
 import { onAuthStateChanged } from 'firebase/auth';
 import { migrateGuestWeakCardsToCloud } from './contentEngine';
@@ -244,6 +244,9 @@ const App: React.FC = () => {
   }, [settings]);
 
   useEffect(() => {
+    initAuthRedirectHandler().catch(err => {
+      console.warn('initAuthRedirectHandler error:', err);
+    });
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         syncSettingsToCloud(user.uid, settingsRef.current).catch(console.error);
@@ -667,7 +670,7 @@ const App: React.FC = () => {
 
   const handleStartSinglePlayer = (config: SinglePlayerSettings, customCards?: LanguageCard[]) => {
     setIsSingleSetupOpen(false);
-    const effectiveNative = config.nativeLanguage || settings.nativeLanguage || settings.language || 'fa';
+    const effectiveNative = config.nativeLanguage || settings.nativeLanguage || (settings.language !== 'fa' ? settings.language : 'en');
     const effectiveConfig = {
       ...config,
       nativeLanguage: effectiveNative
@@ -710,7 +713,7 @@ const App: React.FC = () => {
     setSinglePlayerCards(weakCards);
     setSinglePlayerSettings(prev => ({
       ...prev,
-      nativeLanguage: settings.nativeLanguage || settings.language || 'fa'
+      nativeLanguage: prev.nativeLanguage || settings.nativeLanguage || (settings.language !== 'fa' ? settings.language : 'en')
     }));
     setCurrentScreen('SINGLE_PLAYER');
   };

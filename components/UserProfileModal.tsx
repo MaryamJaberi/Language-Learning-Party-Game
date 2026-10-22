@@ -2,7 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { Language, LeaderboardEntry, PersonalRecords, GameHistoryEntry } from '../types';
 import { getPersonalRecords, fetchLeaderboard } from '../contentEngine';
 import { getLeitnerState, getDueLeitnerCards } from '../leitnerBoxService';
-import { auth, signInWithGoogle, logOut, fetchUserMatchHistory, deleteUserAccountAndData } from '../firebase';
+import { 
+  auth, 
+  signInWithGoogle, 
+  logOut, 
+  fetchUserMatchHistory, 
+  deleteUserAccountAndData,
+  isMobileDevice,
+  isSamsungBrowser,
+  isStandalonePWA,
+  isInAppBrowser,
+  getLocalPlayerProfile,
+  saveLocalPlayerProfile,
+  LocalPlayerProfile 
+} from '../firebase';
+import { AvatarPickerModal } from './AvatarPickerModal';
+import { PixelAvatar, AvatarId } from './PixelAvatars';
 import { User } from 'firebase/auth';
 import { sound } from '../soundManager';
 import { usePWAInstall } from '../usePWAInstall';
@@ -36,7 +51,11 @@ import {
   Box,
   MapPin,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  HelpCircle,
+  ChevronDown,
+  ChevronUp,
+  Edit2
 } from 'lucide-react';
 
 export type ProfileTab = 'history' | 'records' | 'leitner' | 'leaderboard' | 'install' | 'downloads' | 'privacy';
@@ -70,7 +89,13 @@ export const UserProfileModal: React.FC<Props> = ({
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [isLoadingLeaderboard, setIsLoadingLeaderboard] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false);
+  const [isDirectSigningIn, setIsDirectSigningIn] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [localProfile, setLocalProfile] = useState<LocalPlayerProfile>(getLocalPlayerProfile());
+  const [isAvatarPickerOpen, setIsAvatarPickerOpen] = useState(false);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editingNameValue, setEditingNameValue] = useState(localProfile.name);
+  const [showMobileHelp, setShowMobileHelp] = useState(false);
   const [downloadingFile, setDownloadingFile] = useState<string | null>(null);
   const [downloadMsg, setDownloadMsg] = useState<string | null>(null);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
@@ -126,6 +151,9 @@ export const UserProfileModal: React.FC<Props> = ({
       if (initialTab) setActiveTab(initialTab);
       setRecords(getPersonalRecords());
       setLeitnerState(getLeitnerState());
+      const p = getLocalPlayerProfile();
+      setLocalProfile(p);
+      setEditingNameValue(p.name);
       loadLocalHistory();
       loadLeaderboard();
       if (currentUser) {
@@ -160,12 +188,16 @@ export const UserProfileModal: React.FC<Props> = ({
 
   if (!isOpen) return null;
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleLogin = async (mode: 'auto' | 'redirect' = 'auto') => {
     sound.playClick();
-    setIsSigningIn(true);
+    if (mode === 'redirect') {
+      setIsDirectSigningIn(true);
+    } else {
+      setIsSigningIn(true);
+    }
     setLoginError(null);
     try {
-      const user = await signInWithGoogle();
+      const user = await signInWithGoogle({ mode });
       if (user) {
         if (onAuthChange) onAuthChange(user);
         loadCloudHistory(user.uid);
@@ -173,18 +205,35 @@ export const UserProfileModal: React.FC<Props> = ({
       }
     } catch (err: any) {
       console.error('Login error:', err);
-      const isPopupBlocked = err?.code === 'auth/popup-blocked';
-      setLoginError(
-        isPopupBlocked
-          ? (isRTL 
-              ? 'پنجره ورود به گوگل توسط مرورگر مسدود شد. لطفاً پاپ‌آپ را در نوار آدرس مجاز کنید.' 
-              : 'Popup was blocked by your browser. Please allow popups for this site in your browser address bar.')
-          : (isRTL 
-              ? 'ارتباط با حساب گوگل برقرار نشد. لطفاً اتصال اینترنت خود را بررسی نمایید.'
-              : 'Could not connect to Google. Please check your internet connection.')
-      );
+      const code = err?.code;
+      if (code === 'auth/popup-blocked') {
+        setLoginError(
+          isRTL 
+            ? 'پنجره ورود توسط مرورگر مسدود شد. لطفاً از دکمه «ورود مستقیم بدون پاپ‌آپ (ویژه سامسونگ و موبایل)» در زیر استفاده کنید.' 
+            : 'Popup blocked by browser. Please tap the "Direct Login (No Popup)" button below.'
+        );
+      } else if (code === 'auth/network-request-failed') {
+        setLoginError(
+          isRTL 
+            ? 'ارتباط با سرور احراز هویت گوگل برقرار نشد. لطفاً وضعیت اینترنت یا فیلترشکن خود را بررسی نمایید.'
+            : 'Could not connect to Google. Please check your internet or VPN.'
+        );
+      } else if (code === 'auth/unauthorized-domain') {
+        setLoginError(
+          isRTL 
+            ? 'دامنه فعلی هنوز در لیست مجاز کنسول گوگل تعریف نشده است.'
+            : 'Current domain is not authorized in Google OAuth.'
+        );
+      } else {
+        setLoginError(
+          isRTL 
+            ? (err?.message || 'خطا در فرآیند ورود. لطفاً از روش «ورود مستقیم» امتحان کنید.')
+            : (err?.message || 'Authentication error. Please try Direct Login.')
+        );
+      }
     } finally {
       setIsSigningIn(false);
+      setIsDirectSigningIn(false);
     }
   };
 
@@ -298,30 +347,93 @@ export const UserProfileModal: React.FC<Props> = ({
                   referrerPolicy="no-referrer"
                 />
               ) : (
-                <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 text-[var(--lapis)] dark:text-blue-400 flex items-center justify-center border border-[var(--line)] shadow-xs">
-                  <UserIcon size={22} strokeWidth={2} />
-                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playClick();
+                    setIsAvatarPickerOpen(true);
+                  }}
+                  className="relative group cursor-pointer focus:outline-none shrink-0"
+                  title={isRTL ? 'انتخاب آواتار دلخواه' : 'Choose Cute Avatar'}
+                >
+                  <PixelAvatar id={localProfile.avatarId} size={48} className="rounded-full shadow-xs group-hover:scale-105 transition-transform" />
+                  <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[var(--lapis)] text-white text-[10px] flex items-center justify-center border-2 border-[var(--panel)] shadow-xs group-hover:scale-110">
+                    <Edit2 size={10} />
+                  </span>
+                </button>
               )}
               
               <div className="text-start">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h2 className="text-base sm:text-lg font-bold text-[var(--ink)] font-display tracking-tight leading-snug">
-                    {currentUser?.displayName || (isRTL ? 'حساب کاربری مهمان' : 'Guest Player')}
-                  </h2>
-                  {isAdmin && (
-                    <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[11px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                      <span>👑</span>
-                      <span>{isRTL ? 'مدیر کل (Admin)' : 'Admin'}</span>
-                    </span>
-                  )}
-                  {currentUser && !isAdmin && (
-                    <span className="bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-semibold px-2 py-0.5 rounded-full">
-                      {isRTL ? 'متصل' : 'Synced'}
-                    </span>
+                  {isEditingName ? (
+                    <div className="flex items-center gap-1.5 py-0.5">
+                      <input
+                        type="text"
+                        value={editingNameValue}
+                        onChange={(e) => setEditingNameValue(e.target.value)}
+                        maxLength={16}
+                        className="h-7 px-2 rounded-lg bg-[var(--bg)] border border-[var(--line)] text-xs font-black text-[var(--ink)] focus:border-[var(--lapis)] outline-none"
+                        autoFocus
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const trimmed = editingNameValue.trim() || 'بازیکن ۱';
+                          const updated = { ...localProfile, name: trimmed };
+                          setLocalProfile(updated);
+                          saveLocalPlayerProfile(updated);
+                          setIsEditingName(false);
+                          sound.playSuccess();
+                        }}
+                        className="h-7 px-2.5 rounded-lg bg-[var(--lapis)] text-white text-[11px] font-bold shadow-xs cursor-pointer"
+                      >
+                        {isRTL ? 'ثبت' : 'Save'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingNameValue(localProfile.name);
+                          setIsEditingName(false);
+                        }}
+                        className="h-7 px-2 rounded-lg text-xs text-[var(--mute)] hover:bg-[var(--bg)] cursor-pointer"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <h2 className="text-base sm:text-lg font-bold text-[var(--ink)] font-display tracking-tight leading-snug">
+                        {currentUser?.displayName || localProfile.name}
+                      </h2>
+                      {!currentUser && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingNameValue(localProfile.name);
+                            setIsEditingName(true);
+                          }}
+                          className="text-[11px] text-[var(--lapis)] hover:underline font-bold inline-flex items-center gap-0.5 cursor-pointer"
+                        >
+                          <Edit2 size={11} />
+                          <span>{isRTL ? 'ویرایش نام' : 'Edit name'}</span>
+                        </button>
+                      )}
+                      {isAdmin && (
+                        <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[11px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                          <span>👑</span>
+                          <span>{isRTL ? 'مدیر کل (Admin)' : 'Admin'}</span>
+                        </span>
+                      )}
+                      {currentUser && !isAdmin && (
+                        <span className="bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-semibold px-2 py-0.5 rounded-full">
+                          {isRTL ? 'متصل به گوگل' : 'Google Connected'}
+                        </span>
+                      )}
+                    </>
                   )}
                 </div>
                 <p className="text-xs text-[var(--mute)] font-normal mt-0.5">
-                  {currentUser?.email || (isRTL ? 'سوابق و امتیازات در این دستگاه ذخیره می‌شود' : 'Saved locally on this device')}
+                  {currentUser?.email || (isRTL ? 'پروفایل محلی دستگاه (ذخیره آفلاین رکوردهای بازی)' : 'Local profile (Saved offline on device)')}
                 </p>
               </div>
             </div>
@@ -359,38 +471,115 @@ export const UserProfileModal: React.FC<Props> = ({
             </div>
           )}
 
-          {/* Cloud Auth Bar with M3 Button styling */}
-          <div className="mt-3.5 pt-3 flex items-center justify-between border-t border-[var(--line)] text-xs">
+          {/* Cloud Auth Bar with M3 Button styling & Mobile S23+ Friendly Direct Redirect */}
+          <div className="mt-3.5 pt-3 border-t border-[var(--line)] text-xs space-y-2.5">
             {currentUser ? (
-              <button 
-                type="button"
-                onClick={handleSignOut}
-                className="flex items-center gap-1.5 h-9 px-3.5 rounded-full text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 border border-rose-200 dark:border-rose-900/40 text-xs font-semibold transition-all active:scale-95 cursor-pointer"
-              >
-                <LogOut size={14} strokeWidth={2} />
-                <span>{isRTL ? 'خروج از حساب' : 'Sign Out'}</span>
-              </button>
+              <div className="flex items-center justify-between">
+                <button 
+                  type="button"
+                  onClick={handleSignOut}
+                  className="flex items-center gap-1.5 h-9 px-3.5 rounded-full text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 border border-rose-200 dark:border-rose-900/40 text-xs font-semibold transition-all active:scale-95 cursor-pointer"
+                >
+                  <LogOut size={14} strokeWidth={2} />
+                  <span>{isRTL ? 'خروج از حساب' : 'Sign Out'}</span>
+                </button>
+                <div className="flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
+                  <ShieldCheck size={16} className="text-emerald-500" />
+                  <span>{isRTL ? 'همگام با کلود' : 'Cloud Synced'}</span>
+                </div>
+              </div>
             ) : (
-              <button 
-                type="button"
-                onClick={handleGoogleLogin}
-                disabled={isSigningIn}
-                className="flex items-center gap-2.5 h-10 px-4 rounded-full bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] text-xs font-semibold shadow-xs transition-all active:scale-95 cursor-pointer disabled:opacity-60"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24">
-                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-                </svg>
-                <span>{isSigningIn ? (isRTL ? 'در حال اتصال...' : 'Signing in...') : (isRTL ? 'ورود با حساب گوگل' : 'Sign in with Google')}</span>
-              </button>
-            )}
+              <div className="space-y-2">
+                {/* Notice for In-App browser users (Telegram, Instagram, Eitaa) */}
+                {isInAppBrowser() && (
+                  <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 text-[11px] leading-relaxed flex items-start gap-2">
+                    <AlertCircle size={15} className="text-amber-600 shrink-0 mt-0.5" />
+                    <span>
+                      {isRTL 
+                        ? 'توجه: مرورگر داخلی پیام‌رسان‌ها (مثل تلگرام یا اینستاگرام) ورود با گوگل را مسدود می‌کند. از منوی سه‌نقطه بالای صفحه گزینه «باز کردن در مرورگر اصلی (Chrome / Samsung)» را انتخاب کنید یا بدون ورود بازی کنید.'
+                        : 'Notice: In-app browsers (Telegram, Instagram) block Google OAuth. Please open this page in Chrome or Samsung Internet, or continue with your local profile.'}
+                    </span>
+                  </div>
+                )}
 
-            <div className="flex items-center gap-1.5 text-xs text-[var(--mute)] font-medium">
-              <ShieldCheck size={16} className="text-emerald-500" />
-              <span>{currentUser ? (isRTL ? 'همگام با کلود' : 'Cloud Synced') : (isRTL ? 'ذخیره محلی' : 'Local Storage')}</span>
-            </div>
+                {/* Login Action Buttons Grid */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                  {/* Button 1: Fast Google Login (Auto / Popup) */}
+                  <button 
+                    type="button"
+                    onClick={() => handleGoogleLogin('auto')}
+                    disabled={isSigningIn || isDirectSigningIn}
+                    className="flex-1 flex items-center justify-center gap-2 h-10 px-3.5 rounded-full bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] text-xs font-semibold shadow-xs transition-all active:scale-95 cursor-pointer disabled:opacity-60"
+                  >
+                    {isSigningIn ? (
+                      <Loader2 size={15} className="animate-spin text-[var(--lapis)]" />
+                    ) : (
+                      <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                      </svg>
+                    )}
+                    <span>{isSigningIn ? (isRTL ? 'در حال اتصال...' : 'Signing in...') : (isRTL ? 'ورود با حساب گوگل' : 'Sign in with Google')}</span>
+                  </button>
+
+                  {/* Button 2: Direct Redirect Sign-In (Guaranteed for Samsung Galaxy S23+, Chrome mobile, PWA) */}
+                  <button 
+                    type="button"
+                    onClick={() => handleGoogleLogin('redirect')}
+                    disabled={isSigningIn || isDirectSigningIn}
+                    className="flex-1 flex items-center justify-center gap-1.5 h-10 px-3.5 rounded-full bg-[var(--lapis)] hover:brightness-105 text-white text-xs font-bold shadow-xs transition-all active:scale-95 cursor-pointer disabled:opacity-60 relative"
+                    title={isRTL ? 'ورود مستقیم بدون پاپ‌آپ مخصوص گوشی‌های سامسونگ و وب‌اپلیکیشن' : 'Direct login without popups for mobile & Samsung'}
+                  >
+                    {isDirectSigningIn ? (
+                      <Loader2 size={15} className="animate-spin text-white" />
+                    ) : (
+                      <Smartphone size={15} className="text-white shrink-0" />
+                    )}
+                    <span>{isDirectSigningIn ? (isRTL ? 'انتقال به گوگل...' : 'Redirecting...') : (isRTL ? 'ورود مستقیم (مخصوص سامسونگ)' : 'Direct Mobile Login')}</span>
+                  </button>
+                </div>
+
+                {/* Mobile Troubleshooting Accordion Toggle */}
+                <div className="pt-0.5 flex items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={() => setShowMobileHelp(!showMobileHelp)}
+                    className="text-[11px] text-[var(--mute)] hover:text-[var(--lapis)] flex items-center gap-1 font-semibold cursor-pointer"
+                  >
+                    <HelpCircle size={13} />
+                    <span>{isRTL ? 'مشکل در ورود با گوشی سامسونگ یا وب‌ویو دارید؟' : 'Having login issues on your phone?'}</span>
+                    {showMobileHelp ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                  </button>
+                  <div className="flex items-center gap-1 text-[11px] text-[var(--mute)]">
+                    <ShieldCheck size={13} className="text-emerald-500" />
+                    <span>{isRTL ? 'پروفایل محلی فعال است' : 'Local profile active'}</span>
+                  </div>
+                </div>
+
+                {/* Mobile Troubleshooting Drawer */}
+                {showMobileHelp && (
+                  <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-[var(--line)] text-[11px] text-[var(--mute)] space-y-1.5 leading-relaxed animate-fade-in text-start">
+                    <div className="font-bold text-[var(--ink)] flex items-center gap-1.5">
+                      <Smartphone size={14} className="text-[var(--lapis)]" />
+                      <span>{isRTL ? 'راهنمای ورود در گوشی‌های سامسونگ (S23+ و سری گلکسی) و شیائومی:' : 'Mobile Phone Sign-in Guide:'}</span>
+                    </div>
+                    <ul className="list-disc list-inside space-y-1 ps-1">
+                      <li>
+                        <strong className="text-[var(--ink)]">{isRTL ? 'مرورگر Samsung Internet:' : 'Samsung Internet Browser:'}</strong> {isRTL ? 'این مرورگر به طور پیش‌فرض پاپ‌آپ‌ها را مسدود می‌کند. دکمه «ورود مستقیم (مخصوص سامسونگ)» بدون نیاز به پاپ‌آپ عمل می‌کند و مشکل را ۱۰۰٪ حل می‌کند.' : 'Blocks popups by default. Tap "Direct Mobile Login" to sign in without popups.'}
+                      </li>
+                      <li>
+                        <strong className="text-[var(--ink)]">{isRTL ? 'ورود از پیام‌رسان‌ها:' : 'Telegram / Instagram:'}</strong> {isRTL ? 'اگر لینک بازی را از تلگرام یا اینستاگرام باز کرده‌اید، از سه‌نقطه بالای صفحه گزینه «باز کردن در مرورگر اصلی (Chrome / Samsung)» را بزنید.' : 'Tap the 3 dots menu and select "Open in Browser".'}
+                      </li>
+                      <li>
+                        <strong className="text-[var(--ink)]">{isRTL ? 'بازی بدون حساب گوگل:' : 'Play without Google:'}</strong> {isRTL ? 'نیازی به ورود اجباری نیست! می‌توانید با کلیک روی آواتار بالا نام و تصویر خود را شخصی‌سازی کنید؛ تمام بازی‌ها و رکوردهای شما روی گوشی ذخیره می‌ماند.' : 'Google login is optional. All stats save locally on your phone.'}
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -1163,6 +1352,21 @@ export const UserProfileModal: React.FC<Props> = ({
         </div>
 
       </div>
+
+      {/* Cute Avatar Picker Modal for Local Profile */}
+      <AvatarPickerModal
+        isOpen={isAvatarPickerOpen}
+        onClose={() => setIsAvatarPickerOpen(false)}
+        selectedAvatarId={localProfile.avatarId as AvatarId}
+        onSelectAvatar={(avId) => {
+          const updated = { ...localProfile, avatarId: avId };
+          setLocalProfile(updated);
+          saveLocalPlayerProfile(updated);
+          sound.playSuccess();
+        }}
+        playerName={localProfile.name}
+        language={language}
+      />
     </div>
   );
 };

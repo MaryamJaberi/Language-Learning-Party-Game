@@ -421,9 +421,11 @@ export function buildCardsFromConcepts(
     const catMatch = selectedCategories.length === 0 || selectedCategories.includes(c.topic);
     return levelMatch && catMatch;
   }).map((concept, idx) => {
+    const isFaNative = nativeLanguage === 'fa';
     const targetText = concept.words[targetLanguage] || concept.words['en-US'] || concept.words['en'] || 'Phrase';
     const translation = concept.words[nativeLanguage] 
-      || (isEnNative ? (concept.words['en-US'] || concept.words['en'] || targetText) : (concept.words['fa'] || concept.words['en'] || targetText));
+      || concept.words[nativeLanguage.split('-')[0]]
+      || (isFaNative ? (concept.words['fa'] || concept.words['en'] || targetText) : (concept.words['en-US'] || concept.words['en'] || targetText));
 
     const shouldReverse = isReverse || (idx % 3 === 0);
     const learningMode: LearningMode = shouldReverse ? 'Reverse' : (concept.difficulty === 'easy' ? 'Explain' : 'Speak');
