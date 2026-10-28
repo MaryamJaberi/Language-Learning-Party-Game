@@ -4,44 +4,43 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import App from '../App';
 import { DEFAULT_SETTINGS } from '../constants';
 
-describe('Google Play Release & Default English UI Specifications', () => {
+describe('Default Persian (fa) UI Unification & Specifications', () => {
   beforeEach(() => {
     localStorage.clear();
     vi.clearAllMocks();
   });
 
-  test('1. Default settings are strictly English without localStorage', () => {
-    expect(DEFAULT_SETTINGS.language).toBe('en');
-    expect(DEFAULT_SETTINGS.nativeLanguage).toBe('en');
-    expect(DEFAULT_SETTINGS.targetLanguages).toContain('es');
-    expect(DEFAULT_SETTINGS.playerNames).toEqual(['Alex', 'Sam', 'Emma', 'Liam', 'Olivia', 'Noah', 'Sophia', 'Lucas']);
+  test('1. Default settings are unified to Persian (fa) without localStorage', () => {
+    expect(DEFAULT_SETTINGS.language).toBe('fa');
+    expect(DEFAULT_SETTINGS.nativeLanguage).toBe('fa');
+    expect(DEFAULT_SETTINGS.targetLanguages).toContain('nl');
+    expect(DEFAULT_SETTINGS.playerNames).toEqual(['آرش', 'سارا', 'کیان', 'مریم', 'سامان', 'پریا', 'بردیا', 'نیکا']);
   });
 
-  test('2. Fresh launch renders English UI by default on Google Play devices', () => {
+  test('2. Fresh launch renders unified Persian UI by default', () => {
     render(<App />);
 
-    // English title or app name
-    const titleElements = screen.getAllByText(/Turn|Dour/i);
+    // Persian title or app name
+    const titleElements = screen.getAllByText(/دور/i);
     expect(titleElements.length).toBeGreaterThan(0);
 
-    // English Action button for Party Game
-    expect(screen.getByRole('button', { name: /Start Party Game|Start New Game/i })).toBeInTheDocument();
+    // Persian Action button for Party Game
+    expect(screen.getByRole('button', { name: /شروع بازی دورهمی/i })).toBeInTheDocument();
 
-    // English Guide / Rules button
-    expect(screen.getByRole('button', { name: /Guide/i })).toBeInTheDocument();
+    // Persian Guide / Rules button
+    expect(screen.getByRole('button', { name: /راهنما/i })).toBeInTheDocument();
 
-    // Verify LTR direction
-    const mainEl = document.querySelector('main');
-    expect(mainEl).toBeInTheDocument();
+    // Verify RTL direction
+    expect(document.documentElement.dir).toBe('rtl');
   });
 
-  test('3. Open Setup from English Intro presents English labels and settings', () => {
+  test('3. Open Setup from Persian Intro presents Persian labels and settings', () => {
     render(<App />);
 
-    const startBtn = screen.getByRole('button', { name: /Start Party Game|Start New Game/i });
+    const startBtn = screen.getByRole('button', { name: /شروع بازی دورهمی/i });
     fireEvent.click(startBtn);
 
-    // Verify Setup Screen is in English
-    expect(screen.getByText(/Game Settings/i)).toBeInTheDocument();
+    // Verify Setup Screen is in Persian
+    expect(screen.getByText(/تنظیمات بازی/i)).toBeInTheDocument();
   });
 });

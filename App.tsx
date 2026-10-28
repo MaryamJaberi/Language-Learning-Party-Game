@@ -47,34 +47,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { migrateGuestWeakCardsToCloud } from './contentEngine';
 import { getRandomCharacters } from './characters';
 import { isRtlLang } from './ui';
-import { PLAYER_AVATARS } from './constants';
-
-const DEFAULT_SETTINGS: GameSettings = {
-  playerCount: 4,
-  roundsCount: 3,
-  roundDuration: 60,
-  difficulty: 'easy',
-  cefrLevel: 'all',
-  nativeLanguage: 'en',
-  targetLanguages: ['es', 'nl'],
-  cardGameMode: 'mixed',
-  autoPronounceOnCorrect: true,
-  selectedCategories: [
-    "CAT_EVERYDAY",
-    "CAT_RESTAURANT",
-    "CAT_FOOD",
-    "CAT_TRAVEL",
-    "CAT_SHOPPING",
-    "CAT_WORK",
-    "CAT_SMALLTALK"
-  ],
-  playerNames: getRandomCharacters('en', 8),
-  language: 'en',
-  passPhoneScreenEnabled: false,
-  soundEnabled: true,
-  powerCardsEnabled: true,
-  cardRevealEnabled: true
-};
+import { PLAYER_AVATARS, DEFAULT_SETTINGS } from './constants';
 
 type ScreenType = 'INTRO' | 'LANGUAGE_SELECT' | 'CATEGORIES' | 'SETUP' | 'PLAYERS' | 'SEATING_CONFIRM' | 'GAME' | 'HISTORY' | 'HELP' | 'ONLINE_LOBBY' | 'ONLINE_GAME' | 'SINGLE_PLAYER' | 'SINGLE_REPORT' | 'DUEL_GAME' | 'ONLINE_DUEL' | 'LEITNER';
 
@@ -98,8 +71,8 @@ const App: React.FC = () => {
   const [isSingleSetupOpen, setIsSingleSetupOpen] = useState(false);
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
   const [singlePlayerSettings, setSinglePlayerSettings] = useState<SinglePlayerSettings>({
-    targetLanguage: 'es',
-    nativeLanguage: 'en',
+    targetLanguage: 'en',
+    nativeLanguage: 'fa',
     cefrLevel: 'all',
     displayMode: 'text_and_audio',
     questionCount: 10,
@@ -179,10 +152,10 @@ const App: React.FC = () => {
     if (savedSettings) {
       try {
         const parsed = JSON.parse(savedSettings);
-        let uiLang = parsed?.language || 'en';
+        let uiLang = parsed?.language || 'fa';
         if (uiLang === 'en-US') uiLang = 'en';
         const isEnglish = uiLang === 'en' || parsed?.nativeLanguage === 'en' || parsed?.nativeLanguage === 'en-US';
-        const nativeLang = parsed?.nativeLanguage === 'fa' ? 'fa' : (isEnglish ? 'en' : (parsed?.nativeLanguage || uiLang || 'en'));
+        const nativeLang = parsed?.nativeLanguage === 'fa' ? 'fa' : (isEnglish ? 'en' : (parsed?.nativeLanguage || uiLang || 'fa'));
         const isEnglishNative = nativeLang === 'en' || nativeLang === 'en-US';
         
         // Normalize player names: if native language is English, ensure no leftover Persian names
@@ -195,7 +168,7 @@ const App: React.FC = () => {
         // Target languages
         let targets = Array.isArray(parsed?.targetLanguages) && parsed.targetLanguages.length > 0 
           ? parsed.targetLanguages 
-          : (isEnglishNative ? ['es', 'nl'] : ['nl', 'en']);
+          : (isEnglishNative ? ['es', 'nl'] : ['en-US', 'nl']);
         if (isEnglishNative) {
           targets = targets.filter((t: string) => t !== 'en' && t !== 'en-US');
           if (targets.length === 0) targets = ['es', 'nl'];

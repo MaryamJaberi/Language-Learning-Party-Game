@@ -150,11 +150,11 @@
   color: var(--on-lapis);
 }
 .seg.sm button {
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 700;
-  padding: 6px 4px;
-  min-height: 40px;
-  line-height: 1.2;
+  padding: 6px 6px;
+  min-height: 44px;
+  line-height: 1.25;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -166,18 +166,30 @@
   gap: 10px;
 }
 
-@media (max-width: 360px) {
+@media (max-width: 390px) {
   .lock {
     grid-template-columns: 1fr 1.25fr;
-    gap: 6px;
+    gap: 8px;
   }
   .panel {
-    padding: 10px 10px;
-    border-radius: 16px;
+    padding: 13px 14px;
+    border-radius: 20px;
+    margin-top: 10px;
+  }
+  .chip {
+    font-size: 13px;
+    padding: 8px 11px;
+    min-height: 44px;
   }
   .seg button {
-    font-size: 12px;
-    padding: 6px 3px;
+    font-size: 13px;
+    padding: 8px 5px;
+    min-height: 44px;
+  }
+  .seg.sm button {
+    font-size: 11.5px;
+    padding: 6px 4px;
+    min-height: 44px;
   }
 }
 
@@ -934,6 +946,42 @@ body {
   animation: pop-in 0.2s ease-out forwards;
 }
 
+/* Team Progress Bar Scoring Pulse & Temporary Color Shift */
+@keyframes team-score-pulse {
+  0% {
+    transform: scale(1) translateY(0);
+    box-shadow: 0 0 0 0 rgba(245, 181, 46, 0);
+  }
+  25% {
+    transform: scale(1.06) translateY(-2px);
+    background-color: rgba(245, 181, 46, 0.24);
+    border-color: var(--saffron);
+    box-shadow: 0 0 0 4px rgba(245, 181, 46, 0.32), 0 6px 16px rgba(18, 181, 164, 0.28);
+  }
+  60% {
+    transform: scale(1.02) translateY(-1px);
+    background-color: rgba(18, 181, 164, 0.18);
+    border-color: var(--turq);
+    box-shadow: 0 0 0 2px rgba(18, 181, 164, 0.25);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    box-shadow: 0 0 0 0 rgba(18, 181, 164, 0);
+  }
+}
+
+.animate-team-score {
+  animation: team-score-pulse 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Responsive Card Typography & Action Spacing on 380px Mobile Screens */
+@media (max-width: 390px) {
+  .card-target-word {
+    font-size: clamp(1.5rem, 6.5vw, 2.1rem) !important;
+    line-height: 1.25 !important;
+  }
+}
+
 /* Safe area padding utilities */
 .pt-safe {
   padding-top: env(safe-area-inset-top, 0px);
@@ -950,4 +998,5 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
 

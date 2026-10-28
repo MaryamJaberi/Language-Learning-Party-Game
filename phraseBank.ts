@@ -3,7 +3,8 @@ import { Language, CEFRLevel, LanguageCard, ContentType, LearningMode, CardGameM
 
 interface BankPhrase {
   id: string;
-  level: 'A1' | 'A2' | 'B1';
+  level: 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2';
+  rawLevel?: string;
   type: string;
   difficulty: 'easy' | 'medium' | 'hard';
   topic: string;
@@ -14,9 +15,15 @@ interface BankPhrase {
 const PHRASES = phrasesData as BankPhrase[];
 
 export const PHRASE_STATS = {
+  A0: PHRASES.filter((p) => p.rawLevel === 'A0').length,
+  A0Plus: PHRASES.filter((p) => p.rawLevel === 'A0+').length,
   A1: PHRASES.filter((p) => p.level === 'A1').length,
   A2: PHRASES.filter((p) => p.level === 'A2').length,
+  A2_B1: PHRASES.filter((p) => p.rawLevel === 'A2-B1').length,
   B1: PHRASES.filter((p) => p.level === 'B1').length,
+  B2: PHRASES.filter((p) => p.level === 'B2').length,
+  C1: PHRASES.filter((p) => p.level === 'C1').length,
+  C2: PHRASES.filter((p) => p.level === 'C2').length,
   total: PHRASES.length,
 };
 
@@ -51,8 +58,8 @@ function pointsFor(d: 'easy' | 'medium' | 'hard'): number {
 function phraseFits(p: BankPhrase, selected: CEFRLevel): boolean {
   if (selected === 'all') return true;
   if (selected === p.level) return true;
-  // If B2 requested and phrase is B1 hard, allow as supplementary
-  if (selected === 'B2' && p.level === 'B1' && p.difficulty === 'hard') return true;
+  if (selected === 'B1' && p.rawLevel === 'A2-B1') return true;
+  if (selected === 'C1' && p.level === 'C2') return true;
   return false;
 }
 
@@ -117,8 +124,12 @@ export function cardsFromPhraseBank(
       if (!targetText || !translation) return;
       const content = typeOf(p.type);
       const reverse = shouldReverse(i);
-      const forcedLevel =
-        cefrLevel === 'B2' || cefrLevel === 'C1' || cefrLevel === 'C2' ? cefrLevel : p.level;
+      const forcedLevel = cefrLevel === 'all' ? p.level : cefrLevel;
+      const isCreative =
+        p.type === 'Idiom' ||
+        p.rawTopic?.includes('Idiom') ||
+        p.rawTopic?.includes('Slang') ||
+        p.rawTopic?.includes('Collocation');
       const targetLangName = nativeLanguage === 'fa' 
         ? (LANG_FA[target] || target)
         : (LANG_EN[target] || target);
@@ -143,6 +154,7 @@ export function cardsFromPhraseBank(
         difficulty: p.difficulty,
         points: pointsFor(p.difficulty),
         isReverse: reverse,
+        isCreative,
       });
     });
   });
@@ -162,7 +174,7 @@ export function cardsFromPhraseBank(
           topic: p.topic,
           contentType: typeOf(p.type),
           learningMode: 'Explain',
-          prompt: 'Explain this phrase',
+          prompt: nativeLanguage === 'fa' ? 'عبارت را برای یارت توضیح بده' : 'Explain this phrase',
           targetText,
           translation: translation || targetText,
           difficulty: p.difficulty,

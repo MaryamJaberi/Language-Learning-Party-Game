@@ -266,10 +266,14 @@ export function getPronunciationHint(
   // 1. Check curated pre-existing pronunciation on card
   if (existingPronunciation && existingPronunciation.trim()) {
     const rawPron = existingPronunciation.trim();
-    if (isNativeFa) {
-      return `تلفظ: «${rawPron}»`;
+    const rawClean = rawPron.toLowerCase().replace(/[.,!?;:؟\[\]«»"']/g, '').trim();
+    // Do NOT return if pronunciation is literally identical to the target text
+    if (rawClean !== lower) {
+      if (isNativeFa) {
+        return `تلفظ: «${rawPron}»`;
+      }
+      return `Pronunciation: [${rawPron}]`;
     }
-    return `Pronunciation: [${rawPron}]`;
   }
 
   // 2. Check curated dictionary
@@ -304,32 +308,36 @@ export function getPronunciationHint(
         const fallback = transliterateDutchToPersian(w);
         matchedPartsFa.push(fallback.fa);
         matchedPartsEn.push(fallback.ipa);
+        hasMatches = true;
       } else {
         matchedPartsFa.push(w);
         matchedPartsEn.push(w);
       }
     }
 
-    if (hasMatches || isTargetDutch) {
-      if (isNativeFa) {
-        return `تلفظ: «${matchedPartsFa.join(' ')}»`;
+    if (hasMatches) {
+      const combinedFa = matchedPartsFa.join(' ').trim();
+      const combinedEn = matchedPartsEn.join(' ').trim();
+      if (combinedFa.toLowerCase() !== lower && combinedEn.toLowerCase() !== lower) {
+        if (isNativeFa) {
+          return `تلفظ: «${combinedFa}»`;
+        }
+        return `Pronunciation: [${combinedEn}]`;
       }
-      return `Pronunciation: [${matchedPartsEn.join(' ')}]`;
     }
   }
 
   // 4. Algorithmic fallback for Dutch
   if (isTargetDutch) {
     const { fa, ipa } = transliterateDutchToPersian(clean);
-    if (isNativeFa) {
-      return `تلفظ: «${fa}» ${ipa}`;
+    if (fa && fa !== clean) {
+      if (isNativeFa) {
+        return `تلفظ: «${fa}» ${ipa}`;
+      }
+      return `Pronunciation: ${ipa}`;
     }
-    return `Pronunciation: ${ipa}`;
   }
 
-  // 5. General fallback: show cleaned phonetic guide
-  if (isNativeFa) {
-    return `تلفظ آوایی: [${clean}]`;
-  }
-  return `Pronunciation: [${clean}]`;
+  // 5. If no genuine phonetic transcription is available, return empty string (never return duplicate text)
+  return '';
 }

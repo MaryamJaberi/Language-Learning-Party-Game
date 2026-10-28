@@ -305,9 +305,9 @@ const IntroScreen: React.FC<Props> = ({
           <button
             id="header-profile-btn"
             onClick={handleHistoryClick}
-            aria-label={isRTL ? 'پروفایل و لیدربرد و تاریخچه' : 'Profile, History & Leaderboard'}
+            aria-label={t.userProfileTitle || (isRTL ? 'پروفایل کاربری' : 'User Profile')}
             className="w-11 h-11 flex items-center justify-center bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 text-[var(--ink)] border border-[var(--line)] rounded-full shadow-xs active:scale-95 transition-all cursor-pointer relative"
-            title={isRTL ? 'پروفایل و لیدربرد و تاریخچه' : 'Profile, History & Leaderboard'}
+            title={t.userProfileTitle || (isRTL ? 'پروفایل کاربری' : 'User Profile')}
           >
             {user?.photoURL ? (
               <img src={user.photoURL} alt="avatar" className="w-7 h-7 rounded-full border border-[var(--line)] object-cover" referrerPolicy="no-referrer" />
@@ -356,7 +356,8 @@ const IntroScreen: React.FC<Props> = ({
                 } catch {}
               }}
               className="p-1 rounded-full text-[var(--mute)] hover:text-[var(--ink)] hover:bg-[var(--line)]/50 cursor-pointer"
-              aria-label="Dismiss"
+              aria-label={t.dismiss || (isRTL ? 'رد کردن' : 'Dismiss')}
+              title={t.dismiss || (isRTL ? 'رد کردن' : 'Dismiss')}
             >
               <X size={13} />
             </button>
@@ -400,9 +401,9 @@ const IntroScreen: React.FC<Props> = ({
               <div className="flex items-center gap-2">
                 <span className="text-base">⏳</span>
                 <span className="text-xs sm:text-sm font-black text-[var(--ink)]">
-                  {isRTL 
-                    ? `ادامه بازی دورهمی قبلی (راند ${savedSession.round} از ${savedSession.maxRounds})`
-                    : `Resume Previous Match (Round ${savedSession.round} of ${savedSession.maxRounds})`}
+                  {(t.resumePrevMatch || (isRTL ? 'ادامه بازی قبلی ({round}/{total})' : 'Resume Previous Match ({round}/{total})'))
+                    .replace('{round}', String(savedSession.round))
+                    .replace('{total}', String(savedSession.maxRounds))}
                 </span>
               </div>
               <button
@@ -414,8 +415,8 @@ const IntroScreen: React.FC<Props> = ({
                   setSavedSession(null);
                   onDiscardSession?.();
                 }}
-                className="text-xs font-bold text-[var(--mute)] hover:text-rose-500 p-1"
-                title={isRTL ? 'حذف و شروع تازه' : 'Discard'}
+                className="text-xs font-bold text-[var(--mute)] hover:text-rose-500 p-1.5 min-w-[36px] min-h-[36px] flex items-center justify-center"
+                title={t.startFreshBtn || (isRTL ? 'شروع از نو' : 'Discard')}
               >
                 ✕
               </button>
@@ -427,9 +428,9 @@ const IntroScreen: React.FC<Props> = ({
                   sound.playClick();
                   onResumeSession?.();
                 }}
-                className="flex-1 py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs cursor-pointer active:scale-98 transition-all"
+                className="flex-1 min-h-[44px] py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs cursor-pointer active:scale-98 transition-all"
               >
-                <span>{isRTL ? 'ادامه بازی (مکث‌شده)' : 'Resume Match'}</span>
+                <span>{t.resumeMatchBtn || (isRTL ? 'ادامه بازی' : 'Resume Match')}</span>
               </button>
               <button
                 type="button"
@@ -440,9 +441,9 @@ const IntroScreen: React.FC<Props> = ({
                   setSavedSession(null);
                   onDiscardSession?.();
                 }}
-                className="py-2 px-3 rounded-xl bg-[var(--panel)] hover:bg-[var(--line)] border border-[var(--line)] text-[var(--mute)] font-bold text-xs cursor-pointer"
+                className="min-h-[44px] py-2 px-3 rounded-xl bg-[var(--panel)] hover:bg-[var(--line)] border border-[var(--line)] text-[var(--mute)] font-bold text-xs cursor-pointer flex items-center justify-center"
               >
-                <span>{isRTL ? 'شروع تازه' : 'Start Fresh'}</span>
+                <span>{t.startFreshBtn || (isRTL ? 'شروع از نو' : 'Start Fresh')}</span>
               </button>
             </div>
           </div>
@@ -453,33 +454,23 @@ const IntroScreen: React.FC<Props> = ({
           id="intro-party-btn"
           role="button"
           tabIndex={0}
-          aria-label={isRTL ? 'شروع بازی دورهمی' : 'Start Party Game'}
+          aria-label={t.startNewGame || (isRTL ? 'شروع بازی دورهمی' : 'Start New Game')}
           onClick={() => {
             sound.playStartGame();
             onNext();
           }}
-          className="group relative w-full p-3.5 sm:p-4 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] border border-[var(--line)] hover:border-[var(--lapis)] shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center justify-between gap-3 text-start"
+          className="group relative w-full min-h-[64px] p-3.5 sm:p-4 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] border border-[var(--line)] hover:border-[var(--lapis)] shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center justify-between gap-2.5 text-start"
         >
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-11 h-11 rounded-xl bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-xs">
               <Users size={22} />
             </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="text-sm sm:text-base font-black text-[var(--ink)] leading-tight">
-                  {isRTL ? 'شروع بازی دورهمی' : (t.startNewGame || 'Start New Game')}
-                </span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--lapis-soft)] text-[var(--lapis)] shrink-0">
-                  {isRTL ? '۴ تا ۸ نفره' : '4-8 Players'}
-                </span>
-              </div>
-              <p className="text-[11px] text-[var(--mute)] font-medium truncate mt-0.5">
-                {isRTL ? 'بازی دور یک میز + اتاق آنلاین تیمی' : 'Pass & Play + Online Room'}
-              </p>
-            </div>
+            <span className="text-base sm:text-lg font-black text-[var(--ink)] leading-tight truncate">
+              {t.startNewGame || (isRTL ? 'شروع بازی دورهمی' : 'Start New Game')}
+            </span>
           </div>
 
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <button
               type="button"
               id="intro-online-btn"
@@ -489,15 +480,15 @@ const IntroScreen: React.FC<Props> = ({
                 sound.playClick();
                 onOpenOnline();
               }}
-              className="px-2.5 py-1.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--line)] border border-[var(--line)] text-[var(--turq)] text-xs font-bold flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
-              title={isRTL ? 'اتاق آنلاین تیمی از راه دور' : 'Online Multiplayer'}
+              className="min-h-[38px] px-2.5 py-1.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--line)] border border-[var(--line)] text-[var(--turq)] text-xs font-bold flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+              title={t.onlineRoom || (isRTL ? 'اتاق آنلاین' : 'Online Room')}
             >
-              <Globe size={12} />
-              <span>{isRTL ? 'آنلاین' : 'Online'}</span>
+              <Globe size={13} />
+              <span>{t.onlineBadge || (isRTL ? 'آنلاین' : 'Online')}</span>
             </button>
 
-            <div className="w-8 h-8 rounded-full bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center shrink-0">
-              {isRTL ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+            <div className="text-[var(--mute)] group-hover:text-[var(--lapis)] transition-colors flex items-center justify-center shrink-0">
+              {isRTL ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
             </div>
           </div>
         </div>
@@ -505,94 +496,89 @@ const IntroScreen: React.FC<Props> = ({
         {/* MODE 2: دوئل دونفره (1v1 Speed Duel - Local & Online) */}
         <div
           id="intro-duel-btn"
+          role="button"
+          tabIndex={0}
+          aria-label={t.duelModeTitle || (isRTL ? 'دوئل سرعتی دونفره' : '1v1 Speed Duel')}
           onClick={() => {
             sound.playClick();
             onOpenDuel?.();
           }}
-          className="group relative w-full p-3.5 sm:p-4 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] border border-[var(--line)] hover:border-rose-400 dark:hover:border-rose-600 shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center justify-between gap-3 text-start"
+          className="group relative w-full min-h-[64px] p-3.5 sm:p-4 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] border border-[var(--line)] hover:border-rose-400 dark:hover:border-rose-600 shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center justify-between gap-2.5 text-start"
         >
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-xs">
               <Swords size={22} />
             </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="text-sm sm:text-base font-black text-[var(--ink)] leading-tight">
-                  {isRTL ? 'دوئل دونفره ⚔️' : '1v1 Speed Duel ⚔️'}
-                </span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 shrink-0">
-                  {isRTL ? '۲ نفره' : '2 Players'}
-                </span>
-              </div>
-              <p className="text-[11px] text-[var(--mute)] font-medium truncate mt-0.5">
-                {isRTL ? 'مسابقه سرعتی، شوک خرابکاری و هیجان' : 'Reflex Match, Sabotage Shocks'}
-              </p>
-            </div>
+            <span className="text-base sm:text-lg font-black text-[var(--ink)] leading-tight truncate">
+              {t.duelModeTitle || (isRTL ? 'دوئل سرعتی دونفره' : '1v1 Speed Duel')}
+            </span>
           </div>
 
-          <div className="flex items-center gap-1 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 px-3 py-1.5 rounded-xl text-xs font-bold shrink-0">
-            <Zap size={13} />
-            <span>{isRTL ? 'دوئل' : 'Duel'}</span>
+          <div className="text-[var(--mute)] group-hover:text-rose-500 transition-colors flex items-center justify-center shrink-0">
+            {isRTL ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
           </div>
         </div>
 
         {/* MODE 3: چالش تک‌نفره (Solo Challenge & Leitner) */}
         <div
           id="intro-single-player-btn"
+          role="button"
+          tabIndex={0}
+          aria-label={t.soloChallengeTitle || (isRTL ? 'چالش انفرادی و یادگیری' : 'Solo Challenge')}
           onClick={() => {
             sound.playClick();
             onOpenSinglePlayer();
           }}
-          className="group relative w-full p-3.5 sm:p-4 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] border border-[var(--line)] hover:border-[var(--turq)] shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center justify-between gap-3 text-start"
+          className="group relative w-full min-h-[64px] p-3.5 sm:p-4 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] border border-[var(--line)] hover:border-[var(--turq)] shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center justify-between gap-2.5 text-start"
         >
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-11 h-11 rounded-xl bg-teal-50 dark:bg-teal-950/40 text-[var(--turq)] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-xs">
               <GraduationCap size={22} />
             </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="text-sm sm:text-base font-black text-[var(--ink)] leading-tight">
-                  {isRTL ? 'چالش تک‌نفره' : 'Solo Challenge'}
-                </span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-50 dark:bg-teal-950/40 text-[var(--turq)] shrink-0">
-                  {isRTL ? 'انفرادی' : 'Solo Run'}
-                </span>
-              </div>
-              <p className="text-[11px] text-[var(--mute)] font-medium truncate mt-0.5">
-                {isRTL ? 'تلفظ صوتی، فلش‌کارت و جعبه لایتنر' : 'Voice, Flashcards & Practice'}
-              </p>
-            </div>
+            <span className="text-base sm:text-lg font-black text-[var(--ink)] leading-tight truncate">
+              {t.soloChallengeTitle || (isRTL ? 'چالش انفرادی و یادگیری' : 'Solo Challenge')}
+            </span>
           </div>
 
-          <div className="flex items-center gap-1 bg-teal-50 dark:bg-teal-950/40 text-[var(--turq)] px-3 py-1.5 rounded-xl text-xs font-bold shrink-0">
-            <BookOpen size={13} />
-            <span>{isRTL ? 'تمرین' : 'Learn'}</span>
+          <div className="text-[var(--mute)] group-hover:text-[var(--turq)] transition-colors flex items-center justify-center shrink-0">
+            {isRTL ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
           </div>
         </div>
 
-        {/* Legal & Privacy Policy Link for Google Play Compliance */}
-        <div className="flex items-center justify-center gap-2 pt-1 text-xs text-[var(--mute)] font-medium">
+        {/* Legal, Privacy Policy & Styled Version Badge */}
+        <div className="flex items-center justify-center gap-2.5 pt-1.5 text-xs text-[var(--mute)] font-medium">
           <button
             type="button"
             onClick={() => {
               setProfileInitialTab('privacy');
               setIsProfileModalOpen(true);
             }}
-            className="hover:text-[var(--ink)] underline underline-offset-4 transition-colors cursor-pointer"
+            className="hover:text-[var(--ink)] underline underline-offset-4 transition-colors cursor-pointer py-1 px-1.5"
           >
-            {isRTL ? 'حریم خصوصی' : 'Privacy Policy'}
+            {t.privacyPolicy || (isRTL ? 'حریم خصوصی' : 'Privacy Policy')}
           </button>
           <span>•</span>
           <a
             href="./privacy.html"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-[var(--ink)] underline underline-offset-4 transition-colors cursor-pointer"
+            className="hover:text-[var(--ink)] underline underline-offset-4 transition-colors cursor-pointer py-1 px-1.5"
           >
-            {isRTL ? 'خط‌مشی وب' : 'Web Policy'}
+            {t.webPolicy || (isRTL ? 'نسخه وب' : 'Web Policy')}
           </a>
           <span>•</span>
-          <span className="opacity-75 font-mono text-[11px]">v1.0.5</span>
+          <button
+            type="button"
+            onClick={() => {
+              sound.playClick();
+              setProfileInitialTab('privacy');
+              setIsProfileModalOpen(true);
+            }}
+            title={isRTL ? 'نسخه ۱.۰.۵ — یکپارچه‌سازی کامل فارسی، بهبود دکمه‌های موبایل و انیمیشن امتیازدهی' : 'v1.0.5 — Unified UI, mobile ergonomics & score animations'}
+            className="px-2 py-0.5 rounded-full bg-[var(--panel)] border border-[var(--line)] text-[10.5px] font-mono font-bold text-[var(--mute)] hover:text-[var(--lapis)] hover:border-[var(--lapis)] transition-colors cursor-pointer"
+          >
+            {isRTL ? 'نسخه ۱.۰.۵' : 'v1.0.5'}
+          </button>
         </div>
       </div>
 
@@ -665,6 +651,8 @@ const IntroScreen: React.FC<Props> = ({
               </div>
               <button 
                 type="button"
+                aria-label={t.close || (isRTL ? 'بستن' : 'Close')}
+                title={t.close || (isRTL ? 'بستن' : 'Close')}
                 onClick={() => {
                   sound.playClick();
                   setIsGameModeModalOpen(false);

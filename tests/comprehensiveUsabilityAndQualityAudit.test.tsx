@@ -289,7 +289,7 @@ describe('Comprehensive Usability, Quality, and End-to-End Audit', () => {
     fireEvent.click(startRound1Btn);
 
     // Step 5: Verify in Active Game
-    const exitGameBtn = screen.getByLabelText('Exit Game');
+    const exitGameBtn = screen.getByLabelText(/خروج از بازی|Exit Game/i);
     expect(exitGameBtn).toBeInTheDocument();
     fireEvent.click(exitGameBtn);
 

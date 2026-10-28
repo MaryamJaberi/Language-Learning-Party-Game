@@ -301,8 +301,8 @@ export const DEFAULT_SETTINGS: GameSettings = {
   roundDuration: 60,
   difficulty: 'easy',
   cefrLevel: 'all',
-  nativeLanguage: 'en',
-  targetLanguages: ['es', 'nl'],
+  nativeLanguage: 'fa',
+  targetLanguages: ['en-US', 'nl'],
   cardGameMode: 'mixed',
   autoPronounceOnCorrect: true,
   selectedCategories: [
@@ -314,8 +314,8 @@ export const DEFAULT_SETTINGS: GameSettings = {
     "CAT_WORK",
     "CAT_SMALLTALK"
   ],
-  playerNames: ['Alex', 'Sam', 'Emma', 'Liam', 'Olivia', 'Noah', 'Sophia', 'Lucas'],
-  language: 'en',
+  playerNames: ['آرش', 'سارا', 'کیان', 'مریم', 'سامان', 'پریا', 'بردیا', 'نیکا'],
+  language: 'fa',
   passPhoneScreenEnabled: false,
   soundEnabled: true,
   powerCardsEnabled: true,

@@ -393,7 +393,7 @@ const GameplayScreen: React.FC<Props> = ({
     if (isCurrentCardChallenge) {
       const note = isRTL 
         ? '⭐ آفرین! پاسخ عالی به کارت چالش (+۲ امتیاز تشویقی)' 
-        : '⭐ Great job! Challenge card answered (+2 Bonus PTS)';
+        : `⭐ Great job! Challenge card answered (+2 Bonus ${t.pointsUnit || 'PTS'})`;
       setBonusNotification(note);
       setTimeout(() => setBonusNotification(null), 2000);
     } else if (currentCard?.isGolden || isSpeedBonus || streakCount >= 2) {
@@ -634,32 +634,33 @@ const GameplayScreen: React.FC<Props> = ({
         {/* Center Target Language & CEFR Level Badge */}
         <div className="flex items-center gap-1.5 bg-[var(--bg)] text-[var(--ink)] px-2.5 py-1 rounded-xl border border-[var(--line)] font-bold text-xs">
           <FlagIcon language={activeLangCode} size={15} />
-          <span className="truncate max-w-[70px] font-bold">{targetLangInfo.nativeName}</span>
+          <span className="truncate max-w-[80px] font-bold">{isRTL ? (targetLangInfo.persianName || targetLangInfo.nativeName) : targetLangInfo.nativeName}</span>
           <span className="bg-[var(--lapis-soft)] text-[var(--lapis)] border border-[var(--lapis)]/20 text-[10px] font-bold px-1.5 py-0.5 rounded-md">
             {currentCard?.cefrLevel || 'A1'}
           </span>
         </div>
 
-        {/* Control Actions: Exit, Sound, Pause */}
-        <div className="flex items-center gap-1.5">
+        {/* Control Actions: Exit, Sound, Pause, Help */}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* Exit Game Button (Icon-only) */}
           <button 
             type="button"
-            aria-label="Exit Game"
-            title={isRTL ? "خروج از بازی" : "Exit Game"}
+            aria-label={t.exitGame || (isRTL ? "خروج از بازی" : "Exit Game")}
+            title={t.exitGame || (isRTL ? "خروج از بازی" : "Exit Game")}
             onClick={() => {
               sound.playClick();
               setShowExitConfirm(true);
             }}
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 hover:bg-rose-100 flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer"
+            className="w-10 h-10 sm:w-11 sm:h-11 rounded-full border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 hover:bg-rose-100 flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer"
           >
-            <LogOut size={16} className={isRTL ? "rotate-180" : ""} />
+            <LogOut size={17} className={isRTL ? "rotate-180" : ""} />
           </button>
 
           {/* Sound Toggle */}
           <button 
             type="button"
-            aria-label="Sound Toggle"
+            aria-label={t.soundToggle || (isRTL ? "قطع و وصل صدا" : "Sound Toggle")}
+            title={t.soundToggle || (isRTL ? "قطع و وصل صدا" : "Sound Toggle")}
             onClick={() => {
               const currentMuted = settings.soundEnabled === false;
               const nextMuted = !currentMuted;
@@ -676,50 +677,91 @@ const GameplayScreen: React.FC<Props> = ({
               visibility: 'visible',
               display: 'inline-flex'
             }}
-            className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full border flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer select-none ${
+            className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full border flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer select-none ${
               settings.soundEnabled === false
                 ? '!bg-rose-500 !text-white !border-2 !border-rose-600 dark:!bg-rose-600 shadow-rose-500/20 shadow-md ring-2 ring-rose-400/30'
                 : 'bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 text-[var(--ink)] border-[var(--line)]'
             }`}
           >
             {settings.soundEnabled !== false ? (
-              <Volume2 size={16} className="text-[var(--ink)] shrink-0" strokeWidth={2} />
+              <Volume2 size={17} className="text-[var(--ink)] shrink-0" strokeWidth={2} />
             ) : (
-              <VolumeX size={16} className="!text-white shrink-0 stroke-white" strokeWidth={2.5} style={{ color: '#ffffff', stroke: '#ffffff', display: 'block' }} />
+              <VolumeX size={17} className="!text-white shrink-0 stroke-white" strokeWidth={2.5} style={{ color: '#ffffff', stroke: '#ffffff', display: 'block' }} />
             )}
           </button>
 
           {/* Pause Game */}
           <button 
             type="button"
-            aria-label="Pause"
+            aria-label={t.pause || (isRTL ? "توقف بازی" : "Pause")}
+            title={t.pause || (isRTL ? "توقف بازی" : "Pause")}
             onClick={() => {
               sound.playClick();
               setIsUserPaused(true);
               setGameStatus(GameStatus.Paused);
             }}
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer"
+            className="w-10 h-10 sm:w-11 sm:h-11 rounded-full border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer"
           >
-            <Pause size={16} />
+            <Pause size={17} />
           </button>
 
           {/* In-Game Help / Rules */}
           {onOpenHelp && (
             <button
               type="button"
-              aria-label="Help"
-              title={isRTL ? "راهنمای بازی" : "Game Rules"}
+              aria-label={t.help || (isRTL ? "راهنمای بازی" : "Help")}
+              title={t.help || (isRTL ? "راهنمای بازی" : "Game Rules")}
               onClick={() => {
                 sound.playClick();
                 onOpenHelp();
               }}
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer"
+              className="w-10 h-10 sm:w-11 sm:h-11 rounded-full border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer"
             >
-              <HelpCircle size={16} />
+              <HelpCircle size={17} />
             </button>
           )}
         </div>
 
+      </div>
+
+      {/* Match Pacing & Round Progress Indicator */}
+      <div className="w-full bg-[var(--panel)]/90 backdrop-blur-xs px-3 py-1.5 rounded-xl border border-[var(--line)] shadow-2xs flex items-center justify-between gap-2 shrink-0 font-ui text-[11px] my-1">
+        {/* Round Pacing Segmented Dots / Bars */}
+        <div className="flex items-center gap-1.5 min-w-0">
+          <span className="font-bold text-[var(--ink)] shrink-0">
+            {isRTL ? `دور ${currentRound} از ${settings.roundsCount}` : `Round ${currentRound} of ${settings.roundsCount}`}
+          </span>
+          <div className="flex items-center gap-1">
+            {Array.from({ length: settings.roundsCount }).map((_, rIdx) => {
+              const roundNum = rIdx + 1;
+              const isPast = roundNum < currentRound;
+              const isCurrent = roundNum === currentRound;
+              return (
+                <div
+                  key={roundNum}
+                  title={isRTL ? `دور ${roundNum}` : `Round ${roundNum}`}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    isPast
+                      ? 'w-4 bg-emerald-500'
+                      : isCurrent
+                        ? 'w-7 bg-[var(--lapis)] ring-2 ring-[var(--lapis)]/30 animate-pulse'
+                        : 'w-3 bg-[var(--line)]'
+                  }`}
+                />
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Turn in Round Pacing */}
+        <div className="flex items-center gap-1 text-[var(--mute)] font-semibold shrink-0">
+          <Users size={12} className="text-[var(--lapis)]" />
+          <span>
+            {isRTL 
+              ? `نوبت ${activePlayerIndex + 1} از ${players.length} بازیکن`
+              : `Turn ${activePlayerIndex + 1} of ${players.length}`}
+          </span>
+        </div>
       </div>
 
       {/* Main Active Language Card */}
@@ -738,7 +780,7 @@ const GameplayScreen: React.FC<Props> = ({
               className="px-2.5 py-1 rounded-xl border border-[var(--line)] font-bold text-xs shadow-xs flex items-center gap-1.5 bg-[var(--bg)] text-[var(--ink)]"
             >
               <span className="text-base leading-none select-none">{activePlayer?.avatar || '🦊'}</span>
-              <span className="font-black">{activePlayer?.name || 'Player'}</span>
+              <span className="font-black">{activePlayer?.name || (isRTL ? 'بازیکن' : 'Player')}</span>
               <span className="text-[10px] text-[var(--mute)]">({t.teamNames[activeColor]})</span>
             </div>
 
@@ -803,7 +845,7 @@ const GameplayScreen: React.FC<Props> = ({
                 <div className="flex items-center justify-center gap-2 pt-0.5">
                   <h2 
                     dir={isRtlLang(currentCard.targetLanguage) ? 'rtl' : 'ltr'} 
-                    className="text-2xl sm:text-3xl font-extrabold font-card-word tracking-tight text-[var(--ink)]"
+                    className="card-target-word text-2xl sm:text-3xl font-extrabold font-card-word tracking-tight text-[var(--ink)]"
                   >
                     {currentCard.targetText}
                   </h2>
@@ -811,12 +853,13 @@ const GameplayScreen: React.FC<Props> = ({
                   {/* Pronounce Button */}
                   <button
                     type="button"
+                    aria-label={isRTL ? "پخش تلفظ صوتی" : "Audio Pronunciation"}
                     title={isRTL ? "پخش تلفظ صوتی" : "Audio Pronunciation"}
                     onClick={() => {
                       sound.playClick();
                       sound.speakTargetPhrase(currentCard.targetText, currentCard.targetLanguage);
                     }}
-                    className="p-1.5 bg-[var(--turq)] hover:brightness-105 text-white rounded-xl shadow-xs transition-all active:scale-95"
+                    className="p-2 bg-[var(--turq)] hover:brightness-105 text-white rounded-xl shadow-xs transition-all active:scale-95"
                   >
                     <Volume2 size={16} />
                   </button>
@@ -833,7 +876,7 @@ const GameplayScreen: React.FC<Props> = ({
                   <div className="flex items-center justify-center gap-2">
                     <h2 
                       dir={isRtlLang(currentCard?.targetLanguage || 'en-US') ? 'rtl' : 'ltr'} 
-                      className="text-2xl sm:text-4xl font-extrabold font-card-word tracking-tight text-[var(--ink)]"
+                      className="card-target-word text-2xl sm:text-4xl font-extrabold font-card-word tracking-tight text-[var(--ink)]"
                     >
                       {currentCard?.targetText || '---'}
                     </h2>
@@ -841,12 +884,13 @@ const GameplayScreen: React.FC<Props> = ({
                     {currentCard?.targetText && (
                       <button
                         type="button"
+                        aria-label={isRTL ? "پخش تلفظ صوتی" : "Audio Pronunciation"}
                         title={isRTL ? "پخش تلفظ صوتی" : "Audio Pronunciation"}
                         onClick={() => {
                           sound.playClick();
                           sound.speakTargetPhrase(currentCard.targetText, currentCard.targetLanguage);
                         }}
-                        className="p-1.5 bg-[var(--turq)] hover:brightness-105 text-white rounded-xl shadow-xs transition-all active:scale-95"
+                        className="p-2 bg-[var(--turq)] hover:brightness-105 text-white rounded-xl shadow-xs transition-all active:scale-95"
                       >
                         <Volume2 size={16} />
                       </button>
@@ -880,11 +924,6 @@ const GameplayScreen: React.FC<Props> = ({
             {/* Smart Micro-Hints Toolbar (Compact & Lightweight) */}
             <div className="flex flex-wrap items-center justify-center gap-1.5 mt-2">
               
-              {currentCard?.pronunciation && (
-                <span className="text-[10px] bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] px-2 py-0.5 rounded-lg font-mono font-bold">
-                  🗣️ {currentCard.pronunciation}
-                </span>
-              )}
 
               {/* AI Coach & Referee Quick Help */}
               <button
@@ -927,7 +966,9 @@ const GameplayScreen: React.FC<Props> = ({
         <TimerDisplay 
           roundTimer={roundTimer} 
           teams={teams} 
-          activeTeamId={activeTeam?.id || 0} 
+          activeTeamId={activeTeam?.id || 0}
+          language={language}
+          isRTL={isRTL}
         />
       </div>
 
@@ -937,25 +978,25 @@ const GameplayScreen: React.FC<Props> = ({
           <button
             type="button"
             onClick={handleExecuteUndo}
-            className="px-4 py-1.5 bg-[var(--saffron)] text-[#15204A] rounded-full border border-[var(--saffron)] font-bold text-xs shadow-sm flex items-center gap-2"
+            className="min-h-[38px] px-4 py-1.5 bg-[var(--saffron)] text-[#15204A] rounded-full border border-[var(--saffron)] font-bold text-xs shadow-sm flex items-center gap-2"
           >
             <RotateCcw size={14} />
-            <span>{isRTL ? `بازگشت کارت قبلی (${undoTimeLeft}s)` : `Undo Card (${undoTimeLeft}s)`}</span>
+            <span>{isRTL ? `بازگشت کارت قبلی (${undoTimeLeft} ثانیه)` : `Undo Card (${undoTimeLeft}s)`}</span>
           </button>
         </div>
       )}
 
       {/* Bottom Action Controls */}
-      <div className="w-full space-y-1.5 shrink-0 font-ui">
+      <div className="w-full space-y-2 shrink-0 font-ui">
         
         {/* Main Answer Buttons (Correct / Almost / Skip) */}
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
           
           {/* Skip / Next */}
           <button
             type="button"
             onClick={handleSkip}
-            className="h-13 sm:h-14 text-xs sm:text-sm font-extrabold uppercase flex flex-col items-center justify-center gap-0.5 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs transition-all active:scale-[0.97] cursor-pointer"
+            className="h-14 sm:h-15 min-h-[52px] px-2 text-xs sm:text-sm font-extrabold uppercase flex flex-col items-center justify-center gap-1 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs transition-all active:scale-[0.97] cursor-pointer"
           >
             <X size={18} strokeWidth={2.5} className="text-rose-500" />
             <span className="leading-none">{isRTL ? 'رد کردن' : 'Skip'}</span>
@@ -965,7 +1006,7 @@ const GameplayScreen: React.FC<Props> = ({
           <button
             type="button"
             onClick={() => setShowAlmostModal(true)}
-            className="h-13 sm:h-14 text-xs sm:text-sm font-extrabold uppercase flex flex-col items-center justify-center gap-0.5 rounded-2xl bg-[var(--saffron)] hover:brightness-105 text-[#15204A] border-0 shadow-xs transition-all active:scale-[0.97] cursor-pointer"
+            className="h-14 sm:h-15 min-h-[52px] px-2 text-xs sm:text-sm font-extrabold uppercase flex flex-col items-center justify-center gap-1 rounded-2xl bg-[var(--saffron)] hover:brightness-105 text-[#15204A] border-0 shadow-xs transition-all active:scale-[0.97] cursor-pointer"
           >
             <ThumbsUp size={18} className="text-[#15204A]" />
             <span className="leading-none text-center">{t.almostCorrectBtn || (isRTL ? 'تقریباً درست' : 'Almost')}</span>
@@ -975,7 +1016,7 @@ const GameplayScreen: React.FC<Props> = ({
           <button
             type="button"
             onClick={() => handleCorrect(false)}
-            className="h-13 sm:h-14 text-xs sm:text-sm font-extrabold uppercase flex flex-col items-center justify-center gap-0.5 rounded-2xl bg-[var(--turq)] hover:brightness-105 text-white border-0 shadow-xs transition-all active:scale-[0.97] cursor-pointer"
+            className="h-14 sm:h-15 min-h-[52px] px-2 text-xs sm:text-sm font-extrabold uppercase flex flex-col items-center justify-center gap-1 rounded-2xl bg-[var(--turq)] hover:brightness-105 text-white border-0 shadow-xs transition-all active:scale-[0.97] cursor-pointer"
           >
             <Check size={20} strokeWidth={3} className="text-white" />
             <span className="leading-none">{isRTL ? 'درست بود!' : 'Correct!'}</span>
@@ -984,16 +1025,16 @@ const GameplayScreen: React.FC<Props> = ({
         </div>
 
         {/* Secondary Bar: Power Cards Drawer & Swap */}
-        <div className="flex gap-2">
+        <div className="flex gap-2.5">
           
           {/* +10s Time Power Card */}
           {settings.powerCardsEnabled !== false && (
             <button
               type="button"
               onClick={() => usePowerCard('time')}
-              className="flex-1 py-2 bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] rounded-xl text-[11px] font-bold shadow-xs flex items-center justify-center gap-1 transition-all active:scale-[0.98]"
+              className="flex-1 min-h-[44px] py-2 bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] rounded-xl text-xs font-bold shadow-xs flex items-center justify-center gap-1.5 transition-all active:scale-[0.98]"
             >
-              <Clock size={13} className="text-[var(--lapis)]" />
+              <Clock size={14} className="text-[var(--lapis)]" />
               <span>{isRTL ? '۱۰+ ثانیه وقت' : '+10s Boost'}</span>
             </button>
           )}
@@ -1006,14 +1047,14 @@ const GameplayScreen: React.FC<Props> = ({
               sound.playToggle();
               onGetNextWord();
             }}
-            className={`flex-1 py-2 border border-[var(--line)] rounded-xl text-[11px] font-bold shadow-xs flex items-center justify-center gap-1 transition-all active:scale-[0.98] ${
+            className={`flex-1 min-h-[44px] py-2 border border-[var(--line)] rounded-xl text-xs font-bold shadow-xs flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] ${
               swapCooldown <= 0
                 ? 'bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)]'
                 : 'opacity-40 cursor-not-allowed bg-[var(--bg)] text-[var(--mute)]'
             }`}
           >
-            <RotateCcw size={13} />
-            <span>{swapCooldown > 0 ? (isRTL ? `تعویض (${Math.ceil(swapCooldown/1000)}s)` : `Swap (${Math.ceil(swapCooldown/1000)}s)`) : (isRTL ? 'تعویض کارت' : 'Swap Card')}</span>
+            <RotateCcw size={14} />
+            <span>{swapCooldown > 0 ? (isRTL ? `تعویض (${Math.ceil(swapCooldown/1000)} ثانیه)` : `Swap (${Math.ceil(swapCooldown/1000)}s)`) : (isRTL ? 'تعویض کارت' : 'Swap Card')}</span>
           </button>
 
         </div>
@@ -1273,7 +1314,7 @@ const GameplayScreen: React.FC<Props> = ({
             {revealCard.card.contentType === 'Vocabulary' && (revealCard.card.grammarPoint || revealCard.card.prompt) && (
               <div className="w-full p-2.5 bg-[var(--bg)] rounded-xl border border-[var(--line)] text-start space-y-1">
                 <span className="text-[10px] font-black uppercase text-[var(--lapis)] block tracking-wider">
-                  {isRTL ? 'جمله نمونه (Example Sentence):' : 'Example Sentence:'}
+                  {t.exampleSentenceLabel || (isRTL ? 'جمله نمونه:' : 'Example Sentence:')}
                 </span>
                 <p className="text-xs text-[var(--ink)] font-medium leading-relaxed">
                   {revealCard.card.grammarPoint || revealCard.card.prompt}
@@ -1285,10 +1326,9 @@ const GameplayScreen: React.FC<Props> = ({
             <button
               type="button"
               onClick={dismissRevealCard}
-              className="w-full py-2.5 px-4 rounded-xl bg-[var(--lapis)] text-[var(--on-lapis)] font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              className="w-full min-h-[44px] py-2.5 px-4 rounded-xl bg-[var(--lapis)] text-[var(--on-lapis)] font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
             >
-              <span>{isRTL ? 'ادامه بازی (یا لمس صفحه)' : 'Continue (or tap anywhere)'}</span>
-              <span className="text-[10px] opacity-75 font-mono">2.5s</span>
+              <span>{t.continueOrTap || (isRTL ? 'ادامه خودکار یا ضربه برای رد شدن' : 'Continue (or tap anywhere)')}</span>
             </button>
           </div>
         </div>

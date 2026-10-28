@@ -107,7 +107,8 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
               onClose();
             }}
             className="w-8 h-8 rounded-full bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] flex items-center justify-center transition-all"
-            aria-label="Close"
+            aria-label={t.close || (isRTL ? 'بستن' : 'Close')}
+            title={t.close || (isRTL ? 'بستن' : 'Close')}
           >
             <X size={16} />
           </button>
@@ -208,7 +209,7 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                     <FlagIcon language={settings.targetLanguage} size={15} />
                   </div>
                   <span className="font-extrabold text-xs text-[var(--ink)] truncate">
-                    {currentTargetLangInfo.nativeName.split(' ')[0]}
+                    {isRTL ? (currentTargetLangInfo.persianName || currentTargetLangInfo.nativeName.split(' ')[0]) : currentTargetLangInfo.nativeName.split(' ')[0]}
                   </span>
                 </div>
               </button>
@@ -248,7 +249,7 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                     <FlagIcon language={settings.nativeLanguage} size={15} />
                   </div>
                   <span className="font-extrabold text-xs text-[var(--ink)] truncate">
-                    {currentNativeLangInfo.nativeName.split(' ')[0]}
+                    {isRTL ? (currentNativeLangInfo.persianName || currentNativeLangInfo.nativeName.split(' ')[0]) : currentNativeLangInfo.nativeName.split(' ')[0]}
                   </span>
                 </div>
               </button>
@@ -378,7 +379,7 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                     questionCount: s.questionCount > 20 ? 10 : s.questionCount
                   }));
                 }}
-                className={`py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                className={`min-h-[42px] py-2 rounded-lg text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                   settings.matchMode !== 'timed_match'
                     ? 'bg-[var(--lapis)] text-[var(--on-lapis)] shadow-xs'
                     : 'text-[var(--mute)] hover:text-[var(--ink)]'
@@ -410,7 +411,7 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                             timeLimitSeconds: sec
                           }));
                         }}
-                        className={`py-1.5 rounded-xl border font-black text-[11px] transition-all cursor-pointer active:scale-95 ${
+                        className={`min-h-[42px] py-2 rounded-xl border font-black text-xs transition-all cursor-pointer active:scale-95 ${
                           isSelected
                             ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs'
                             : 'bg-[var(--panel)] border-[var(--line)] text-[var(--ink)] hover:bg-[var(--bg)]'
@@ -439,7 +440,7 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                           sound.playToggle();
                           setSettings(s => ({ ...s, questionCount: cnt }));
                         }}
-                        className={`py-1.5 rounded-xl border font-bold text-[11px] transition-all cursor-pointer active:scale-95 ${
+                        className={`min-h-[42px] py-2 rounded-xl border font-bold text-xs transition-all cursor-pointer active:scale-95 ${
                           isSelected 
                             ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs' 
                             : 'bg-[var(--panel)] border-[var(--line)] text-[var(--ink)] hover:bg-[var(--bg)]'
@@ -462,7 +463,7 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
         <div className="p-3.5 bg-[var(--panel)] border-t border-[var(--line)]">
           <button
             onClick={handleStart}
-            className="w-full py-3 rounded-2xl bg-[var(--lapis)] hover:brightness-105 text-[var(--on-lapis)] font-extrabold text-sm shadow-md active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full min-h-[48px] py-3 rounded-2xl bg-[var(--lapis)] hover:brightness-105 text-[var(--on-lapis)] font-extrabold text-sm shadow-md active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <Play size={16} fill="currentColor" />
             <span>{isRTL ? 'شروع تمرین هوشمند' : 'Start Practice'}</span>

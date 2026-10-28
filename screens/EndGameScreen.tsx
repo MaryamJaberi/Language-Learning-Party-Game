@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import ShareScorecardModal from '../components/ShareScorecardModal';
 import { FlagIcon } from '../components/FlagIcon';
+import ConfettiCelebration from '../components/ConfettiCelebration';
 
 interface Props {
   winners: Team[];
@@ -88,17 +89,25 @@ const EndGameScreen: React.FC<Props> = ({
 
   // Group by language
   const languageStats: Record<string, { total: number; correct: number }> = {};
+  // Group by CEFR
+  const cefrStats: Record<string, { total: number; correct: number }> = {};
   playedCards.forEach(c => {
     const lang = c.card.targetLanguage;
     if (!languageStats[lang]) languageStats[lang] = { total: 0, correct: 0 };
     languageStats[lang].total += 1;
     if (c.guessedCorrectly) languageStats[lang].correct += 1;
+
+    const lvl = c.card.cefrLevel || 'A1';
+    if (!cefrStats[lvl]) cefrStats[lvl] = { total: 0, correct: 0 };
+    cefrStats[lvl].total += 1;
+    if (c.guessedCorrectly) cefrStats[lvl].correct += 1;
   });
 
   const missedCards = playedCards.filter(c => !c.guessedCorrectly);
 
   return (
-    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full min-h-0 flex-1 flex flex-col items-center justify-between p-2.5 sm:p-4 text-center select-none overflow-y-auto overscroll-contain font-ui bg-[var(--bg)] text-[var(--ink)]" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full min-h-0 flex-1 flex flex-col items-center justify-between p-2.5 sm:p-4 text-center select-none overflow-y-auto overscroll-contain font-ui bg-[var(--bg)] text-[var(--ink)] relative" dir={isRTL ? 'rtl' : 'ltr'}>
+      <ConfettiCelebration duration={3600} />
       
       {/* Pool warning banner */}
       {isPoolExhausted && (
@@ -292,6 +301,36 @@ const EndGameScreen: React.FC<Props> = ({
                 })}
               </div>
             </div>
+
+            {/* CEFR Level Mastery Breakdown */}
+            {Object.keys(cefrStats).length > 0 && (
+              <div className="bg-[var(--panel)] p-3.5 rounded-2xl border border-[var(--line)] shadow-xs">
+                <h3 className="text-xs font-bold uppercase text-[var(--ink)] mb-2.5 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <Award size={14} className="text-[var(--saffron)]" />
+                    <span>{isRTL ? 'پیشرفت در سطوح بین‌المللی (CEFR):' : 'CEFR Level Mastery:'}</span>
+                  </span>
+                  <span className="text-[10px] text-[var(--mute)] font-mono">A1 ➔ C1</span>
+                </h3>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {Object.entries(cefrStats).map(([lvl, stat]) => {
+                    const pct = stat.total > 0 ? Math.round((stat.correct / stat.total) * 100) : 0;
+                    return (
+                      <div key={lvl} className="bg-[var(--bg)] p-2 rounded-xl border border-[var(--line)] text-center">
+                        <div className="flex items-center justify-between text-xs font-black">
+                          <span className="text-[var(--lapis)] font-mono">{lvl}</span>
+                          <span className="text-emerald-600 dark:text-emerald-400 font-mono text-[11px]">{pct}%</span>
+                        </div>
+                        <div className="text-[9.5px] text-[var(--mute)] mt-0.5">
+                          {stat.correct}/{stat.total} {isRTL ? 'پاسخ درست' : 'correct'}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* Missed Cards Spaced Repetition Box */}
             {missedCards.length > 0 && (

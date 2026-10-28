@@ -23,6 +23,7 @@ import { feedbackDirector } from '../feedbackDirector';
 import { FlagIcon } from '../components/FlagIcon';
 import { generateChallengingReflexOptions } from '../utils/testQuestionEngine';
 import { recordMistake } from '../mistakeReviewService';
+import { tUI, toPersianDigits } from '../ui';
 
 import ExitConfirmModal from '../components/ExitConfirmModal';
 
@@ -45,6 +46,7 @@ export const DuelScreen: React.FC<Props> = ({
   onExitSetup,
   isRTL = true
 }) => {
+  const t = tUI(uiLanguage);
   // Match Scores
   const [p1Score, setP1Score] = useState<number>(0);
   const [p2Score, setP2Score] = useState<number>(0);
@@ -319,44 +321,44 @@ export const DuelScreen: React.FC<Props> = ({
         </div>
 
         {/* Middle Information Plate */}
-        <div className="flex items-center justify-between px-1">
+        <div className="flex items-center justify-between px-1 gap-1">
           {/* Left Action / Flip Orientation */}
           <button
             type="button"
             onClick={() => { sound.playClick(); setIsFaceToFace(!isFaceToFace); }}
-            className="w-7 h-7 rounded-lg bg-[var(--bg)] hover:bg-[var(--line)] text-[var(--mute)] hover:text-[var(--ink)] flex items-center justify-center transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-lg bg-[var(--bg)] hover:bg-[var(--line)] text-[var(--mute)] hover:text-[var(--ink)] flex items-center justify-center transition-colors cursor-pointer shrink-0"
             title={isRTL ? 'چرخش صفحه (رو در رو یا کنار هم)' : 'Flip Screen Orientation'}
           >
-            <RotateCw size={14} className={isFaceToFace ? 'rotate-180' : ''} />
+            <RotateCw size={15} className={isFaceToFace ? 'rotate-180' : ''} />
           </button>
 
           {/* Central Prompt Word */}
-          <div className="text-center px-2">
+          <div className="text-center px-1.5 min-w-0 flex-1">
             <div className="flex items-center justify-center gap-1.5">
-              <span className="text-[10px] font-black text-[var(--mute)] uppercase tracking-wider">
-                {currentCard.topic.replace('CAT_', '')}
+              <span className="text-[10px] font-black text-[var(--mute)] uppercase tracking-wider truncate">
+                {t.categories?.[currentCard.topic] || currentCard.topic.replace('CAT_', '')}
               </span>
-              <span className="text-[9px] font-black bg-[var(--turq)]/15 text-[var(--turq)] px-1.5 py-0.2 rounded-md">
+              <span className="text-[9px] font-black bg-[var(--turq)]/15 text-[var(--turq)] px-1.5 py-0.2 rounded-md shrink-0">
                 {currentCard.cefrLevel}
               </span>
             </div>
-            <h2 className="text-base sm:text-lg font-black text-[var(--ink)] leading-tight tracking-tight">
+            <h2 className="text-base sm:text-lg font-black text-[var(--ink)] leading-tight tracking-tight truncate">
               {currentCard.translation}
             </h2>
           </div>
 
           {/* Right Action: Sound, Guide & Exit */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 shrink-0">
             <button
               type="button"
               onClick={() => {
                 sound.playClick();
                 sound.speakNative(currentCard.targetText, currentCard.targetLanguage);
               }}
-              className="w-7 h-7 rounded-lg bg-[var(--bg)] hover:bg-[var(--line)] text-[var(--teal)] flex items-center justify-center transition-colors cursor-pointer"
-              title={isRTL ? 'پخش تلفظ صوتی' : 'Play audio'}
+              className="w-8 h-8 rounded-lg bg-[var(--bg)] hover:bg-[var(--line)] text-[var(--teal)] flex items-center justify-center transition-colors cursor-pointer"
+              title={t.audioPronunciation || (isRTL ? 'پخش تلفظ صوتی' : 'Play audio')}
             >
-              <Volume2 size={14} />
+              <Volume2 size={15} />
             </button>
             <button
               type="button"
@@ -364,11 +366,10 @@ export const DuelScreen: React.FC<Props> = ({
                 sound.playClick();
                 sound.speakSlow(currentCard.targetText, currentCard.targetLanguage);
               }}
-              className="px-1.5 h-7 rounded-lg bg-[var(--bg)] hover:bg-[var(--line)] text-[var(--mute)] hover:text-[var(--ink)] flex items-center gap-0.5 text-[9px] font-black transition-colors cursor-pointer"
-              title={isRTL ? 'پخش آرام ۰.۷x برای تفکیک دقیق آواها' : 'Slow audio 0.7x'}
+              className="px-2 h-8 rounded-lg bg-[var(--bg)] hover:bg-[var(--line)] text-[var(--mute)] hover:text-[var(--ink)] flex items-center gap-0.5 text-[10px] font-black transition-colors cursor-pointer"
+              title={t.slowAudioLabel || (isRTL ? 'پخش شمرده' : 'Slow audio')}
             >
               <span>🐢</span>
-              <span>0.7x</span>
             </button>
             <button
               type="button"
@@ -376,10 +377,10 @@ export const DuelScreen: React.FC<Props> = ({
                 sound.playClick();
                 setShowTutorial(true);
               }}
-              className="w-7 h-7 rounded-lg bg-[var(--bg)] hover:bg-[var(--line)] text-[var(--mute)] hover:text-[var(--ink)] flex items-center justify-center transition-colors cursor-pointer"
-              title={isRTL ? 'راهنمای سریع بازی' : 'Quick Guide'}
+              className="w-8 h-8 rounded-lg bg-[var(--bg)] hover:bg-[var(--line)] text-[var(--mute)] hover:text-[var(--ink)] flex items-center justify-center transition-colors cursor-pointer"
+              title={t.guide || (isRTL ? 'راهنمای سریع بازی' : 'Quick Guide')}
             >
-              <HelpCircle size={14} />
+              <HelpCircle size={15} />
             </button>
             <button
               type="button"
@@ -387,10 +388,10 @@ export const DuelScreen: React.FC<Props> = ({
                 sound.playClick();
                 setShowExitModal(true);
               }}
-              className="w-7 h-7 rounded-lg bg-[var(--bg)] hover:bg-rose-100 dark:hover:bg-rose-950/40 text-rose-500 flex items-center justify-center transition-colors cursor-pointer"
-              title={isRTL ? 'خروج از بازی' : 'Exit'}
+              className="w-8 h-8 rounded-lg bg-[var(--bg)] hover:bg-rose-100 dark:hover:bg-rose-950/40 text-rose-500 flex items-center justify-center transition-colors cursor-pointer"
+              title={t.exit || (isRTL ? 'خروج از بازی' : 'Exit')}
             >
-              <ArrowLeft size={14} />
+              <ArrowLeft size={15} />
             </button>
           </div>
         </div>
@@ -401,7 +402,7 @@ export const DuelScreen: React.FC<Props> = ({
             <span>
               {roundWinner === 'p1' ? settings.player1Name : settings.player2Name} ⚡{' '}
               {isRTL 
-                ? `در ${(reactionDiffMs / 1000).toFixed(2)} ثانیه زودتر پاسخ داد!`
+                ? `در ${toPersianDigits((reactionDiffMs / 1000).toFixed(2))} ثانیه زودتر پاسخ داد!`
                 : `was faster in ${(reactionDiffMs / 1000).toFixed(2)}s!`}
             </span>
           </div>
@@ -427,7 +428,7 @@ export const DuelScreen: React.FC<Props> = ({
                 type="button"
                 disabled={isLockedP1 || isRoundResolving}
                 onClick={() => handlePlayerAnswer('p1', choice)}
-                className={`py-3 sm:py-3.5 px-2.5 rounded-2xl border text-xs sm:text-sm font-black transition-all active:scale-95 cursor-pointer shadow-sm text-center truncate ${
+                className={`min-h-[44px] py-3 sm:py-3.5 px-2.5 rounded-2xl border text-xs sm:text-sm font-black transition-all active:scale-95 cursor-pointer shadow-sm text-center truncate ${
                   isWinnerChoice
                     ? '!bg-emerald-500 !text-white !border-emerald-600 scale-102 ring-4 ring-emerald-500/30'
                     : 'bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:border-[#2347C5]'
@@ -494,7 +495,7 @@ export const DuelScreen: React.FC<Props> = ({
 
             <div>
               <span className="text-xs font-black text-[var(--mute)] uppercase tracking-wider block mb-1">
-                {isRTL ? 'پیروزی در دوئل سرعتی!' : 'DUEL CHAMPION!'}
+                {t.duelChampion || (isRTL ? 'قهرمان دوئل سرعتی!' : 'Speed Duel Champion!')}
               </span>
               <h2 className="text-2xl font-black">
                 {matchWinner === 'p1' ? settings.player1Name : settings.player2Name}
@@ -508,11 +509,15 @@ export const DuelScreen: React.FC<Props> = ({
             <div className="grid grid-cols-2 gap-3 py-2 bg-[var(--bg)] p-3 rounded-2xl border border-[var(--line)]">
               <div className="text-center">
                 <span className="text-[11px] font-bold text-[#2347C5] block">{settings.player1Name}</span>
-                <span className="text-xl font-black">{p1Score} PTS</span>
+                <span className="text-xl font-black">
+                  {isRTL ? toPersianDigits(p1Score) : p1Score} {t.pointsUnit || (isRTL ? 'امتیاز' : 'PTS')}
+                </span>
               </div>
               <div className="text-center">
                 <span className="text-[11px] font-bold text-[#E0533C] block">{settings.player2Name}</span>
-                <span className="text-xl font-black">{p2Score} PTS</span>
+                <span className="text-xl font-black">
+                  {isRTL ? toPersianDigits(p2Score) : p2Score} {t.pointsUnit || (isRTL ? 'امتیاز' : 'PTS')}
+                </span>
               </div>
             </div>
 
@@ -521,10 +526,10 @@ export const DuelScreen: React.FC<Props> = ({
               <button
                 type="button"
                 onClick={handleRematch}
-                className="w-full py-3 rounded-xl bg-gradient-to-r from-[#2347C5] to-[#E0533C] text-white font-black text-sm flex items-center justify-center gap-2 shadow-md active:scale-98 transition-transform cursor-pointer"
+                className="w-full min-h-[48px] py-3 rounded-xl bg-gradient-to-r from-[#2347C5] to-[#E0533C] text-white font-black text-sm flex items-center justify-center gap-2 shadow-md active:scale-98 transition-transform cursor-pointer"
               >
                 <RotateCcw size={16} />
-                <span>{isRTL ? 'انتقام / بازی دوباره 🔁' : 'Rematch 🔁'}</span>
+                <span>{t.rematchBtn || (isRTL ? 'مسابقه مجدد' : 'Rematch')} 🔁</span>
               </button>
 
               <button
@@ -533,9 +538,9 @@ export const DuelScreen: React.FC<Props> = ({
                   sound.playClick();
                   setShowExitModal(true);
                 }}
-                className="w-full py-2.5 rounded-xl border border-[var(--line)] text-xs font-bold text-[var(--mute)] hover:text-[var(--ink)] cursor-pointer"
+                className="w-full min-h-[44px] py-2.5 rounded-xl border border-[var(--line)] text-xs font-bold text-[var(--mute)] hover:text-[var(--ink)] cursor-pointer"
               >
-                {isRTL ? 'بازگشت به منوی اصلی' : 'Back to Menu'}
+                {t.backToMenu || (isRTL ? 'بازگشت به منو' : 'Back to Menu')}
               </button>
             </div>
           </div>

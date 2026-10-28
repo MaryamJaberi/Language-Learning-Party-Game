@@ -58,15 +58,15 @@ describe('Complete End-to-End User Flow Tests', () => {
     // Verify we returned to Intro Screen
     expect(screen.getByLabelText(/شروع بازی دورهمی/i)).toBeInTheDocument();
 
-    // 3. Open History Screen
-    const historyBtn = screen.getByRole('button', { name: /تاریخچه/i });
+    // 3. Open History / Profile Screen
+    const historyBtn = screen.getByRole('button', { name: /پروفایل|تاریخچه/i });
     fireEvent.click(historyBtn);
 
     // Verify empty history message
     expect(screen.getByText(/هنوز بازی‌ای ثبت نشده/i)).toBeInTheDocument();
 
     // Back to Intro
-    const backBtns = screen.getAllByRole('button', { name: /بازگشت/i });
+    const backBtns = screen.getAllByRole('button', { name: /بازگشت|بستن/i });
     fireEvent.click(backBtns[0]);
     expect(screen.getByText(/شروع بازی دورهمی/i)).toBeInTheDocument();
   });
@@ -135,7 +135,7 @@ describe('Complete End-to-End User Flow Tests', () => {
     if (cardDismiss2) fireEvent.click(cardDismiss2);
 
     // Test Pause Game
-    const pauseBtn = screen.getByLabelText('Pause');
+    const pauseBtn = screen.getByLabelText(/توقف بازی|Pause/i);
     fireEvent.click(pauseBtn);
 
     // Paused Modal appears
@@ -148,12 +148,12 @@ describe('Complete End-to-End User Flow Tests', () => {
     expect(screen.queryByRole('button', { name: /ادامه بازی/i })).not.toBeInTheDocument();
 
     // Test In-Game Sound Toggle
-    const soundBtn = screen.getByLabelText('Sound Toggle');
+    const soundBtn = screen.getByLabelText(/قطع و وصل صدا|Sound Toggle/i);
     expect(soundBtn).toBeInTheDocument();
     fireEvent.click(soundBtn);
 
     // Test In-Game Help Modal
-    const inGameHelpBtn = screen.getByLabelText('Help');
+    const inGameHelpBtn = screen.getByLabelText(/راهنمای بازی|Help/i);
     fireEvent.click(inGameHelpBtn);
     expect(screen.getByText(/راهنمای بازی «دور»/i)).toBeInTheDocument();
     
@@ -203,7 +203,7 @@ describe('Complete End-to-End User Flow Tests', () => {
     launchActiveGame();
 
     // Pause and Exit to Intro
-    const pauseBtn = screen.getByLabelText('Pause');
+    const pauseBtn = screen.getByLabelText(/توقف بازی|Pause/i);
     fireEvent.click(pauseBtn);
     
     const exitBtn = screen.getByRole('button', { name: /خروج/i });
@@ -223,7 +223,7 @@ describe('Complete End-to-End User Flow Tests', () => {
     render(<App />);
 
     // Open User Profile modal where mobile install is located
-    const profileBtn = screen.getByRole('button', { name: /پروفایل و لیدربرد/i });
+    const profileBtn = screen.getByRole('button', { name: /پروفایل کاربری|پروفایل/i });
     fireEvent.click(profileBtn);
 
     // Click the Install tab in the profile modal

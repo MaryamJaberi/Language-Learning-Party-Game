@@ -100,12 +100,12 @@ export const SeatingConfirmScreen: React.FC<Props> = ({
               {t.tableSeatingTitle}
             </h2>
             <span className="text-[10.5px] text-[var(--mute)] font-bold block">
-              {isRTL ? 'روی هر صندلی بزنید تا نام و آواتار را ویرایش کنید' : 'Tap any seat to customize player'}
+              {t.tapSeatToCustomize || (isRTL ? 'برای تغییر نام و آواتار روی صندلی بزنید' : 'Tap any seat to customize player')}
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 shrink-0">
           {/* Exit Game Button */}
           <button
             type="button"
@@ -115,9 +115,9 @@ export const SeatingConfirmScreen: React.FC<Props> = ({
               sound.playClick();
               setShowExitConfirm(true);
             }}
-            className="w-8 h-8 rounded-full border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 hover:bg-rose-100 flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer"
+            className="w-10 h-10 rounded-full border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 hover:bg-rose-100 flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer"
           >
-            <LogOut size={15} className={isRTL ? 'rotate-180' : ''} />
+            <LogOut size={16} className={isRTL ? 'rotate-180' : ''} />
           </button>
 
           {/* Guide / Help */}
@@ -127,16 +127,16 @@ export const SeatingConfirmScreen: React.FC<Props> = ({
               sound.playClick();
               onOpenHelp?.();
             }} 
-            className="px-2.5 py-1.5 bg-[var(--lapis-soft)] hover:bg-[var(--lapis-soft)]/80 text-[var(--lapis)] font-bold text-xs rounded-xl shadow-xs transition-transform active:scale-95 flex items-center gap-1 cursor-pointer"
+            className="min-h-[40px] px-3 py-1.5 bg-[var(--lapis-soft)] hover:bg-[var(--lapis-soft)]/80 text-[var(--lapis)] font-bold text-xs rounded-xl shadow-xs transition-transform active:scale-95 flex items-center gap-1 cursor-pointer"
           >
-            <HelpCircle size={14} />
+            <HelpCircle size={15} />
             <span className="hidden sm:inline">{t.guide}</span>
           </button>
         </div>
       </div>
 
       {/* 2. Compact Tip & Quick Re-roll Bar */}
-      <div className="flex items-center justify-between gap-2 bg-[var(--panel)] px-3 py-1.5 border border-[var(--line)] rounded-xl shadow-xs text-xs shrink-0 my-1">
+      <div className="flex items-center justify-between gap-2 bg-[var(--panel)] px-3 py-2 border border-[var(--line)] rounded-xl shadow-xs text-xs shrink-0 my-1">
         <div className="flex items-center gap-1.5 text-[11px] font-bold text-[var(--mute)] truncate">
           <Sparkles size={13} className="text-[var(--saffron)] shrink-0" />
           <span className="truncate">{t.tableSeatingTip}</span>
@@ -149,11 +149,11 @@ export const SeatingConfirmScreen: React.FC<Props> = ({
               sound.playPowerUp();
               onRandomizePlayers();
             }}
-            className="px-2 py-1 bg-[var(--bg)] hover:bg-[var(--line)] text-[var(--ink)] border border-[var(--line)] rounded-lg text-[10.5px] font-black flex items-center gap-1 shadow-2xs cursor-pointer active:scale-95 shrink-0"
-            title={isRTL ? 'تغییر تصادفی نام‌ها و آواتارها' : 'Randomize names and avatars'}
+            className="min-h-[38px] px-2.5 py-1.5 bg-[var(--bg)] hover:bg-[var(--line)] text-[var(--ink)] border border-[var(--line)] rounded-xl text-xs font-black flex items-center gap-1.5 shadow-2xs cursor-pointer active:scale-95 shrink-0"
+            title={t.randomize || (isRTL ? 'اسامی تصادفی 🎲' : 'Randomize 🎲')}
           >
-            <Shuffle size={12} className="text-[var(--turq)]" />
-            <span>{isRTL ? 'نام‌های تصادفی 🎲' : 'Randomize 🎲'}</span>
+            <Shuffle size={13} className="text-[var(--turq)]" />
+            <span>{t.randomize || (isRTL ? 'اسامی تصادفی 🎲' : 'Randomize 🎲')}</span>
           </button>
         )}
       </div>
@@ -184,7 +184,7 @@ export const SeatingConfirmScreen: React.FC<Props> = ({
             fill="var(--lapis)" 
             className="text-[9.5px] font-black uppercase tracking-widest font-mono select-none pointer-events-none"
           >
-            {isRTL ? 'میز بازی' : 'TABLE'}
+            {t.tableCenter || (isRTL ? 'میز بازی' : 'TABLE')}
           </text>
 
           {/* Dotted Seating Circle Path */}
@@ -300,7 +300,7 @@ export const SeatingConfirmScreen: React.FC<Props> = ({
         {/* Small subtle tap-to-edit hint indicator */}
         <div className="absolute bottom-2 right-2 text-[10px] font-bold text-[var(--mute)] flex items-center gap-1 opacity-70">
           <Edit3 size={11} />
-          <span>{isRTL ? 'لمس برای ویرایش' : 'Tap to edit'}</span>
+          <span>{t.tapToEdit || (isRTL ? 'ویرایش ✎' : 'Tap to edit')}</span>
         </div>
       </div>
 
@@ -344,7 +344,7 @@ export const SeatingConfirmScreen: React.FC<Props> = ({
             if (onExitSetup) onExitSetup();
             else onBack();
           }} 
-          className="flex-1 py-2.5 sm:py-3 text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs transition-all active:scale-98 cursor-pointer"
+          className="flex-1 min-h-[48px] py-2.5 sm:py-3 text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs transition-all active:scale-98 cursor-pointer"
         >
           {isRTL ? <ArrowRight size={16} /> : <ArrowLeft size={16} />}
           <span>{t.back}</span>
@@ -355,7 +355,7 @@ export const SeatingConfirmScreen: React.FC<Props> = ({
             sound.playStartGame();
             onConfirm();
           }} 
-          className="flex-[2] py-2.5 sm:py-3 text-sm sm:text-base font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 rounded-2xl bg-[var(--lapis)] hover:brightness-105 text-[var(--on-lapis)] shadow-md transition-all active:scale-98 cursor-pointer"
+          className="flex-[2] min-h-[48px] py-2.5 sm:py-3 text-sm sm:text-base font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 rounded-2xl bg-[var(--lapis)] hover:brightness-105 text-[var(--on-lapis)] shadow-md transition-all active:scale-98 cursor-pointer"
         >
           <span>{t.seatedStart || `${t.start} ${t.round} 1`}</span>
           <Zap size={18} fill="currentColor" />
@@ -442,17 +442,17 @@ export const SeatingConfirmScreen: React.FC<Props> = ({
               <button
                 type="button"
                 onClick={() => setEditingPlayerIndex(null)}
-                className="flex-1 py-2 rounded-xl border border-[var(--line)] text-xs font-bold hover:bg-[var(--bg)] cursor-pointer"
+                className="flex-1 min-h-[44px] py-2 rounded-xl border border-[var(--line)] text-xs font-bold hover:bg-[var(--bg)] cursor-pointer"
               >
-                {isRTL ? 'انصراف' : 'Cancel'}
+                {t.cancel || (isRTL ? 'انصراف' : 'Cancel')}
               </button>
               <button
                 type="button"
                 onClick={handleSavePlayerEdit}
-                className="flex-1 py-2 rounded-xl bg-[var(--lapis)] hover:brightness-105 text-[var(--on-lapis)] text-xs font-black shadow-xs flex items-center justify-center gap-1 cursor-pointer"
+                className="flex-1 min-h-[44px] py-2 rounded-xl bg-[var(--lapis)] hover:brightness-105 text-[var(--on-lapis)] text-xs font-black shadow-xs flex items-center justify-center gap-1 cursor-pointer"
               >
                 <Check size={14} />
-                <span>{isRTL ? 'ثبت تغییرات' : 'Save'}</span>
+                <span>{t.saveChanges || (isRTL ? 'ذخیره تغییرات' : 'Save')}</span>
               </button>
             </div>
           </div>

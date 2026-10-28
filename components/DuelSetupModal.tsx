@@ -392,9 +392,11 @@ export const DuelSetupModal: React.FC<Props> = ({
                         <span className="whitespace-nowrap truncate">
                           {isRTL ? lInfo.persianName : lInfo.name}
                         </span>
-                        <span className="text-[10px] opacity-80 whitespace-nowrap truncate font-mono uppercase">
-                          ({lInfo.code})
-                        </span>
+                        {!isRTL && (
+                          <span className="text-[10px] opacity-80 whitespace-nowrap truncate font-mono uppercase">
+                            ({lInfo.code})
+                          </span>
+                        )}
                         <span
                           role="button"
                           tabIndex={0}
@@ -405,7 +407,7 @@ export const DuelSetupModal: React.FC<Props> = ({
                             setTargetLanguage('' as any);
                             setIsLangPickerOpen(true);
                           }}
-                          className="w-4 h-4 rounded-full bg-white/20 hover:bg-white/40 active:scale-90 flex items-center justify-center shrink-0 cursor-pointer transition-transform ml-0.5 rtl:ml-0 rtl:mr-0.5"
+                          className="w-5 h-5 rounded-full bg-white/20 hover:bg-white/40 active:scale-90 flex items-center justify-center shrink-0 cursor-pointer transition-transform ml-0.5 rtl:ml-0 rtl:mr-0.5"
                         >
                           <X size={11} strokeWidth={2.5} />
                         </span>
@@ -431,7 +433,7 @@ export const DuelSetupModal: React.FC<Props> = ({
                     value={searchLang}
                     onChange={e => setSearchLang(e.target.value)}
                     placeholder={isRTL ? 'جستجوی زبان...' : 'Search languages...'}
-                    className="w-full h-8 px-2.5 text-xs rounded-lg bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] placeholder-[var(--mute)] outline-none focus:border-[var(--lapis)] rtl:pr-7 ltr:pl-7"
+                    className="w-full h-9 px-2.5 text-xs rounded-lg bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] placeholder-[var(--mute)] outline-none focus:border-[var(--lapis)] rtl:pr-7 ltr:pl-7"
                   />
                   <Search size={13} className="absolute top-1/2 -translate-y-1/2 text-[var(--mute)] pointer-events-none rtl:right-2 ltr:left-2" />
                   {searchLang && (
@@ -462,7 +464,7 @@ export const DuelSetupModal: React.FC<Props> = ({
                           sound.playClick();
                           setTargetLanguage(l.code);
                         }}
-                        className={`w-full flex items-center justify-between p-2 rounded-lg text-xs font-bold transition-all ${
+                        className={`w-full flex items-center justify-between p-2 rounded-lg text-xs font-bold transition-all min-h-[40px] ${
                           isSelected
                             ? 'bg-[var(--lapis)] text-white shadow-xs'
                             : 'hover:bg-[var(--bg)] text-[var(--ink)]'
@@ -471,9 +473,11 @@ export const DuelSetupModal: React.FC<Props> = ({
                         <span className="flex items-center gap-2 truncate">
                           <span>{l.flag}</span>
                           <span>{isRTL ? l.persianName : l.name}</span>
-                          <span className={`text-[10px] uppercase font-mono ${isSelected ? 'opacity-80' : 'text-[var(--mute)]'}`}>
-                            ({l.code})
-                          </span>
+                          {!isRTL && (
+                            <span className={`text-[10px] uppercase font-mono ${isSelected ? 'opacity-80' : 'text-[var(--mute)]'}`}>
+                              ({l.code})
+                            </span>
+                          )}
                         </span>
                         {isSelected && <Check size={13} strokeWidth={3} className="shrink-0" />}
                       </button>
@@ -514,14 +518,14 @@ export const DuelSetupModal: React.FC<Props> = ({
                       sound.playToggle();
                       setCefrLevel(lvl.id as CEFRLevel);
                     }}
-                    className={`py-2 px-1 rounded-xl text-center flex flex-col items-center justify-center transition-all cursor-pointer ${
+                    className={`min-h-[44px] py-2 px-1 rounded-xl text-center flex flex-col items-center justify-center transition-all cursor-pointer ${
                       isSelected
                         ? 'bg-[var(--lapis)] text-white shadow-xs font-black'
                         : 'bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] hover:border-[var(--lapis)]/40 font-bold'
                     }`}
                   >
                     <span className="text-xs leading-none">{lvl.label}</span>
-                    <span className={`text-[9px] mt-0.5 ${isSelected ? 'text-white/80' : 'text-[var(--mute)]'}`}>{lvl.sub}</span>
+                    <span className={`text-[9.5px] mt-0.5 ${isSelected ? 'text-white/80' : 'text-[var(--mute)]'}`}>{lvl.sub}</span>
                   </button>
                 );
               })}
@@ -537,7 +541,7 @@ export const DuelSetupModal: React.FC<Props> = ({
               <Sparkles size={16} className="text-[var(--saffron)]" />
               <div>
                 <span className="text-xs font-bold text-[var(--ink)] block">
-                  {isRTL ? 'آیتم ویژه شوک سرعت (Sabotage Shock)' : 'Speed Shock Power-Up'}
+                  {isRTL ? 'آیتم ویژه شوک سرعت' : 'Speed Shock Power-Up'}
                 </span>
                 <span className="text-[10px] text-[var(--mute)]">
                   {isRTL ? 'هر بازیکن یک‌بار در بازی می‌تواند حریف را شوکه کند' : '1 shock per match to disrupt opponent'}

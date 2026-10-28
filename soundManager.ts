@@ -4,6 +4,7 @@
 class SoundManager {
   private ctx: AudioContext | null = null;
   private isMuted: boolean = false;
+  private isHapticsEnabled: boolean = true;
   
   // Background music state
   private currentBgmMode: 'none' | 'menu' | 'game' = 'none';
@@ -23,12 +24,18 @@ class SoundManager {
   private lastSwapVariant: number = -1;
   private tickToggle: boolean = false;
 
+  private hapticListeners: Set<(enabled: boolean) => void> = new Set();
+
   constructor() {
     try {
       if (typeof window !== 'undefined') {
         const savedMute = localStorage.getItem('dor_sound_muted');
         if (savedMute !== null) {
           this.isMuted = savedMute === 'true';
+        }
+        const savedHaptics = localStorage.getItem('dor_haptics_enabled');
+        if (savedHaptics !== null) {
+          this.isHapticsEnabled = savedHaptics === 'true';
         }
       }
     } catch {}
@@ -133,6 +140,32 @@ class SoundManager {
     this.notifyMuteListeners(muted);
   }
 
+  public addHapticListener(fn: (enabled: boolean) => void): () => void {
+    this.hapticListeners.add(fn);
+    return () => this.hapticListeners.delete(fn);
+  }
+
+  private notifyHapticListeners(enabled: boolean) {
+    this.hapticListeners.forEach(fn => {
+      try { fn(enabled); } catch {}
+    });
+  }
+
+  public isHaptics(): boolean {
+    return this.isHapticsEnabled;
+  }
+
+  public setHapticsEnabled(enabled: boolean) {
+    this.isHapticsEnabled = enabled;
+    try {
+      localStorage.setItem('dor_haptics_enabled', enabled ? 'true' : 'false');
+    } catch {}
+    this.notifyHapticListeners(enabled);
+    if (enabled) {
+      this.hapticFeedback('light');
+    }
+  }
+
   public setSoundEnabled(enabled: boolean) {
     this.setMuted(!enabled);
   }
@@ -207,6 +240,7 @@ class SoundManager {
 
   // 1. UI Click with subtle random micro-pitch variation (tactile, organic click)
   public playClick() {
+    this.hapticFeedback('light');
     if (this.isMuted) return;
     const ctx = this.getAudioContext();
     if (!ctx) return;
@@ -297,6 +331,7 @@ class SoundManager {
 
   // 4. Correct Guess Chime - 6 distinct melodic variations to avoid repetitive fatigue!
   public playCorrect() {
+    this.hapticFeedback('success');
     if (this.isMuted) return;
     const ctx = this.getAudioContext();
     if (!ctx) return;
@@ -387,6 +422,9 @@ class SoundManager {
   // --- Game Feel & Juice Audio Enhancements ---
   // Layer 1: Score Tick with Combo Pitch Scaling (+6% per combo tier) and subtle random detune (±3%)
   public playScoreTick(comboMultiplier: number = 1) {
+    if (comboMultiplier >= 2) {
+      this.hapticFeedback('streak');
+    }
     if (this.isMuted) return;
     const ctx = this.getAudioContext();
     if (!ctx) return;
@@ -504,6 +542,7 @@ class SoundManager {
 
   // 5. Swap / Pass Sound - with 3 distinct swoosh variations
   public playSwap() {
+    this.hapticFeedback('warning');
     if (this.isMuted) return;
     const ctx = this.getAudioContext();
     if (!ctx) return;
@@ -631,6 +670,7 @@ class SoundManager {
 
   // 8. Elimination / Team Defeat Sound
   public playElimination() {
+    this.hapticFeedback('error');
     if (this.isMuted) return;
     const ctx = this.getAudioContext();
     if (!ctx) return;
@@ -692,6 +732,7 @@ class SoundManager {
 
   // 10. Victory Fanfare (Rich celebratory progression)
   public playVictory() {
+    this.hapticFeedback('victory');
     if (this.isMuted) return;
     this.stopBGM();
     const ctx = this.getAudioContext();
@@ -1030,6 +1071,10 @@ class SoundManager {
     });
   }
 
+  public isVoiceSupportedFor(lang: string = 'en-US'): boolean {
+    return this.hasVoice(lang);
+  }
+
   public speak(
     text: string, 
     lang: string = 'en-US', 
@@ -1151,13 +1196,23 @@ class SoundManager {
     this.speak(text, lang, { force: true, rate: 0.68, ...options });
   }
 
-  public hapticFeedback(pattern: 'light' | 'success' | 'warning' | 'error' = 'light'): void {
+  public hapticFeedback(pattern: 'light' | 'success' | 'warning' | 'error' | 'victory' | 'streak' = 'light'): void {
+    if (!this.isHapticsEnabled) return;
     if (typeof window === 'undefined' || typeof navigator === 'undefined' || !navigator.vibrate) return;
     try {
-      if (pattern === 'light') navigator.vibrate(12);
-      else if (pattern === 'success') navigator.vibrate([15, 35, 20]);
-      else if (pattern === 'warning') navigator.vibrate([25, 45, 25]);
-      else if (pattern === 'error') navigator.vibrate([40, 55, 40]);
+      if (pattern === 'light') {
+        navigator.vibrate(15);
+      } else if (pattern === 'success') {
+        navigator.vibrate([20, 30, 25]);
+      } else if (pattern === 'warning') {
+        navigator.vibrate([25, 35, 25]);
+      } else if (pattern === 'error') {
+        navigator.vibrate([45, 40, 55]);
+      } else if (pattern === 'streak') {
+        navigator.vibrate([20, 20, 25, 25, 35]);
+      } else if (pattern === 'victory') {
+        navigator.vibrate([50, 40, 60, 40, 100]);
+      }
     } catch {}
   }
 }

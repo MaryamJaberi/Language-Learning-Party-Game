@@ -154,9 +154,89 @@ const SinglePlayerReportScreen: React.FC<Props> = ({
               <span>{isRTL ? 'بهترین رکورد شما:' : 'Your Personal Best:'}</span>
             </div>
             <div className="font-mono font-bold text-[var(--turq)] text-sm">
-              {Math.max(personalRecords.highestScore, report.totalScore).toLocaleString()} PTS
+              {Math.max(personalRecords.highestScore, report.totalScore).toLocaleString()} {t.pointsUnit || (isRTL ? 'امتیاز' : 'PTS')}
             </div>
           </div>
+
+          {/* CEFR Level Progression Roadmap */}
+          <div className="my-2.5 p-3 rounded-2xl bg-[var(--bg)] border border-[var(--line)] shadow-xs">
+            <div className="flex items-center justify-between text-[11px] font-bold text-[var(--mute)] mb-2">
+              <span className="flex items-center gap-1 text-[var(--ink)]">
+                <Sparkles size={13} className="text-[var(--turq)]" />
+                <span>{isRTL ? 'نقشه راه پیشرفت سطح CEFR:' : 'CEFR Level Roadmap:'}</span>
+              </span>
+              <span className="text-[var(--turq)] font-mono font-black">{report.settings?.cefrLevel || 'A1'}</span>
+            </div>
+            
+            {/* Steps Visualizer */}
+            <div className="grid grid-cols-5 gap-1 text-center font-mono font-bold text-[10px]">
+              {(['A1', 'A2', 'B1', 'B2', 'C1'] as const).map((lvl) => {
+                const currentLvl = report.settings?.cefrLevel || 'A1';
+                const levels = ['A1', 'A2', 'B1', 'B2', 'C1'];
+                const currentIndex = levels.indexOf(currentLvl);
+                const stepIndex = levels.indexOf(lvl);
+                const isPassed = stepIndex < currentIndex;
+                const isCurrent = stepIndex === currentIndex;
+
+                return (
+                  <div
+                    key={lvl}
+                    className={`py-1.5 px-1 rounded-xl border transition-all ${
+                      isCurrent
+                        ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs scale-105'
+                        : isPassed
+                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30'
+                        : 'bg-[var(--panel)] text-[var(--mute)] border-[var(--line)] opacity-60'
+                    }`}
+                  >
+                    <div>{lvl}</div>
+                    <div className="text-[8px] mt-0.5">
+                      {isCurrent ? (isRTL ? 'فعلی' : 'Current') : isPassed ? '✓' : '🔒'}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="mt-2 text-[10.5px] text-[var(--mute)] font-medium text-center">
+              {isRTL 
+                ? `با تکرار و بازی‌های گروهی، در حال تثبیت سطح ${report.settings?.cefrLevel || 'A1'} در حافظه بلندمدت هستید!` 
+                : `Solidifying your ${report.settings?.cefrLevel || 'A1'} mastery in long-term memory!`}
+            </div>
+          </div>
+
+          {/* Quick Viral Challenge Action */}
+          <button
+            type="button"
+            onClick={async () => {
+              sound.playClick();
+              const shareText = isRTL 
+                ? `من در بازی زبانی دور (DOŪR) به امتیاز ${report.totalScore.toLocaleString()} در سطح ${report.settings?.cefrLevel || 'A1'} رسیدم! می‌تونی رکوردمو بزنی؟ 🔥🎯`
+                : `I reached ${report.totalScore.toLocaleString()} points at ${report.settings?.cefrLevel || 'A1'} level in DOŪR! Can you beat my score? 🔥🎯`;
+              
+              if (navigator.share) {
+                try {
+                  await navigator.share({
+                    title: 'چالش رکورد در بازی دور',
+                    text: shareText,
+                    url: window.location.origin
+                  });
+                  return;
+                } catch {
+                  // Fallback to clipboard
+                }
+              }
+              try {
+                await navigator.clipboard.writeText(`${shareText} ${window.location.origin}`);
+              } catch {
+                // Clipboard blocked
+              }
+            }}
+            className="w-full min-h-[44px] py-2.5 px-3 rounded-xl bg-gradient-to-r from-[var(--lapis)] to-[var(--turq)] text-white font-bold text-xs shadow-xs hover:opacity-95 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer mb-2"
+          >
+            <Sparkles size={14} className="text-[var(--saffron)]" />
+            <span>{isRTL ? 'دعوت و چالش با دوستان ⚔️ (ارسال به واتساپ/تلگرام)' : 'Challenge Friends ⚔️ (Share to WhatsApp/Telegram)'}</span>
+          </button>
 
           {isAllTimeBest && (
             <div className="mb-2 p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 text-emerald-600 dark:text-emerald-400 text-xs font-bold text-center animate-pulse">
@@ -182,7 +262,7 @@ const SinglePlayerReportScreen: React.FC<Props> = ({
               <div className="text-base font-black text-[var(--ink)] font-mono">
                 {report.totalDurationSeconds !== undefined
                   ? `${Math.floor(report.totalDurationSeconds / 60)}:${(report.totalDurationSeconds % 60).toString().padStart(2, '0')}`
-                  : `${Math.round(report.results.reduce((acc, r) => acc + (r.timeSpentSeconds || 0), 0))}s`}
+                  : `${Math.round(report.results.reduce((acc, r) => acc + (r.timeSpentSeconds || 0), 0))}${isRTL ? ' ثانیه' : 's'}`}
               </div>
               <div className="text-[10px] text-[var(--mute)] font-bold flex items-center justify-center gap-0.5">
                 <Clock size={10} className="text-[var(--turq)]" />

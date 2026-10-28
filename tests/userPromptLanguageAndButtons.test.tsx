@@ -214,4 +214,51 @@ describe('User Feedback: 3 Buttons Side-by-Side, Localized Results, and Online M
       expect(c.translation).toBeTruthy();
     });
   });
+
+  test('5. Team progress bars in TimerDisplay show localized Persian team names (آبی / قرمز) and trigger animate-team-score CSS animation when a team scores', async () => {
+    const TimerDisplay = (await import('../components/TimerDisplay')).default;
+    const { TeamColor } = await import('../types');
+
+    const initialTeams = [
+      { id: 0, color: TeamColor.Blue, timeRemaining: 60000, isEliminated: false, playerIds: [0, 2], score: 2 },
+      { id: 1, color: TeamColor.Red, timeRemaining: 60000, isEliminated: false, playerIds: [1, 3], score: 1 }
+    ];
+
+    const { rerender } = render(
+      <TimerDisplay
+        roundTimer={45000}
+        teams={initialTeams}
+        activeTeamId={0}
+        language="fa"
+        isRTL={true}
+      />
+    );
+
+    const blueBar = screen.getByTestId('team-progress-BLUE');
+    const redBar = screen.getByTestId('team-progress-RED');
+
+    // Verify Persian team names instead of raw BLUE / RED
+    expect(blueBar).toHaveTextContent('آبی');
+    expect(redBar).toHaveTextContent('قرمز');
+    expect(blueBar.className).not.toContain('animate-team-score');
+
+    // Simulate Blue team scoring (+1 point)
+    const updatedTeams = [
+      { id: 0, color: TeamColor.Blue, timeRemaining: 58000, isEliminated: false, playerIds: [0, 2], score: 3 },
+      { id: 1, color: TeamColor.Red, timeRemaining: 60000, isEliminated: false, playerIds: [1, 3], score: 1 }
+    ];
+
+    rerender(
+      <TimerDisplay
+        roundTimer={43000}
+        teams={updatedTeams}
+        activeTeamId={0}
+        language="fa"
+        isRTL={true}
+      />
+    );
+
+    expect(screen.getByTestId('team-progress-BLUE').className).toContain('animate-team-score');
+  });
 });
+

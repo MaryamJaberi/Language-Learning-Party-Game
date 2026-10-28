@@ -44,4 +44,14 @@ describe('pronunciationService', () => {
     const hintFr = getPronunciationHint('bonjour', 'fr', 'fa');
     expect(hintFr).toContain('بُنژور');
   });
+
+  it('returns empty string when pronunciation is identical to targetText or unavailable', () => {
+    // When text is same as existing pronunciation, return empty string
+    const hintDuplicate = getPronunciationHint('لامپ راهرو سوخته', 'fa', 'en', 'لامپ راهرو سوخته');
+    expect(hintDuplicate).toBe('');
+
+    // When language has no phonetic transliteration and no dictionary entry, return empty string (never wrap in fake brackets)
+    const hintUnknown = getPronunciationHint('xyz123random', 'ku', 'fa');
+    expect(hintUnknown).toBe('');
+  });
 });

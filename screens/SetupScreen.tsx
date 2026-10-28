@@ -543,8 +543,8 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
     <div className="app w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto min-h-full px-3 sm:px-4 pb-28 font-ui relative" dir={isRTL ? 'rtl' : 'ltr'}>
       
       {/* HEADER: Back Button, Title & Circular Action Buttons (M3 Top App Bar) */}
-      <header className="sticky top-0 z-20 bg-[var(--bg)]/90 backdrop-blur-md flex items-center justify-between py-3 px-1 border-b border-[var(--line)]/50">
-        <div className="flex items-center gap-2.5">
+      <header className="sticky top-0 z-20 bg-[var(--bg)]/90 backdrop-blur-md flex items-center justify-between py-2.5 px-1 border-b border-[var(--line)]/50 gap-2">
+        <div className="flex items-center gap-2 min-w-0">
           {/* Back button to return to home/Intro screen */}
           <button
             type="button"
@@ -552,28 +552,28 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
               sound.playClick();
               onBack();
             }}
-            className="w-10 h-10 rounded-full bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 border border-[var(--line)] flex items-center justify-center text-[var(--ink)] shadow-xs active:scale-95 transition-all cursor-pointer"
+            className="w-11 h-11 shrink-0 rounded-full bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 border border-[var(--line)] flex items-center justify-center text-[var(--ink)] shadow-xs active:scale-95 transition-all cursor-pointer"
             aria-label={t.back || (isRTL ? 'بازگشت' : 'Back')}
             title={t.back || (isRTL ? 'بازگشت' : 'Back')}
           >
             <ArrowRight size={18} className={isRTL ? '' : 'rotate-180'} />
           </button>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl sm:text-2xl font-black leading-none tracking-tight text-[var(--ink)] whitespace-nowrap font-display">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <h1 className="text-xl sm:text-2xl font-black leading-none tracking-tight text-[var(--ink)] whitespace-nowrap font-display shrink-0">
               {t.title || 'دور'}
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full bg-[var(--lapis-soft)] text-[var(--lapis)] text-xs font-bold font-ui">
+            <span className="px-2 py-0.5 rounded-full bg-[var(--lapis-soft)] text-[var(--lapis)] text-[11px] font-bold font-ui truncate">
               {t.gameSettings || (isRTL ? 'تنظیمات بازی' : 'Game Settings')}
             </span>
           </div>
         </div>
 
-        <div className="icons relative flex items-center gap-2">
+        <div className="icons relative flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* Hint / Guide Button */}
           <button 
             type="button"
             id="hintBtn" 
-            className="w-10 h-10 rounded-full bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 border border-[var(--line)] flex items-center justify-center text-[var(--ink)] shadow-xs active:scale-95 transition-all cursor-pointer" 
+            className="w-11 h-11 rounded-full bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 border border-[var(--line)] flex items-center justify-center text-[var(--ink)] shadow-xs active:scale-95 transition-all cursor-pointer" 
             aria-label={t.guide || 'راهنما'}
             title={t.guide || 'راهنما'}
             onClick={() => {
@@ -591,7 +591,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
             id="soundBtn"
             variant="icon-only" 
             language={settings.language} 
-            className="w-10 h-10 p-0 justify-center rounded-full border border-[var(--line)] bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 shadow-xs active:scale-95 transition-all"
+            className="w-11 h-11 p-0 justify-center rounded-full border border-[var(--line)] bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 shadow-xs active:scale-95 transition-all"
             onToggle={(muted) => {
               setIsSoundMuted(muted);
               updateSettings('soundEnabled', !muted);
@@ -602,7 +602,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
           <button 
             type="button"
             id="uiLangBtn" 
-            className="w-10 h-10 rounded-full bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 border border-[var(--line)] flex items-center justify-center text-[var(--ink)] shadow-xs active:scale-95 transition-all cursor-pointer" 
+            className="w-11 h-11 rounded-full bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 border border-[var(--line)] flex items-center justify-center text-[var(--ink)] shadow-xs active:scale-95 transition-all cursor-pointer" 
             aria-label={t.uiLanguageLabel || 'زبان برنامه'}
             title={t.uiLanguageLabel || 'زبان برنامه'}
             onClick={() => {
@@ -633,7 +633,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                   value={searchUi}
                   onChange={(e) => setSearchUi(e.target.value)}
                   placeholder={t.searchLanguages || (isRTL ? 'جستجوی زبان...' : 'Search languages...')}
-                  className="w-full h-8 px-2.5 text-xs rounded-lg bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] placeholder-[var(--mute)] focus:outline-none focus:border-[var(--lapis)] transition-colors pr-7 rtl:pr-7 rtl:pl-2.5 ltr:pl-7 ltr:pr-2.5"
+                  className="w-full h-9 px-2.5 text-xs rounded-lg bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] placeholder-[var(--mute)] focus:outline-none focus:border-[var(--lapis)] transition-colors pr-7 rtl:pr-7 rtl:pl-2.5 ltr:pl-7 ltr:pr-2.5"
                 />
                 <Search size={13} className="absolute top-1/2 -translate-y-1/2 text-[var(--mute)] pointer-events-none rtl:right-2 ltr:left-2" />
                 {searchUi && (
@@ -650,6 +650,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
               <div className="max-h-48 overflow-y-auto space-y-1 no-scrollbar overscroll-contain">
                 {filteredUiLanguages.map(l => {
                   const isChecked = settings.language === l.code;
+                  const localizedSub = isRTL ? PERSIAN_LANG_NAMES[l.code] : l.enName;
                   return (
                     <button
                       key={l.code}
@@ -660,7 +661,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                         setIsLangPopOpen(false);
                         onSave({ ...settings, language: l.code as Language });
                       }}
-                      className={`flex items-center justify-between w-full p-1.5 rounded-lg text-xs font-bold transition-all ${
+                      className={`flex items-center justify-between w-full p-2 rounded-lg text-xs font-bold transition-all min-h-[40px] ${
                         isChecked ? 'bg-[var(--lapis)] text-white' : 'hover:bg-[var(--bg)] text-[var(--ink)]'
                       }`}
                     >
@@ -671,9 +672,11 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                           {l.short}
                         </span>
                         <span className="whitespace-nowrap truncate">{l.name}</span>
-                        <span className={`text-[10px] whitespace-nowrap truncate ${isChecked ? 'text-white/80' : 'text-[var(--mute)]'}`}>
-                          ({l.enName})
-                        </span>
+                        {localizedSub && localizedSub !== l.name && (
+                          <span className={`text-[10px] whitespace-nowrap truncate ${isChecked ? 'text-white/80' : 'text-[var(--mute)]'}`}>
+                            ({localizedSub})
+                          </span>
+                        )}
                       </span>
                       {isChecked && <Check size={14} className="shrink-0 text-white" />}
                     </button>
@@ -729,9 +732,11 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
               <span className="text-xs font-bold text-[var(--ink)] whitespace-nowrap truncate">
                 {languageOptions.find(l => l.code === currentNativeCode)?.name || 'فارسی'}
               </span>
-              <span className="text-[11px] text-[var(--mute)] whitespace-nowrap truncate hidden sm:inline">
-                ({languageOptions.find(l => l.code === currentNativeCode)?.enName})
-              </span>
+              {!isRTL && (
+                <span className="text-[11px] text-[var(--mute)] whitespace-nowrap truncate hidden sm:inline">
+                  ({languageOptions.find(l => l.code === currentNativeCode)?.enName})
+                </span>
+              )}
             </div>
             <ChevronDown size={16} className={`text-[var(--mute)] transition-transform duration-200 shrink-0 ${isNativeOpen ? 'rotate-180' : ''}`} />
           </button>
@@ -764,6 +769,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
               ) : (
                 filteredNativeLanguages.map(l => {
                   const isCurrent = currentNativeCode === l.code;
+                  const subName = isRTL ? PERSIAN_LANG_NAMES[l.code] : l.enName;
                   return (
                     <button
                       key={`native-opt-${l.code}`}
@@ -771,7 +777,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                       role="radio"
                       aria-checked={isCurrent}
                       onClick={() => handleNativeChange(l.code)}
-                      className={`w-full flex items-center justify-between p-2 rounded-lg text-xs font-bold transition-all ${
+                      className={`w-full flex items-center justify-between p-2 rounded-lg text-xs font-bold transition-all min-h-[40px] ${
                         isCurrent 
                           ? 'bg-[var(--ink)] text-[var(--bg)]' 
                           : 'hover:bg-[var(--bg)] text-[var(--ink)]'
@@ -784,9 +790,11 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                           {l.short}
                         </span>
                         <span className="whitespace-nowrap truncate">{l.name}</span>
-                        <span className={`text-[10.5px] whitespace-nowrap truncate ${isCurrent ? 'opacity-80' : 'text-[var(--mute)]'}`}>
-                          ({l.enName})
-                        </span>
+                        {subName && subName !== l.name && (
+                          <span className={`text-[10.5px] whitespace-nowrap truncate ${isCurrent ? 'opacity-80' : 'text-[var(--mute)]'}`}>
+                            ({subName})
+                          </span>
+                        )}
                       </span>
                       {isCurrent && <Check size={14} className="shrink-0 text-white" />}
                     </button>
@@ -839,17 +847,27 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                   data-testid="target-lang-tag"
                   className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[var(--lapis)] text-white text-xs font-bold shadow-xs max-w-full"
                 >
-                  <span className="w-4 h-4 rounded font-mono font-black text-[9px] bg-white/20 flex items-center justify-center shrink-0">
-                    {currentTargetLangInfo.short}
+                  {!isRTL && (
+                    <span className="w-4 h-4 rounded font-mono font-black text-[9px] bg-white/20 flex items-center justify-center shrink-0">
+                      {currentTargetLangInfo.short}
+                    </span>
+                  )}
+                  <span className="whitespace-nowrap truncate">
+                    {isRTL ? (PERSIAN_LANG_NAMES[currentTargetLangInfo.code] || currentTargetLangInfo.name) : currentTargetLangInfo.name}
                   </span>
-                  <span className="whitespace-nowrap truncate">{currentTargetLangInfo.name}</span>
-                  <span className="text-[10px] opacity-80 whitespace-nowrap truncate hidden xs:inline">
-                    ({currentTargetLangInfo.enName})
-                  </span>
+                  {(() => {
+                    const sub = isRTL ? currentTargetLangInfo.name : currentTargetLangInfo.enName;
+                    const primary = isRTL ? (PERSIAN_LANG_NAMES[currentTargetLangInfo.code] || currentTargetLangInfo.name) : currentTargetLangInfo.name;
+                    return sub && sub !== primary ? (
+                      <span className="text-[10px] opacity-85 whitespace-nowrap truncate">
+                        ({sub})
+                      </span>
+                    ) : null;
+                  })()}
                   <span
                     role="button"
                     tabIndex={0}
-                    aria-label={isRTL ? `حذف ${currentTargetLangInfo.name}` : `Remove ${currentTargetLangInfo.name}`}
+                    aria-label={isRTL ? 'حذف زبان' : 'Remove language'}
                     onClick={handleRemoveTargetLang}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
@@ -857,8 +875,8 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                         handleRemoveTargetLang(e as any);
                       }
                     }}
-                    className="w-4 h-4 rounded-full bg-white/20 hover:bg-white/40 active:scale-90 flex items-center justify-center shrink-0 cursor-pointer transition-transform ml-0.5 rtl:ml-0 rtl:mr-0.5"
-                    title={isRTL ? 'حذف و انتخاب زبان دیگر' : 'Remove and pick another'}
+                    className="w-5 h-5 rounded-full bg-white/20 hover:bg-white/40 active:scale-90 flex items-center justify-center shrink-0 cursor-pointer transition-transform ml-0.5 rtl:ml-0 rtl:mr-0.5"
+                    title={isRTL ? 'حذف زبان' : 'Remove language'}
                   >
                     <X size={11} strokeWidth={2.5} />
                   </span>
@@ -905,13 +923,14 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
               ) : (
                 filteredTargetLanguages.map(l => {
                   const isSelected = (settings.targetLanguages?.[0] === l.code) || (settings.targetLanguage === l.code);
+                  const subName = isRTL ? PERSIAN_LANG_NAMES[l.code] : l.enName;
                   return (
                     <button
                       key={`target-opt-${l.code}`}
                       type="button"
                       aria-pressed={isSelected}
                       onClick={() => selectLearningLang(l.code)}
-                      className={`w-full flex items-center justify-between p-2 rounded-lg text-xs font-bold transition-all ${
+                      className={`w-full flex items-center justify-between p-2 rounded-lg text-xs font-bold transition-all min-h-[40px] ${
                         isSelected 
                           ? 'bg-[var(--lapis)] text-[var(--on-lapis)] shadow-xs' 
                           : 'hover:bg-[var(--bg)] text-[var(--ink)]'
@@ -924,9 +943,11 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                           {l.short}
                         </span>
                         <span className="whitespace-nowrap truncate">{l.name}</span>
-                        <span className={`text-[10.5px] whitespace-nowrap truncate ${isSelected ? 'opacity-80' : 'text-[var(--mute)]'}`}>
-                          ({l.enName})
-                        </span>
+                        {subName && subName !== l.name && (
+                          <span className={`text-[10.5px] whitespace-nowrap truncate ${isSelected ? 'opacity-80' : 'text-[var(--mute)]'}`}>
+                            ({subName})
+                          </span>
+                        )}
                       </span>
                       <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
                         isSelected ? 'bg-white text-[var(--lapis)] border-white' : 'border-[var(--line)] bg-[var(--bg)]'
@@ -1044,11 +1065,11 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                 type="button"
                 onClick={incrementRound}
                 disabled={settings.roundsCount >= 10}
-                className="w-full py-1 mb-1 rounded-lg bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center text-[var(--ink)] disabled:opacity-25 disabled:pointer-events-none active:scale-95 transition-all"
+                className="w-full min-h-[38px] py-1.5 mb-1 rounded-xl bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center text-[var(--ink)] disabled:opacity-25 disabled:pointer-events-none active:scale-95 transition-all"
                 aria-label={isRTL ? 'افزایش راند' : 'Increase round'}
                 title={isRTL ? 'افزایش ۱ راند' : '+1 round'}
               >
-                <ChevronUp size={14} />
+                <ChevronUp size={16} />
               </button>
 
               <TumblerWheel
@@ -1064,11 +1085,11 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                 type="button"
                 onClick={decrementRound}
                 disabled={settings.roundsCount <= 3}
-                className="w-full py-1 mt-1 rounded-lg bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center text-[var(--ink)] disabled:opacity-25 disabled:pointer-events-none active:scale-95 transition-all"
+                className="w-full min-h-[38px] py-1.5 mt-1 rounded-xl bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center text-[var(--ink)] disabled:opacity-25 disabled:pointer-events-none active:scale-95 transition-all"
                 aria-label={isRTL ? 'کاهش راند' : 'Decrease round'}
                 title={isRTL ? 'کاهش ۱ راند' : '-1 round'}
               >
-                <ChevronDown size={14} />
+                <ChevronDown size={16} />
               </button>
             </div>
             <span className="text-[10px] font-bold text-[var(--mute)] pt-1 whitespace-nowrap">
@@ -1087,22 +1108,22 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                   type="button" 
                   onClick={incrementMinute}
                   disabled={currentMin >= 10}
-                  className="py-1 rounded-lg bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center gap-0.5 text-[10.5px] font-bold text-[var(--ink)] disabled:opacity-25 disabled:pointer-events-none active:scale-95 transition-all"
+                  className="min-h-[38px] py-1.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center gap-1 text-xs font-bold text-[var(--ink)] disabled:opacity-25 disabled:pointer-events-none active:scale-95 transition-all"
                   aria-label={isRTL ? 'افزایش دقیقه' : 'Increase minute'}
                   title={isRTL ? 'افزایش ۱ دقیقه' : '+1 min'}
                 >
-                  <ChevronUp size={13} />
+                  <ChevronUp size={14} />
                   <span className="whitespace-nowrap">{isRTL ? '+۱د' : '+1m'}</span>
                 </button>
                 <button 
                   type="button" 
                   onClick={incrementSecond}
                   disabled={currentSec >= 55 && currentMin >= 10}
-                  className="py-1 rounded-lg bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center gap-0.5 text-[10.5px] font-bold text-[var(--ink)] disabled:opacity-25 disabled:pointer-events-none active:scale-95 transition-all"
+                  className="min-h-[38px] py-1.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center gap-1 text-xs font-bold text-[var(--ink)] disabled:opacity-25 disabled:pointer-events-none active:scale-95 transition-all"
                   aria-label={isRTL ? 'افزایش ۵ ثانیه' : 'Increase 5 seconds'}
                   title={isRTL ? 'افزایش ۵ ثانیه' : '+5 sec'}
                 >
-                  <ChevronUp size={13} />
+                  <ChevronUp size={14} />
                   <span className="whitespace-nowrap">{isRTL ? '+۵ث' : '+5s'}</span>
                 </button>
               </div>
@@ -1144,22 +1165,22 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                   type="button" 
                   onClick={decrementMinute}
                   disabled={currentMin <= 0 && currentSec <= 5}
-                  className="py-1 rounded-lg bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center gap-0.5 text-[10.5px] font-bold text-[var(--ink)] disabled:opacity-25 disabled:pointer-events-none active:scale-95 transition-all"
+                  className="min-h-[38px] py-1.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center gap-1 text-xs font-bold text-[var(--ink)] disabled:opacity-25 disabled:pointer-events-none active:scale-95 transition-all"
                   aria-label={isRTL ? 'کاهش دقیقه' : 'Decrease minute'}
                   title={isRTL ? 'کاهش ۱ دقیقه' : '-1 min'}
                 >
-                  <ChevronDown size={13} />
+                  <ChevronDown size={14} />
                   <span className="whitespace-nowrap">{isRTL ? '-۱د' : '-1m'}</span>
                 </button>
                 <button 
                   type="button" 
                   onClick={decrementSecond}
                   disabled={currentSec <= 5 && currentMin <= 0}
-                  className="py-1 rounded-lg bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center gap-0.5 text-[10.5px] font-bold text-[var(--ink)] disabled:opacity-25 disabled:pointer-events-none active:scale-95 transition-all"
+                  className="min-h-[38px] py-1.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center gap-1 text-xs font-bold text-[var(--ink)] disabled:opacity-25 disabled:pointer-events-none active:scale-95 transition-all"
                   aria-label={isRTL ? 'کاهش ۵ ثانیه' : 'Decrease 5 seconds'}
                   title={isRTL ? 'کاهش ۵ ثانیه' : '-5 sec'}
                 >
-                  <ChevronDown size={13} />
+                  <ChevronDown size={14} />
                   <span className="whitespace-nowrap">{isRTL ? '-۵ث' : '-5s'}</span>
                 </button>
               </div>
@@ -1222,9 +1243,9 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
         {/* Row 3: Card Reveal on Correct/Skip */}
         <div className="row-ux">
           <div className="min-w-0 pr-2 rtl:pr-0 rtl:pl-2">
-            <b className="whitespace-nowrap">{isRTL ? 'نمایش کارت پس از حدس/رد' : 'Card Reveal on Guess'}</b>
+            <b className="whitespace-nowrap">{t.cardRevealOnGuess || (isRTL ? 'نمایش کارت بعد از حدس' : 'Card Reveal on Guess')}</b>
             <small className="block text-xs text-[var(--mute)] leading-tight mt-0.5">
-              {isRTL ? 'توقف زمان و نمایش ترجمه و مثال برای یادگیری عمیق' : 'Pause timer and display translation & example'}
+              {t.cardRevealDesc || (isRTL ? 'نمایش معنی و مثال آموزشی پس از هر پاسخ' : 'Show translation & example after each guess')}
             </small>
           </div>
           <button 
@@ -1232,7 +1253,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
             className="sw shrink-0" 
             role="switch" 
             aria-checked={settings.cardRevealEnabled !== false}
-            aria-label={isRTL ? 'نمایش کارت پس از حدس/رد' : 'Card Reveal on Guess'}
+            aria-label={t.cardRevealOnGuess || (isRTL ? 'نمایش کارت بعد از حدس' : 'Card Reveal on Guess')}
             onClick={() => {
               sound.playToggle();
               updateSettings('cardRevealEnabled', settings.cardRevealEnabled === false);
@@ -1253,7 +1274,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                 type="button"
                 role="radio"
                 aria-checked={isChecked}
-                className="whitespace-nowrap truncate px-0.5 sm:px-1 text-[10px] sm:text-[11.5px] font-bold leading-none min-w-0"
+                className="whitespace-nowrap truncate px-1.5 text-[11.5px] sm:text-xs font-bold leading-none min-w-0 min-h-[44px]"
                 title={d.title}
                 onClick={() => {
                   sound.playToggle();
@@ -1270,47 +1291,49 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
 
         {/* Content Type Filter with Situation Guard */}
         <div className="flex items-center justify-between mb-1">
-          <div className="lab whitespace-nowrap truncate">{isRTL ? 'نوع کارت‌ها' : 'Card Content Type'}</div>
+          <div className="lab whitespace-nowrap truncate">{t.cardContentType || (isRTL ? 'نوع محتوای کارت‌ها' : 'Card Content Type')}</div>
           {isSituationDisabled && (
             <span className="text-[10px] text-amber-700 dark:text-amber-400 font-bold whitespace-nowrap">
-              {isRTL ? `Situation غیرفعال (${toPersian(realSituationCount, isRTL)} از ${toPersian(requiredCardCount, isRTL)} کارت)` : `Situation disabled (${realSituationCount}/${requiredCardCount} cards)`}
+              {isRTL
+                ? `${t.situationDisabled || 'موقعیت غیرفعال'} (${toPersian(realSituationCount, isRTL)} از ${toPersian(requiredCardCount, isRTL)} کارت)`
+                : `${t.situationDisabled || 'Situation disabled'} (${realSituationCount}/${requiredCardCount} cards)`}
             </span>
           )}
         </div>
-        <div className="seg sm" id="contentType" role="radiogroup" aria-label={isRTL ? 'نوع محتوا' : 'Content Type'}>
+        <div className="seg sm" id="contentType" role="radiogroup" aria-label={t.cardContentType || (isRTL ? 'نوع محتوای کارت‌ها' : 'Card Content Type')}>
           <button
             type="button"
             role="radio"
             aria-checked={(settings.selectedContentType || 'all') === 'all'}
-            className="whitespace-nowrap truncate px-1 text-[10px] sm:text-[11.5px] font-bold leading-none min-w-0"
+            className="whitespace-nowrap truncate px-1.5 text-[11.5px] sm:text-xs font-bold leading-none min-w-0 min-h-[44px]"
             onClick={() => {
               sound.playToggle();
               updateSettings('selectedContentType', 'all');
             }}
           >
-            {isRTL ? 'همه انواع' : 'All Types'}
+            {t.allTypes || (isRTL ? 'همه موارد' : 'All Types')}
           </button>
           <button
             type="button"
             role="radio"
             aria-checked={settings.selectedContentType === 'Phrase'}
-            className="whitespace-nowrap truncate px-1 text-[10px] sm:text-[11.5px] font-bold leading-none min-w-0"
+            className="whitespace-nowrap truncate px-1.5 text-[11.5px] sm:text-xs font-bold leading-none min-w-0 min-h-[44px]"
             onClick={() => {
               sound.playToggle();
               updateSettings('selectedContentType', 'Phrase');
             }}
           >
-            {isRTL ? 'واژگان و جملات' : 'Vocab & Sentences'}
+            {t.vocabAndSentences || (isRTL ? 'واژگان و جملات' : 'Vocab & Sentences')}
           </button>
           <button
             type="button"
             role="radio"
             aria-checked={settings.selectedContentType === 'Situation'}
             disabled={isSituationDisabled}
-            className={`whitespace-nowrap truncate px-1 text-[10px] sm:text-[11.5px] font-bold leading-none min-w-0 ${
+            className={`whitespace-nowrap truncate px-1.5 text-[11.5px] sm:text-xs font-bold leading-none min-w-0 min-h-[44px] ${
               isSituationDisabled ? 'opacity-35 cursor-not-allowed line-through' : ''
             }`}
-            title={isSituationDisabled ? (isRTL ? 'کارت کافی برای این زبان موجود نیست' : 'Insufficient real cards') : 'Situation'}
+            title={isSituationDisabled ? (isRTL ? 'کارت کافی برای این زبان موجود نیست' : 'Insufficient real cards') : (t.situationType || 'Situation')}
             onClick={() => {
               if (isSituationDisabled) {
                 sound.playBuzzer();
@@ -1320,7 +1343,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
               updateSettings('selectedContentType', 'Situation');
             }}
           >
-            {isRTL ? 'موقعیت (Situation)' : 'Situation'}
+            {t.situationType || (isRTL ? 'موقعیت مکالمه' : 'Situation')}
           </button>
         </div>
       </section>
@@ -1409,9 +1432,9 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
             type="button" 
             className="start-btn w-full mt-4" 
             onClick={() => setIsSheetOpen(false)}
-            aria-label="فهمیدم"
+            aria-label={t.gotIt || (isRTL ? 'فهمیدم' : 'Got it')}
           >
-            <span>فهمیدم</span>
+            <span>{t.gotIt || (isRTL ? 'فهمیدم' : 'Got it')}</span>
           </button>
         </div>
       </div>

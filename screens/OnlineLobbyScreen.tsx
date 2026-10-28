@@ -520,18 +520,21 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
             </button>
           </div>
 
-          {/* Voice Helper Info Box */}
-          <div className="bg-[var(--panel)] text-[var(--ink)] p-3 rounded-2xl border border-[var(--line)] shadow-xs text-start space-y-1 text-[11px]">
-            <div className="flex items-center gap-1.5 text-[var(--turq)] font-bold">
-              <Headphones size={13} />
-              <span>{language === 'fa' ? 'نحوه ارتباط صوتی:' : 'Voice Chat Setup:'}</span>
-            </div>
-            <p className="text-[var(--mute)] font-medium leading-relaxed">
+          {/* Collapsible Voice Helper Accordion */}
+          <details className="group bg-[var(--panel)] text-[var(--ink)] p-3 rounded-2xl border border-[var(--line)] shadow-xs text-start text-[11px]">
+            <summary className="flex items-center justify-between cursor-pointer list-none font-bold text-[var(--turq)] select-none">
+              <span className="flex items-center gap-1.5">
+                <Headphones size={14} />
+                <span>{language === 'fa' ? 'راهنمای ارتباط صوتی در بازی آنلاین' : 'Voice Chat Setup Guide'}</span>
+              </span>
+              <span className="text-[10px] text-[var(--mute)] group-open:rotate-180 transition-transform">▾</span>
+            </summary>
+            <p className="text-[var(--mute)] font-medium leading-relaxed mt-2 pt-2 border-t border-[var(--line)]">
               {language === 'fa'
-                ? 'می‌توانید به یک تماس صوتی در گوگل میت (Google Meet)، دیسکورد (Discord) یا اتاق صوتی رایگان درون بازی وصل شوید.'
-                : 'Connect to a Discord call, Google Meet, or instant in-app voice room with your friends.'}
+                ? 'می‌توانید هنگام ساخت اتاق، لینک تماس صوتی رایگان درون بازی، گوگل میت (Google Meet) یا دیسکورد (Discord) را فعال کنید تا هم‌زمان با دوستانتان صحبت کنید.'
+                : 'Connect to an instant in-app voice room, Google Meet, or Discord call with your friends while playing.'}
             </p>
-          </div>
+          </details>
 
         </div>
       )}
@@ -636,8 +639,8 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
                     : 'bg-[var(--bg)] text-[var(--mute)] border-[var(--line)] hover:bg-[var(--panel)]'
                 }`}
               >
-                <span>Google Meet</span>
-                <span className="text-[9px] block opacity-80 font-normal">{language === 'fa' ? 'گوگل میت' : 'Video call'}</span>
+                <span>{language === 'fa' ? 'گوگل میت' : 'Google Meet'}</span>
+                <span className="text-[9px] block opacity-80 font-normal">{language === 'fa' ? 'تماس تصویری' : 'Video call'}</span>
               </button>
 
               <button
@@ -649,8 +652,8 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
                     : 'bg-[var(--bg)] text-[var(--mute)] border-[var(--line)] hover:bg-[var(--panel)]'
                 }`}
               >
-                <span>Discord</span>
-                <span className="text-[9px] block opacity-80 font-normal">{language === 'fa' ? 'دیسکورد' : 'Voice server'}</span>
+                <span>{language === 'fa' ? 'دیسکورد' : 'Discord'}</span>
+                <span className="text-[9px] block opacity-80 font-normal">{language === 'fa' ? 'اتاق صوتی' : 'Voice server'}</span>
               </button>
             </div>
           </div>
@@ -689,7 +692,7 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
           {/* Room Code Input */}
           <div>
             <label className="block text-xs font-bold text-[var(--ink)] mb-1">
-              {language === 'fa' ? 'کد اتاق (Room Code):' : 'Room Code:'}
+              {language === 'fa' ? 'کد اتاق:' : 'Room Code:'}
             </label>
             <input
               type="text"

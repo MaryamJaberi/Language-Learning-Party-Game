@@ -148,10 +148,7 @@ export function generateSimilarQuestions(
     const shuffledCurated = [...curatedMatches].sort(() => Math.random() - 0.5);
     for (const c of shuffledCurated) {
       if (!similarList.some(item => item.id === c.id)) {
-        similarList.push({
-          ...c,
-          hint: `🔄 تمرین مشابه: الگوی گرامری "${mistakeCard.grammarPoint || topic.replace('CAT_', '')}"`
-        });
+        similarList.push(c);
         if (similarList.length >= count) break;
       }
     }

@@ -108,6 +108,15 @@ export const UserProfileModal: React.FC<Props> = ({
   const [cloudHistory, setCloudHistory] = useState<GameHistoryEntry[]>([]);
   const [historySource, setHistorySource] = useState<'all' | 'local' | 'cloud'>('all');
   const [isLoadingCloudHistory, setIsLoadingCloudHistory] = useState(false);
+  const [isHapticsOn, setIsHapticsOn] = useState<boolean>(sound.isHaptics());
+
+  useEffect(() => {
+    setIsHapticsOn(sound.isHaptics());
+    const unsub = sound.addHapticListener((val) => {
+      setIsHapticsOn(val);
+    });
+    return unsub;
+  }, []);
 
   const { isInstallable, isInstalled, install } = usePWAInstall();
   const isRTL = isRtlLang(language);
@@ -421,7 +430,7 @@ export const UserProfileModal: React.FC<Props> = ({
                       {isAdmin && (
                         <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[11px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
                           <span>👑</span>
-                          <span>{isRTL ? 'مدیر کل (Admin)' : 'Admin'}</span>
+                          <span>{t.adminBadge || (isRTL ? 'مدیر کل' : 'Admin')}</span>
                         </span>
                       )}
                       {currentUser && !isAdmin && (
@@ -445,7 +454,8 @@ export const UserProfileModal: React.FC<Props> = ({
                 onClose();
               }}
               className="w-10 h-10 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-[var(--mute)] hover:text-[var(--ink)] flex items-center justify-center transition-colors active:scale-95 cursor-pointer"
-              aria-label="Close"
+              aria-label={isRTL ? 'بستن' : 'Close'}
+              title={isRTL ? 'بستن' : 'Close'}
             >
               <X size={20} strokeWidth={2} />
             </button>
@@ -464,7 +474,8 @@ export const UserProfileModal: React.FC<Props> = ({
                 type="button"
                 onClick={() => setLoginError(null)}
                 className="text-rose-600 hover:text-rose-800 p-0.5"
-                aria-label="Dismiss error"
+                aria-label={isRTL ? 'رد کردن' : 'Dismiss'}
+                title={isRTL ? 'رد کردن' : 'Dismiss'}
               >
                 <X size={14} />
               </button>
@@ -501,6 +512,15 @@ export const UserProfileModal: React.FC<Props> = ({
                     </span>
                   </div>
                 )}
+
+                {/* Clear Guest vs Cloud Explanation Pill */}
+                <div className="px-3 py-1.5 rounded-xl bg-[var(--bg)] border border-[var(--line)] text-[11px] text-[var(--mute)] text-start leading-relaxed flex items-center justify-between gap-2">
+                  <span>
+                    {isRTL
+                      ? '💡 حالت مهمان فعال است (ذخیره آفلاین رکوردها و لایتنر روی گوشی). برای پشتیبان‌گیری ابری و ثبت امتیاز در لیدربرد جهانی، وارد حساب گوگل شوید.'
+                      : '💡 Guest mode is active (records & Leitner saved locally). Sign in with Google for cloud backup & global leaderboard.'}
+                  </span>
+                </div>
 
                 {/* Login Action Buttons Grid */}
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
@@ -581,6 +601,40 @@ export const UserProfileModal: React.FC<Props> = ({
               </div>
             )}
           </div>
+        </div>
+
+        {/* Quick Mobile Haptics & Feedback Bar */}
+        <div className="px-4 py-2 bg-[var(--bg)] border-b border-[var(--line)] flex items-center justify-between text-xs font-semibold shrink-0">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                const next = !isHapticsOn;
+                sound.setHapticsEnabled(next);
+                setIsHapticsOn(next);
+                if (next) sound.hapticFeedback('success');
+              }}
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-xl border text-[11px] font-bold transition-all cursor-pointer ${
+                isHapticsOn
+                  ? 'bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400'
+                  : 'bg-[var(--panel)] border-[var(--line)] text-[var(--mute)]'
+              }`}
+              title={isRTL ? 'ویبره لمسی گوشی در هنگام پاسخ درست، خطا و کومبو' : 'Mobile haptic vibration feedback'}
+            >
+              <Smartphone size={13} className={isHapticsOn ? 'animate-pulse text-amber-500' : ''} />
+              <span>{isRTL ? (isHapticsOn ? 'ویبره لمسی: روشن ⚡' : 'ویبره لمسی: خاموش') : (isHapticsOn ? 'Haptics: ON ⚡' : 'Haptics: OFF')}</span>
+            </button>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              sound.hapticFeedback('streak');
+              sound.playScoreTick(3);
+            }}
+            className="text-[10px] text-[var(--lapis)] hover:underline font-bold cursor-pointer"
+          >
+            {isRTL ? 'تست ویبره 📳' : 'Test Buzz 📳'}
+          </button>
         </div>
 
         {/* Material Design 3 Primary Scrollable Tabs */}
@@ -686,7 +740,7 @@ export const UserProfileModal: React.FC<Props> = ({
                         </div>
                         {item.totalScore !== undefined && (
                           <span className="font-bold text-[var(--lapis)] font-mono text-xs">
-                            {item.totalScore} PTS
+                            {item.totalScore} {t.pointsUnit || (isRTL ? 'امتیاز' : 'PTS')}
                           </span>
                         )}
                       </div>
@@ -706,7 +760,7 @@ export const UserProfileModal: React.FC<Props> = ({
                     {isRTL ? 'بهترین رکورد ثبت‌شده شما' : 'Your Personal Best'}
                   </span>
                   <div className="text-2xl font-bold text-[var(--ink)] font-display mt-0.5">
-                    {records.highestScore} <span className="text-xs text-amber-600 font-bold">PTS</span>
+                    {records.highestScore} <span className="text-xs text-amber-600 font-bold">{t.pointsUnit || (isRTL ? 'امتیاز' : 'PTS')}</span>
                   </div>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-amber-500/15 text-amber-600 flex items-center justify-center border border-amber-500/30 shadow-xs">

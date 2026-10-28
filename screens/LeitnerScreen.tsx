@@ -33,6 +33,7 @@ import { sound } from '../soundManager';
 import { FlagIcon } from '../components/FlagIcon';
 import ExitConfirmModal from '../components/ExitConfirmModal';
 import { generateChallengingReflexOptions } from '../utils/testQuestionEngine';
+import ConfettiCelebration from '../components/ConfettiCelebration';
 
 interface Props {
   language: Language;
@@ -338,31 +339,35 @@ export const LeitnerScreen: React.FC<Props> = ({
                   <span>{isFlipped ? (isRTL ? 'صورت سؤال' : 'Question') : (isRTL ? 'پشت کارت' : 'Flip')}</span>
                 </button>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    sound.playClick();
-                    sound.speakNative(currentDueItem.item.card.targetText, leitnerState.targetLanguage);
-                  }}
-                  className="py-1.5 px-2.5 bg-[var(--bg)] hover:bg-[var(--line)] rounded-full text-xs font-bold text-[var(--mute)] hover:text-[var(--ink)] inline-flex items-center gap-1 transition-colors cursor-pointer"
-                  title={isRTL ? 'پخش تلفظ صوتی [کلید V]' : 'Audio pronunciation [Key V]'}
-                >
-                  <Volume2 size={13} />
-                  <span>{isRTL ? 'تلفظ' : 'Audio'}</span>
-                </button>
+                {sound.isVoiceSupportedFor(leitnerState.targetLanguage) && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        sound.playClick();
+                        sound.speakNative(currentDueItem.item.card.targetText, leitnerState.targetLanguage);
+                      }}
+                      className="py-1.5 px-2.5 bg-[var(--bg)] hover:bg-[var(--line)] rounded-full text-xs font-bold text-[var(--mute)] hover:text-[var(--ink)] inline-flex items-center gap-1 transition-colors cursor-pointer"
+                      title={isRTL ? 'پخش تلفظ صوتی [کلید V]' : 'Audio pronunciation [Key V]'}
+                    >
+                      <Volume2 size={13} />
+                      <span>{isRTL ? 'تلفظ' : 'Audio'}</span>
+                    </button>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    sound.playClick();
-                    sound.speakSlow(currentDueItem.item.card.targetText, leitnerState.targetLanguage);
-                  }}
-                  className="py-1.5 px-2.5 bg-[var(--bg)] hover:bg-[var(--line)] rounded-full text-[11px] font-bold text-[var(--mute)] hover:text-[var(--ink)] inline-flex items-center gap-1 transition-colors cursor-pointer"
-                  title={isRTL ? 'پخش آهسته ۰.۷x برای تفکیک هجاها [کلید S]' : 'Slow audio 0.7x [Key S]'}
-                >
-                  <span>🐢</span>
-                  <span>0.7x</span>
-                </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        sound.playClick();
+                        sound.speakSlow(currentDueItem.item.card.targetText, leitnerState.targetLanguage);
+                      }}
+                      className="py-1.5 px-2.5 bg-[var(--bg)] hover:bg-[var(--line)] rounded-full text-[11px] font-bold text-[var(--mute)] hover:text-[var(--ink)] inline-flex items-center gap-1 transition-colors cursor-pointer"
+                      title={isRTL ? 'پخش آهسته ۰.۷x برای تفکیک هجاها [کلید S]' : 'Slow audio 0.7x [Key S]'}
+                    >
+                      <span>🐢</span>
+                      <span>0.7x</span>
+                    </button>
+                  </>
+                )}
               </div>
             </div>
 
@@ -418,7 +423,8 @@ export const LeitnerScreen: React.FC<Props> = ({
           </div>
         ) : (
           /* All Daily Cards Completed! */
-          <div className="bg-[var(--panel)] border-2 border-[var(--line)] rounded-[28px] p-6 text-center space-y-4 shadow-xl">
+          <div className="bg-[var(--panel)] border-2 border-[var(--line)] rounded-[28px] p-6 text-center space-y-4 shadow-xl relative overflow-hidden">
+            <ConfettiCelebration duration={3500} />
             <div className="w-16 h-16 mx-auto rounded-3xl bg-emerald-500/15 text-emerald-600 flex items-center justify-center shadow-inner">
               <Trophy size={34} className="animate-bounce" />
             </div>
