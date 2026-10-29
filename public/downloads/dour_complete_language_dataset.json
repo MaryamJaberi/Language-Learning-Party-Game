@@ -1,0 +1,5655 @@
+{
+  "totalItems": 330,
+  "exportDate": "2026-10-06T09:54:58.083Z",
+  "vocabularyWordsCount": 242,
+  "curatedCardsCount": 53,
+  "c1EntitiesCount": 20,
+  "universalConceptsCount": 15,
+  "vocabularyWords": [
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "لیوان",
+        "en": "Glass",
+        "nl": "Glas",
+        "de": "Glas",
+        "fr": "Verre",
+        "ar": "كأس",
+        "tr": "Bardak",
+        "pl": "Szklanka",
+        "uk": "Склянка"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "بشقاب",
+        "en": "Plate",
+        "nl": "Bord",
+        "de": "Teller",
+        "fr": "Assiette",
+        "ar": "صحن",
+        "tr": "Tabak",
+        "pl": "Talerz",
+        "uk": "Тарілка"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "قاشق",
+        "en": "Spoon",
+        "nl": "Lepel",
+        "de": "Löffel",
+        "fr": "Cuillère",
+        "ar": "ملعقة",
+        "tr": "Kaşık",
+        "pl": "Łyżka",
+        "uk": "Ложка"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "چنگال",
+        "en": "Fork",
+        "nl": "Vork",
+        "de": "Gabel",
+        "fr": "Fourchette",
+        "ar": "شوكة",
+        "tr": "Çatal",
+        "pl": "Widelec",
+        "uk": "Виделка"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "چاقو",
+        "en": "Knife",
+        "nl": "Mes",
+        "de": "Messer",
+        "fr": "Couteau",
+        "ar": "سكين",
+        "tr": "Bıçak",
+        "pl": "Nóż",
+        "uk": "Ніж"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "قابلمه",
+        "en": "Pot",
+        "nl": "Pan",
+        "de": "Topf",
+        "fr": "Marmite",
+        "ar": "قدر",
+        "tr": "Tencere",
+        "pl": "Garnek",
+        "uk": "Каструля"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "ماهیتابه",
+        "en": "Frying Pan",
+        "nl": "Koekenpan",
+        "de": "Pfanne",
+        "fr": "Poêle",
+        "ar": "مقلاة",
+        "tr": "Tava",
+        "pl": "Patelnia",
+        "uk": "Сковорідка"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "یخچال",
+        "en": "Fridge",
+        "nl": "Koelkast",
+        "de": "Kühlschrank",
+        "fr": "Frigo",
+        "ar": "ثلاجة",
+        "tr": "Buzdolabı",
+        "pl": "Lodówka",
+        "uk": "Холодильник"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "فریزر",
+        "en": "Freezer",
+        "nl": "Vriezer",
+        "de": "Gefrierschrank",
+        "fr": "Congélateur",
+        "ar": "مجمد",
+        "tr": "Dondurucu",
+        "pl": "Zamrażarka",
+        "uk": "Морозилка"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "اجاق",
+        "en": "Stove",
+        "nl": "Fornuis",
+        "de": "Herd",
+        "fr": "Cuisinière",
+        "ar": "موقد",
+        "tr": "Ocak",
+        "pl": "Kuchenka",
+        "uk": "Плита"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "فر",
+        "en": "Oven",
+        "nl": "Oven",
+        "de": "Ofen",
+        "fr": "Four",
+        "ar": "فرن",
+        "tr": "Fırın",
+        "pl": "Piekarnik",
+        "uk": "Духовка"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "مایکروویو",
+        "en": "Microwave",
+        "nl": "Magnetron",
+        "de": "Mikrowelle",
+        "fr": "Micro-ondes",
+        "ar": "مايكرويف",
+        "tr": "Mikrodalga",
+        "pl": "Mikrofalówka",
+        "uk": "Мікрохвильовка"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "سماور",
+        "en": "Samovar",
+        "nl": "Samovar",
+        "de": "Samowar",
+        "fr": "Samovar",
+        "ar": "سموار",
+        "tr": "Semaver",
+        "pl": "Samowar",
+        "uk": "Самовар"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "کتری",
+        "en": "Kettle",
+        "nl": "Waterkoker",
+        "de": "Wasserkocher",
+        "fr": "Bouilloire",
+        "ar": "غلاية",
+        "tr": "Çaydanlık",
+        "pl": "Czajnik",
+        "uk": "Чайник"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "قهوه‌ساز",
+        "en": "Coffee Maker",
+        "nl": "Koffiezetapparaat",
+        "de": "Kaffeemaschine",
+        "fr": "Cafetière",
+        "ar": "ماكينة قهوة",
+        "tr": "Kahve makinesi",
+        "pl": "Ekspres do kawy",
+        "uk": "Кавоварка"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "فنجان",
+        "en": "Cup",
+        "nl": "Kopje",
+        "de": "Tasse",
+        "fr": "Tassette",
+        "ar": "فنجان",
+        "tr": "Fincan",
+        "pl": "Filiżanka",
+        "uk": "Філіжанка"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "بطری",
+        "en": "Bottle",
+        "nl": "Fles",
+        "de": "Flasche",
+        "fr": "Bouteille",
+        "ar": "زجاجة",
+        "tr": "Şişe",
+        "pl": "Butelka",
+        "uk": "Пляшка"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "قمقمه",
+        "en": "Flask",
+        "nl": "Veldles",
+        "de": "Feldflasche",
+        "fr": "Gourde",
+        "ar": "زمزمية",
+        "tr": "Matara",
+        "pl": "Manierka",
+        "uk": "Фляга"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "سطل",
+        "en": "Bucket",
+        "nl": "Emmer",
+        "de": "Eimer",
+        "fr": "Seau",
+        "ar": "دلو",
+        "tr": "Kova",
+        "pl": "Wiadro",
+        "uk": "Відро"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "جارو",
+        "en": "Broom",
+        "nl": "Bezem",
+        "de": "Besen",
+        "fr": "Balai",
+        "ar": "مكنسة",
+        "tr": "Süpürge",
+        "pl": "Miotła",
+        "uk": "Мітла"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "صابون",
+        "en": "Soap",
+        "nl": "Zeep",
+        "de": "Seife",
+        "fr": "Savon",
+        "ar": "صابون",
+        "tr": "Sabun",
+        "pl": "Mydło",
+        "uk": "Мило"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "شامپو",
+        "en": "Shampoo",
+        "nl": "Shampoo",
+        "de": "Shampoo",
+        "fr": "Shampooing",
+        "ar": "شامبو",
+        "tr": "Şampuan",
+        "pl": "Szampon",
+        "uk": "Шампунь"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "مسواک",
+        "en": "Toothbrush",
+        "nl": "Tandenborstel",
+        "de": "Zahnbürste",
+        "fr": "Brosse à dents",
+        "ar": "فرشاة أسنان",
+        "tr": "Diş fırçası",
+        "pl": "Szczoteczka",
+        "uk": "Зубна щітка"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "حوله",
+        "en": "Towel",
+        "nl": "Handdoek",
+        "de": "Handtuch",
+        "fr": "Serviette",
+        "ar": "منشفة",
+        "tr": "Havlu",
+        "pl": "Ręcznik",
+        "uk": "Рушник"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "آینه",
+        "en": "Mirror",
+        "nl": "Spiegel",
+        "de": "Spiegel",
+        "fr": "Miroir",
+        "ar": "مرآة",
+        "tr": "Ayna",
+        "pl": "Lustro",
+        "uk": "Дзеркало"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "شانه",
+        "en": "Comb",
+        "nl": "Kam",
+        "de": "Kamm",
+        "fr": "Peigne",
+        "ar": "مشط",
+        "tr": "Tarak",
+        "pl": "Grzebień",
+        "uk": "Гребінець"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "سشوار",
+        "en": "Hairdryer",
+        "nl": "Föhn",
+        "de": "Föhn",
+        "fr": "Sèche-cheveux",
+        "ar": "مجفف شعر",
+        "tr": "Fön",
+        "pl": "Suszarka",
+        "uk": "Фен"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "کمد",
+        "en": "Closet",
+        "nl": "Kast",
+        "de": "Schrank",
+        "fr": "Armoire",
+        "ar": "خزانة",
+        "tr": "Dolap",
+        "pl": "Szafa",
+        "uk": "Шафа"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "میز",
+        "en": "Table",
+        "nl": "Tafel",
+        "de": "Tisch",
+        "fr": "Table",
+        "ar": "طاولة",
+        "tr": "Masa",
+        "pl": "Stół",
+        "uk": "Стіл"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "صندلی",
+        "en": "Chair",
+        "nl": "Stoel",
+        "de": "Stuhl",
+        "fr": "Chaise",
+        "ar": "كرسي",
+        "tr": "Sandalye",
+        "pl": "Krzesło",
+        "uk": "Стілець"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "مبل",
+        "en": "Sofa",
+        "nl": "Bank",
+        "de": "Sofa",
+        "fr": "Canapé",
+        "ar": "أريكة",
+        "tr": "Kanepe",
+        "pl": "Kanapa",
+        "uk": "Диван"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "تخت",
+        "en": "Bed",
+        "nl": "Bed",
+        "de": "Bett",
+        "fr": "Lit",
+        "ar": "سرير",
+        "tr": "Yatak",
+        "pl": "Łóżko",
+        "uk": "Ліжко"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "بالش",
+        "en": "Pillow",
+        "nl": "Kussen",
+        "de": "Kissen",
+        "fr": "Oreiller",
+        "ar": "وسادة",
+        "tr": "Yastık",
+        "pl": "Poduszka",
+        "uk": "Подушка"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "پتو",
+        "en": "Blanket",
+        "nl": "Deken",
+        "de": "Decke",
+        "fr": "Couverture",
+        "ar": "بطانية",
+        "tr": "Battaniye",
+        "pl": "Koc",
+        "uk": "Ковдра"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "فرش",
+        "en": "Carpet",
+        "nl": "Tapijt",
+        "de": "Teppich",
+        "fr": "Tapis",
+        "ar": "سجادة",
+        "tr": "Halı",
+        "pl": "Dywan",
+        "uk": "Килим"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "کفش",
+        "en": "Shoes",
+        "nl": "Schoenen",
+        "de": "Schuhe",
+        "fr": "Chaussures",
+        "ar": "حذاء",
+        "tr": "Ayakkabı",
+        "pl": "Buty",
+        "uk": "Взуття"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "کیف",
+        "en": "Bag",
+        "nl": "Tas",
+        "de": "Tasche",
+        "fr": "Sac",
+        "ar": "حقيبة",
+        "tr": "Çanta",
+        "pl": "Torba",
+        "uk": "Сумка"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "چتر",
+        "en": "Umbrella",
+        "nl": "Paraplu",
+        "de": "Regenschirm",
+        "fr": "Parapluie",
+        "ar": "مظلة",
+        "tr": "Şemsiye",
+        "pl": "Parasol",
+        "uk": "Парасоля"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "عینک",
+        "en": "Glasses",
+        "nl": "Bril",
+        "de": "Brille",
+        "fr": "Lunettes",
+        "ar": "نظارات",
+        "tr": "Gözlük",
+        "pl": "Okulary",
+        "uk": "Окуляри"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "ساعت",
+        "en": "Watch",
+        "nl": "Horloge",
+        "de": "Uhr",
+        "fr": "Montre",
+        "ar": "ساعة",
+        "tr": "Saat",
+        "pl": "Zegarek",
+        "uk": "Годинник"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "تلفن",
+        "en": "Telephone",
+        "nl": "Telefoon",
+        "de": "Telefon",
+        "fr": "Téléphone",
+        "ar": "هاتف",
+        "tr": "Telefon",
+        "pl": "Telefon",
+        "uk": "Телефон"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "کلید",
+        "en": "Key",
+        "nl": "Sleutel",
+        "de": "Schlüssel",
+        "fr": "Clé",
+        "ar": "مفتاح",
+        "tr": "Anahtar",
+        "pl": "Klucz",
+        "uk": "Ключ"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "قفل",
+        "en": "Lock",
+        "nl": "Slot",
+        "de": "Schloss",
+        "fr": "Serrure",
+        "ar": "قفل",
+        "tr": "Kilit",
+        "pl": "Zamek",
+        "uk": "Замок"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "لامپ",
+        "en": "Bulb",
+        "nl": "Lamp",
+        "de": "Glühbirne",
+        "fr": "Ampoule",
+        "ar": "مصباح",
+        "tr": "Ampul",
+        "pl": "Żarówka",
+        "uk": "Лампочка"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "تلویزیون",
+        "en": "Television",
+        "nl": "Televisie",
+        "de": "Fernseher",
+        "fr": "Télévision",
+        "ar": "تلفزيون",
+        "tr": "Televizyon",
+        "pl": "Telewizor",
+        "uk": "Телевізор"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "دفتر",
+        "en": "Notebook",
+        "nl": "Schrift",
+        "de": "Notizbuch",
+        "fr": "Cahier",
+        "ar": "دفتر",
+        "tr": "Defter",
+        "pl": "Zeszyt",
+        "uk": "Зошит"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "خودکار",
+        "en": "Pen",
+        "nl": "Pen",
+        "de": "Kuli",
+        "fr": "Stylo",
+        "ar": "قلم",
+        "tr": "Kalem",
+        "pl": "Długopis",
+        "uk": "Ручка"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "مداد",
+        "en": "Pencil",
+        "nl": "Potlood",
+        "de": "Bleistift",
+        "fr": "Crayon",
+        "ar": "مرسام",
+        "tr": "Kurşun kalem",
+        "pl": "Ołówek",
+        "uk": "Олівець"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "پاک‌کن",
+        "en": "Eraser",
+        "nl": "Gum",
+        "de": "Radiergummi",
+        "fr": "Gomme",
+        "ar": "ممحاة",
+        "tr": "Silgi",
+        "pl": "Gumka",
+        "uk": "Гумка"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "نان",
+        "en": "Bread",
+        "nl": "Brood",
+        "de": "Brot",
+        "fr": "Pain",
+        "ar": "خبز",
+        "tr": "Ekmek",
+        "pl": "Chleb",
+        "uk": "Хліб"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "برنج",
+        "en": "Rice",
+        "nl": "Rijst",
+        "de": "Reis",
+        "fr": "Riz",
+        "ar": "أرز",
+        "tr": "Pirinç",
+        "pl": "Ryż",
+        "uk": "Рис"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "ماکارونی",
+        "en": "Pasta",
+        "nl": "Pasta",
+        "de": "Pasta",
+        "fr": "Pâtes",
+        "ar": "معكرونة",
+        "tr": "Makarna",
+        "pl": "Makaron",
+        "uk": "Макарони"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "سیب‌زمینی",
+        "en": "Potato",
+        "nl": "Aardappel",
+        "de": "Kartoffel",
+        "fr": "Pomme de terre",
+        "ar": "بطاطس",
+        "tr": "Patates",
+        "pl": "Ziemniak",
+        "uk": "Картопля"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "گوجه",
+        "en": "Tomato",
+        "nl": "Tomaat",
+        "de": "Tomate",
+        "fr": "Tomate",
+        "ar": "طماطم",
+        "tr": "Domates",
+        "pl": "Pomidor",
+        "uk": "Помідор"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "خیار",
+        "en": "Cucumber",
+        "nl": "Komkommer",
+        "de": "Gurke",
+        "fr": "Concombre",
+        "ar": "خيار",
+        "tr": "Salatalık",
+        "pl": "Ogórek",
+        "uk": "Огірок"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "پیاز",
+        "en": "Onion",
+        "nl": "Ui",
+        "de": "Zwiebel",
+        "fr": "Oignon",
+        "ar": "بصل",
+        "tr": "Soğan",
+        "pl": "Cebula",
+        "uk": "Цибуля"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "هویج",
+        "en": "Carrot",
+        "nl": "Wortel",
+        "de": "Möhre",
+        "fr": "Carotte",
+        "ar": "جزر",
+        "tr": "Havuç",
+        "pl": "Marchew",
+        "uk": "Морква"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "گوشت",
+        "en": "Meat",
+        "nl": "Vlees",
+        "de": "Fleisch",
+        "fr": "Viande",
+        "ar": "لحم",
+        "tr": "Et",
+        "pl": "Mięso",
+        "uk": "М'ясо"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "مرغ",
+        "en": "Chicken",
+        "nl": "Kip",
+        "de": "Huhn",
+        "fr": "Poulet",
+        "ar": "دجاج",
+        "tr": "Tavuk",
+        "pl": "Kurczak",
+        "uk": "Курка"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "ماهی",
+        "en": "Fish",
+        "nl": "Vis",
+        "de": "Fisch",
+        "fr": "Poisson",
+        "ar": "سمك",
+        "tr": "Balık",
+        "pl": "Ryba",
+        "uk": "Риба"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "تخم‌مرغ",
+        "en": "Egg",
+        "nl": "Ei",
+        "de": "Ei",
+        "fr": "Œuf",
+        "ar": "بيض",
+        "tr": "Yumurta",
+        "pl": "Jajko",
+        "uk": "Яйце"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "پنیر",
+        "en": "Cheese",
+        "nl": "Kaas",
+        "de": "Käse",
+        "fr": "Fromage",
+        "ar": "جبن",
+        "tr": "Peynir",
+        "pl": "Ser",
+        "uk": "Сир"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "ماست",
+        "en": "Yogurt",
+        "nl": "Yoghurt",
+        "de": "Joghurt",
+        "fr": "Yaourt",
+        "ar": "زبادي",
+        "tr": "Yoğurt",
+        "pl": "Jogurt",
+        "uk": "Йогурт"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "شیر",
+        "en": "Milk",
+        "nl": "Melk",
+        "de": "Milch",
+        "fr": "Lait",
+        "ar": "حليب",
+        "tr": "Süt",
+        "pl": "Mleko",
+        "uk": "Молоко"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "بستنی",
+        "en": "Ice Cream",
+        "nl": "IJs",
+        "de": "Eis",
+        "fr": "Glace",
+        "ar": "بوظة",
+        "tr": "Dondurma",
+        "pl": "Lody",
+        "uk": "Морозиво"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "کیک",
+        "en": "Cake",
+        "nl": "Taart",
+        "de": "Kuchen",
+        "fr": "Gâteau",
+        "ar": "كعك",
+        "tr": "Pasta",
+        "pl": "Ciasto",
+        "uk": "Торт"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "شکلات",
+        "en": "Chocolate",
+        "nl": "Chocolade",
+        "de": "Schokolade",
+        "fr": "Chocolat",
+        "ar": "شوكولاتة",
+        "tr": "Çikolata",
+        "pl": "Czekolada",
+        "uk": "Шоколад"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "موز",
+        "en": "Banana",
+        "nl": "Banaan",
+        "de": "Banane",
+        "fr": "Banane",
+        "ar": "موز",
+        "tr": "Muz",
+        "pl": "Banan",
+        "uk": "Банан"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "سیب",
+        "en": "Apple",
+        "nl": "Appel",
+        "de": "Apfel",
+        "fr": "Pomme",
+        "ar": "تفاحة",
+        "tr": "Elma",
+        "pl": "Jabłko",
+        "uk": "Яблуко"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "پرتقال",
+        "en": "Orange",
+        "nl": "Sinaasappel",
+        "de": "Orange",
+        "fr": "Orange",
+        "ar": "برتقال",
+        "tr": "Portakal",
+        "pl": "Pomarańcza",
+        "uk": "Апельсин"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "انار",
+        "en": "Pomegranate",
+        "nl": "Granaatappel",
+        "de": "Granatapfel",
+        "fr": "Grenade",
+        "ar": "رمان",
+        "tr": "Nar",
+        "pl": "Granat",
+        "uk": "Гранат"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "انگور",
+        "en": "Grape",
+        "nl": "Druif",
+        "de": "Traube",
+        "fr": "Raisin",
+        "ar": "عنب",
+        "tr": "Üzüm",
+        "pl": "Winogrono",
+        "uk": "Виноград"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "هندوانه",
+        "en": "Watermelon",
+        "nl": "Watermeloen",
+        "de": "Wassermelone",
+        "fr": "Pastèque",
+        "ar": "بطيخ",
+        "tr": "Karpuz",
+        "pl": "Arbuz",
+        "uk": "Кавун"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "قهوه",
+        "en": "Coffee",
+        "nl": "Koffie",
+        "de": "Kaffee",
+        "fr": "Café",
+        "ar": "قهوة",
+        "tr": "Kahve",
+        "pl": "Kawa",
+        "uk": "Кава"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "چای",
+        "en": "Tea",
+        "nl": "Thee",
+        "de": "Tee",
+        "fr": "Thé",
+        "ar": "شاي",
+        "tr": "Çay",
+        "pl": "Herbata",
+        "uk": "Чай"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "پیتزا",
+        "en": "Pizza",
+        "nl": "Pizza",
+        "de": "Pizza",
+        "fr": "Pizza",
+        "ar": "بيتزا",
+        "tr": "Pizza",
+        "pl": "Pizza",
+        "uk": "Піца"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "همبرگر",
+        "en": "Hamburger",
+        "nl": "Hamburger",
+        "de": "Hamburger",
+        "fr": "Hamburger",
+        "ar": "همبرجر",
+        "tr": "Hamburger",
+        "pl": "Hamburger",
+        "uk": "Гамбургер"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "ساندویچ",
+        "en": "Sandwich",
+        "nl": "Sandwich",
+        "de": "Sandwich",
+        "fr": "Sandwich",
+        "ar": "ساندويتش",
+        "tr": "Sandviç",
+        "pl": "Kanapka",
+        "uk": "Сендвіч"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "easy",
+      "words": {
+        "fa": "کباب",
+        "en": "Kebab",
+        "nl": "Kebab",
+        "de": "Kebab",
+        "fr": "Kebab",
+        "ar": "كباب",
+        "tr": "Kebap",
+        "pl": "Kebab",
+        "uk": "Кебаб"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "سگ",
+        "en": "Dog",
+        "nl": "Hond",
+        "de": "Hund",
+        "fr": "Chien",
+        "ar": "كلب",
+        "tr": "Köpek",
+        "pl": "Pies",
+        "uk": "Собака"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "گربه",
+        "en": "Cat",
+        "nl": "Kat",
+        "de": "Katze",
+        "fr": "Chat",
+        "ar": "قطة",
+        "tr": "Kedi",
+        "pl": "Kot",
+        "uk": "Кіт"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "اسب",
+        "en": "Horse",
+        "nl": "Paard",
+        "de": "Pferd",
+        "fr": "Cheval",
+        "ar": "حصان",
+        "tr": "At",
+        "pl": "Koń",
+        "uk": "Кінь"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "گاو",
+        "en": "Cow",
+        "nl": "Koe",
+        "de": "Kuh",
+        "fr": "Vache",
+        "ar": "بقرة",
+        "tr": "İnek",
+        "pl": "Krowa",
+        "uk": "Корова"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "گوسفند",
+        "en": "Sheep",
+        "nl": "Schaap",
+        "de": "Schaf",
+        "fr": "Mouton",
+        "ar": "خروف",
+        "tr": "Koyun",
+        "pl": "Owca",
+        "uk": "Вівця"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "شتر",
+        "en": "Camel",
+        "nl": "Kameel",
+        "de": "Kamel",
+        "fr": "Chameau",
+        "ar": "جمل",
+        "tr": "Deve",
+        "pl": "Wielbłąd",
+        "uk": "Верблюд"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "خرگوش",
+        "en": "Rabbit",
+        "nl": "Konijn",
+        "de": "Hase",
+        "fr": "Lapin",
+        "ar": "أرنب",
+        "tr": "Tavşan",
+        "pl": "Królik",
+        "uk": "Кролик"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "خرس",
+        "en": "Bear",
+        "nl": "Beer",
+        "de": "Bär",
+        "fr": "Ours",
+        "ar": "دب",
+        "tr": "Ayı",
+        "pl": "Niedźwiedź",
+        "uk": "Ведмідь"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "گرگ",
+        "en": "Wolf",
+        "nl": "Wolf",
+        "de": "Wolf",
+        "fr": "Loup",
+        "ar": "ذئب",
+        "tr": "Kurt",
+        "pl": "Wilk",
+        "uk": "Вовк"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "روباه",
+        "en": "Fox",
+        "nl": "Vos",
+        "de": "Fuchs",
+        "fr": "Renard",
+        "ar": "ثعلب",
+        "tr": "Tilki",
+        "pl": "Lis",
+        "uk": "Лисиця"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "شیر",
+        "en": "Lion",
+        "nl": "Leeuw",
+        "de": "Löwe",
+        "fr": "Lion",
+        "ar": "أسد",
+        "tr": "Aslan",
+        "pl": "Lew",
+        "uk": "Лев"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "ببر",
+        "en": "Tiger",
+        "nl": "Tijger",
+        "de": "Tiger",
+        "fr": "Tigre",
+        "ar": "نمر",
+        "tr": "Kaplan",
+        "pl": "Tygrys",
+        "uk": "Тигр"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "پلنگ",
+        "en": "Leopard",
+        "nl": "Luipaard",
+        "de": "Leopard",
+        "fr": "Léopard",
+        "ar": "فهد",
+        "tr": "Pars",
+        "pl": "Lampart",
+        "uk": "Леопард"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "فیل",
+        "en": "Elephant",
+        "nl": "Olifant",
+        "de": "Elefant",
+        "fr": "Éléphant",
+        "ar": "فيل",
+        "tr": "Fil",
+        "pl": "Słoń",
+        "uk": "Слон"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "زرافه",
+        "en": "Giraffe",
+        "nl": "Giraffe",
+        "de": "Giraffe",
+        "fr": "Girafe",
+        "ar": "زرافة",
+        "tr": "Zürafa",
+        "pl": "Żyrafa",
+        "uk": "Жирафа"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "میمون",
+        "en": "Monkey",
+        "nl": "Aap",
+        "de": "Affe",
+        "fr": "Singe",
+        "ar": "قرد",
+        "tr": "Maymun",
+        "pl": "Małpa",
+        "uk": "Мавпа"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "تمساح",
+        "en": "Crocodile",
+        "nl": "Krokodil",
+        "de": "Krokodil",
+        "fr": "Crocodile",
+        "ar": "تمساح",
+        "tr": "Timsah",
+        "pl": "Krokodyl",
+        "uk": "Крокодил"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "مار",
+        "en": "Snake",
+        "nl": "Slang",
+        "de": "Schlange",
+        "fr": "Serpent",
+        "ar": "ثعبان",
+        "tr": "Yılan",
+        "pl": "Wąż",
+        "uk": "Змія"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "کوسه",
+        "en": "Shark",
+        "nl": "Haai",
+        "de": "Hai",
+        "fr": "Requin",
+        "ar": "قرش",
+        "tr": "Köpekbalığı",
+        "pl": "Rekin",
+        "uk": "Акула"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "دلفین",
+        "en": "Dolphin",
+        "nl": "Delfin",
+        "de": "Delfin",
+        "fr": "Dauphin",
+        "ar": "دلفين",
+        "tr": "Yunus",
+        "pl": "Delfin",
+        "uk": "Дельфін"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "نهنگ",
+        "en": "Whale",
+        "nl": "Walvis",
+        "de": "Wal",
+        "fr": "Baleine",
+        "ar": "حوت",
+        "tr": "Balina",
+        "pl": "Wieloryb",
+        "uk": "Кит"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "پروانه",
+        "en": "Butterfly",
+        "nl": "Vlinder",
+        "de": "Schmetterling",
+        "fr": "Papillon",
+        "ar": "فراشة",
+        "tr": "Kelebek",
+        "pl": "Motyl",
+        "uk": "Метелик"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "عقاب",
+        "en": "Eagle",
+        "nl": "Arend",
+        "de": "Adler",
+        "fr": "Aigle",
+        "ar": "نسر",
+        "tr": "Kartal",
+        "pl": "Orzeł",
+        "uk": "Орел"
+      }
+    },
+    {
+      "category": "CAT_JOBS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "پزشک",
+        "en": "Doctor",
+        "nl": "Arts",
+        "de": "Arzt",
+        "fr": "Médecin",
+        "ar": "طبيب",
+        "tr": "Doktor",
+        "pl": "Lekarz",
+        "uk": "Лікар"
+      }
+    },
+    {
+      "category": "CAT_JOBS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "پرستار",
+        "en": "Nurse",
+        "nl": "Verpleegster",
+        "de": "Krankenschwester",
+        "fr": "Infirmière",
+        "ar": "ممرضة",
+        "tr": "Hemşire",
+        "pl": "Pielęgniarka",
+        "uk": "Медсестра"
+      }
+    },
+    {
+      "category": "CAT_JOBS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "معلم",
+        "en": "Teacher",
+        "nl": "Leraar",
+        "de": "Lehrer",
+        "fr": "Professeur",
+        "ar": "معلم",
+        "tr": "Öğretmen",
+        "pl": "Nauczyciel",
+        "uk": "Вчитель"
+      }
+    },
+    {
+      "category": "CAT_JOBS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "مهندس",
+        "en": "Engineer",
+        "nl": "Ingenieur",
+        "de": "Ingenieur",
+        "fr": "Ingénieur",
+        "ar": "مهندس",
+        "tr": "Mühendis",
+        "pl": "Inżynier",
+        "uk": "Інженер"
+      }
+    },
+    {
+      "category": "CAT_JOBS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "خلبان",
+        "en": "Pilot",
+        "nl": "Piloot",
+        "de": "Pilot",
+        "fr": "Pilote",
+        "ar": "طيار",
+        "tr": "Pilot",
+        "pl": "Pilot",
+        "uk": "Пілот"
+      }
+    },
+    {
+      "category": "CAT_JOBS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "آشپز",
+        "en": "Chef",
+        "nl": "Kok",
+        "de": "Koch",
+        "fr": "Chef",
+        "ar": "طباخ",
+        "tr": "Aşçı",
+        "pl": "Kucharz",
+        "uk": "Кухар"
+      }
+    },
+    {
+      "category": "CAT_JOBS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "پلیس",
+        "en": "Police",
+        "nl": "Politie",
+        "de": "Polizei",
+        "fr": "Police",
+        "ar": "شرطة",
+        "tr": "Polis",
+        "pl": "Policja",
+        "uk": "Поліція"
+      }
+    },
+    {
+      "category": "CAT_JOBS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "آتش‌نشان",
+        "en": "Firefighter",
+        "nl": "Brandweerman",
+        "de": "Feuerwehrmann",
+        "fr": "Pompier",
+        "ar": "إطفائي",
+        "tr": "İtfaiyeci",
+        "pl": "Strażak",
+        "uk": "Пожежник"
+      }
+    },
+    {
+      "category": "CAT_PLACES",
+      "difficulty": "easy",
+      "words": {
+        "fa": "بیمارستان",
+        "en": "Hospital",
+        "nl": "Ziekenhuis",
+        "de": "Krankenhaus",
+        "fr": "Hôpital",
+        "ar": "مستشفى",
+        "tr": "Hastane",
+        "pl": "Szpital",
+        "uk": "Лікарня"
+      }
+    },
+    {
+      "category": "CAT_PLACES",
+      "difficulty": "easy",
+      "words": {
+        "fa": "دانشگاه",
+        "en": "University",
+        "nl": "Universiteit",
+        "de": "Universität",
+        "fr": "Université",
+        "ar": "جامعة",
+        "tr": "Üniversite",
+        "pl": "Uniwersytet",
+        "uk": "Університет"
+      }
+    },
+    {
+      "category": "CAT_PLACES",
+      "difficulty": "easy",
+      "words": {
+        "fa": "کتابخانه",
+        "en": "Library",
+        "nl": "Bibliotheek",
+        "de": "Bibliothek",
+        "fr": "Bibliothèque",
+        "ar": "مكتبة",
+        "tr": "Kütüphane",
+        "pl": "Biblioteka",
+        "uk": "Бібліотека"
+      }
+    },
+    {
+      "category": "CAT_PLACES",
+      "difficulty": "easy",
+      "words": {
+        "fa": "سینما",
+        "en": "Cinema",
+        "nl": "Bioscoop",
+        "de": "Kino",
+        "fr": "Cinéma",
+        "ar": "سينما",
+        "tr": "Sinema",
+        "pl": "Kino",
+        "uk": "Кінотеатр"
+      }
+    },
+    {
+      "category": "CAT_PLACES",
+      "difficulty": "easy",
+      "words": {
+        "fa": "فرودگاه",
+        "en": "Airport",
+        "nl": "Luchthaven",
+        "de": "Flughafen",
+        "fr": "Aéroport",
+        "ar": "مطار",
+        "tr": "Havalimanı",
+        "pl": "Lotnisko",
+        "uk": "Аеропорт"
+      }
+    },
+    {
+      "category": "CAT_PLACES",
+      "difficulty": "easy",
+      "words": {
+        "fa": "جنگل",
+        "en": "Forest",
+        "nl": "Bos",
+        "de": "Wald",
+        "fr": "Forêt",
+        "ar": "غابة",
+        "tr": "Orman",
+        "pl": "Las",
+        "uk": "Ліс"
+      }
+    },
+    {
+      "category": "CAT_PLACES",
+      "difficulty": "easy",
+      "words": {
+        "fa": "کوه",
+        "en": "Mountain",
+        "nl": "Berg",
+        "de": "Berg",
+        "fr": "Montagne",
+        "ar": "جبل",
+        "tr": "Dağ",
+        "pl": "Góra",
+        "uk": "Гора"
+      }
+    },
+    {
+      "category": "CAT_PLACES",
+      "difficulty": "easy",
+      "words": {
+        "fa": "دریا",
+        "en": "Sea",
+        "nl": "Zee",
+        "de": "Meer",
+        "fr": "Mer",
+        "ar": "بحر",
+        "tr": "Deniz",
+        "pl": "Morze",
+        "uk": "Море"
+      }
+    },
+    {
+      "category": "CAT_VEHICLES",
+      "difficulty": "easy",
+      "words": {
+        "fa": "ماشین",
+        "en": "Car",
+        "nl": "Auto",
+        "de": "Auto",
+        "fr": "Voiture",
+        "ar": "سيارة",
+        "tr": "Araba",
+        "pl": "Samochód",
+        "uk": "Машина"
+      }
+    },
+    {
+      "category": "CAT_VEHICLES",
+      "difficulty": "easy",
+      "words": {
+        "fa": "اتوبوس",
+        "en": "Bus",
+        "nl": "Bus",
+        "de": "Bus",
+        "fr": "Bus",
+        "ar": "حافلة",
+        "tr": "Otobüs",
+        "pl": "Autobus",
+        "uk": "Автобус"
+      }
+    },
+    {
+      "category": "CAT_VEHICLES",
+      "difficulty": "easy",
+      "words": {
+        "fa": "دوچرخه",
+        "en": "Bicycle",
+        "nl": "Fiets",
+        "de": "Fahrrad",
+        "fr": "Vélo",
+        "ar": "دراجة",
+        "tr": "Bisiklet",
+        "pl": "Rower",
+        "uk": "Велосипед"
+      }
+    },
+    {
+      "category": "CAT_VEHICLES",
+      "difficulty": "easy",
+      "words": {
+        "fa": "قطار",
+        "en": "Train",
+        "nl": "Trein",
+        "de": "Zug",
+        "fr": "Train",
+        "ar": "قطار",
+        "tr": "Tren",
+        "pl": "Pociąg",
+        "uk": "Потяг"
+      }
+    },
+    {
+      "category": "CAT_VEHICLES",
+      "difficulty": "easy",
+      "words": {
+        "fa": "هواپیما",
+        "en": "Airplane",
+        "nl": "Vliegtuig",
+        "de": "Flugzeug",
+        "fr": "Avion",
+        "ar": "طائرة",
+        "tr": "Uçak",
+        "pl": "Samolot",
+        "uk": "Літак"
+      }
+    },
+    {
+      "category": "CAT_VEHICLES",
+      "difficulty": "easy",
+      "words": {
+        "fa": "کشتی",
+        "en": "Ship",
+        "nl": "Schip",
+        "de": "Schiff",
+        "fr": "Bateau",
+        "ar": "سفينة",
+        "tr": "Gemi",
+        "pl": "Statek",
+        "uk": "Корабель"
+      }
+    },
+    {
+      "category": "CAT_SPORTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "فوتبال",
+        "en": "Football",
+        "nl": "Voetbal",
+        "de": "Fußball",
+        "fr": "Football",
+        "ar": "كرة قدم",
+        "tr": "Futbol",
+        "pl": "Piłka nożna",
+        "uk": "Футбол"
+      }
+    },
+    {
+      "category": "CAT_SPORTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "بسکتبال",
+        "en": "Basketball",
+        "nl": "Basketbal",
+        "de": "Basketball",
+        "fr": "Basketball",
+        "ar": "كرة سلة",
+        "tr": "Basketbol",
+        "pl": "Koszykówka",
+        "uk": "Баскетбол"
+      }
+    },
+    {
+      "category": "CAT_SPORTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "والیبال",
+        "en": "Volleyball",
+        "nl": "Volleybal",
+        "de": "Volleyball",
+        "fr": "Volleyball",
+        "ar": "كرة طائرة",
+        "tr": "Voleybol",
+        "pl": "Siatkówka",
+        "uk": "Волейбол"
+      }
+    },
+    {
+      "category": "CAT_SPORTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "شنا",
+        "en": "Swimming",
+        "nl": "Zwemmen",
+        "de": "Schwimmen",
+        "fr": "Natation",
+        "ar": "سباحة",
+        "tr": "Yüzme",
+        "pl": "Pływanie",
+        "uk": "Плавання"
+      }
+    },
+    {
+      "category": "CAT_SPORTS",
+      "difficulty": "easy",
+      "words": {
+        "fa": "شطرنج",
+        "en": "Chess",
+        "nl": "Schaken",
+        "de": "Schach",
+        "fr": "Échecs",
+        "ar": "شطرنج",
+        "tr": "Satranç",
+        "pl": "Szachy",
+        "uk": "Шахи"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "easy",
+      "words": {
+        "fa": "فیلم",
+        "en": "Movie",
+        "nl": "Film",
+        "de": "Film",
+        "fr": "Film",
+        "ar": "فيلم",
+        "tr": "Film",
+        "pl": "Film",
+        "uk": "Фільм"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "easy",
+      "words": {
+        "fa": "انیمیشن",
+        "en": "Animation",
+        "nl": "Animatie",
+        "de": "Animation",
+        "fr": "Animation",
+        "ar": "رسوم متحركة",
+        "tr": "Animasyon",
+        "pl": "Animacja",
+        "uk": "Анімація"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "ماشین لباسشویی",
+        "en": "Washing Machine",
+        "nl": "Wasmachine",
+        "de": "Waschmaschine",
+        "fr": "Machine à laver",
+        "ar": "غسالة ملابس",
+        "tr": "Çamaşır makinesi",
+        "pl": "Pralka",
+        "uk": "Пральна машина"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "ماشین ظرفشویی",
+        "en": "Dishwasher",
+        "nl": "Vaatwasser",
+        "de": "Geschirrspüler",
+        "fr": "Lave-vaisselle",
+        "ar": "غسالة صحون",
+        "tr": "Bulaşık makinesi",
+        "pl": "Zmywarka",
+        "uk": "Посудомийна машина"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "عینک آفتابی",
+        "en": "Sunglasses",
+        "nl": "Zonnebril",
+        "de": "Sonnenbrille",
+        "fr": "Lunettes de soleil",
+        "ar": "نظارات شمسية",
+        "tr": "Güneş gözlüğü",
+        "pl": "Okulary słoneczne",
+        "uk": "Сонцезахисні окуляри"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "چراغ مطالعه",
+        "en": "Desk Lamp",
+        "nl": "Bureaulamp",
+        "de": "Schreibtischlampe",
+        "fr": "Lampe de bureau",
+        "ar": "مصباح مكتب",
+        "tr": "Masa lambası",
+        "pl": "Lampka biurkowa",
+        "uk": "Настільна лампа"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "کنترل تلویزیون",
+        "en": "TV Remote",
+        "nl": "Afstandsbediening",
+        "de": "Fernbedienung",
+        "fr": "Télécommande TV",
+        "ar": "ريموت تلفزيون",
+        "tr": "TV kumandası",
+        "pl": "Pilot do TV",
+        "uk": "Пульт телевізора"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "ساعت مچی",
+        "en": "Wrist Watch",
+        "nl": "Horloge",
+        "de": "Armbanduhr",
+        "fr": "Montre-bracelet",
+        "ar": "ساعة يد",
+        "tr": "Kol saati",
+        "pl": "Zegarek na rękę",
+        "uk": "Наручний годинник"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "مسواک برقی",
+        "en": "Electric Toothbrush",
+        "nl": "Elektrische tandenborstel",
+        "de": "Elektrische Zahnbürste",
+        "fr": "Brosse à dents électrique",
+        "ar": "فرشاة أسنان كهربائية",
+        "tr": "Elektrikli diş fırçası",
+        "pl": "Szczoteczka elektryczna",
+        "uk": "Електрична зубна щітка"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "جاروبرقی شارژی",
+        "en": "Cordless Vacuum",
+        "nl": "Draadloze stofzuiger",
+        "de": "Kabelloser Staubsauger",
+        "fr": "Aspirateur sans fil",
+        "ar": "مكنسة لاسلكية",
+        "tr": "Şarjlı süpürge",
+        "pl": "Odkurzacz bezprzewodowy",
+        "uk": "Акумуляторний пилосос"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "کارت بانکی",
+        "en": "Bank Card",
+        "nl": "Bankpas",
+        "de": "Bankkarte",
+        "fr": "Carte bancaire",
+        "ar": "بطاقة بنكية",
+        "tr": "Banka kartı",
+        "pl": "Karta bankowa",
+        "uk": "Банківська карта"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "چتر بارانی",
+        "en": "Rain Umbrella",
+        "nl": "Regenparaplu",
+        "de": "Regenschirm",
+        "fr": "Parapluie de pluie",
+        "ar": "مظلة مطر",
+        "tr": "Yağmur şemsiyesi",
+        "pl": "Parasol przeciwdeszczowy",
+        "uk": "Парасоля від дощу"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "دستمال کاغذی",
+        "en": "Paper Towel",
+        "nl": "Keukenpapier",
+        "de": "Papiertuch",
+        "fr": "Essuie-tout",
+        "ar": "مناديل ورقية",
+        "tr": "Kağıt havlu",
+        "pl": "Ręcznik papierowy",
+        "uk": "Паперовий рушник"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "مداد رنگی",
+        "en": "Colored Pencil",
+        "nl": "Kleurpotlood",
+        "de": "Buntstift",
+        "fr": "Crayon de couleur",
+        "ar": "قلم تلوين",
+        "tr": "Kuru boya",
+        "pl": "Kredka",
+        "uk": "Кольоровий олівець"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "دفتر نقاشی",
+        "en": "Drawing Pad",
+        "nl": "Tekenblok",
+        "de": "Zeichenblock",
+        "fr": "Cahier de dessin",
+        "ar": "دفتر رسم",
+        "tr": "Resim defteri",
+        "pl": "Blok rysunkowy",
+        "uk": "Альбом для малювання"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "کفش ورزشی",
+        "en": "Running Shoes",
+        "nl": "Hardloopschoenen",
+        "de": "Laufschuhe",
+        "fr": "Chaussures de sport",
+        "ar": "حذاء رياضي",
+        "tr": "Spor ayakkabı",
+        "pl": "Buty sportowe",
+        "uk": "Кросівки"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "کوله‌پشتی مسافرتی",
+        "en": "Travel Backpack",
+        "nl": "Reisrugzak",
+        "de": "Reiserucksack",
+        "fr": "Sac à dos de voyage",
+        "ar": "حقيبة سفر ظهر",
+        "tr": "Seyahat sırt çantası",
+        "pl": "Plecak podróżny",
+        "uk": "Туристичний рюкзак"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "پنکه سقفی",
+        "en": "Ceiling Fan",
+        "nl": "Plafondventilator",
+        "de": "Deckenventilator",
+        "fr": "Ventilateur de plafond",
+        "ar": "مروحة سقف",
+        "tr": "Tavan vantilatörü",
+        "pl": "Wentylator sufitowy",
+        "uk": "Стельовий вентилятор"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "بخاری گازی",
+        "en": "Gas Heater",
+        "nl": "Gaskachel",
+        "de": "Gasheizung",
+        "fr": "Chauffage au gaz",
+        "ar": "مدفأة غاز",
+        "tr": "Doğalgaz sobası",
+        "pl": "Piecyk gazowy",
+        "uk": "Газовий обігрівач"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "اتو بخار",
+        "en": "Steam Iron",
+        "nl": "Strijkijzer",
+        "de": "Dampfbügeleisen",
+        "fr": "Fer à repasser vapeur",
+        "ar": "مكواة بخار",
+        "tr": "Buharlı ütü",
+        "pl": "Żelazko parowe",
+        "uk": "Парова праска"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "medium",
+      "words": {
+        "fa": "آب انار",
+        "en": "Pomegranate Juice",
+        "nl": "Granaatappelsap",
+        "de": "Granatapfelsaft",
+        "fr": "Jus de grenade",
+        "ar": "عصير رمان",
+        "tr": "Nar suyu",
+        "pl": "Sok z granatu",
+        "uk": "Гранатовий сік"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "medium",
+      "words": {
+        "fa": "بستنی شکلاتی",
+        "en": "Chocolate Ice Cream",
+        "nl": "Chocolade-ijs",
+        "de": "Schokoladeneis",
+        "fr": "Glace au chocolat",
+        "ar": "آيس كريم شوكولاتة",
+        "tr": "Çikolatalı dondurma",
+        "pl": "Lody czekoladowe",
+        "uk": "Шоколадне морозиво"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "medium",
+      "words": {
+        "fa": "چای نبات",
+        "en": "Rock Candy Tea",
+        "nl": "Thee met kandij",
+        "de": "Kandistee",
+        "fr": "Thé au sucre candi",
+        "ar": "شاي بنبات",
+        "tr": "Nöbet şekerli çay",
+        "pl": "Herbata z kandyzem",
+        "uk": "Чай з кристалічним цукром"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "medium",
+      "words": {
+        "fa": "قهوه اسپرسو",
+        "en": "Espresso Coffee",
+        "nl": "Espresso",
+        "de": "Espresso",
+        "fr": "Café expresso",
+        "ar": "قهوة إسبريسو",
+        "tr": "Espresso kahve",
+        "pl": "Kawa espresso",
+        "uk": "Кава еспресо"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "medium",
+      "words": {
+        "fa": "سیب‌زمینی سرخ‌کرده",
+        "en": "French Fries",
+        "nl": "Patat",
+        "de": "Pommes frites",
+        "fr": "Frites",
+        "ar": "بطاطس مقلية",
+        "tr": "Patates kızartması",
+        "pl": "Frytki",
+        "uk": "Картопля фрі"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "medium",
+      "words": {
+        "fa": "پیتزا مخصوص",
+        "en": "Special Pizza",
+        "nl": "Speciale pizza",
+        "de": "Spezialpizza",
+        "fr": "Pizza spéciale",
+        "ar": "بيتزا خاصة",
+        "tr": "Özel pizza",
+        "pl": "Pizza specjalna",
+        "uk": "Фірмова піца"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "medium",
+      "words": {
+        "fa": "کباب کوبیده",
+        "en": "Kebab Skewer",
+        "nl": "Kebabspies",
+        "de": "Kebabspieß",
+        "fr": "Brochette de kebab",
+        "ar": "كباب مشوي",
+        "tr": "Adana kebap",
+        "pl": "Szaszłyk kebab",
+        "uk": "Люля-кебаб"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "medium",
+      "words": {
+        "fa": "جوجه کباب",
+        "en": "Grilled Chicken",
+        "nl": "Gegrilde kip",
+        "de": "Gegrilltes Hähnchen",
+        "fr": "Poulet grillé",
+        "ar": "دجاج مشوي",
+        "tr": "Tavuk şiş",
+        "pl": "Kurczak z grilla",
+        "uk": "Шашлик з курки"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "medium",
+      "words": {
+        "fa": "سالاد فصل",
+        "en": "Garden Salad",
+        "nl": "Seizoenssalade",
+        "de": "Gartensalat",
+        "fr": "Salade de saison",
+        "ar": "سلطة خضراء",
+        "tr": "Mevsim salatası",
+        "pl": "Sałatka wiosenna",
+        "uk": "Сезонний салат"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "medium",
+      "words": {
+        "fa": "شیر کاکائو",
+        "en": "Chocolate Milk",
+        "nl": "Chocolademelk",
+        "de": "Schokomilch",
+        "fr": "Lait au chocolat",
+        "ar": "حليب بالشوكولاتة",
+        "tr": "Kakaolu süt",
+        "pl": "Mleko czekoladowe",
+        "uk": "Шоколадне молоко"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "medium",
+      "words": {
+        "fa": "نان سنگک",
+        "en": "Flatbread",
+        "nl": "Platbrood",
+        "de": "Fladenbrot",
+        "fr": "Pain plat",
+        "ar": "خبز تنور",
+        "tr": "Lavaş ekmeği",
+        "pl": "Chleb pita",
+        "uk": "Традиційний хліб"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "medium",
+      "words": {
+        "fa": "ساندویچ هات‌داگ",
+        "en": "Hot Dog",
+        "nl": "Hotdog",
+        "de": "Hotdog",
+        "fr": "Hot-dog",
+        "ar": "هوت دوج",
+        "tr": "Sosisli sandviç",
+        "pl": "Hot dog",
+        "uk": "Хот-дог"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "medium",
+      "words": {
+        "fa": "تخم‌مرغ نیمرو",
+        "en": "Fried Egg",
+        "nl": "Gebakken ei",
+        "de": "Spiegelei",
+        "fr": "Œuf sur le plat",
+        "ar": "بيض عيون",
+        "tr": "Sahanda yumurta",
+        "pl": "Jajko sadzone",
+        "uk": "Яєчня"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "medium",
+      "words": {
+        "fa": "ماست و خیار",
+        "en": "Cucumber Yogurt",
+        "nl": "Komkommeryoghurt",
+        "de": "Gurkenjoghurt",
+        "fr": "Yaourt au concombre",
+        "ar": "لبن بالخيار",
+        "tr": "Cacık",
+        "pl": "Tzatziki",
+        "uk": "Йогурт з огірком"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "medium",
+      "words": {
+        "fa": "مربای آلبالو",
+        "en": "Sour Cherry Jam",
+        "nl": "Kersenjam",
+        "de": "Sauerkirschmarmelade",
+        "fr": "Confiture de griottes",
+        "ar": "مربى كرز",
+        "tr": "Vişne reçeli",
+        "pl": "Dżem wiśniowy",
+        "uk": "Вишневе варення"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "medium",
+      "words": {
+        "fa": "پاستا آلفردو",
+        "en": "Pasta Alfredo",
+        "nl": "Pasta Alfredo",
+        "de": "Pasta Alfredo",
+        "fr": "Pâtes Alfredo",
+        "ar": "باستا ألفريدو",
+        "tr": "Alfredo makarna",
+        "pl": "Makaron Alfredo",
+        "uk": "Паста Альфредо"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "medium",
+      "words": {
+        "fa": "چیپس نمکی",
+        "en": "Potato Chips",
+        "nl": "Aardappelchips",
+        "de": "Kartoffelchips",
+        "fr": "Chips salées",
+        "ar": "رقائق بطاطس",
+        "tr": "Patates cipsi",
+        "pl": "Chipsy solone",
+        "uk": "Солоні чипси"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "شیر جنگل",
+        "en": "Lion King",
+        "nl": "Koning der dieren",
+        "de": "König der Tiere",
+        "fr": "Roi des animaux",
+        "ar": "ملك الغابة",
+        "tr": "Ormanlar kralı",
+        "pl": "Król zwierząt",
+        "uk": "Цар звірів"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "خرس قطبی",
+        "en": "Polar Bear",
+        "nl": "IJsbeer",
+        "de": "Eisbär",
+        "fr": "Ours polaire",
+        "ar": "دب قطبي",
+        "tr": "Kutup ayısı",
+        "pl": "Niedźwiedź polarny",
+        "uk": "Білий ведмідь"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "گربه ملوس",
+        "en": "Fluffy Cat",
+        "nl": "Lieve kat",
+        "de": "Kätzchen",
+        "fr": "Chat mignon",
+        "ar": "قطة أليفة",
+        "tr": "Sevimli kedi",
+        "pl": "Puszysty kot",
+        "uk": "Пухнастий кіт"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "سگ نگهبان",
+        "en": "Guard Dog",
+        "nl": "Waakhond",
+        "de": "Wachhund",
+        "fr": "Chien de garde",
+        "ar": "كلب حراسة",
+        "tr": "Bekçi köpeği",
+        "pl": "Pies stróżujący",
+        "uk": "Сторожовий собака"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "فیل آسیایی",
+        "en": "Asian Elephant",
+        "nl": "Aziatische olifant",
+        "de": "Asiatischer Elefant",
+        "fr": "Éléphant d'Asie",
+        "ar": "فيل آسيوي",
+        "tr": "Asya fili",
+        "pl": "Słoń indyjski",
+        "uk": "Азійський слон"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "زنبور عسل",
+        "en": "Honey Bee",
+        "nl": "Honingbij",
+        "de": "Honigbiene",
+        "fr": "Abeille à miel",
+        "ar": "نحلة العسل",
+        "tr": "Bal arısı",
+        "pl": "Pszczoła miodna",
+        "uk": "Медоносна бджола"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "عقاب طلایی",
+        "en": "Golden Eagle",
+        "nl": "Steenarend",
+        "de": "Steinadler",
+        "fr": "Aigle royal",
+        "ar": "عقاب ذهبي",
+        "tr": "Kaya kartalı",
+        "pl": "Orzeł przedni",
+        "uk": "Беркут"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "نهنگ قاتل",
+        "en": "Killer Whale",
+        "nl": "Orka",
+        "de": "Schwertwal",
+        "fr": "Orque",
+        "ar": "حوت قاتل",
+        "tr": "Katil balina",
+        "pl": "Orka",
+        "uk": "Косатка"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "ماهی قرمز",
+        "en": "Goldfish",
+        "nl": "Goudvis",
+        "de": "Goldfisch",
+        "fr": "Poisson rouge",
+        "ar": "سمكة ذهبية",
+        "tr": "Japon balığı",
+        "pl": "Złota rybka",
+        "uk": "Золота рибка"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "مار زنگی",
+        "en": "Rattlesnake",
+        "nl": "Ratelslang",
+        "de": "Klapperschlange",
+        "fr": "Serpent à sonnette",
+        "ar": "أفعى مجلجلة",
+        "tr": "Çıngıraklı yılan",
+        "pl": "Grzechotnik",
+        "uk": "Гримуча змія"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "روباه مکار",
+        "en": "Clever Fox",
+        "nl": "Slimme vos",
+        "de": "Schlauer Fuchs",
+        "fr": "Renard rusé",
+        "ar": "ثعلب ماكر",
+        "tr": "Kurnaz tilki",
+        "pl": "Chytry lis",
+        "uk": "Хитра лисиця"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "اسب سفید",
+        "en": "White Horse",
+        "nl": "Wit paard",
+        "de": "Weißes Pferd",
+        "fr": "Cheval blanc",
+        "ar": "حصان أبيض",
+        "tr": "Beyaz at",
+        "pl": "Biały koń",
+        "uk": "Білий кінь"
+      }
+    },
+    {
+      "category": "CAT_JOBS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "پزشک جراح",
+        "en": "Surgeon Doctor",
+        "nl": "Chirurg",
+        "de": "Chirurg",
+        "fr": "Chirurgien",
+        "ar": "طبيب جراح",
+        "tr": "Cerrah",
+        "pl": "Chirurg",
+        "uk": "Лікар-хірург"
+      }
+    },
+    {
+      "category": "CAT_JOBS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "معلم ریاضی",
+        "en": "Math Teacher",
+        "nl": "Wiskundeleraar",
+        "de": "Mathelehrer",
+        "fr": "Professeur de maths",
+        "ar": "معلم رياضيات",
+        "tr": "Matematik öğretmeni",
+        "pl": "Nauczyciel matematyki",
+        "uk": "Вчитель математики"
+      }
+    },
+    {
+      "category": "CAT_JOBS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "خلبان مسافربری",
+        "en": "Airline Pilot",
+        "nl": "Verkeersvlieger",
+        "de": "Verkehrspilot",
+        "fr": "Pilote de ligne",
+        "ar": "طيار مدني",
+        "tr": "Yolcu uçağı pilotu",
+        "pl": "Pilot pasażerski",
+        "uk": "Пілот цивільної авіації"
+      }
+    },
+    {
+      "category": "CAT_JOBS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "پلیس راهنمایی",
+        "en": "Traffic Police",
+        "nl": "Verkeerspolitie",
+        "de": "Verkehrspolizei",
+        "fr": "Police de la route",
+        "ar": "شرطة المرور",
+        "tr": "Trafik polisi",
+        "pl": "Policja drogowa",
+        "uk": "Дорожня поліція"
+      }
+    },
+    {
+      "category": "CAT_JOBS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "آتش‌نشان فداکار",
+        "en": "Brave Firefighter",
+        "nl": "Dappere brandweerman",
+        "de": "Mutiger Feuerwehrmann",
+        "fr": "Pompier courageux",
+        "ar": "إطفائي شجاع",
+        "tr": "Cesur itfaiyeci",
+        "pl": "Dzielny strażak",
+        "uk": "Мужній рятувальник"
+      }
+    },
+    {
+      "category": "CAT_JOBS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "دندان‌پزشک کودکان",
+        "en": "Pediatric Dentist",
+        "nl": "Kindertandarts",
+        "de": "Kinderzahnarzt",
+        "fr": "Dentiste pour enfants",
+        "ar": "طبيب أسنان أطفال",
+        "tr": "Çocuk diş hekimi",
+        "pl": "Dentysta dziecięcy",
+        "uk": "Дитячий стоматолог"
+      }
+    },
+    {
+      "category": "CAT_PLACES",
+      "difficulty": "medium",
+      "words": {
+        "fa": "شهربازی سرپوشیده",
+        "en": "Indoor Theme Park",
+        "nl": "Overdekt pretpark",
+        "de": "Indoor-Freizeitpark",
+        "fr": "Parc d'attractions couvert",
+        "ar": "مدينة ملاهي مغلقة",
+        "tr": "Kapalı tema parkı",
+        "pl": "Zadaszony park rozrywki",
+        "uk": "Критий парк розваг"
+      }
+    },
+    {
+      "category": "CAT_PLACES",
+      "difficulty": "medium",
+      "words": {
+        "fa": "هتل پنج‌ستاره",
+        "en": "Five Star Hotel",
+        "nl": "Vijfsterrenhotel",
+        "de": "Fünf-Sterne-Hotel",
+        "fr": "Hôtel cinq étoiles",
+        "ar": "فندق خمس نجوم",
+        "tr": "Beş yıldızlı otel",
+        "pl": "Hotel pięciogwiazdkowy",
+        "uk": "П'ятизірковий готель"
+      }
+    },
+    {
+      "category": "CAT_PLACES",
+      "difficulty": "medium",
+      "words": {
+        "fa": "ایستگاه قطار",
+        "en": "Train Station",
+        "nl": "Treinstation",
+        "de": "Bahnhof",
+        "fr": "Gare ferroviaire",
+        "ar": "محطة قطار",
+        "tr": "Tren istasyonu",
+        "pl": "Stacja kolejowa",
+        "uk": "Залізничний вокзал"
+      }
+    },
+    {
+      "category": "CAT_PLACES",
+      "difficulty": "medium",
+      "words": {
+        "fa": "استخر شنا",
+        "en": "Swimming Pool",
+        "nl": "Zwembad",
+        "de": "Schwimmbad",
+        "fr": "Piscine",
+        "ar": "مسبح",
+        "tr": "Yüzme havuzu",
+        "pl": "Basen pływacki",
+        "uk": "Басейн"
+      }
+    },
+    {
+      "category": "CAT_PLACES",
+      "difficulty": "medium",
+      "words": {
+        "fa": "سینمای سه‌بعدی",
+        "en": "3D Cinema",
+        "nl": "3D-bioscoop",
+        "de": "3D-Kino",
+        "fr": "Cinéma 3D",
+        "ar": "سينما ثلاثية الأبعاد",
+        "tr": "3D Sinema",
+        "pl": "Kino 3D",
+        "uk": "3D Кінотеатр"
+      }
+    },
+    {
+      "category": "CAT_PLACES",
+      "difficulty": "medium",
+      "words": {
+        "fa": "ساحل شنی",
+        "en": "Sandy Beach",
+        "nl": "Zandstrand",
+        "de": "Sandstrand",
+        "fr": "Plage de sable",
+        "ar": "شاطئ رملي",
+        "tr": "Kumsal",
+        "pl": "Piaszczysta plaża",
+        "uk": "Піщаний пляж"
+      }
+    },
+    {
+      "category": "CAT_VEHICLES",
+      "difficulty": "medium",
+      "words": {
+        "fa": "ماشین مسابقه‌ای",
+        "en": "Racing Car",
+        "nl": "Raceauto",
+        "de": "Rennwagen",
+        "fr": "Voiture de course",
+        "ar": "سيارة سباق",
+        "tr": "Yarış arabası",
+        "pl": "Samochód wyścigowy",
+        "uk": "Гоночна машина"
+      }
+    },
+    {
+      "category": "CAT_VEHICLES",
+      "difficulty": "medium",
+      "words": {
+        "fa": "قطار سریع‌السیر",
+        "en": "Bullet Train",
+        "nl": "Hogesnelheidstrein",
+        "de": "Hochgeschwindigkeitszug",
+        "fr": "Train à grande vitesse",
+        "ar": "قطار فائق السرعة",
+        "tr": "Hızlı tren",
+        "pl": "Pociąg ekspresowy",
+        "uk": "Швидкісний потяг"
+      }
+    },
+    {
+      "category": "CAT_VEHICLES",
+      "difficulty": "medium",
+      "words": {
+        "fa": "دوچرخه دنده‌ای",
+        "en": "Mountain Bike",
+        "nl": "Mountainbike",
+        "de": "Mountainbike",
+        "fr": "Vélo tout terrain",
+        "ar": "دراجة جبلية",
+        "tr": "Dağ bisikleti",
+        "pl": "Rower górski",
+        "uk": "Гірський велосипед"
+      }
+    },
+    {
+      "category": "CAT_VEHICLES",
+      "difficulty": "medium",
+      "words": {
+        "fa": "اتوبوس دوطبقه",
+        "en": "Double Decker Bus",
+        "nl": "Dubbeldekker",
+        "de": "Doppeldeckerbus",
+        "fr": "Bus à impériale",
+        "ar": "حافلة ذات طابقين",
+        "tr": "Çift katlı otobüs",
+        "pl": "Autobus piętrowy",
+        "uk": "Двоповерховий автобус"
+      }
+    },
+    {
+      "category": "CAT_VEHICLES",
+      "difficulty": "medium",
+      "words": {
+        "fa": "قایق موتوری",
+        "en": "Motorboat",
+        "nl": "Motorboot",
+        "de": "Motorboot",
+        "fr": "Bateau à moteur",
+        "ar": "قارب بمحرك",
+        "tr": "Sürat teknesi",
+        "pl": "Motorówka",
+        "uk": "Моторний човен"
+      }
+    },
+    {
+      "category": "CAT_VEHICLES",
+      "difficulty": "medium",
+      "words": {
+        "fa": "کشتی تفریحی",
+        "en": "Cruise Ship",
+        "nl": "Cruiseschip",
+        "de": "Kreuzfahrtschiff",
+        "fr": "Navire de croisière",
+        "ar": "سفينة سياحية",
+        "tr": "Kruvaziyer gemisi",
+        "pl": "Statek wycieczkowy",
+        "uk": "Круїзний лайнер"
+      }
+    },
+    {
+      "category": "CAT_SPORTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "والیبال ساحلی",
+        "en": "Beach Volleyball",
+        "nl": "Beachvolleybal",
+        "de": "Beachvolleyball",
+        "fr": "Beach-volley",
+        "ar": "كرة طائرة شاطئية",
+        "tr": "Plaj voleybolu",
+        "pl": "Siatkówka plażowa",
+        "uk": "Пляжний волейбол"
+      }
+    },
+    {
+      "category": "CAT_SPORTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "تنیس روی‌میز",
+        "en": "Table Tennis",
+        "nl": "Tafeltennis",
+        "de": "Tischtennis",
+        "fr": "Tennis de table",
+        "ar": "تنس طاولة",
+        "tr": "Masa tenisi",
+        "pl": "Tenis stołowy",
+        "uk": "Настільний теніс"
+      }
+    },
+    {
+      "category": "CAT_SPORTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "شطرنج سرعتی",
+        "en": "Speed Chess",
+        "nl": "Snelschaak",
+        "de": "Blitzschach",
+        "fr": "Échecs rapides",
+        "ar": "شطرنج سريع",
+        "tr": "Yıldırım satranç",
+        "pl": "Szachy błyskawiczne",
+        "uk": "Швидкі шахи"
+      }
+    },
+    {
+      "category": "CAT_SPORTS",
+      "difficulty": "medium",
+      "words": {
+        "fa": "کشتی آزاد",
+        "en": "Freestyle Wrestling",
+        "nl": "Vrije stijl worstelen",
+        "de": "Freistilringen",
+        "fr": "Lutte libre",
+        "ar": "مصارعة حرة",
+        "tr": "Serbest güreş",
+        "pl": "Zapasy w stylu wolnym",
+        "uk": "Вільна боротьба"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "medium",
+      "words": {
+        "fa": "فیلم کمدی",
+        "en": "Comedy Film",
+        "nl": "Komediefilm",
+        "de": "Komödie",
+        "fr": "Comédie",
+        "ar": "فيلم كوميدي",
+        "tr": "Komedi filmi",
+        "pl": "Komedia",
+        "uk": "Комедійний фільм"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "medium",
+      "words": {
+        "fa": "کنسرت موسیقی",
+        "en": "Music Concert",
+        "nl": "Muziekconcert",
+        "de": "Musikkonzert",
+        "fr": "Concert de musique",
+        "ar": "حفل موسيقي",
+        "tr": "Müzik konseri",
+        "pl": "Koncert muzyczny",
+        "uk": "Музичний концерт"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "medium",
+      "words": {
+        "fa": "بازی رایانه‌ای",
+        "en": "Video Game",
+        "nl": "Computerspel",
+        "de": "Videospiel",
+        "fr": "Jeu vidéo",
+        "ar": "لعبة فيديو",
+        "tr": "Video oyunu",
+        "pl": "Gra wideo",
+        "uk": "Відеогра"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "hard",
+      "words": {
+        "fa": "جوجه را آخر پاییز می‌شمارند",
+        "en": "Don't count your chickens before they hatch",
+        "nl": "Prijs de dag niet voor het avond is",
+        "de": "Man soll den Tag nicht vor dem Abend loben",
+        "fr": "Il ne faut pas vendre la peau de l'ours",
+        "ar": "لا تعد فراخك قبل أن تفقس",
+        "tr": "Dereyi görmeden paçaları sıvama",
+        "pl": "Nie chwal dnia przed zachodem słońca",
+        "uk": "Курчат по осені рахують"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "hard",
+      "words": {
+        "fa": "دست بالای دست بسیار است",
+        "en": "There is always a bigger fish",
+        "nl": "Boven baas is altijd baas",
+        "de": "Es gibt immer einen Größeren",
+        "fr": "Il y a toujours plus fort que soi",
+        "ar": "فوق كل ذي علم عليم",
+        "tr": "El elden üstündür",
+        "pl": "Zawsze znajdzie się ktoś lepszy",
+        "uk": "Завжди є хтось сильніший"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "hard",
+      "words": {
+        "fa": "آشپز که دوتا شد غذا یا شور می‌شود یا بی‌نمک",
+        "en": "Too many cooks spoil the broth",
+        "nl": "Te veel koks bederven de brij",
+        "de": "Viele Köche verderben den Brei",
+        "fr": "Trop de cuisiniers gâtent la sauce",
+        "ar": "كثرة الطباخين تحرق الطبخة",
+        "tr": "Horozu çok olan köyün sabahı geç olur",
+        "pl": "Gdzie kucharek sześć tam nie ma co jeść",
+        "uk": "Де багато кухарів там юшка пересолена"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "hard",
+      "words": {
+        "fa": "شتر دیدی ندیدی",
+        "en": "Keep it under your hat",
+        "nl": "Houd het stil",
+        "de": "Schweig wie ein Grab",
+        "fr": "Motus et bouche cousue",
+        "ar": "شاهدت الجمل ولم تره",
+        "tr": "Gördüm deme duydum deme",
+        "pl": "Trzymaj język za zębami",
+        "uk": "Тримай язик за зубами"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "hard",
+      "words": {
+        "fa": "با یک گل بهار نمی‌شود",
+        "en": "One swallow does not make a summer",
+        "nl": "Eén zwaluw maakt nog geen zomer",
+        "de": "Eine Schwalbe macht noch keinen Sommer",
+        "fr": "Une hirondelle ne fait pas le printemps",
+        "ar": "يد واحدة لا تصفق",
+        "tr": "Bir çiçekle bahar gelmez",
+        "pl": "Jedna jaskółka wiosny nie czyni",
+        "uk": "Одна ластівка весни не робить"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "hard",
+      "words": {
+        "fa": "سنگ بزرگ علامت نزدن است",
+        "en": "Biting off more than you can chew",
+        "nl": "Te veel hooi op de vork nemen",
+        "de": "Sich zu viel vornehmen",
+        "fr": "Qui trop embrasse mal étreint",
+        "ar": "من يطلب الكثير يعجز",
+        "tr": "Büyük lokma ye büyük söz söyleme",
+        "pl": "Porywać się z motyką na słońce",
+        "uk": "Брати непосильну ношу"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "hard",
+      "words": {
+        "fa": "گرگ در لباس میش",
+        "en": "Wolf in sheep's clothing",
+        "nl": "Wolf in schaapskleren",
+        "de": "Wolf im Schafspelz",
+        "fr": "Loup déguisé en agneau",
+        "ar": "ذئب في ثوب حمل",
+        "tr": "Kuzu postuna bürünmüş kurt",
+        "pl": "Wilk w owczej skórze",
+        "uk": "Вовк в овечій шкурі"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "hard",
+      "words": {
+        "fa": "آب در هاون کوبیدن",
+        "en": "Beating a dead horse",
+        "nl": "Water naar zee dragen",
+        "de": "Eulen nach Athen tragen",
+        "fr": "Donner des coups d'épée dans l'eau",
+        "ar": "النفخ في رماد",
+        "tr": "Havanda su dövmek",
+        "pl": "Rzucać grochem o ścianę",
+        "uk": "Товкти воду в ступі"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "hard",
+      "words": {
+        "fa": "مثل آب خوردن",
+        "en": "Piece of cake",
+        "nl": "Een eitje",
+        "de": "Ein Kinderspiel",
+        "fr": "Simple comme bonjour",
+        "ar": "شربة ماء",
+        "tr": "Çocuk oyuncağı",
+        "pl": "Bułka z masłem",
+        "uk": "Простіше простого"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "hard",
+      "words": {
+        "fa": "کبوتر با کبوتر باز با باز",
+        "en": "Birds of a feather flock together",
+        "nl": "Soort zoekt soort",
+        "de": "Gleich und Gleich gesellt sich gern",
+        "fr": "Qui se ressemble s'assemble",
+        "ar": "الطيور على أشكالها تقع",
+        "tr": "Davul bile dengi dengine çalar",
+        "pl": "Ciągnie swój do swego",
+        "uk": "Свій до свого по своє"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "hard",
+      "words": {
+        "fa": "مار گزیده از ریسمان سیاه و سفید می‌ترسد",
+        "en": "Once bitten, twice shy",
+        "nl": "Een gewaarschuwd mens telt voor twee",
+        "de": "Gebranntes Kind scheut das Feuer",
+        "fr": "Chat échaudé craint l'eau froide",
+        "ar": "الملدوغ يخاف من الحبل",
+        "tr": "Sütten ağzı yanan yoğurdu üfleyerek yer",
+        "pl": "Kto się raz sparzył na zimne dmucha",
+        "uk": "Вчений собака й мухи боїться"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "hard",
+      "words": {
+        "fa": "کوه به کوه نمی‌رسد آدم به آدم می‌رسد",
+        "en": "Friends may meet, but mountains never greet",
+        "nl": "Men komt elkaar altijd weer tegen",
+        "de": "Man trifft sich immer zweimal im Leben",
+        "fr": "Il n'y a que les montagnes qui ne se croisent pas",
+        "ar": "الجبال لا تلتقي لكن البشر يلتقون",
+        "tr": "Dağ dağa kavuşmaz insan insana kavuşur",
+        "pl": "Góra z górą się nie zejdzie a człowiek z człowiekiem tak",
+        "uk": "Гора з горою не сходиться а людина з людиною зійдеться"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "hard",
+      "words": {
+        "fa": "هر که بامش بیش برفش بیشتر",
+        "en": "Mo' money, mo' problems",
+        "nl": "Hoge bomen vangen veel wind",
+        "de": "Großer Besitz bringt große Sorgen",
+        "fr": "Grande fortune, grands soucis",
+        "ar": "من كثر ماله كثرت همومه",
+        "tr": "Büyük başın derdi büyük olur",
+        "pl": "Większy majątek, większy kłopot",
+        "uk": "Більше добра, більше клопоту"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "hard",
+      "words": {
+        "fa": "فیل هوا کردن",
+        "en": "Doing the impossible",
+        "nl": "Het onmogelijke presteren",
+        "de": "Das Unmögliche vollbringen",
+        "fr": "Décrocher la lune",
+        "ar": "صنع المعجزات المستحيلة",
+        "tr": "İmkânsızı başarmak",
+        "pl": "Dokonać niemożliwego",
+        "uk": "Зробити неможливе"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "hard",
+      "words": {
+        "fa": "شاهنامه آخرش خوش است",
+        "en": "All is well that ends well",
+        "nl": "Eind goed, al goed",
+        "de": "Ende gut, alles gut",
+        "fr": "Tout est bien qui finit bien",
+        "ar": "العبرة بالخواتيم",
+        "tr": "Son gülen iyi güler",
+        "pl": "Wszystko dobre co się dobrze kończy",
+        "uk": "Все добре, що добре закінчується"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "hard",
+      "words": {
+        "fa": "مسواک برقی هوشمند شارژی",
+        "en": "Smart Rechargeable Electric Toothbrush",
+        "nl": "Slimme oplaadbare elektrische tandenborstel",
+        "de": "Smarte wiederaufladbare Elektrozahnbürste",
+        "fr": "Brosse à dents électrique intelligente",
+        "ar": "فرشاة أسنان ذكية قابلة للشحن",
+        "tr": "Akıllı şarjlı elektrikli diş fırçası",
+        "pl": "Inteligentna szczoteczka soniczna",
+        "uk": "Розумна електрична зубна щітка"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "hard",
+      "words": {
+        "fa": "چراغ راهنمایی و رانندگی چهارراه",
+        "en": "Four-Way Intersection Traffic Light",
+        "nl": "Verkeerslicht op een kruispunt",
+        "de": "Ampel an einer Kreuzung",
+        "fr": "Feu tricolore de carrefour",
+        "ar": "إشارة مرور عند تقاطع الطرق",
+        "tr": "Dörtyol kavşağı trafik ışığı",
+        "pl": "Sygnalizacja świetlna na skrzyżowaniu",
+        "uk": "Світлофор на перехресті"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "hard",
+      "words": {
+        "fa": "کوله‌پشتی کوهنوردی ضدآب",
+        "en": "Waterproof Alpine Hiking Backpack",
+        "nl": "Waterdichte wandelrugzak",
+        "de": "Wasserdichter Wanderrucksack",
+        "fr": "Sac à dos étanche de randonnée",
+        "ar": "حقيبة ظهر جبلية مقاومة للماء",
+        "tr": "Su geçirmez dağcı sırt çantası",
+        "pl": "Wodoodporny plecak trekkingowy",
+        "uk": "Водонепроникний туристичний рюкзак"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "hard",
+      "words": {
+        "fa": "عینک آفتابی با فریم طلایی",
+        "en": "Gold-Framed Designer Sunglasses",
+        "nl": "Zonnebril met gouden montuur",
+        "de": "Sonnenbrille mit Goldrahmen",
+        "fr": "Lunettes de soleil à monture dorée",
+        "ar": "نظارات شمسية بإطار ذهبي",
+        "tr": "Altın çerçeveli güneş gözlüğü",
+        "pl": "Okulary przeciwsłoneczne ze złotą oprawką",
+        "uk": "Сонцезахисні окуляри в золотій оправі"
+      }
+    },
+    {
+      "category": "CAT_OBJECTS",
+      "difficulty": "hard",
+      "words": {
+        "fa": "کتاب رمان قطور پانصد صفحه‌ای",
+        "en": "Five-Hundred-Page Novel Book",
+        "nl": "Dikke roman van 500 pagina's",
+        "de": "Dicker Roman mit 500 Seiten",
+        "fr": "Gros roman de cinq cents pages",
+        "ar": "رواية ضخمة من خمسمائة صفحة",
+        "tr": "Beş yüz sayfalık kalın roman",
+        "pl": "Gruba powieść na pięćset stron",
+        "uk": "Товстий роман на 500 сторінок"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "hard",
+      "words": {
+        "fa": "بستنی قیفی وانیلی با شکلات",
+        "en": "Vanilla Soft Cone with Chocolate",
+        "nl": "Vanille softijs met chocoladesaus",
+        "de": "Softeis Vanille mit Schokoglasur",
+        "fr": "Cornet vanille nappé de chocolat",
+        "ar": "آيس كريم فانيليا مغطى بالشوكولاتة",
+        "tr": "Çikolata kaplı vanilyalı külah",
+        "pl": "Lody waniliowe w polewie czekoladowej",
+        "uk": "Ванільне морозиво в шоколадній глазурі"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "hard",
+      "words": {
+        "fa": "فنجان چای داغ با لیمو و نبات",
+        "en": "Hot Tea with Lemon and Rock Candy",
+        "nl": "Hete thee met citroen en kandij",
+        "de": "Heißer Tee mit Zitrone und Kandis",
+        "fr": "Thé chaud au citron et sucre candi",
+        "ar": "كوب شاي ساخن بالليمون والنبات",
+        "tr": "Limonlu ve nöbet şekerli sıcak çay",
+        "pl": "Gorąca herbata z cytryną i cukrem",
+        "uk": "Гарячий чай з лимоном і кристалічним цукром"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "hard",
+      "words": {
+        "fa": "پیتزای بزرگ مخصوص با قارچ و پنیر",
+        "en": "Extra Large Cheese and Mushroom Pizza",
+        "nl": "Grote pizza met champignons en kaas",
+        "de": "Große Pizza mit Pilzen und Käse",
+        "fr": "Grande pizza au fromage et champignons",
+        "ar": "بيتزا كبيرة بالفطر والجبن الإضافي",
+        "tr": "Bol mantarlı ve peynirli büyük pizza",
+        "pl": "Duża pizza z pieczarkami i serem",
+        "uk": "Велика фірмова піца з грибами та сиром"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "hard",
+      "words": {
+        "fa": "کیک تولد شکلاتی چند طبقه با شمع",
+        "en": "Multi-Layer Chocolate Birthday Cake",
+        "nl": "Chocolade verjaardagstaart met kaarsjes",
+        "de": "Mehrstöckige Schoko-Geburtstagstorte",
+        "fr": "Gâteau d'anniversaire au chocolat à étages",
+        "ar": "كعكة عيد ميلاد شوكولاتة مع شموع",
+        "tr": "Mumları yanan katlı çikolatalı pasta",
+        "pl": "Piętrowy tort czekoladowy ze świeczkami",
+        "uk": "Багатоярусний шоколадний торт зі свічками"
+      }
+    },
+    {
+      "category": "CAT_FOOD",
+      "difficulty": "hard",
+      "words": {
+        "fa": "خورشت سنتی قورمه‌سبزی با برنج زعفرانی",
+        "en": "Traditional Herb Stew with Saffron Rice",
+        "nl": "Traditionele kruidenstoof met saffraanrijst",
+        "de": "Traditioneller Kräutereintopf mit Safranreis",
+        "fr": "Ragoût traditionnel d'herbes au riz safrané",
+        "ar": "مرق الأعشاب التقليدي مع أرز الزعفران",
+        "tr": "Safranlı pilav eşliğinde geleneksel güveç",
+        "pl": "Tradycyjny gulasz ziołowy z ryżem szafranowym",
+        "uk": "Традиційне трав'яне рагу з шафрановим рисом"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "hard",
+      "words": {
+        "fa": "شیر درنده در دشت‌های آفریقا",
+        "en": "Roaring Lion on the African Savannah",
+        "nl": "Brullende leeuw op de Afrikaanse savanne",
+        "de": "Brüllender Löwe in der afrikanischen Savanne",
+        "fr": "Lion rugissant dans la savane africaine",
+        "ar": "أسد مفترس في سهول أفريقيا",
+        "tr": "Afrika savanalarında kükreyen aslan",
+        "pl": "Ryczący lew na afrykańskiej sawannie",
+        "uk": "Грізний лев в африканській савані"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "hard",
+      "words": {
+        "fa": "پنگوئن امپراتور در برف‌های قطب جنوب",
+        "en": "Emperor Penguin in Antarctic Snow",
+        "nl": "Keizerspinguïn in de sneeuw van Antarctica",
+        "de": "Kaiserpinguin im antarktischen Schnee",
+        "fr": "Manchot empereur dans les neiges d'Antarctique",
+        "ar": "بطريق إمبراطور في ثلوج القطب الجنوبي",
+        "tr": "Antarktika karlarında imparator penguen",
+        "pl": "Pingwin cesarski na śniegach Antarktydy",
+        "uk": "Імператорський пінгвін у снігах Антарктиди"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "hard",
+      "words": {
+        "fa": "دلفین بازیگوش در آکواریوم بزرگ",
+        "en": "Playful Dolphin in Giant Aquarium",
+        "nl": "Speelse dolfijn in het grote aquarium",
+        "de": "Verspielter Delfin im Riesenaquarium",
+        "fr": "Dauphin joueur dans un grand aquarium",
+        "ar": "دلفين لعوب في حوض السمك العملاق",
+        "tr": "Dev akvaryumda oynayan yunus",
+        "pl": "Radosny delfin w wielkim akwarium",
+        "uk": "Грайливий дельфін у велетенському акваріумі"
+      }
+    },
+    {
+      "category": "CAT_ANIMALS",
+      "difficulty": "hard",
+      "words": {
+        "fa": "پرواز پروانه رنگارنگ روی گل سرخ",
+        "en": "Colorful Butterfly on a Red Rose",
+        "nl": "Kleurrijke vlinder op een rode roos",
+        "de": "Bunter Schmetterling auf roter Rose",
+        "fr": "Papillon coloré sur une rose rouge",
+        "ar": "فراشة ملونة تحط على وردة حمراء",
+        "tr": "Kırmızı gülün üstündeki renkli kelebek",
+        "pl": "Barwny motyl na czerwonej róży",
+        "uk": "Барвистий метелик на червоній троянді"
+      }
+    },
+    {
+      "category": "CAT_PLACES",
+      "difficulty": "hard",
+      "words": {
+        "fa": "برج ایفل در شب‌های پاریس",
+        "en": "Eiffel Tower in Parisian Nights",
+        "nl": "De Eiffeltoren in de nacht van Parijs",
+        "de": "Der Eiffelturm in den Pariser Nächten",
+        "fr": "La Tour Eiffel dans la nuit parisienne",
+        "ar": "برج إيفل في ليالي باريس",
+        "tr": "Paris gecelerinde Eyfel Kulesi",
+        "pl": "Wieża Eiffla w paryską noc",
+        "uk": "Ейфелева вежа в нічному Парижі"
+      }
+    },
+    {
+      "category": "CAT_PLACES",
+      "difficulty": "hard",
+      "words": {
+        "fa": "کوهنوردی زمستانی در قله دماوند",
+        "en": "Winter Climbing on Mount Damavand",
+        "nl": "Winterbeklimming van de bergtop",
+        "de": "Winterliche Bergbesteigung des Gipfels",
+        "fr": "Ascension hivernale du sommet Damavand",
+        "ar": "تسلق الجبال الشتوي في قمة دماوند",
+        "tr": "Kışın zirveye dağ tırmanışı",
+        "pl": "Zimowa wspinaczka na szczyt góry",
+        "uk": "Зимове сходження на гірську вершину"
+      }
+    },
+    {
+      "category": "CAT_PLACES",
+      "difficulty": "hard",
+      "words": {
+        "fa": "سفر دور دنیا با بالن هوای گرم",
+        "en": "Around the World in a Hot Air Balloon",
+        "nl": "Rond de wereld in een luchtballon",
+        "de": "In einem Heißluftballon um die Welt",
+        "fr": "Le tour du monde en montgolfière",
+        "ar": "حول العالم في منطاد هواء ساخن",
+        "tr": "Sıcak hava balonuyla dünya turu",
+        "pl": "Wokół świata balonem na ogrzane powietrze",
+        "uk": "Навколо світу на повітряній кулі"
+      }
+    },
+    {
+      "category": "CAT_VEHICLES",
+      "difficulty": "hard",
+      "words": {
+        "fa": "قطار برقی بین‌شهری پرسرعت",
+        "en": "High-Speed Intercity Electric Train",
+        "nl": "Elektrische hogesnelheidstrein",
+        "de": "Intercity-Schnellzug mit Elektroantrieb",
+        "fr": "Train électrique interurbain rapide",
+        "ar": "قطار كهربائي سريع بين المدن",
+        "tr": "Şehirlerarası yüksek hızlı elektrikli tren",
+        "pl": "Elektryczny pociąg ekspresowy",
+        "uk": "Швидкісний міжміський електропотяг"
+      }
+    },
+    {
+      "category": "CAT_VEHICLES",
+      "difficulty": "hard",
+      "words": {
+        "fa": "ماشین پلیس با آژیر و چراغ گردان",
+        "en": "Police Car with Siren and Flashing Lights",
+        "nl": "Politiewagen met zwaailicht en sirene",
+        "de": "Polizeiauto mit Sirene und Blaulicht",
+        "fr": "Voiture de police avec sirène et gyrophares",
+        "ar": "سيارة شرطة مع صفارة الإنذار والأضواء",
+        "tr": "Siren çalan tepe lambalı polis arabası",
+        "pl": "Radiowóz policyjny na sygnale",
+        "uk": "Поліцейська машина з мигалками та сиреною"
+      }
+    },
+    {
+      "category": "CAT_VEHICLES",
+      "difficulty": "hard",
+      "words": {
+        "fa": "هلیکوپتر امداد و نجات در کوهستان",
+        "en": "Mountain Rescue Helicopter Mission",
+        "nl": "Reddingshelikopter in de bergen",
+        "de": "Rettungshubschrauber in den Bergen",
+        "fr": "Hélicoptère de sauvetage en montagne",
+        "ar": "مروحية إنقاذ وإسعاف في الجبال",
+        "tr": "Dağda arama kurtarma helikopteri",
+        "pl": "Śmigłowiec ratownictwa górskiego",
+        "uk": "Гірський рятувальний гелікоптер"
+      }
+    },
+    {
+      "category": "CAT_SPORTS",
+      "difficulty": "hard",
+      "words": {
+        "fa": "بازی فینال جام جهانی فوتبال",
+        "en": "Football World Cup Grand Final Match",
+        "nl": "De finale van het WK voetbal",
+        "de": "Das große WM-Finale im Fußball",
+        "fr": "La grande finale de la Coupe du Monde",
+        "ar": "المباراة النهائية لكأس العالم لكرة القدم",
+        "tr": "Futbol Dünya Kupası final maçı",
+        "pl": "Wielki finał Mistrzostw Świata w piłce nożnej",
+        "uk": "Фінальний матч чемпіонату світу з футболу"
+      }
+    },
+    {
+      "category": "CAT_SPORTS",
+      "difficulty": "hard",
+      "words": {
+        "fa": "مسابقه دوچرخه‌سواری کوهستان در جنگل",
+        "en": "Mountain Bike Race Through the Deep Woods",
+        "nl": "Mountainbikerace door het dichte bos",
+        "de": "Mountainbike-Rennen durch den Wald",
+        "fr": "Course de VTT à travers la forêt",
+        "ar": "سباق دراجات جبلية في الغابة",
+        "tr": "Ormanda dağ bisikleti yarışı",
+        "pl": "Wyścig kolarstwa górskiego w lesie",
+        "uk": "Велогонка на гірських велосипедах у лісі"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "hard",
+      "words": {
+        "fa": "تماشای فیلم اکشن در سینمای سه‌بعدی",
+        "en": "Watching Action Movie in 3D Cinema",
+        "nl": "Actiefilm kijken in de 3D-bioscoop",
+        "de": "Einen Actionfilm im 3D-Kino schauen",
+        "fr": "Regarder un film d'action en cinéma 3D",
+        "ar": "مشاهدة فيلم أكشن في سينما ثلاثية الأبعاد",
+        "tr": "3D sinemada aksiyon filmi izlemek",
+        "pl": "Oglądanie filmu akcji w kinie 3D",
+        "uk": "Перегляд бойовика в 3D-кінотеатрі"
+      }
+    },
+    {
+      "category": "CAT_ENTERTAINMENT",
+      "difficulty": "hard",
+      "words": {
+        "fa": "نواختن پیانوی کلاسیک در سالن اپرا",
+        "en": "Playing Grand Piano in Opera House",
+        "nl": "Klassieke piano spelen in het operagebouw",
+        "de": "Klavierspielen im großen Opernhaus",
+        "fr": "Jouer du piano à queue à l'opéra",
+        "ar": "عزف البيانو الكلاسيكي في دار الأوبرا",
+        "tr": "Opera salonunda klasik piyano çalmak",
+        "pl": "Gra na fortepianie w sali operowej",
+        "uk": "Гра на роялі в оперному театрі"
+      }
+    }
+  ],
+  "curatedCards": [
+    {
+      "id": "EN_US_A1_REST_01",
+      "targetLanguage": "en-US",
+      "cefrLevel": "A1",
+      "topic": "CAT_RESTAURANT",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "در رستوران یا دایز آمریکایی می‌خواهی صورتحساب را بخواهی",
+      "targetText": "Check, please!",
+      "translation": "صورتحساب، لطفاً!",
+      "hint": "در انگلیسی آمریکایی به جای bill می‌گویند check",
+      "grammarPoint": "American Restaurant Phrasing: Check, please",
+      "pronunciation": "چِک، پلیز!",
+      "difficulty": "easy",
+      "points": 1
+    },
+    {
+      "id": "EN_US_A1_REST_02",
+      "targetLanguage": "en-US",
+      "cefrLevel": "A1",
+      "topic": "CAT_RESTAURANT",
+      "contentType": "Sentence",
+      "learningMode": "Speak",
+      "prompt": "سفارش غذای بیرون‌بر در فست‌فود آمریکایی",
+      "targetText": "Can I get this to-go, please?",
+      "translation": "می‌تونم این رو بیرون‌بر داشته باشم، لطفاً؟",
+      "hint": "عبارت to-go برای غذای بیرون‌بر",
+      "grammarPoint": "Modal request: Can I get ... to-go?",
+      "pronunciation": "کَن آی گِت دیس تو-گو، پلیز؟",
+      "difficulty": "easy",
+      "points": 1
+    },
+    {
+      "id": "EN_US_A1_EVERYDAY_01",
+      "targetLanguage": "en-US",
+      "cefrLevel": "A1",
+      "topic": "CAT_EVERYDAY",
+      "contentType": "Sentence",
+      "learningMode": "Speak",
+      "prompt": "احوالپرسی روزمره و خودمانی به سبک آمریکایی",
+      "targetText": "How's it going, buddy?",
+      "translation": "اوضاع چطوره رفیق؟",
+      "hint": "How's it going...",
+      "grammarPoint": "Informal greeting contraction",
+      "pronunciation": "هاوز ایت گوئینگ، بادی؟",
+      "difficulty": "easy",
+      "points": 1
+    },
+    {
+      "id": "EN_US_A1_TRANSPORT_01",
+      "targetLanguage": "en-US",
+      "cefrLevel": "A1",
+      "topic": "CAT_TRANSPORT",
+      "contentType": "Sentence",
+      "learningMode": "Explain",
+      "prompt": "پرسیدن آدرس نزدیک‌ترین ایستگاه مترو در نیویورک",
+      "targetText": "Where is the nearest subway station?",
+      "translation": "نزدیک‌ترین ایستگاه مترو کجاست؟",
+      "hint": "در آمریکا به مترو Subway می‌گویند",
+      "grammarPoint": "Superlative: nearest subway station",
+      "pronunciation": "وِر ایز دِ نیرِست ساب‌وی استِیشِن؟",
+      "difficulty": "easy",
+      "points": 1
+    },
+    {
+      "id": "EN_US_A2_SHOPPING_01",
+      "targetLanguage": "en-US",
+      "cefrLevel": "A2",
+      "topic": "CAT_SHOPPING",
+      "contentType": "Sentence",
+      "learningMode": "Translate",
+      "prompt": "خرد کردن یک اسکناس بیست دلاری در فروشگاه",
+      "targetText": "Could you break a twenty-dollar bill for me?",
+      "translation": "می‌تونید یه اسکناس بیست دلاری برام خرد کنید؟",
+      "hint": "break a twenty-dollar bill",
+      "grammarPoint": "Collocation: break a bill (اسکناس خرد کردن)",
+      "pronunciation": "کود یو برِیک اِ توئنتی دالِر بیل فور می؟",
+      "difficulty": "medium",
+      "points": 2
+    },
+    {
+      "id": "EN_US_A2_EVERYDAY_02",
+      "targetLanguage": "en-US",
+      "cefrLevel": "A2",
+      "topic": "CAT_EVERYDAY",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "اعلام اینکه چند دقیقه دیر می‌رسید",
+      "targetText": "I'm running a few minutes late.",
+      "translation": "چند دقیقه دیر می‌رسم.",
+      "hint": "running late",
+      "grammarPoint": "Continuous idiom: running late",
+      "pronunciation": "آیم رانینگ اِ فیو مینیتس لِیت",
+      "difficulty": "medium",
+      "points": 2
+    },
+    {
+      "id": "EN_US_B1_SMALLTALK_01",
+      "targetLanguage": "en-US",
+      "cefrLevel": "B1",
+      "topic": "CAT_SMALLTALK",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "موکول کردن یک قرار یا دورهمی شام به زمانی دیگر (اصطلاح آمریکایی)",
+      "targetText": "Let's take a rain check on dinner.",
+      "translation": "بیا شام رو بندازیم برای یه فرصت دیگه (موکول کردن)",
+      "hint": "rain check اصطلاح معروف آمریکایی",
+      "grammarPoint": "American Idiom: take a rain check",
+      "pronunciation": "لِتس تِیک اِ رِین چِک آن دینِر",
+      "difficulty": "medium",
+      "points": 2,
+      "isGolden": true
+    },
+    {
+      "id": "EN_US_B1_TRAVEL_01",
+      "targetLanguage": "en-US",
+      "cefrLevel": "B1",
+      "topic": "CAT_TRAVEL",
+      "contentType": "Sentence",
+      "learningMode": "Situation",
+      "prompt": "درخواست پیاده شدن جلوی ترمینال فرودگاه از راننده",
+      "targetText": "Can you drop me off at terminal two, please?",
+      "translation": "میشه من رو دم ترمینال شماره دو پیاده کنید؟",
+      "hint": "drop someone off یعنی پیاده کردن",
+      "grammarPoint": "Phrasal verb: drop off",
+      "pronunciation": "کَن یو دراپ می آف اَت تِرمینال تو، پلیز؟",
+      "difficulty": "medium",
+      "points": 2
+    },
+    {
+      "id": "EN_US_B2_WORK_01",
+      "targetLanguage": "en-US",
+      "cefrLevel": "B2",
+      "topic": "CAT_WORK",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "با تمام قوا و بدون اتلاف وقت کاری را پرانرژی شروع کردن",
+      "targetText": "Hit the ground running",
+      "translation": "کار را با انرژی و قدرت تمام از همان اول شروع کردن",
+      "hint": "اصطلاح کاری پرکاربرد آمریکایی",
+      "grammarPoint": "Business Idiom: Hit the ground running",
+      "pronunciation": "هیت دِ گراوند رانینگ",
+      "difficulty": "hard",
+      "points": 3
+    },
+    {
+      "id": "EN_US_B2_HEALTH_01",
+      "targetLanguage": "en-US",
+      "cefrLevel": "B2",
+      "topic": "CAT_HEALTH",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "احساس کسالت یا سرماخوردگی خفیف داشتن",
+      "targetText": "Under the weather",
+      "translation": "کمی ناخوش‌احوال و کسل بودن",
+      "hint": "under the weather",
+      "grammarPoint": "Health idiom: Feeling under the weather",
+      "pronunciation": "آندِر دِ وِدِر",
+      "difficulty": "hard",
+      "points": 3
+    },
+    {
+      "id": "EN_US_C1_SMALLTALK_01",
+      "targetLanguage": "en-US",
+      "cefrLevel": "C1",
+      "topic": "CAT_SMALLTALK",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "گپ و گفت خودمانی و دوستانه زدن و وقت گذراندن",
+      "targetText": "Shoot the breeze",
+      "translation": "گپ زدن و وقت گذراندن با دوستان",
+      "hint": "shoot the breeze اصطلاح خودمانی آمریکایی",
+      "grammarPoint": "Conversational Slang: Shoot the breeze",
+      "pronunciation": "شوت دِ breeze (بریز)",
+      "difficulty": "hard",
+      "points": 3,
+      "isGolden": true
+    },
+    {
+      "id": "EN_US_C1_WORK_02",
+      "targetLanguage": "en-US",
+      "cefrLevel": "C1",
+      "topic": "CAT_WORK",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "برای سنجش تمام جوانب، موقتاً نقش مخالف را بازی کردن",
+      "targetText": "Play devil's advocate",
+      "translation": "نقش وکیل مدافع شیطان را بازی کردن (دیدگاه مخالف برای ارزیابی)",
+      "hint": "devil's advocate",
+      "grammarPoint": "Idiomatic expression for critical analysis",
+      "pronunciation": "پلِی دِویلز اَدووکِیت",
+      "difficulty": "hard",
+      "points": 3
+    },
+    {
+      "id": "NL_A1_REST_01",
+      "targetLanguage": "nl",
+      "cefrLevel": "A1",
+      "topic": "CAT_RESTAURANT",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "در رستوران می‌خواهی صورتحساب را درخواست کنی",
+      "targetText": "Mag ik de rekening, alstublieft?",
+      "translation": "می‌تونم صورتحساب رو داشته باشم، لطفاً؟",
+      "hint": "از کلمه rekening و alstublieft استفاده کن",
+      "grammarPoint": "الگوی مودبانه: Mag ik ... alstublieft?",
+      "pronunciation": "ماخ ایک دِ رِیکِه‌نینگ، آلس‌توبلیفت؟",
+      "difficulty": "easy",
+      "points": 1
+    },
+    {
+      "id": "NL_A1_REST_02",
+      "targetLanguage": "nl",
+      "cefrLevel": "A1",
+      "topic": "CAT_RESTAURANT",
+      "contentType": "Vocabulary",
+      "learningMode": "Explain",
+      "prompt": "نوشیدنی گرم محبوب هلندی‌ها در کافه‌ها",
+      "targetText": "Koffie verkeerd",
+      "translation": "قهوه با شیر زیاد (لاته هلندی)",
+      "hint": "ترکیبی از قهوه و کلمه \"اشتباه/برعکس\"",
+      "grammarPoint": "اصطلاح کافه‌ای هلند",
+      "pronunciation": "کُفی فِرکِیرد",
+      "difficulty": "easy",
+      "points": 1
+    },
+    {
+      "id": "NL_A1_EVERYDAY_01",
+      "targetLanguage": "nl",
+      "cefrLevel": "A1",
+      "topic": "CAT_EVERYDAY",
+      "contentType": "Sentence",
+      "learningMode": "Speak",
+      "prompt": "احوالپرسی روزمره و پرسیدن حال طرف مقابل",
+      "targetText": "Hoe gaat het met jou?",
+      "translation": "حالت چطوره؟ / اوضاعت چطوره؟",
+      "hint": "Hoe gaat het...",
+      "grammarPoint": "پرسش احوالپرسی غیررسمی",
+      "pronunciation": "هو خات هِت مِت یاو؟",
+      "difficulty": "easy",
+      "points": 1
+    },
+    {
+      "id": "NL_A1_SHOPPING_01",
+      "targetLanguage": "nl",
+      "cefrLevel": "A1",
+      "topic": "CAT_SHOPPING",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "در فروشگاه آلبرت هاین می‌خواهی قیمت یک جنس را بپرسی",
+      "targetText": "Hoeveel kost dit?",
+      "translation": "قیمت این چقدر است؟",
+      "hint": "از کلمه hoeveel استفاده کن",
+      "grammarPoint": "پرسش قیمت: Hoeveel kost...?",
+      "pronunciation": "هو فِیل کُست دیت؟",
+      "difficulty": "easy",
+      "points": 1
+    },
+    {
+      "id": "NL_A2_TRANSPORT_01",
+      "targetLanguage": "nl",
+      "cefrLevel": "A2",
+      "topic": "CAT_TRANSPORT",
+      "contentType": "Situation",
+      "learningMode": "Situation",
+      "prompt": "در ایستگاه قطار آمستردام گم شدی و می‌پرسی قطار اوترخت از کدام سکو حرکت می‌کند",
+      "targetText": "Vanaf welk spoor vertrekt de trein naar Utrecht?",
+      "translation": "قطار اوترخت از کدام سکو حرکت می‌کند؟",
+      "hint": "کلمه spoor یعنی سکو و vertrekken یعنی حرکت کردن",
+      "grammarPoint": "حرف اضافه Vanaf + welk spoor",
+      "pronunciation": "فان‌آف وِلک اسپور فِرتْرِکت دِ ترِین نار اوترِخت؟",
+      "difficulty": "medium",
+      "points": 2
+    },
+    {
+      "id": "NL_A2_WORK_01",
+      "targetLanguage": "nl",
+      "cefrLevel": "A2",
+      "topic": "CAT_WORK",
+      "contentType": "Sentence",
+      "learningMode": "Translate",
+      "prompt": "به همکارت می‌گویی فردا از خانه کار می‌کنی",
+      "targetText": "Morgen werk ik vanuit huis.",
+      "translation": "فردا از خانه کار می‌کنم.",
+      "hint": "جای فعل و فاعل در ابتدای جمله با قید زمان (Inversion)",
+      "grammarPoint": "قانون Inversion در هلندی: Morgen werk ik...",
+      "pronunciation": "مُرخِن وِرک ایک فان‌آوت هاوس",
+      "difficulty": "medium",
+      "points": 2
+    },
+    {
+      "id": "NL_B1_SMALLTALK_01",
+      "targetLanguage": "nl",
+      "cefrLevel": "B1",
+      "topic": "CAT_SMALLTALK",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "مفهوم معروف هلندی برای دنج بودن، حس گرما و صمیمیت در دورهمی",
+      "targetText": "Gezelligheid",
+      "translation": "حس دنجی، صفای دورهمی و حال خوش جمعی",
+      "hint": "معروف‌ترین صفت و اسم فرهنگی هلند",
+      "grammarPoint": "اسم انتزاعی فرهنگی (Ge-zellig-heid)",
+      "pronunciation": "خِزِلِیخ‌هایت",
+      "difficulty": "medium",
+      "points": 2,
+      "isGolden": true
+    },
+    {
+      "id": "NL_B1_HEALTH_01",
+      "targetLanguage": "nl",
+      "cefrLevel": "B1",
+      "topic": "CAT_HEALTH",
+      "contentType": "Situation",
+      "learningMode": "Situation",
+      "prompt": "تماس با پزشک عمومی (Huisarts) برای گرفتن وقت ویزیت",
+      "targetText": "Ik wil graag een afspraak maken met de dokter.",
+      "translation": "می‌خواهم با دکتر وقت ملاقات بگیرم.",
+      "hint": "afspraak maken یعنی وقت گرفتن",
+      "grammarPoint": "ساختار مودبانه: Ik wil graag ... maken",
+      "pronunciation": "ایک ویل خراخ اِن آفرسپراک ماکِن مِت دِ دُکتِر",
+      "difficulty": "medium",
+      "points": 2
+    },
+    {
+      "id": "NL_B2_SOCIAL_01",
+      "targetLanguage": "nl",
+      "cefrLevel": "B2",
+      "topic": "CAT_SOCIAL",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "رسم هلندی‌ها که هرکس در مهمانی یا رستوران دُنگ خودش را حساب می‌کند",
+      "targetText": "Going Dutch / Ieder betaalt voor zich",
+      "translation": "دُنگی حساب کردن / هرکس سهم خودش را می‌پردازد",
+      "hint": "اصطلاح تقسیم مساوی صورتحساب",
+      "grammarPoint": "Wederkerend voornaamwoord (voor zich)",
+      "pronunciation": "ایدر بِتالت فور زیخ",
+      "difficulty": "hard",
+      "points": 3
+    },
+    {
+      "id": "NL_C1_IDIOM_01",
+      "targetLanguage": "nl",
+      "cefrLevel": "C1",
+      "topic": "CAT_SMALLTALK",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "ضرب‌المثل هلندی: وقتی کسی کاری را با پشتکار و دقت تمام به سرانجام می‌رساند",
+      "targetText": "De puntjes op de i zetten",
+      "translation": "نقطه روی حرف آی گذاشتن (کار را بی‌نقص و تمام و کمال انجام دادن)",
+      "hint": "درباره نقطه گذاشتن روی حروف است",
+      "grammarPoint": "ضرب‌المثل کنایی اصیل زبان هلندی",
+      "pronunciation": "دِ پونتیِس اُپ دِ ای زِتِن",
+      "difficulty": "hard",
+      "points": 4,
+      "isGolden": true
+    },
+    {
+      "id": "EN_A1_REST_01",
+      "targetLanguage": "en",
+      "cefrLevel": "A1",
+      "topic": "CAT_RESTAURANT",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "Ordering water at a cafe or restaurant politely",
+      "targetText": "Could I have a glass of water, please?",
+      "translation": "می‌تونم یک لیوان آب داشته باشم، لطفاً؟",
+      "hint": "Use \"Could I have...\"",
+      "grammarPoint": "Polite request with modal verb Could",
+      "pronunciation": "کود آی هَو اِ گلَس آو واتِر، پِلیز؟",
+      "difficulty": "easy",
+      "points": 1
+    },
+    {
+      "id": "EN_A1_REST_02",
+      "targetLanguage": "en",
+      "cefrLevel": "A1",
+      "topic": "CAT_RESTAURANT",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "Asking for the bill/check at a restaurant",
+      "targetText": "Could we get the bill, please?",
+      "translation": "می‌تونیم صورتحساب رو داشته باشیم، لطفاً؟",
+      "hint": "Ask for the bill or check",
+      "grammarPoint": "Polite question with \"Could we get...\"",
+      "pronunciation": "کود وی گِت دِ بیل، پلیز؟",
+      "difficulty": "easy",
+      "points": 1
+    },
+    {
+      "id": "EN_A1_EVERYDAY_01",
+      "targetLanguage": "en",
+      "cefrLevel": "A1",
+      "topic": "CAT_EVERYDAY",
+      "contentType": "Sentence",
+      "learningMode": "Speak",
+      "prompt": "Introducing where you live in a friendly introduction",
+      "targetText": "Nice to meet you, I live in Amsterdam.",
+      "translation": "از دیدنتون خوشحالم، من در آمستردام زندگی می‌کنم.",
+      "hint": "Nice to meet you...",
+      "grammarPoint": "Present Simple for permanent states",
+      "pronunciation": "نایس تو میت یو، آی لیو این آمستردام",
+      "difficulty": "easy",
+      "points": 1
+    },
+    {
+      "id": "EN_A1_SHOPPING_01",
+      "targetLanguage": "en",
+      "cefrLevel": "A1",
+      "topic": "CAT_SHOPPING",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "Asking the price of an item in a clothing store",
+      "targetText": "How much is this jacket?",
+      "translation": "این کاپشن چنده؟",
+      "hint": "How much is...",
+      "grammarPoint": "Asking price with How much is + singular noun",
+      "pronunciation": "هاو ماچ ایز دیس جَکِت؟",
+      "difficulty": "easy",
+      "points": 1
+    },
+    {
+      "id": "EN_A2_TRAVEL_01",
+      "targetLanguage": "en",
+      "cefrLevel": "A2",
+      "topic": "CAT_TRAVEL",
+      "contentType": "Situation",
+      "learningMode": "Situation",
+      "prompt": "Asking for flight gate directions at the international airport",
+      "targetText": "Excuse me, which gate is boarding for flight 204?",
+      "translation": "ببخشید، پرواز شماره ۲۰۴ از کدام گیت سوار می‌کند؟",
+      "hint": "Which gate is boarding...",
+      "grammarPoint": "Wh- questions with Present Continuous",
+      "pronunciation": "اکسکیوز می، ویچ گیت ایز بوردینگ فور فلایت تو زیرو فور؟",
+      "difficulty": "medium",
+      "points": 2
+    },
+    {
+      "id": "EN_A2_FOOD_01",
+      "targetLanguage": "en",
+      "cefrLevel": "A2",
+      "topic": "CAT_FOOD",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "Asking about vegetarian or allergy options on the menu",
+      "targetText": "Do you have any vegetarian options?",
+      "translation": "آیا گزینه گیاه‌خواری دارید؟",
+      "hint": "Do you have any...",
+      "grammarPoint": "Present simple question with \"any\"",
+      "pronunciation": "دو یو هَو اِنی وِجِتِریَن آپشِنز؟",
+      "difficulty": "medium",
+      "points": 2
+    },
+    {
+      "id": "EN_A2_HOTEL_01",
+      "targetLanguage": "en",
+      "cefrLevel": "A2",
+      "topic": "CAT_TRAVEL",
+      "contentType": "Situation",
+      "learningMode": "Situation",
+      "prompt": "Checking in at a hotel with a prior reservation",
+      "targetText": "Hello, I have a reservation under the name Smith.",
+      "translation": "سلام، من یک رزرو به نام اسمیت دارم.",
+      "hint": "I have a reservation under...",
+      "grammarPoint": "Preposition \"under\" used for names on bookings",
+      "pronunciation": "هِلُو، آی هَو اِ رِزِروِیشِن آندِر دِ نِیم اسمیت",
+      "difficulty": "medium",
+      "points": 2
+    },
+    {
+      "id": "EN_B1_WORK_01",
+      "targetLanguage": "en",
+      "cefrLevel": "B1",
+      "topic": "CAT_WORK",
+      "contentType": "Sentence",
+      "learningMode": "Explain",
+      "prompt": "Explaining a project deadline adjustment during a team sync",
+      "targetText": "We need to reschedule the deadline to next Friday.",
+      "translation": "باید ددلاین (موعد تحویل) را به جمعه آینده موکول کنیم.",
+      "hint": "reschedule deadline",
+      "grammarPoint": "Infinitive with need to + verb",
+      "pronunciation": "وی نید تو ریسکِجول دِ دِدلاین تو نِکست فرایدِی",
+      "difficulty": "medium",
+      "points": 2
+    },
+    {
+      "id": "EN_B1_WORK_02",
+      "targetLanguage": "en",
+      "cefrLevel": "B1",
+      "topic": "CAT_WORK",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "Asking a colleague to follow up via email after a meeting",
+      "targetText": "Could you shoot me an email with the summary?",
+      "translation": "می‌تونی برام یک ایمیل حاوی خلاصه جلسه بفرستی؟",
+      "hint": "shoot an email (send quickly)",
+      "grammarPoint": "Idiomatic business phrase: shoot someone an email",
+      "pronunciation": "کود یو شوت می اَن ایمیل ویت دِ سامِری؟",
+      "difficulty": "medium",
+      "points": 2
+    },
+    {
+      "id": "EN_B1_SMALLTALK_01",
+      "targetLanguage": "en",
+      "cefrLevel": "B1",
+      "topic": "CAT_SMALLTALK",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "Expressing that you agree completely with someone",
+      "targetText": "You took the words right out of my mouth!",
+      "translation": "دقیقاً حرف دل من رو زدی!",
+      "hint": "Words out of my mouth",
+      "grammarPoint": "Conversational agreement idiom",
+      "pronunciation": "یو توک دِ وُردز رایت آوت آو مای ماوث!",
+      "difficulty": "medium",
+      "points": 2
+    },
+    {
+      "id": "EN_B2_IDIOM_01",
+      "targetLanguage": "en",
+      "cefrLevel": "B2",
+      "topic": "CAT_SMALLTALK",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "Famous English idiom meaning to face a difficult situation with courage",
+      "targetText": "Bite the bullet",
+      "translation": "دندان روی جگر گذاشتن / با شجاعت با سختی روبرو شدن",
+      "hint": "Something about biting something metallic",
+      "grammarPoint": "Metaphorical English idiom",
+      "pronunciation": "بایت دِ بولِت",
+      "difficulty": "hard",
+      "points": 3,
+      "isGolden": true
+    },
+    {
+      "id": "EN_B2_WORK_01",
+      "targetLanguage": "en",
+      "cefrLevel": "B2",
+      "topic": "CAT_WORK",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "Business idiom: To think creatively outside standard boundaries",
+      "targetText": "Think outside the box",
+      "translation": "خلاقانه و فراتر از چارچوب‌های معمول فکر کردن",
+      "hint": "Outside the box...",
+      "grammarPoint": "Metaphorical compound phrase",
+      "pronunciation": "ثینک آوت‌ساید دِ باکس",
+      "difficulty": "hard",
+      "points": 3
+    },
+    {
+      "id": "EN_B2_IDIOM_02",
+      "targetLanguage": "en",
+      "cefrLevel": "B2",
+      "topic": "CAT_SMALLTALK",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "Idiom meaning to reveal a secret unintentionally",
+      "targetText": "Spill the beans",
+      "translation": "لو دادن راز / بند را آب دادن",
+      "hint": "Spilling something from a kitchen",
+      "grammarPoint": "Colloquial idiom",
+      "pronunciation": "اسپیل دِ بینز",
+      "difficulty": "hard",
+      "points": 3,
+      "isGolden": true
+    },
+    {
+      "id": "EN_C1_IDIOM_01",
+      "targetLanguage": "en",
+      "cefrLevel": "C1",
+      "topic": "CAT_SMALLTALK",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "English proverb: Do not reveal a secret prematurely before the event",
+      "targetText": "Don't let the cat out of the bag",
+      "translation": "بند را به آب نده / راز را فاش نکن",
+      "hint": "An animal coming out of a bag",
+      "grammarPoint": "Imperative idiom with negative auxiliary",
+      "pronunciation": "دُنت لِت دِ کَت آوت آو دِ بَگ",
+      "difficulty": "hard",
+      "points": 4,
+      "isGolden": true
+    },
+    {
+      "id": "EN_C1_BUSINESS_01",
+      "targetLanguage": "en",
+      "cefrLevel": "C1",
+      "topic": "CAT_WORK",
+      "contentType": "Sentence",
+      "learningMode": "Explain",
+      "prompt": "High-level business English: Balancing short-term gains against sustainable long-term growth",
+      "targetText": "We must avoid cutting corners at the expense of product integrity.",
+      "translation": "نباید به بهای آسیب به اصالت و کیفیت محصول، سمبل‌کاری کنیم.",
+      "hint": "cutting corners at the expense of...",
+      "grammarPoint": "Prepositional phrase: at the expense of + noun",
+      "pronunciation": "وی ماست اِوُید کاتینگ کُرنِرز اَت دِ اکسپِنس آو پروداکت اینتِگریتی",
+      "difficulty": "hard",
+      "points": 4,
+      "isGolden": true
+    },
+    {
+      "id": "DE_A1_REST_01",
+      "targetLanguage": "de",
+      "cefrLevel": "A1",
+      "topic": "CAT_RESTAURANT",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "In a German bakery, ordering two fresh bread rolls politely",
+      "targetText": "Ich hätte gern zwei Brötchen, bitte.",
+      "translation": "دو تا نان گرد کوچک می‌خواستم، لطفاً.",
+      "hint": "Ich hätte gern...",
+      "grammarPoint": "Konjunktiv II for polite ordering",
+      "pronunciation": "ایش هِته گِرن تسوای بروتشِن، بیته",
+      "difficulty": "easy",
+      "points": 1
+    },
+    {
+      "id": "DE_A2_CITY_01",
+      "targetLanguage": "de",
+      "cefrLevel": "A2",
+      "topic": "CAT_CITY",
+      "contentType": "Situation",
+      "learningMode": "Situation",
+      "prompt": "Asking where the nearest metro station (U-Bahn) is located",
+      "targetText": "Entschuldigung, wo ist die nächste U-Bahn-Station?",
+      "translation": "ببخشید، نزدیک‌ترین ایستگاه مترو کجاست؟",
+      "hint": "wo ist die nächste...",
+      "grammarPoint": "Superlative adjective with feminine noun (die nächste)",
+      "pronunciation": "اِنت‌شولدیگونگ، وو ایست دی نِکستِه او-بان استاسیون؟",
+      "difficulty": "medium",
+      "points": 2
+    },
+    {
+      "id": "DE_B1_WORK_01",
+      "targetLanguage": "de",
+      "cefrLevel": "B1",
+      "topic": "CAT_WORK",
+      "contentType": "Sentence",
+      "learningMode": "Translate",
+      "prompt": "Sending an email confirming participation in tomorrow's meeting",
+      "targetText": "Ich bestätige gerne meine Teilnahme am Meeting.",
+      "translation": "با کمال میل حضورم در جلسه را تایید می‌کنم.",
+      "hint": "bestätigen + Teilnahme",
+      "grammarPoint": "Akkusativ object with feminine noun (meine Teilnahme)",
+      "pronunciation": "ایش بِشتِتیگه گِرنه ماینه تایل‌نامه آم میتینگ",
+      "difficulty": "medium",
+      "points": 2
+    },
+    {
+      "id": "DE_B2_IDIOM_01",
+      "targetLanguage": "de",
+      "cefrLevel": "B2",
+      "topic": "CAT_SMALLTALK",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "German idiom meaning wishing someone good luck by pressing thumbs",
+      "targetText": "Ich drücke dir die Daumen!",
+      "translation": "برایت آرزوی موفقیت می‌کنم! / انگشتامو برات فشار می‌دم!",
+      "hint": "Something with thumbs (Daumen)",
+      "grammarPoint": "Dativ recipient (dir) + Akkusativ object (die Daumen)",
+      "pronunciation": "ایش دروکِه دیر دی داومِن",
+      "difficulty": "hard",
+      "points": 3,
+      "isGolden": true
+    },
+    {
+      "id": "FR_A1_REST_01",
+      "targetLanguage": "fr",
+      "cefrLevel": "A1",
+      "topic": "CAT_RESTAURANT",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "Ordering a croissant and espresso at a Parisian cafe",
+      "targetText": "Un croissant et un café, s'il vous plaît.",
+      "translation": "یک کروسان و یک قهوه، لطفاً.",
+      "hint": "s'il vous plaît",
+      "grammarPoint": "Masculine articles (un) + Polite marker",
+      "pronunciation": "آن کْغواسان اِ آن کافه، سیل وو پْله",
+      "difficulty": "easy",
+      "points": 1
+    },
+    {
+      "id": "FR_A2_SHOPPING_01",
+      "targetLanguage": "fr",
+      "cefrLevel": "A2",
+      "topic": "CAT_SHOPPING",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "Asking if you can pay with card in a shop",
+      "targetText": "Est-ce que je peux payer par carte ?",
+      "translation": "آیا می‌توانم با کارت پرداخت کنم؟",
+      "hint": "payer par carte",
+      "grammarPoint": "Question structure: Est-ce que + modal peux",
+      "pronunciation": "اِس کِه ژُ پو پِیه پاغ کاغت؟",
+      "difficulty": "medium",
+      "points": 2
+    },
+    {
+      "id": "FR_B1_SMALLTALK_01",
+      "targetLanguage": "fr",
+      "cefrLevel": "B1",
+      "topic": "CAT_SMALLTALK",
+      "contentType": "Sentence",
+      "learningMode": "Translate",
+      "prompt": "Telling a friend that everything will turn out fine in the end",
+      "targetText": "Ne t'inquiète pas, tout va bien se passer.",
+      "translation": "نگران نباش، همه چیز خوب پیش خواهد رفت.",
+      "hint": "se passer = to happen",
+      "grammarPoint": "Futur Proche (aller + infinitif)",
+      "pronunciation": "نو تَنکیِت پا، تو وا بیَن سو پَسه",
+      "difficulty": "medium",
+      "points": 2
+    },
+    {
+      "id": "FR_B2_IDIOM_01",
+      "targetLanguage": "fr",
+      "cefrLevel": "B2",
+      "topic": "CAT_SMALLTALK",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "Famous French idiom meaning to cost an arm and a leg / extremely expensive",
+      "targetText": "Ça coûte les yeux de la tête",
+      "translation": "خیلی گران است / چشم و چال آدم را درمی‌آورد!",
+      "hint": "Something about eyes of the head",
+      "grammarPoint": "Metaphorical expression for high prices",
+      "pronunciation": "سا کوت لِزیُو دُو لا تِت",
+      "difficulty": "hard",
+      "points": 3,
+      "isGolden": true
+    },
+    {
+      "id": "FA_A1_REST_01",
+      "targetLanguage": "fa",
+      "cefrLevel": "A1",
+      "topic": "CAT_RESTAURANT",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "در رستوران یا کافه برای سفارش چای با قند",
+      "targetText": "یک چای داغ با قند لطفاً",
+      "translation": "A hot tea with sugar cubes, please",
+      "hint": "از کلمه چای و قند استفاده کن",
+      "grammarPoint": "ترکیب وصفی: چای داغ",
+      "pronunciation": "Yek chaaye daagh baa ghand lotfan",
+      "difficulty": "easy",
+      "points": 1
+    },
+    {
+      "id": "FA_A2_TRAVEL_01",
+      "targetLanguage": "fa",
+      "cefrLevel": "A2",
+      "topic": "CAT_TRAVEL",
+      "contentType": "Situation",
+      "learningMode": "Situation",
+      "prompt": "پرسیدن آدرس نزدیک‌ترین ایستگاه مترو از عابر در خیابان",
+      "targetText": "ببخشید، نزدیک‌ترین ایستگاه مترو کجاست؟",
+      "translation": "Excuse me, where is the nearest metro station?",
+      "hint": "ایستگاه مترو",
+      "grammarPoint": "صفت برترین: نزدیک‌ترین",
+      "pronunciation": "Bebakhshid, nazdiktarin istgah-e metro kojaast?",
+      "difficulty": "medium",
+      "points": 2
+    },
+    {
+      "id": "FA_B1_SMALLTALK_01",
+      "targetLanguage": "fa",
+      "cefrLevel": "B1",
+      "topic": "CAT_SMALLTALK",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "اصطلاح تعارف ایرانی برای تعارف صمیمانه غذا یا خدمت به مهمان",
+      "targetText": "بفرمایید، نوش جان!",
+      "translation": "Please help yourself, Bon Appétit!",
+      "hint": "اصطلاح مهمانداری و غذا خوردن",
+      "grammarPoint": "جمله دعایی و تعارفی متداول",
+      "pronunciation": "Befarmaayid, noosh-e jaan!",
+      "difficulty": "medium",
+      "points": 2
+    },
+    {
+      "id": "FA_B2_IDIOM_01",
+      "targetLanguage": "fa",
+      "cefrLevel": "B2",
+      "topic": "CAT_SMALLTALK",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "ضرب‌المثل اصیل فارسی: نباید قبل از رسیدن به نتیجه قطعی مغرور شد",
+      "targetText": "جوجه را آخر پاییز می‌شمارند",
+      "translation": "Don't count your chickens before they hatch",
+      "hint": "درباره شمردن جوجه در فصل پاییز است",
+      "grammarPoint": "ضرب‌المثل تمثیلی کنایی",
+      "pronunciation": "Joojeh raa aakhar-e paayeez mishomaarand",
+      "difficulty": "hard",
+      "points": 3,
+      "isGolden": true
+    },
+    {
+      "id": "TR_A1_REST_01",
+      "targetLanguage": "tr",
+      "cefrLevel": "A1",
+      "topic": "CAT_RESTAURANT",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "Ordering Turkish tea at a cafe in Istanbul",
+      "targetText": "Bir bardak çay lütfen",
+      "translation": "یک استکان چای لطفاً",
+      "hint": "Bir bardak çay...",
+      "grammarPoint": "Unit noun (bardak) with noun (çay)",
+      "pronunciation": "بیر بارداک چای لوتفَن",
+      "difficulty": "easy",
+      "points": 1
+    },
+    {
+      "id": "TR_A2_EVERYDAY_01",
+      "targetLanguage": "tr",
+      "cefrLevel": "A2",
+      "topic": "CAT_EVERYDAY",
+      "contentType": "Sentence",
+      "learningMode": "Speak",
+      "prompt": "Greeting and asking how someone is doing politely",
+      "targetText": "Nasılsınız? İyiyim, teşekkür ederim.",
+      "translation": "حالتون چطوره؟ خوبم، تشکر می‌کنم.",
+      "hint": "Nasılsınız...",
+      "grammarPoint": "Formal 2nd person suffix (-sınız)",
+      "pronunciation": "ناسیل‌سینیز؟ اییم، تِشِکّور اِدِریم",
+      "difficulty": "easy",
+      "points": 1
+    },
+    {
+      "id": "AR_A1_REST_01",
+      "targetLanguage": "ar",
+      "cefrLevel": "A1",
+      "topic": "CAT_RESTAURANT",
+      "contentType": "Phrase",
+      "learningMode": "Explain",
+      "prompt": "طلب الحساب في المطعم أو المقهى بلباقة",
+      "targetText": "الحساب، لو سمحت",
+      "translation": "صورتحساب، لطفاً",
+      "hint": "الحساب",
+      "grammarPoint": "النداء المهذب: لو سمحت",
+      "pronunciation": "Al-hisaab, law samaht",
+      "difficulty": "easy",
+      "points": 1
+    },
+    {
+      "id": "AR_A2_EVERYDAY_01",
+      "targetLanguage": "ar",
+      "cefrLevel": "A2",
+      "topic": "CAT_EVERYDAY",
+      "contentType": "Sentence",
+      "learningMode": "Speak",
+      "prompt": "التحية والسؤال عن الحال بلباقة وترحاب",
+      "targetText": "أهلاً وسهلاً، كيف حالك اليوم؟",
+      "translation": "خوش آمدید، امروز حالتون چطوره؟",
+      "hint": "أهلاً وسهلاً",
+      "grammarPoint": "جملة التحية والاستفهام",
+      "pronunciation": "Ahlan wa sahlan, kayfa haaluka al-yawm?",
+      "difficulty": "easy",
+      "points": 1
+    }
+  ],
+  "c1Entities": [
+    {
+      "id": 1,
+      "topic": "CAT_SOCIAL",
+      "texts": {
+        "en": "the erosion of public trust",
+        "en-US": "the erosion of public trust",
+        "ar": "تآكل الثقة العامة",
+        "fa": "فرسایش اعتماد عمومی",
+        "zh": "公众信任的削弱",
+        "ja": "国民の信頼の低下",
+        "ko": "대중의 신뢰 약화",
+        "fr": "l'érosion de la confiance publique",
+        "hi": "जनता के विश्वास का क्षरण",
+        "nl": "de uitholling van het publieke vertrouwen",
+        "de": "die Erosion des öffentlichen Vertrauens",
+        "uk": "підрив суспільної довіри",
+        "tr": "kamuoyu güveninin aşınması",
+        "pl": "erozja zaufania publicznego",
+        "pt": "a erosão da confiança pública",
+        "es": "la pérdida de confianza pública",
+        "it": "la perdita di fiducia pubblica"
+      }
+    },
+    {
+      "id": 2,
+      "topic": "CAT_WORK",
+      "texts": {
+        "en": "the committee's interim findings",
+        "en-US": "the committee's interim findings",
+        "ar": "النتائج الأولية للجنة",
+        "fa": "یافته‌های موقت کمیته",
+        "zh": "委员会的中期调查结果",
+        "ja": "委員会の暫定的な調査結果",
+        "ko": "위원회의 중간 조사 결과",
+        "fr": "les conclusions provisoires de la commission",
+        "hi": "समिति के अंतरिम निष्कर्ष",
+        "nl": "de tussentijdse bevindingen van de commissie",
+        "de": "die vorläufigen Ergebnisse des Ausschusses",
+        "uk": "проміжні висновки комітету",
+        "tr": "komitenin ara bulguları",
+        "pl": "wstępne ustalenia komisji",
+        "pt": "as conclusões intercalares do comité",
+        "es": "las conclusiones provisionales de la comisión",
+        "it": "le conclusioni provvisorie della commissione"
+      }
+    },
+    {
+      "id": 3,
+      "topic": "CAT_SOCIAL",
+      "texts": {
+        "en": "her reluctance to commit publicly",
+        "en-US": "her reluctance to commit publicly",
+        "ar": "ترددها في الالتزام علناً",
+        "fa": "تردید او برای اعلام موضع علنی",
+        "zh": "她在公开承诺上的犹豫",
+        "ja": "公に言及することへの彼女の躊躇",
+        "ko": "공개적 약속에 대한 그녀의 주저함",
+        "fr": "sa réticence à s'engager publiquement",
+        "hi": "सार्वजनिक रूप से प्रतिबद्ध होने में उसकी अनिच्छा",
+        "nl": "haar terughoudendheid om zich publiekelijk te binden",
+        "de": "ihr Zögern, sich öffentlich festzulegen",
+        "uk": "її небажання брати публічні зобовʼязання",
+        "tr": "kamuoyu önünde taahhütte bulunma konusundaki isteksizliği",
+        "pl": "jej niechęć do publicznego zaangażowania",
+        "pt": "a sua relutância em comprometer-se publicamente",
+        "es": "su reticencia a comprometerse públicamente",
+        "it": "la sua riluttanza a impegnarsi pubblicamente"
+      }
+    },
+    {
+      "id": 4,
+      "topic": "CAT_WORK",
+      "texts": {
+        "en": "the proposed legislative overhaul",
+        "en-US": "the proposed legislative overhaul",
+        "ar": "التعديل التشريعي المقترح",
+        "fa": "اصلاحات قانونی پیشنهادی",
+        "zh": "拟议的立法改革",
+        "ja": "提案された法改正の抜本的見直し",
+        "ko": "제안된 전면적 입법 개혁",
+        "fr": "la refonte législative proposée",
+        "hi": "प्रस्तावित विधायी फेरबदल",
+        "nl": "de voorgestelde grondige herziening van de wetgeving",
+        "de": "die vorgeschlagene Gesetzesreform",
+        "uk": "запропонована законодавча реформа",
+        "tr": "önerilen kapsamlı yasa reformu",
+        "pl": "proponowana reforma ustawodawcza",
+        "pt": "a profunda reforma legislativa proposta",
+        "es": "la reforma legislativa propuesta",
+        "it": "la proposta di revisione legislativa"
+      }
+    },
+    {
+      "id": 5,
+      "topic": "CAT_SOCIAL",
+      "texts": {
+        "en": "the widening wealth gap",
+        "en-US": "the widening wealth gap",
+        "ar": "اتساع الفجوة في الثروة",
+        "fa": "شکاف فزاینده طبقاتی و ثروت",
+        "zh": "不断扩大的贫富差距",
+        "ja": "広がり続ける富の格差",
+        "ko": "벌어지는 빈부격차",
+        "fr": "l'accroissement du fossé des richesses",
+        "hi": "बढ़ती धन की खाई",
+        "nl": "de steeds groter wordende vermogenskloof",
+        "de": "die wachsende Kluft zwischen Arm und Reich",
+        "uk": "зростання прірви між багатими й бідними",
+        "tr": "giderek açılan refah uçurumu",
+        "pl": "pogłębiająca się przepaść majątkowa",
+        "pt": "o fosso crescente da riqueza",
+        "es": "la creciente brecha de riqueza",
+        "it": "il divario di ricchezza sempre più ampio"
+      }
+    },
+    {
+      "id": 6,
+      "topic": "CAT_WORK",
+      "texts": {
+        "en": "an alleged conflict of interest",
+        "en-US": "an alleged conflict of interest",
+        "ar": "تضارب محتمل في المصالح",
+        "fa": "تعارض منافع ادعایی",
+        "zh": "涉嫌利益冲突",
+        "ja": "指摘されている利益相反",
+        "ko": "주장된 이해충돌",
+        "fr": "un prétendu conflit d'intérêts",
+        "hi": "कथित हितों का टकराव",
+        "nl": "een vermeende belangenverstrengeling",
+        "de": "ein mutmaßlicher Interessenkonflikt",
+        "uk": "ймовірний конфлікт інтересів",
+        "tr": "iddia edilen çıkar çatışması",
+        "pl": "rzekomy konflikt interesów",
+        "pt": "um alegado conflito de interesses",
+        "es": "un supuesto conflicto de intereses",
+        "it": "un presunto conflitto di interessi"
+      }
+    },
+    {
+      "id": 7,
+      "topic": "CAT_SOCIAL",
+      "texts": {
+        "en": "the prevailing public narrative",
+        "en-US": "the prevailing public narrative",
+        "ar": "الرواية السائدة بين الرأي العام",
+        "fa": "روایت غالب افکار عمومی",
+        "zh": "主流的公众叙事",
+        "ja": "世論において優勢な言説",
+        "ko": "지배적인 대중의 담론",
+        "fr": "le récit dominant dans le public",
+        "hi": "प्रचलित सार्वजनिक आख्यान",
+        "nl": "het heersende publieke narratief",
+        "de": "das vorherrschende öffentliche Narrativ",
+        "uk": "панівний суспільний наратив",
+        "tr": "hâkim kamuoyu anlatısı",
+        "pl": "dominująca narracja publiczna",
+        "pt": "a narrativa pública predominante",
+        "es": "la narrativa pública predominante",
+        "it": "la narrazione pubblica prevalente"
+      }
+    },
+    {
+      "id": 8,
+      "topic": "CAT_EVERYDAY",
+      "texts": {
+        "en": "the unintended long-term consequences",
+        "en-US": "the unintended long-term consequences",
+        "ar": "العواقب غير المقصودة على المدى الطويل",
+        "fa": "پیامدهای ناخواسته بلندمدت",
+        "zh": "非预期的长期后果",
+        "ja": "意図せざる長期的な結末",
+        "ko": "의도치 않은 장기적 결과",
+        "fr": "les conséquences involontaires à long terme",
+        "hi": "अनपेक्षित दीर्घकालिक परिणाम",
+        "nl": "de onbedoelde gevolgen op de lange termijn",
+        "de": "die unbeabsichtigten langfristigen Folgen",
+        "uk": "ненавмисні довгострокові наслідки",
+        "tr": "öngörülmeyen uzun vadeli sonuçlar",
+        "pl": "niezamierzone długofalowe skutki",
+        "pt": "as consequências não intencionais a longo prazo",
+        "es": "las consecuencias involuntarias a largo plazo",
+        "it": "le conseguenze involontarie a lungo termine"
+      }
+    },
+    {
+      "id": 9,
+      "topic": "CAT_WORK",
+      "texts": {
+        "en": "the project's long-term viability",
+        "en-US": "the project's long-term viability",
+        "ar": "جدوى المشروع على المدى البعيد",
+        "fa": "پایداری و دوام بلندمدت پروژه",
+        "zh": "该项目的长期可行性",
+        "ja": "プロジェクトの長期的な実行可能性",
+        "ko": "프로젝트의 장기적 실행 가능성",
+        "fr": "la viabilité à long terme du projet",
+        "hi": "परियोजना की दीर्घकालिक व्यवहार्यता",
+        "nl": "de levensvatbaarheid van het project op de lange termijn",
+        "de": "die langfristige Tragfähigkeit des Projekts",
+        "uk": "довгострокова життєздатність проєкту",
+        "tr": "projenin uzun vadeli sürdürülebilirliği",
+        "pl": "długoterminowa rentowność projektu",
+        "pt": "a viabilidade a longo prazo do projeto",
+        "es": "la viabilidad a largo plazo del proyecto",
+        "it": "la fattibilità a lungo termine del progetto"
+      }
+    },
+    {
+      "id": 10,
+      "topic": "CAT_WORK",
+      "texts": {
+        "en": "a carefully worded disclaimer",
+        "en-US": "a carefully worded disclaimer",
+        "ar": "إخلاء مسؤولية صيغ بعناية",
+        "fa": "سلب مسئولیتِ با دقت نگاشته‌شده",
+        "zh": "措辞谨慎的免责声明",
+        "ja": "慎重に言葉を選んだ免責事項",
+        "ko": "주의 깊게 표현된 면책 조항",
+        "fr": "une clause de non-responsabilité soigneusement formulée",
+        "hi": "सावधानीपूर्वक शब्दों में दिया गया अस्वीकरण",
+        "nl": "een zorgvuldig geformuleerde disclaimer",
+        "de": "ein sorgfältig formulierter Haftungsausschluss",
+        "uk": "ретельно сформульоване застереження",
+        "tr": "özenle hazırlanmış bir sorumluluk reddi",
+        "pl": "starannie sformułowane zastrzeżenie prawne",
+        "pt": "uma exoneração de responsabilidade cuidadosamente redigida",
+        "es": "un descargo de responsabilidad cuidadosamente redactado",
+        "it": "una dichiarazione di non responsabilità formulata con cura"
+      }
+    },
+    {
+      "id": 11,
+      "topic": "CAT_EDUCATION",
+      "texts": {
+        "en": "the so-called evidence base",
+        "en-US": "the so-called evidence base",
+        "ar": "ما يُسمى بقاعدة الأدلة",
+        "fa": "به‌اصطلاح پایگاه شواهد و مدارک",
+        "zh": "所谓的证据基础",
+        "ja": "いわゆる証拠の根拠",
+        "ko": "이른바 증거 기반",
+        "fr": "la soi-disant base factuelle",
+        "hi": "तथाकथित साक्ष्य आधार",
+        "nl": "de zogenaamde wetenschappelijke basis",
+        "de": "die sogenannte Evidenzbasis",
+        "uk": "так звана доказова база",
+        "tr": "sözde kanıt temeli",
+        "pl": "tak zwana baza dowodowa",
+        "pt": "a chamada base de evidências",
+        "es": "la llamada base de evidencia",
+        "it": "la cosiddetta base probatoria"
+      }
+    },
+    {
+      "id": 12,
+      "topic": "CAT_WORK",
+      "texts": {
+        "en": "a climate of institutional caution",
+        "en-US": "a climate of institutional caution",
+        "ar": "مناخ من الحذر المؤسسي",
+        "fa": "فضای احتیاط سازمانی",
+        "zh": "体制性谨慎的氛围",
+        "ja": "組織的な慎重姿勢の蔓延",
+        "ko": "조직적인 신중함의 분위기",
+        "fr": "un climat de prudence institutionnelle",
+        "hi": "संस्थागत सावधानी का माहौल",
+        "nl": "een sfeer van institutionele voorzichtigheid",
+        "de": "ein Klima institutioneller Vorsicht",
+        "uk": "клімат інституційної обережності",
+        "tr": "kurumsal ihtiyat ortamı",
+        "pl": "atmosfera ostrożności instytucjonalnej",
+        "pt": "um clima de prudência institucional",
+        "es": "un clima de cautela institucional",
+        "it": "un clima di cautela istituzionale"
+      }
+    },
+    {
+      "id": 13,
+      "topic": "CAT_WORK",
+      "texts": {
+        "en": "the dwindling room for compromise",
+        "en-US": "the dwindling room for compromise",
+        "ar": "تضاؤل مجال التوافق",
+        "fa": "کاهش فضای سازش و مصالحه",
+        "zh": "不断缩小的妥协空间",
+        "ja": "妥協の余地が狭まること",
+        "ko": "점점 줄어드는 타협의 여지",
+        "fr": "le rétrécissement de la marge de compromis",
+        "hi": "समझौते की घटती गुंजाइश",
+        "nl": "de afnemende ruimte voor een compromis",
+        "de": "der schwindende Spielraum für Kompromisse",
+        "uk": "звуження простору для компромісу",
+        "tr": "uzlaşma için daralan alan",
+        "pl": "kurczące się pole do kompromisu",
+        "pt": "a margem decrescente para concessões",
+        "es": "el margen decreciente para el acuerdo",
+        "it": "il margine sempre più ridotto per il compromesso"
+      }
+    },
+    {
+      "id": 14,
+      "topic": "CAT_EDUCATION",
+      "texts": {
+        "en": "an overreliance on anecdotal data",
+        "en-US": "an overreliance on anecdotal data",
+        "ar": "الاعتماد المفرط على بيانات غير علمية",
+        "fa": "اتکای بیش از حد به شواهد موردی و تجربی",
+        "zh": "对轶事数据的过度依赖",
+        "ja": "体験談や逸話に基づくデータへの過度な依存",
+        "ko": "일화적 데이터에 대한 과도한 의존",
+        "fr": "une dépendance excessive aux données anecdotiques",
+        "hi": "कहानियों पर आधारित डेटा पर अत्यधिक निर्भरता",
+        "nl": "een overmatig vertrouwen op anekdotische gegevens",
+        "de": "ein übermäßiges Vertrauen auf anekdotische Daten",
+        "uk": "надмірна залежність від уривчастих даних",
+        "tr": "anekdotik verilere aşırı bağımlılık",
+        "pl": "nadmierne poleganie na danych anegdotycznych",
+        "pt": "uma dependência excessiva de dados anedóticos",
+        "es": "una dependencia excesiva de datos anecdóticos",
+        "it": "un eccessivo affidamento su dati aneddotici"
+      }
+    },
+    {
+      "id": 15,
+      "topic": "CAT_WORK",
+      "texts": {
+        "en": "the opacity of the decision-making process",
+        "en-US": "the opacity of the decision-making process",
+        "ar": "غموض عملية اتخاذ القرار",
+        "fa": "عدم شفافیت در روند تصمیم‌گیری",
+        "zh": "决策过程的不透明性",
+        "ja": "意思決定プロセスの不透明さ",
+        "ko": "의사결정 과정의 불투명성",
+        "fr": "le manque de transparence du processus décisionnel",
+        "hi": "निर्णय लेने की प्रक्रिया की अपारदर्शिता",
+        "nl": "de ondoorzichtigheid van het besluitvormingsproces",
+        "de": "die Undurchsichtigkeit des Entscheidungsprozesses",
+        "uk": "непрозорість процесу прийняття рішень",
+        "tr": "karar alma sürecinin şeffaf olmaması",
+        "pl": "nieprzejrzystość procesu podejmowania decyzji",
+        "pt": "a opacidade do processo de tomada de decisão",
+        "es": "la opacidad del proceso de toma de decisiones",
+        "it": "la mancanza di trasparenza del processo decisionale"
+      }
+    },
+    {
+      "id": 16,
+      "topic": "CAT_SOCIAL",
+      "texts": {
+        "en": "the commodification of personal data",
+        "en-US": "the commodification of personal data",
+        "ar": "تسليع البيانات الشخصية",
+        "fa": "کالاشدگی و تجاری‌سازی داده‌های شخصی",
+        "zh": "个人数据的商品化",
+        "ja": "個人情報の商業化",
+        "ko": "개인정보의 상품화",
+        "fr": "la marchandisation des données personnelles",
+        "hi": "व्यक्तिगत डेटा का वस्तुकरण",
+        "nl": "het vermarkten van persoonsgegevens",
+        "de": "die Kommerzialisierung persönlicher Daten",
+        "uk": "комерціалізація персональних даних",
+        "tr": "kişisel verilerin metalaştırılması",
+        "pl": "komercjalizacja danych osobowych",
+        "pt": "a mercantilização dos dados pessoais",
+        "es": "la mercantilización de los datos personales",
+        "it": "la mercificazione dei dati personali"
+      }
+    },
+    {
+      "id": 17,
+      "topic": "CAT_SOCIAL",
+      "texts": {
+        "en": "the ethical grey area involved",
+        "en-US": "the ethical gray area involved",
+        "ar": "المنطقة الرمادية الأخلاقية في الأمر",
+        "fa": "منطقه خاکستری اخلاقی موجود در موضوع",
+        "zh": "所涉及的道德灰色地带",
+        "ja": "そこに介在する倫理的なグレーゾーン",
+        "ko": "관련된 윤리적 회색 지대",
+        "fr": "la zone grise éthique qui s'y rattache",
+        "hi": "शामिल नैतिक संशय का क्षेत्र",
+        "nl": "het ethische schemergebied dat ermee gemoeid is",
+        "de": "die damit verbundene ethische Grauzone",
+        "uk": "етична сіра зона в цьому питанні",
+        "tr": "işin içindeki etik gri alan",
+        "pl": "związana z tym szara strefa etyczna",
+        "pt": "a zona cinzenta ética envolvida",
+        "es": "la zona gris ética que implica",
+        "it": "la zona d’ombra etica implicata"
+      }
+    },
+    {
+      "id": 18,
+      "topic": "CAT_WORK",
+      "texts": {
+        "en": "the asymmetry of information between parties",
+        "en-US": "the asymmetry of information between parties",
+        "ar": "عدم تماثل المعلومات بين الأطراف",
+        "fa": "عدم تقارن اطلاعاتی بین طرفین",
+        "zh": "各方之间的信息不对称",
+        "ja": "当事者間の情報の非対称性",
+        "ko": "당사자 간의 정보 비대칭",
+        "fr": "l'asymétrie d'information entre les parties",
+        "hi": "पक्षों के बीच सूचना की विषमता",
+        "nl": "de informatieasymmetrie tussen de partijen",
+        "de": "die Informationsasymmetrie zwischen den Parteien",
+        "uk": "інформаційна асиметрія між сторонами",
+        "tr": "taraflar arasındaki bilgi asimetrisi",
+        "pl": "asymetria informacji między stronami",
+        "pt": "a assimetria de informação entre as partes",
+        "es": "la asimetría de información entre las partes",
+        "it": "l’asimmetria informativa tra le parti"
+      }
+    },
+    {
+      "id": 19,
+      "topic": "CAT_EVERYDAY",
+      "texts": {
+        "en": "the shrinking window for meaningful intervention",
+        "en-US": "the shrinking window for meaningful intervention",
+        "ar": "تقلص فرصة التدخل الفعّال",
+        "fa": "کاهش فرصت برای مداخله موثر",
+        "zh": "采取有意义干预的窗口正在缩小",
+        "ja": "有効な介入を行うための猶予が狭まること",
+        "ko": "의미 있는 개입을 위한 시간이 줄어듦",
+        "fr": "la réduction de la marge d'intervention efficace",
+        "hi": "सार्थक हस्तक्षेप के लिए घटता अवसर",
+        "nl": "de krimpende tijdspanne voor zinvolle interventie",
+        "de": "das schrumpfende Zeitfenster für wirksame Maßnahmen",
+        "uk": "звуження вікна для ефективного втручання",
+        "tr": "anlamlı müdahale için daralan fırsat penceresi",
+        "pl": "kurczące się okno na skuteczną interwencję",
+        "pt": "a janela cada vez menor para uma intervenção significativa",
+        "es": "la ventana cada vez más reducida para una intervención significativa",
+        "it": "la finestra temporale sempre più ridotta per un intervento significativo"
+      }
+    },
+    {
+      "id": 20,
+      "topic": "CAT_EDUCATION",
+      "texts": {
+        "en": "a chronic underinvestment in prevention",
+        "en-US": "a chronic underinvestment in prevention",
+        "ar": "نقص مزمن في الاستثمار في الوقاية",
+        "fa": "سرمایه‌گذاری ناکافی مزمن در حوزه پیشگیری",
+        "zh": "在预防方面的长期投入不足",
+        "ja": "予防に対する慢性的な投資不足",
+        "ko": "예방에 대한 만성적인 투자 부족",
+        "fr": "un sous-investissement chronique dans la prévention",
+        "hi": "रोकथाम में दीर्घकालिक कम निवेश",
+        "nl": "chronische onderinvestering in preventie",
+        "de": "chronische Unterinvestition in die Prävention",
+        "uk": "хронічне недофінансування профілактики",
+        "tr": "önlem almaya yönelik kronik yetersiz yatırım",
+        "pl": "chroniczne niedoinwestowanie profilaktyki",
+        "pt": "um subinvestimento crónico na prevenção",
+        "es": "una falta crónica de inversión en prevención",
+        "it": "un cronico sottoinvestimento nella prevenzione"
+      }
+    }
+  ],
+  "universalConcepts": [
+    {
+      "id": "C_GREETING_HELLO",
+      "topic": "CAT_SOCIAL",
+      "level": "A1",
+      "difficulty": "easy",
+      "words": {
+        "fa": "سلام",
+        "en": "Hello",
+        "en-US": "Hello",
+        "nl": "Hallo",
+        "de": "Hallo",
+        "fr": "Bonjour",
+        "es": "Hola",
+        "it": "Ciao",
+        "ar": "مرحبا",
+        "tr": "Merhaba",
+        "ru": "Привет",
+        "pt": "Olá",
+        "sv": "Hej",
+        "no": "Hei",
+        "da": "Hej",
+        "fi": "Hei",
+        "pl": "Cześć",
+        "uk": "Привіт",
+        "el": "Γεια σας",
+        "cs": "Ahoj",
+        "ro": "Bună",
+        "hu": "Szia",
+        "zh": "你好",
+        "ja": "こんにちは",
+        "ko": "안녕하세요",
+        "hi": "नमस्ते",
+        "ur": "سلام",
+        "bn": "নমস্কার",
+        "id": "Halo",
+        "ms": "Helo",
+        "vi": "Xin chào",
+        "th": "สวัสดี",
+        "tl": "Kamusta",
+        "ku": "سڵاو",
+        "az": "Salam",
+        "he": "שלום",
+        "hy": "Բարև",
+        "ka": "გამარჯობა"
+      }
+    },
+    {
+      "id": "C_GREETING_THANKS",
+      "topic": "CAT_SOCIAL",
+      "level": "A1",
+      "difficulty": "easy",
+      "words": {
+        "fa": "متشکرم / مرسی",
+        "en": "Thank you",
+        "en-US": "Thank you",
+        "nl": "Dank je wel",
+        "de": "Danke schön",
+        "fr": "Merci beaucoup",
+        "es": "Muchas gracias",
+        "it": "Grazie mille",
+        "ar": "شكراً جزيلاً",
+        "tr": "Teşekkürler",
+        "ru": "Спасибо",
+        "pt": "Obrigado",
+        "sv": "Tack så mycket",
+        "no": "Tusen takk",
+        "da": "Mange tak",
+        "fi": "Kiitos paljon",
+        "pl": "Dziękuję bardzo",
+        "uk": "Дякую",
+        "el": "Ευχαριστώ",
+        "cs": "Děkuji",
+        "ro": "Mulțumesc",
+        "hu": "Köszönöm",
+        "zh": "谢谢",
+        "ja": "ありがとう",
+        "ko": "감사합니다",
+        "hi": "धन्यवाद",
+        "ur": "شکریہ",
+        "bn": "ধন্যবাদ",
+        "id": "Terima kasih",
+        "ms": "Terima kasih",
+        "vi": "Cảm ơn bạn",
+        "th": "ขอบคุณ",
+        "tl": "Salamat",
+        "ku": "سوپاس",
+        "az": "Çox sağ olun",
+        "he": "תודה רבה",
+        "hy": "Շնորհակալություն",
+        "ka": "მადლობა"
+      }
+    },
+    {
+      "id": "C_FOOD_WATER",
+      "topic": "CAT_FOOD",
+      "level": "A1",
+      "difficulty": "easy",
+      "words": {
+        "fa": "آب معدنی",
+        "en": "Mineral water",
+        "en-US": "Mineral water",
+        "nl": "Mineraalwater",
+        "de": "Mineralwasser",
+        "fr": "Eau minérale",
+        "es": "Agua mineral",
+        "it": "Acqua minerale",
+        "ar": "ماء معدني",
+        "tr": "Maden suyu",
+        "ru": "Минеральная вода",
+        "pt": "Água mineral",
+        "sv": "Mineralvatten",
+        "no": "Mineralvann",
+        "da": "Mineralvand",
+        "fi": "Kivennäisvesi",
+        "pl": "Woda mineralna",
+        "uk": "Мінеральна вода",
+        "el": "Μεταλλικό νερό",
+        "cs": "Minerální voda",
+        "ro": "Apă minerală",
+        "hu": "Ásványvíz",
+        "zh": "矿泉水",
+        "ja": "ミネラルウォーター",
+        "ko": "미네랄 워터",
+        "hi": "खनिज पानी",
+        "ur": "منرل واٹر",
+        "bn": "খনিজ জল",
+        "id": "Air mineral",
+        "ms": "Air mineral",
+        "vi": "Nước khoáng",
+        "th": "น้ำแร่",
+        "tl": "Mineral na tubig",
+        "ku": "ئاوی کانزایی",
+        "az": "Mineral su",
+        "he": "מים מינרליים",
+        "hy": "Հանքային ջուր",
+        "ka": "მინერალური წყალი"
+      }
+    },
+    {
+      "id": "C_FOOD_COFFEE",
+      "topic": "CAT_FOOD",
+      "level": "A1",
+      "difficulty": "easy",
+      "words": {
+        "fa": "قهوه داغ",
+        "en": "Hot coffee",
+        "en-US": "Hot coffee",
+        "nl": "Hete koffie",
+        "de": "Heißer Kaffee",
+        "fr": "Café chaud",
+        "es": "Café caliente",
+        "it": "Caffè caldo",
+        "ar": "قهوة ساخنة",
+        "tr": "Sıcak kahve",
+        "ru": "Горячий кофе",
+        "pt": "Café quente",
+        "sv": "Varmt kaffe",
+        "no": "Varm kaffe",
+        "da": "Varm kaffe",
+        "fi": "Kuuma kahvi",
+        "pl": "Gorąca kawa",
+        "uk": "Гаряча кава",
+        "el": "Ζεστός καφές",
+        "cs": "Horká káva",
+        "ro": "Cafea caldă",
+        "hu": "Forró kávé",
+        "zh": "热咖啡",
+        "ja": "ホットコーヒー",
+        "ko": "따뜻한 커피",
+        "hi": "गर्म कॉफी",
+        "ur": "گرم کافی",
+        "bn": "গরম কফি",
+        "id": "Kopi panas",
+        "ms": "Kopi panas",
+        "vi": "Cà phê nóng",
+        "th": "กาแฟร้อน",
+        "tl": "Mainit na kape",
+        "ku": "قاوەی گەرم",
+        "az": "İsti qəhvə",
+        "he": "קפה חם",
+        "hy": "Տաք սուրճ",
+        "ka": "ცხელი ყავა"
+      }
+    },
+    {
+      "id": "C_FOOD_BREAD",
+      "topic": "CAT_FOOD",
+      "level": "A1",
+      "difficulty": "easy",
+      "words": {
+        "fa": "نان تازه",
+        "en": "Fresh bread",
+        "en-US": "Fresh bread",
+        "nl": "Vers brood",
+        "de": "Frisches Brot",
+        "fr": "Pain frais",
+        "es": "Pan fresco",
+        "it": "Pane fresco",
+        "ar": "خبز طازج",
+        "tr": "Taze ekmek",
+        "ru": "Свежий хлеб",
+        "pt": "Pão fresco",
+        "sv": "Färskt bröd",
+        "no": "Ferskt brød",
+        "da": "Frisk brød",
+        "fi": "Tuore leipä",
+        "pl": "Świeży chleb",
+        "uk": "Свіжий хліб",
+        "el": "Φρέσκο ψωμί",
+        "cs": "Čerstvý chléb",
+        "ro": "Pâine proaspătă",
+        "hu": "Friss kenyér",
+        "zh": "新鲜面包",
+        "ja": "焼きたてのパン",
+        "ko": "신선한 빵",
+        "hi": "ताज़ी रोटी",
+        "ur": "تازہ روٹی",
+        "bn": "তাজা রুটি",
+        "id": "Roti segar",
+        "ms": "Roti segar",
+        "vi": "Bánh mì tươi",
+        "th": "ขนมปังสด",
+        "tl": "Bagong lutong tinapay",
+        "ku": "نانە فڕێش",
+        "az": "Təzə çörək",
+        "he": "לחם טרי",
+        "hy": "Թարմ հաց",
+        "ka": "ახალი პური"
+      }
+    },
+    {
+      "id": "C_REST_BILL",
+      "topic": "CAT_RESTAURANT",
+      "level": "A1",
+      "difficulty": "easy",
+      "words": {
+        "fa": "صورتحساب لطفاً",
+        "en": "The bill, please",
+        "en-US": "Check, please",
+        "nl": "Mag ik de rekening?",
+        "de": "Die Rechnung, bitte",
+        "fr": "L'addition, s'il vous plaît",
+        "es": "La cuenta, por favor",
+        "it": "Il conto, per favore",
+        "ar": "الحساب من فضلك",
+        "tr": "Hesap lütfen",
+        "ru": "Счет, пожалуйста",
+        "pt": "A conta, por favor",
+        "sv": "Notan, tack",
+        "no": "Regningen, takk",
+        "da": "Regningen, tak",
+        "fi": "Lasku, kiitos",
+        "pl": "Rachunek poproszę",
+        "uk": "Рахунок, будь ласка",
+        "el": "Το λογαριασμό, παρακαλώ",
+        "cs": "Účet, prosím",
+        "ro": "Nota de plată, vă rog",
+        "hu": "A számlát, kérem",
+        "zh": "买单，谢谢",
+        "ja": "お会計をお願いします",
+        "ko": "계산서 부탁드립니다",
+        "hi": "बिल लाइए कृपया",
+        "ur": "بل لائیں پلیز",
+        "bn": "বিল দিন দয়া করে",
+        "id": "Minta bonnya",
+        "ms": "Kira bilnya",
+        "vi": "Làm ơn tính tiền",
+        "th": "เช็คบิลด้วยครับ",
+        "tl": "Pakidala ang bill",
+        "ku": "حسابەکە تکایە",
+        "az": "Hesab, zəhmət olmasa",
+        "he": "חשבון, בבקשה",
+        "hy": "Հաշիվը, խնդրեմ",
+        "ka": "ანგარიში, გეთაყვა"
+      }
+    },
+    {
+      "id": "C_REST_MENU",
+      "topic": "CAT_RESTAURANT",
+      "level": "A1",
+      "difficulty": "easy",
+      "words": {
+        "fa": "منوی رستوران",
+        "en": "Restaurant menu",
+        "en-US": "Dinner menu",
+        "nl": "Het menu",
+        "de": "Die Speisekarte",
+        "fr": "Le menu du restaurant",
+        "es": "El menú del restaurante",
+        "it": "Il menù del ristorante",
+        "ar": "قائمة الطعام",
+        "tr": "Yemek menüsü",
+        "ru": "Меню ресторана",
+        "pt": "O menu do restaurante",
+        "sv": "Restaurangmenyn",
+        "no": "Menyen",
+        "da": "Spisekortet",
+        "fi": "Ruokalista",
+        "pl": "Menu restauracji",
+        "uk": "Меню ресторану",
+        "el": "Το μενού του εστιατορίου",
+        "cs": "Jídelní lístek",
+        "ro": "Meniul restaurantului",
+        "hu": "Étlap",
+        "zh": "餐厅菜单",
+        "ja": "レストランのメニュー",
+        "ko": "레스토랑 메뉴판",
+        "hi": "रेस्तरां का मेनू",
+        "ur": "کھانے کا مینو",
+        "bn": "খাবারের তালিকা",
+        "id": "Menu restoran",
+        "ms": "Menu restoran",
+        "vi": "Thực đơn nhà hàng",
+        "th": "เมนูอาหาร",
+        "tl": "Menu ng kainan",
+        "ku": "مێنوی ڕێستۆرانت",
+        "az": "Restoran menyusu",
+        "he": "תפריט המסעדה",
+        "hy": "Ճաշացանկ",
+        "ka": "რესტორნის მენიუ"
+      }
+    },
+    {
+      "id": "C_TRAVEL_AIRPORT",
+      "topic": "CAT_TRAVEL",
+      "level": "A2",
+      "difficulty": "medium",
+      "words": {
+        "fa": "فرودگاه بین‌المللی",
+        "en": "International airport",
+        "en-US": "International airport",
+        "nl": "Internationale luchthaven",
+        "de": "Internationaler Flughafen",
+        "fr": "Aéroport international",
+        "es": "Aeropuerto internacional",
+        "it": "Aeroporto internazionale",
+        "ar": "مطار دولي",
+        "tr": "Uluslararası havalimanı",
+        "ru": "Международный аэропорт",
+        "pt": "Aeroporto internacional",
+        "sv": "Internationell flygplats",
+        "no": "Internasjonal flyplass",
+        "da": "International lufthavn",
+        "fi": "Kansainvälinen lentokenttä",
+        "pl": "Międzynarodowe lotnisko",
+        "uk": "Міжнародний аеропорт",
+        "el": "Διεθνές αεροδρόμιο",
+        "cs": "Mezinárodní letiště",
+        "ro": "Aeroport internațional",
+        "hu": "Nemzetközi repülőtér",
+        "zh": "国际机场",
+        "ja": "国際空港",
+        "ko": "국제공항",
+        "hi": "अंतर्राष्ट्रीय हवाई अड्डा",
+        "ur": "بین الاقوامی ہوائی اڈہ",
+        "bn": "আন্তর্জাতিক বিমানবন্দর",
+        "id": "Bandara internasional",
+        "ms": "Lapangan terbang antarabangsa",
+        "vi": "Sân bay quốc tế",
+        "th": "สนามบินนานาชาติ",
+        "tl": "Pandaigdigang paliparan",
+        "ku": "فڕۆکەخانەی نێودەوڵەتی",
+        "az": "Beynəlxalq hava limanı",
+        "he": "נמל תעופה בינלאומי",
+        "hy": "Միջազգային օդանավակայան",
+        "ka": "საერთაშორისო აეროპორტი"
+      }
+    },
+    {
+      "id": "C_TRAVEL_STATION",
+      "topic": "CAT_TRAVEL",
+      "level": "A2",
+      "difficulty": "medium",
+      "words": {
+        "fa": "ایستگاه مرکزی قطار",
+        "en": "Central train station",
+        "en-US": "Central station",
+        "nl": "Centraal Station",
+        "de": "Hauptbahnhof",
+        "fr": "Gare centrale",
+        "es": "Estación central de tren",
+        "it": "Stazione centrale",
+        "ar": "محطة القطار المركزية",
+        "tr": "Merkez tren istasyonu",
+        "ru": "Центральный вокзал",
+        "pt": "Estação central de comboios",
+        "sv": "Centralstationen",
+        "no": "Sentralstasjonen",
+        "da": "Hovedbanegården",
+        "fi": "Päärautatieasema",
+        "pl": "Dworzec Główny",
+        "uk": "Центральний залізничний вокзал",
+        "el": "Κεντρικός σιδηροδρομικός σταθμός",
+        "cs": "Hlavní nádraží",
+        "ro": "Gara centrală",
+        "hu": "Főpályaudvar",
+        "zh": "中央火车站",
+        "ja": "中央駅",
+        "ko": "중앙 기차역",
+        "hi": "केंद्रीय रेलवे स्टेशन",
+        "ur": "مرکزی ریلوے اسٹیشن",
+        "bn": "কেন্দ্রীয় রেলওয়ে স্টেশন",
+        "id": "Stasiun kereta pusat",
+        "ms": "Stesen kereta api pusat",
+        "vi": "Ga xe lửa trung tâm",
+        "th": "สถานีรถไฟกลาง",
+        "tl": "Sentral na istasyon ng tren",
+        "ku": "وێستگەی ناوەندیی شەمەندەفەر",
+        "az": "Mərkəzi qatar stansiyası",
+        "he": "תחנת רכבת מרכזית",
+        "hy": "Կենտրոնական կայարան",
+        "ka": "ცენტრალური რკინიგზის სადგური"
+      }
+    },
+    {
+      "id": "C_SHOPPING_DISCOUNT",
+      "topic": "CAT_SHOPPING",
+      "level": "A2",
+      "difficulty": "medium",
+      "words": {
+        "fa": "تخفیف ویژه فروشگاه",
+        "en": "Special store discount",
+        "en-US": "Special sale discount",
+        "nl": "Speciale winkelkorting",
+        "de": "Besonderer Rabatt",
+        "fr": "Réduction spéciale",
+        "es": "Descuento especial",
+        "it": "Sconto speciale",
+        "ar": "خصم خاص بالمتجر",
+        "tr": "Özel mağaza indirimi",
+        "ru": "Специальная скидка",
+        "pt": "Desconto especial",
+        "sv": "Särskild rabatt",
+        "no": "Spesiell rabatt",
+        "da": "Særlig rabat",
+        "fi": "Erikoisalennus",
+        "pl": "Specjalny rabat",
+        "uk": "Спеціальна знижка",
+        "el": "Ειδική έκπτωση",
+        "cs": "Zvláštní sleva",
+        "ro": "Reducere specială",
+        "hu": "Különleges kedvezmény",
+        "zh": "特别折扣",
+        "ja": "特別割引",
+        "ko": "특별 할인",
+        "hi": "विशेष छूट",
+        "ur": "خصوصی رعایت",
+        "bn": "বিশেষ ছাড়",
+        "id": "Diskon khusus",
+        "ms": "Diskaun istimewa",
+        "vi": "Giảm giá đặc biệt",
+        "th": "ส่วนลดพิเศษ",
+        "tl": "Espesyal na diskwento",
+        "ku": "داشکاندنی تایبەت",
+        "az": "Xüsusi endirim",
+        "he": "הנחה מיוחדת",
+        "hy": "Հատուկ զեղչ",
+        "ka": "სპეციალური ფასდაკლება"
+      }
+    },
+    {
+      "id": "C_WORK_MEETING",
+      "topic": "CAT_WORK",
+      "level": "B1",
+      "difficulty": "medium",
+      "words": {
+        "fa": "جلسه کاری فوری",
+        "en": "Urgent business meeting",
+        "en-US": "Urgent business meeting",
+        "nl": "Dringende werkbespreking",
+        "de": "Dringendes Meeting",
+        "fr": "Réunion de travail urgente",
+        "es": "Reunión de trabajo urgente",
+        "it": "Riunione di lavoro urgente",
+        "ar": "اجتماع عمل عاجل",
+        "tr": "Acil iş toplantısı",
+        "ru": "Срочная рабочая встреча",
+        "pt": "Reunião de trabalho urgente",
+        "sv": "Brådskande affärsmöte",
+        "no": "Hastearbeidsmøte",
+        "da": "Hastende arbejdsmøde",
+        "fi": "Kiireellinen työkokous",
+        "pl": "Pilne spotkanie biznesowe",
+        "uk": "Термінова робоча нарада",
+        "el": "Επείγουσα συνάντηση εργασίας",
+        "cs": "Naléhavá pracovní schůzka",
+        "ro": "Ședință de lucru urgentă",
+        "hu": "Sürgős munkaértekezlet",
+        "zh": "紧急工作会议",
+        "ja": "緊急のビジネス会議",
+        "ko": "긴급 업무 회의",
+        "hi": "अत्यावश्यक व्यावसायिक बैठक",
+        "ur": "فوری کاروباری میٹنگ",
+        "bn": "জরুরী কাজের বৈঠক",
+        "id": "Rapat kerja mendesak",
+        "ms": "Mesyuarat kerja penting",
+        "vi": "Cuộc họp công việc khẩn cấp",
+        "th": "การประชุมด่วน",
+        "tl": "Agarang pulong sa trabaho",
+        "ku": "کۆبوونەوەی بەپەلەی کار",
+        "az": "Təcili iş görüşü",
+        "he": "פגישת עבודה דחופה",
+        "hy": "Հրատապ աշխատանքային հանդիպում",
+        "ka": "გადაუდებელი საქმიანი შეხვედრა"
+      }
+    },
+    {
+      "id": "C_WORK_COLLAB",
+      "topic": "CAT_WORK",
+      "level": "B2",
+      "difficulty": "hard",
+      "words": {
+        "fa": "همکاری موفقیت‌آمیز",
+        "en": "Successful collaboration",
+        "en-US": "Successful collaboration",
+        "nl": "Succesvolle samenwerking",
+        "de": "Erfolgreiche Zusammenarbeit",
+        "fr": "Collaboration fructueuse",
+        "es": "Colaboración exitosa",
+        "it": "Collaborazione di successo",
+        "ar": "تعاون ناجح ومثمر",
+        "tr": "Başarılı işbirliği",
+        "ru": "Успешное сотрудничество",
+        "pt": "Colaboração bem-sucedida",
+        "sv": "Framgångsrikt samarbete",
+        "no": "Vellykket samarbeid",
+        "da": "Succesfuldt samarbejde",
+        "fi": "Onnistunut yhteistyö",
+        "pl": "Owocna współpraca",
+        "uk": "Успішна співпраця",
+        "el": "Επιτυχής συνεργασία",
+        "cs": "Úspěšná spolupráce",
+        "ro": "Colaborare de succes",
+        "hu": "Sikeres együttműködés",
+        "zh": "成功的合作",
+        "ja": "実りある共同作業",
+        "ko": "성공적인 협력",
+        "hi": "सफल सहयोग",
+        "ur": "کامیاب تعاون",
+        "bn": "সফল সহযোগিতা",
+        "id": "Kolaborasi sukses",
+        "ms": "Kerjasama berjaya",
+        "vi": "Sự hợp tác thành công",
+        "th": "ความร่วมมือที่ประสบความสำเร็จ",
+        "tl": "Matagumpay na pagtutulungan",
+        "ku": "هاوکارییەکی سەرکەوتوو",
+        "az": "Uğurlu əməkdaşlıq",
+        "he": "שיתוף פעולה מוצלח",
+        "hy": "Հաջող համագործակցություն",
+        "ka": "წარმატებული თანამშრომლობა"
+      }
+    },
+    {
+      "id": "C_SMALLTALK_COFFEE",
+      "topic": "CAT_SMALLTALK",
+      "level": "B1",
+      "difficulty": "medium",
+      "words": {
+        "fa": "گپ دوستانه عصرانه",
+        "en": "Afternoon coffee chat",
+        "en-US": "Afternoon coffee chat",
+        "nl": "Gezellige koffieklets",
+        "de": "Gemütliche Kaffeepause",
+        "fr": "Pause café conviviale",
+        "es": "Charla de café con amigos",
+        "it": "Chiacchierata davanti a un caffè",
+        "ar": "دردشة قهوة ودية",
+        "tr": "Kahve eşliğinde sohbet",
+        "ru": "Дружеская беседа за кофе",
+        "pt": "Conversa agradável de café",
+        "sv": "Trevlig fikastund",
+        "no": "Koselig kaffeprat",
+        "da": "Hyggelig kaffesnak",
+        "fi": "Mukava kahvihetki",
+        "pl": "Pogawędka przy kawie",
+        "uk": "Дружня розмова за кавою",
+        "el": "Φιλική κουβέντα για καφέ",
+        "cs": "Povídání u kávy",
+        "ro": "Discuție plăcută la o cafea",
+        "hu": "Kellemes kávézás beszélgetéssel",
+        "zh": "午后咖啡闲聊",
+        "ja": "お茶をしながらの雑談",
+        "ko": "커피 한잔하며 나누는 수다",
+        "hi": "कॉफ़ी पर अनौपचारिक बातचीत",
+        "ur": "کافی پر دوستانہ گفتگو",
+        "bn": "কফি আড্ডার আলাপচারিতা",
+        "id": "Ngobrol santai sambil ngopi",
+        "ms": "Sembang santai minum kopi",
+        "vi": "Trò chuyện bên tách cà phê",
+        "th": "คุยเล่นระหว่างดื่มกาแฟ",
+        "tl": "Kuwentuhan habang nagkakape",
+        "ku": "قسەکردنی دۆستانە بە قاوەوە",
+        "az": "Qəhvə arxasında dost söhbəti",
+        "he": "שיחת קפה נעימה",
+        "hy": "Ընկերական զրույց սուրճի շուրج",
+        "ka": "მეგობრული საუბარი ყავაზე"
+      }
+    },
+    {
+      "id": "C_HEALTH_HOSPITAL",
+      "topic": "CAT_HEALTH",
+      "level": "A2",
+      "difficulty": "medium",
+      "words": {
+        "fa": "بخش اورژانس بیمارستان",
+        "en": "Emergency room department",
+        "en-US": "Emergency room",
+        "nl": "Spoedeisende hulp (SEH)",
+        "de": "Notaufnahme",
+        "fr": "Service des urgences",
+        "es": "Sala de urgencias",
+        "it": "Pronto soccorso",
+        "ar": "قسم الطوارئ بالمستشفى",
+        "tr": "Acil servis bölümü",
+        "ru": "Отделение скорой помощи",
+        "pt": "Serviço de urgência",
+        "sv": "Akutmottagning",
+        "no": "Akuttmottak",
+        "da": "Skadestue",
+        "fi": "Ensiapu",
+        "pl": "Szpitalny oddział ratunkowy (SOR)",
+        "uk": "Відділення невідкладної допомоги",
+        "el": "Τμήμα επειγόντων περιστατικών",
+        "cs": "Pohotovost",
+        "ro": "Unitate de primiri urgențe",
+        "hu": "Sürgősségi osztály",
+        "zh": "医院急诊室",
+        "ja": "病院の救急救命室",
+        "ko": "병원 응급실",
+        "hi": "आपातकालीन कक्ष विभाग",
+        "ur": "ایمرجنسی وارڈ",
+        "bn": "জরুরী বিভাগ",
+        "id": "Instalasi gawat darurat (IGD)",
+        "ms": "Jabatan kecemasan",
+        "vi": "Phòng cấp cứu bệnh viện",
+        "th": "แผนกฉุกเฉิน",
+        "tl": "Kagawaran ng emergency",
+        "ku": "بەشی فریاکەوتنی خێرا",
+        "az": "Təcili yardım şöbəsi",
+        "he": "חדר מיון",
+        "hy": "Շտապօգնության բաժանմունք",
+        "ka": "სასწრაფო დახმარების განყოფილება"
+      }
+    },
+    {
+      "id": "C_EVERYDAY_KEY",
+      "topic": "CAT_EVERYDAY",
+      "level": "A1",
+      "difficulty": "easy",
+      "words": {
+        "fa": "کلید خانه",
+        "en": "House key",
+        "en-US": "House key",
+        "nl": "Huissleutel",
+        "de": "Hausschlüssel",
+        "fr": "Clé de maison",
+        "es": "Llave de casa",
+        "it": "Chiave di casa",
+        "ar": "مفتاح المنزل",
+        "tr": "Ev anahtarı",
+        "ru": "Ключ от дома",
+        "pt": "Chave de casa",
+        "sv": "Husnyckel",
+        "no": "Husnøkkel",
+        "da": "Husnøgle",
+        "fi": "Kotiavain",
+        "pl": "Klucz do domu",
+        "uk": "Ключ від дому",
+        "el": "Κλειδί σπιτιού",
+        "cs": "Klíč od domu",
+        "ro": "Cheia casei",
+        "hu": "Lakáskulcs",
+        "zh": "家门钥匙",
+        "ja": "家の鍵",
+        "ko": "집 열쇠",
+        "hi": "घर की चाबी",
+        "ur": "گھر کی چابی",
+        "bn": "বাড়ির চাবি",
+        "id": "Kunci rumah",
+        "ms": "Kunci rumah",
+        "vi": "Chìa khóa nhà",
+        "th": "กุญแจบ้าน",
+        "tl": "Susi ng bahay",
+        "ku": "کلیلی ماڵ",
+        "az": "Ev açarı",
+        "he": "מפתח הבית",
+        "hy": "Տան բանալի",
+        "ka": "სახლის გასაღები"
+      }
+    }
+  ]
+}

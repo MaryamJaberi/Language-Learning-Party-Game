@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
+    <title>Dour: Language Party Game - Learn Languages Together</title>
+    <meta name="description" content="Multiplayer party game for learning languages with 4, 6, or 8 players passing one phone hand-to-hand.">
+    <meta property="og:title" content="Dour: Language Party Game">
+    <meta property="og:description" content="Multiplayer party game for learning languages with 4, 6, or 8 players passing one phone hand-to-hand.">
+    <meta name="theme-color" content="#EEF3FA">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Dour Game">
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+    <link rel="icon" type="image/svg+xml" href="./icon.svg">
+    <link rel="manifest" href="./manifest.json">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Rubik:wght@400;500;700;800&family=Vazirmatn:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./index.css">
+    <script>
+      (function() {
+        if (typeof window === 'undefined') return;
+
+        // 1. Mock WebSocket for vite-hmr so @vite/client connects cleanly and never closes or rejects
+        if (window.WebSocket) {
+          var NativeWS = window.WebSocket;
+          function MockViteWebSocket(url, protocols) {
+            if (protocols === 'vite-hmr' || (typeof url === 'string' && (url.includes('token=') || url.includes('24678') || url.includes('3000')))) {
+              var target = new EventTarget();
+              target.url = url;
+              target.protocols = protocols;
+              target.readyState = 1; // WebSocket.OPEN
+              target.OPEN = 1;
+              target.CLOSED = 3;
+              target.CONNECTING = 0;
+              target.CLOSING = 2;
+              target.binaryType = 'blob';
+              target.send = function() {};
+              target.close = function() {
+                target.readyState = 3;
+                var evt = new Event('close');
+                if (typeof target.onclose === 'function') target.onclose(evt);
+                target.dispatchEvent(evt);
+              };
+              target.addEventListener = EventTarget.prototype.addEventListener.bind(target);
+              target.removeEventListener = EventTarget.prototype.removeEventListener.bind(target);
+              target.dispatchEvent = EventTarget.prototype.dispatchEvent.bind(target);
+              setTimeout(function() {
+                try {
+                  var evt = new Event('open');
+                  if (typeof target.onopen === 'function') target.onopen(evt);
+                  target.dispatchEvent(evt);
+                } catch(e) {}
+              }, 1);
+              return target;
+            }
+            return new NativeWS(url, protocols);
+          }
+          MockViteWebSocket.prototype = NativeWS.prototype;
+          MockViteWebSocket.CONNECTING = 0;
+          MockViteWebSocket.OPEN = 1;
+          MockViteWebSocket.CLOSING = 2;
+          MockViteWebSocket.CLOSED = 3;
+          window.WebSocket = MockViteWebSocket;
+        }
+
+        // 2. Intercept console.error to suppress any Vite HMR connection logging
+        if (window.console) {
+          var origConsoleError = window.console.error;
+          window.console.error = function() {
+            var args = Array.prototype.slice.call(arguments);
+            var text = args.map(function(a) { return (a && (a.message || a.stack || String(a))) || ''; }).join(' ');
+            if (text.includes('WebSocket') || text.includes('@vite/client')) {
+              return;
+            }
+            return origConsoleError.apply(window.console, arguments);
+          };
+          try {
+            var _cError = window.console.error;
+            Object.defineProperty(window.console, 'error', {
+              configurable: true,
+              enumerable: true,
+              get: function() { return _cError; },
+              set: function(fn) {
+                if (typeof fn !== 'function') { _cError = fn; return; }
+                _cError = function() {
+                  var args = Array.prototype.slice.call(arguments);
+                  var text = args.map(function(a) { return (a && (a.message || a.stack || String(a))) || ''; }).join(' ');
+                  if (text.includes('WebSocket') || text.includes('@vite/client')) return;
+                  return fn.apply(this, arguments);
+                };
+              }
+            });
+          } catch(err) {}
+        }
+
+        // 3. Capture & stop propagation on window event listeners
+        window.addEventListener('unhandledrejection', function(e) {
+          var r = e && e.reason;
+          var msg = (r && (r.message || String(r))) || '';
+          var stk = (r && r.stack) || '';
+          if (msg.includes('WebSocket') || stk.includes('@vite/client') || stk.includes('WebSocket')) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+          }
+        }, { capture: true });
+
+        window.addEventListener('error', function(e) {
+          var msg = (e && (e.message || String(e))) || '';
+          var fn = (e && e.filename) || '';
+          if (msg.includes('WebSocket') || fn.includes('@vite/client')) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+          }
+        }, { capture: true });
+
+        // 4. Intercept window.onunhandledrejection & window.onerror assignments by AI Studio iframe wrapper
+        var _customRejectionHandler = null;
+        try {
+          var existingRejection = window.onunhandledrejection;
+          Object.defineProperty(window, 'onunhandledrejection', {
+            configurable: true,
+            enumerable: true,
+            get: function() { return _customRejectionHandler; },
+            set: function(fn) {
+              if (typeof fn !== 'function') {
+                _customRejectionHandler = fn;
+                return;
+              }
+              _customRejectionHandler = function(event) {
+                var reason = event && event.reason;
+                var message = (reason && (reason.message || String(reason))) || '';
+                var stack = (reason && reason.stack) || '';
+                if (message.includes('WebSocket') || stack.includes('@vite/client') || stack.includes('WebSocket')) {
+                  if (event && event.preventDefault) event.preventDefault();
+                  return;
+                }
+                return fn.call(this, event);
+              };
+            }
+          });
+          if (existingRejection) window.onunhandledrejection = existingRejection;
+        } catch(err) {}
+
+        var _customErrorHandler = null;
+        try {
+          var existingError = window.onerror;
+          Object.defineProperty(window, 'onerror', {
+            configurable: true,
+            enumerable: true,
+            get: function() { return _customErrorHandler; },
+            set: function(fn) {
+              if (typeof fn !== 'function') {
+                _customErrorHandler = fn;
+                return;
+              }
+              _customErrorHandler = function(message, source, lineno, colno, error) {
+                var msg = String(message || '');
+                var src = String(source || '');
+                if (msg.includes('WebSocket') || src.includes('@vite/client')) {
+                  return true;
+                }
+                return fn.call(this, message, source, lineno, colno, error);
+              };
+            }
+          });
+          if (existingError) window.onerror = existingError;
+        } catch(err) {}
+      })();
+    </script>
+    <style>
+        body {
+            font-family: 'Rubik', 'Vazirmatn', system-ui, -apple-system, sans-serif;
+            background-color: #EEF3FA;
+            color: #15204A;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+            touch-action: manipulation;
+            font-synthesis: none;
+        }
+        @media (prefers-color-scheme: dark) {
+            body:not([data-theme="light"]) {
+                background-color: #0E1530;
+                color: #EAF0FF;
+            }
+        }
+        [dir="rtl"] {
+            letter-spacing: 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+<script type="module" src="./index.tsx"></script>
+</body>
+</html>
