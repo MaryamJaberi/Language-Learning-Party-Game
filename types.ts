@@ -11,7 +11,21 @@ export type Language =
   | 'da' | 'fi' | 'el' | 'cs' | 'ro' | 'hu' | 'id' | 'vi' | 'th' | 'ur'
   | 'ku' | 'he' | 'ms' | 'tl' | 'hy' | 'ka' | 'az' | 'bn';
 
-export type CEFRLevel = 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2' | 'all';
+export type CEFRLevel = 
+  | 'A0' 
+  | 'A0+' 
+  | 'A1' 
+  | 'A1+' 
+  | 'A2' 
+  | 'A2+' 
+  | 'B1' 
+  | 'B1+' 
+  | 'B2' 
+  | 'B2+' 
+  | 'C1' 
+  | 'C1+' 
+  | 'C2' 
+  | 'all';
 
 export type ContentType = 
   | 'Vocabulary' 
@@ -38,7 +52,7 @@ export interface LanguageCard {
   id: string;
   nativeLanguage?: Language;
   targetLanguage: Language;
-  cefrLevel: 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2';
+  cefrLevel: Exclude<CEFRLevel, 'all'>;
   topic: string;
   contentType: ContentType;
   learningMode: LearningMode;

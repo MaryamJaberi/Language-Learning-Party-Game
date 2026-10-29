@@ -443,7 +443,7 @@ export const DuelSetupModal: React.FC<Props> = ({
               </span>
             </div>
 
-            <div className="grid grid-cols-5 gap-1.5" role="radiogroup" aria-label={isRTL ? 'سطح دشواری' : 'Proficiency Level'}>
+            <div className="grid grid-cols-4 sm:grid-cols-7 gap-1.5" role="radiogroup" aria-label={isRTL ? 'سطح دشواری' : 'Proficiency Level'}>
               {CEFR_LEVELS.map(lvl => {
                 const isSelected = (cefrLevel === 'all' ? 'A1' : cefrLevel) === lvl.id;
                 const subText = getCefrText(lvl.name, uiLanguage) || lvl.id;

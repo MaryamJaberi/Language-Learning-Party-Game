@@ -1029,9 +1029,9 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
           </span>
         </div>
 
-        {/* Level Pills Responsive Grid (5 real CEFR levels: A1 to C1) */}
+        {/* Level Pills Responsive Grid (All 13 CEFR levels: A0 to C2) */}
         <div 
-          className="grid grid-cols-5 gap-1.5"
+          className="grid grid-cols-4 sm:grid-cols-7 gap-1.5"
           role="radiogroup" 
           aria-label={t.cefrLevel || (isRTL ? 'سطح دشواری' : 'Proficiency Level')}
         >

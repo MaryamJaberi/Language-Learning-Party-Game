@@ -274,7 +274,7 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
         </button>
 
         {/* Directly visible CEFR Pills */}
-        <div className="grid grid-cols-5 gap-1.5 pt-1">
+        <div className="grid grid-cols-4 sm:grid-cols-7 gap-1.5 pt-1">
           {CEFR_LEVELS.map(level => {
             const isSelected = currentCefr === level.id;
             const levelName = level.name[settings.language] || level.name.en || level.id;

@@ -3,22 +3,44 @@
 // Science basis: IRT/Elo ability-difficulty model (as in Duolingo Birdbrain),
 // 85% rule (Wilson et al., 2019), FSRS power-law forgetting curve, peak-end rule.
 
-export type CEFR = 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2';
+export type CEFR = 
+  | 'A0' 
+  | 'A0+' 
+  | 'A1' 
+  | 'A1+' 
+  | 'A2' 
+  | 'A2+' 
+  | 'B1' 
+  | 'B1+' 
+  | 'B2' 
+  | 'B2+' 
+  | 'C1' 
+  | 'C1+' 
+  | 'C2';
 export type ExerciseType = 'choice2' | 'recognize' | 'translate' | 'produce';
 export type CardBucket = 'new' | 'due' | 'learned' | 'requeue' | 'consolidate';
 export type EngineMode = 'normal' | 'easier' | 'harder' | 'rescue';
 export type CardIndicator = 'review' | 'challenge' | 'balanced';
 
 export const CEFR_B: Record<CEFR, number> = {
+  A0: -2.25,
+  'A0+': -1.85,
   A1: -1.5,
+  'A1+': -1.15,
   A2: -0.75,
+  'A2+': -0.35,
   B1: 0,
+  'B1+': 0.35,
   B2: 0.75,
+  'B2+': 1.15,
   C1: 1.5,
+  'C1+': 1.85,
   C2: 2.25
 };
 
-export const CEFR_ORDER: CEFR[] = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+export const CEFR_ORDER: CEFR[] = [
+  'A0', 'A0+', 'A1', 'A1+', 'A2', 'A2+', 'B1', 'B1+', 'B2', 'B2+', 'C1', 'C1+', 'C2'
+];
 
 export const TYPE_OFFSET: Record<ExerciseType, number> = {
   choice2: -1.2,

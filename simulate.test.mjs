@@ -11,7 +11,7 @@ function gauss(rng) { let u = 0, v = 0; while (!u) u = rng(); while (!v) v = rng
 function makeBank(rng, n = 660) {
   const bank = [];
   for (let i = 0; i < n; i++) {
-    const cefr = CEFR_ORDER[Math.min(5, Math.floor(rng() * 5))];
+    const cefr = CEFR_ORDER[Math.floor(rng() * CEFR_ORDER.length)];
     bank.push({ id: 'w' + i, cefr, trueOffset: gauss(rng) * 0.5 }); // true difficulty unknown to engine
   }
   return bank;
@@ -43,7 +43,7 @@ function respond(L, card, rng, now) {
 // ---- baseline: random card from same levels, fixed type (what the app does today) ----
 class RandomSession {
   constructor(player, bank, opts) { this.bank = bank.filter((i) => [opts.level].includes(i.cefr)); this.rng = opts.rng; this.shown = new Set(); this.history = []; }
-  next() { const c = this.bank.filter((i) => !this.shown.has(i.id)); const item = c[Math.floor(this.rng() * c.length)]; this.shown.add(item.id); this.pending = { item, type: 'translate', hint: false, bucket: 'new' }; return this.pending; }
+  next() { const c = this.bank.filter((i) => !this.shown.has(i.id)); const pool = c.length ? c : (this.bank.length ? this.bank : [{ id: 'fallback', cefr: 'A1', trueOffset: 0 }]); const item = pool[Math.floor(this.rng() * pool.length)]; this.shown.add(item.id); this.pending = { item, type: 'translate', hint: false, bucket: 'new' }; return this.pending; }
   answer({ correct }) { this.history.push({ ...this.pending, correct, credit: correct ? 1 : 0 }); }
 }
 

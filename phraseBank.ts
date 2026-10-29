@@ -3,7 +3,7 @@ import { Language, CEFRLevel, LanguageCard, ContentType, LearningMode, CardGameM
 
 interface BankPhrase {
   id: string;
-  level: 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2';
+  level: Exclude<CEFRLevel, 'all'>;
   rawLevel?: string;
   type: string;
   difficulty: 'easy' | 'medium' | 'hard';
@@ -15,14 +15,19 @@ interface BankPhrase {
 const PHRASES = phrasesData as BankPhrase[];
 
 export const PHRASE_STATS = {
-  A0: PHRASES.filter((p) => p.rawLevel === 'A0').length,
-  A0Plus: PHRASES.filter((p) => p.rawLevel === 'A0+').length,
+  A0: PHRASES.filter((p) => p.rawLevel === 'A0' || p.level === 'A0').length,
+  A0Plus: PHRASES.filter((p) => p.rawLevel === 'A0+' || p.level === 'A0+').length,
   A1: PHRASES.filter((p) => p.level === 'A1').length,
+  A1Plus: PHRASES.filter((p) => p.rawLevel === 'A1+' || p.level === 'A1+').length,
   A2: PHRASES.filter((p) => p.level === 'A2').length,
+  A2Plus: PHRASES.filter((p) => p.rawLevel === 'A2+' || p.level === 'A2+').length,
   A2_B1: PHRASES.filter((p) => p.rawLevel === 'A2-B1').length,
   B1: PHRASES.filter((p) => p.level === 'B1').length,
+  B1Plus: PHRASES.filter((p) => p.rawLevel === 'B1+' || p.level === 'B1+').length,
   B2: PHRASES.filter((p) => p.level === 'B2').length,
+  B2Plus: PHRASES.filter((p) => p.rawLevel === 'B2+' || p.level === 'B2+').length,
   C1: PHRASES.filter((p) => p.level === 'C1').length,
+  C1Plus: PHRASES.filter((p) => p.rawLevel === 'C1+' || p.level === 'C1+').length,
   C2: PHRASES.filter((p) => p.level === 'C2').length,
   total: PHRASES.length,
 };
@@ -58,8 +63,8 @@ function pointsFor(d: 'easy' | 'medium' | 'hard'): number {
 function phraseFits(p: BankPhrase, selected: CEFRLevel): boolean {
   if (selected === 'all') return true;
   if (selected === p.level) return true;
+  if (p.rawLevel && selected === p.rawLevel) return true;
   if (selected === 'B1' && p.rawLevel === 'A2-B1') return true;
-  if (selected === 'C1' && p.level === 'C2') return true;
   return false;
 }
 
