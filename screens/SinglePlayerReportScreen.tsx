@@ -17,7 +17,10 @@ import {
   AlertCircle,
   Clock,
   Sliders,
-  Home
+  Home,
+  Lock,
+  Check,
+  Swords
 } from 'lucide-react';
 
 interface Props {
@@ -181,7 +184,7 @@ const SinglePlayerReportScreen: React.FC<Props> = ({
                 return (
                   <div
                     key={lvl}
-                    className={`py-1.5 px-1 rounded-xl border transition-all ${
+                    className={`py-1.5 px-1 rounded-xl border transition-all flex flex-col items-center justify-center ${
                       isCurrent
                         ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs scale-105'
                         : isPassed
@@ -190,8 +193,14 @@ const SinglePlayerReportScreen: React.FC<Props> = ({
                     }`}
                   >
                     <div>{lvl}</div>
-                    <div className="text-[8px] mt-0.5">
-                      {isCurrent ? (isRTL ? 'فعلی' : 'Current') : isPassed ? '✓' : '🔒'}
+                    <div className="text-[8px] mt-0.5 flex items-center justify-center">
+                      {isCurrent ? (
+                        isRTL ? 'فعلی' : 'Current'
+                      ) : isPassed ? (
+                        <Check size={10} />
+                      ) : (
+                        <Lock size={10} />
+                      )}
                     </div>
                   </div>
                 );
@@ -211,8 +220,8 @@ const SinglePlayerReportScreen: React.FC<Props> = ({
             onClick={async () => {
               sound.playClick();
               const shareText = isRTL 
-                ? `من در بازی زبانی دور (DOŪR) به امتیاز ${report.totalScore.toLocaleString()} در سطح ${report.settings?.cefrLevel || 'A1'} رسیدم! می‌تونی رکوردمو بزنی؟ 🔥🎯`
-                : `I reached ${report.totalScore.toLocaleString()} points at ${report.settings?.cefrLevel || 'A1'} level in DOŪR! Can you beat my score? 🔥🎯`;
+                ? `من در بازی زبانی دور (DOŪR) به امتیاز ${report.totalScore.toLocaleString()} در سطح ${report.settings?.cefrLevel || 'A1'} رسیدم! می‌تونی رکوردمو بزنی؟`
+                : `I reached ${report.totalScore.toLocaleString()} points at ${report.settings?.cefrLevel || 'A1'} level in DOŪR! Can you beat my score?`;
               
               if (navigator.share) {
                 try {
@@ -234,13 +243,14 @@ const SinglePlayerReportScreen: React.FC<Props> = ({
             }}
             className="w-full min-h-[44px] py-2.5 px-3 rounded-xl bg-gradient-to-r from-[var(--lapis)] to-[var(--turq)] text-white font-bold text-xs shadow-xs hover:opacity-95 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer mb-2"
           >
-            <Sparkles size={14} className="text-[var(--saffron)]" />
-            <span>{isRTL ? 'دعوت و چالش با دوستان ⚔️ (ارسال به واتساپ/تلگرام)' : 'Challenge Friends ⚔️ (Share to WhatsApp/Telegram)'}</span>
+            <Swords size={14} className="text-[var(--saffron)]" />
+            <span>{isRTL ? 'دعوت و چالش با دوستان (ارسال به واتساپ/تلگرام)' : 'Challenge Friends (Share to WhatsApp/Telegram)'}</span>
           </button>
 
           {isAllTimeBest && (
-            <div className="mb-2 p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 text-emerald-600 dark:text-emerald-400 text-xs font-bold text-center animate-pulse">
-              🎉 {isRTL ? 'رکورد شخصی جدید! شما بهترین امتیاز خود را ثبت کردید!' : 'New Personal Record! You achieved your highest score ever!'}
+            <div className="mb-2 p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 text-emerald-600 dark:text-emerald-400 text-xs font-bold text-center flex items-center justify-center gap-1.5 animate-pulse">
+              <Sparkles size={14} />
+              <span>{isRTL ? 'رکورد شخصی جدید! شما بهترین امتیاز خود را ثبت کردید!' : 'New Personal Record! You achieved your highest score ever!'}</span>
             </div>
           )}
 

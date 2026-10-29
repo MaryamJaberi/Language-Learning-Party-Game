@@ -16,7 +16,8 @@ import {
   Wifi, 
   Smartphone,
   Crown,
-  Users
+  Users,
+  Pause
 } from 'lucide-react';
 import { OnlineDuelRoom, Language, LanguageCard } from '../types';
 import { 
@@ -29,12 +30,17 @@ import { sound } from '../soundManager';
 import { FlagIcon } from '../components/FlagIcon';
 import { generateChallengingReflexOptions } from '../utils/testQuestionEngine';
 import { recordMistake } from '../mistakeReviewService';
+import { isRtlLang, toPersianDigits } from '../ui';
+import ExitConfirmModal from '../components/ExitConfirmModal';
 
 interface Props {
   initialRoom: OnlineDuelRoom;
   myRole: 'p1' | 'p2';
   uiLanguage: Language;
   onExit: () => void;
+  onExitHome?: () => void;
+  onExitSetup?: () => void;
+  onOpenHelp?: () => void;
   isRTL?: boolean;
 }
 
@@ -43,6 +49,9 @@ export const OnlineDuelScreen: React.FC<Props> = ({
   myRole,
   uiLanguage,
   onExit,
+  onExitHome,
+  onExitSetup,
+  onOpenHelp,
   isRTL = true
 }) => {
   const [room, setRoom] = useState<OnlineDuelRoom>(initialRoom);
@@ -276,14 +285,24 @@ export const OnlineDuelScreen: React.FC<Props> = ({
           </p>
         </div>
 
-        {/* Exit Modal */}
+        {/* Stop / Pause Modal */}
         {showExitModal && (
           <ExitConfirmModal
             isRTL={isRTL}
             onCancel={() => setShowExitModal(false)}
-            onConfirm={() => {
+            onOpenHelp={onOpenHelp ? () => {
               setShowExitModal(false);
-              onExit();
+              onOpenHelp();
+            } : undefined}
+            onExitHome={() => {
+              setShowExitModal(false);
+              if (onExitHome) onExitHome();
+              else onExit();
+            }}
+            onExitSetup={() => {
+              setShowExitModal(false);
+              if (onExitSetup) onExitSetup();
+              else onExit();
             }}
           />
         )}
@@ -302,55 +321,30 @@ export const OnlineDuelScreen: React.FC<Props> = ({
 
   return (
     <div 
-      className={`w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto min-h-full h-full min-h-0 flex-1 px-2.5 sm:px-4 py-2 sm:py-3 font-ui flex flex-col justify-between relative overflow-y-auto overscroll-contain transition-all duration-300 ${
-        isDizzy ? 'blur-[2px] filter contrast-125' : ''
-      }`}
+      className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto min-h-full h-full min-h-0 flex-1 px-2.5 sm:px-4 py-2 sm:py-3 font-ui flex flex-col justify-between relative overflow-y-auto overscroll-contain transition-all duration-300"
       dir={isRTL ? 'rtl' : 'ltr'}
     >
-      {/* Dizzy Shock Overlay if Sabotaged */}
-      {isDizzy && (
-        <div className="fixed inset-0 z-40 bg-purple-900/30 backdrop-blur-xs flex items-center justify-center pointer-events-none animate-pulse">
-          <div className="p-4 bg-purple-600 text-white rounded-2xl font-black text-sm shadow-2xl flex items-center gap-2">
-            <Zap size={22} className="animate-spin" />
-            <span>{isRTL ? '⚡ شوک گیج‌کننده حریف!' : '⚡ Opponent Sabotage Shock!'}</span>
-          </div>
-        </div>
-      )}
-
       {/* Top Bar: Opponent Info & Header */}
       <div className="space-y-2">
         <div className="flex items-center justify-between bg-[var(--panel)] p-2.5 rounded-2xl border border-[var(--line)] shadow-xs">
           <button
             type="button"
             onClick={() => setShowExitModal(true)}
-            className="w-8 h-8 rounded-xl bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] flex items-center justify-center hover:bg-rose-500/10 hover:text-rose-500 cursor-pointer"
-            title={isRTL ? 'خروج از دوئل' : 'Exit Duel'}
+            className="h-9 px-3 rounded-xl bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] flex items-center justify-center gap-1.5 hover:bg-[var(--lapis-soft)] cursor-pointer font-extrabold text-xs"
+            title={isRTL ? 'توقف بازی' : 'Pause Game'}
+            aria-label={isRTL ? 'توقف بازی' : 'Pause Game'}
           >
-            <ArrowLeft size={16} className={isRTL ? 'rotate-180' : ''} />
+            <Pause size={15} className="text-[var(--lapis)] shrink-0" />
+            <span>{isRTL ? 'توقف بازی' : 'Pause'}</span>
           </button>
 
           {/* Room Code Badge */}
-          <div className="flex items-center gap-1.5 px-2 py-1 bg-[var(--bg)] rounded-lg border border-[var(--line)]">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[var(--bg)] rounded-lg border border-[var(--line)]">
             <Wifi size={12} className="text-emerald-500" />
             <span className="text-[11px] font-mono font-black text-[var(--ink)]">{room.roomCode}</span>
           </div>
 
-          {/* Sabotage Power */}
-          {room.sabotageEnabled && (
-            <button
-              type="button"
-              disabled={myPlayer?.sabotageUsed || room.matchWinner !== null}
-              onClick={handleSabotage}
-              className={`px-2.5 py-1 rounded-xl text-xs font-black flex items-center gap-1 transition-all cursor-pointer ${
-                myPlayer?.sabotageUsed
-                  ? 'bg-zinc-200 dark:bg-zinc-800 text-zinc-400 opacity-50'
-                  : 'bg-purple-600 hover:bg-purple-700 text-white shadow-xs active:scale-95 animate-pulse'
-              }`}
-            >
-              <Zap size={13} />
-              <span>{myPlayer?.sabotageUsed ? (isRTL ? 'استفاده شد' : 'Used') : (isRTL ? '⚡ شوک' : '⚡ Shock')}</span>
-            </button>
-          )}
+          <div className="w-9" />
         </div>
 
         {/* Players Status & Tug-of-war Bar */}
@@ -358,17 +352,19 @@ export const OnlineDuelScreen: React.FC<Props> = ({
           <div className="flex items-center justify-between text-xs font-black">
             {/* Player 1 (Blue) */}
             <div className={`flex items-center gap-2 ${myRole === 'p1' ? 'text-[#2347C5]' : 'text-[var(--mute)]'}`}>
-              <span className="text-xl">{room.player1.avatar}</span>
+              <span className="w-7 h-7 rounded-lg bg-[#2347C5] text-white text-xs font-black flex items-center justify-center shrink-0">
+                #{isRTL ? toPersianDigits(1) : 1}
+              </span>
               <div>
                 <div className="flex items-center gap-1">
                   <span>{room.player1.name}</span>
                   {myRole === 'p1' && <span className="text-[9px] bg-[#2347C5]/15 text-[#2347C5] px-1 rounded-sm">{isRTL ? 'شما' : 'You'}</span>}
                 </div>
                 <div className="flex items-center gap-1 text-[11px]">
-                  <span className="text-base font-black text-[#2347C5]">{room.player1.score}</span>
+                  <span className="text-base font-black text-[#2347C5]">{isRTL ? toPersianDigits(room.player1.score) : room.player1.score}</span>
                   {room.player1.streak >= 2 && (
                     <span className="flex items-center text-amber-500 font-bold">
-                      <Flame size={12} className="animate-bounce" /> {room.player1.streak}x
+                      <Flame size={12} className="animate-bounce" /> {isRTL ? toPersianDigits(room.player1.streak) : room.player1.streak}x
                     </span>
                   )}
                 </div>
@@ -379,7 +375,7 @@ export const OnlineDuelScreen: React.FC<Props> = ({
             <div className="flex flex-col items-center">
               <span className="text-[9px] font-bold text-[var(--mute)] uppercase tracking-wider">{isRTL ? 'هدف برد' : 'Target'}</span>
               <span className="text-xs font-black px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-600 border border-amber-400/30">
-                {winningScore}
+                {isRTL ? toPersianDigits(winningScore) : winningScore}
               </span>
             </div>
 
@@ -393,13 +389,15 @@ export const OnlineDuelScreen: React.FC<Props> = ({
                 <div className="flex items-center gap-1 justify-end text-[11px]">
                   {room.player2 && room.player2.streak >= 2 && (
                     <span className="flex items-center text-amber-500 font-bold">
-                      <Flame size={12} className="animate-bounce" /> {room.player2.streak}x
+                      <Flame size={12} className="animate-bounce" /> {isRTL ? toPersianDigits(room.player2.streak) : room.player2.streak}x
                     </span>
                   )}
-                  <span className="text-base font-black text-[#E0533C]">{room.player2?.score || 0}</span>
+                  <span className="text-base font-black text-[#E0533C]">{isRTL ? toPersianDigits(room.player2?.score || 0) : (room.player2?.score || 0)}</span>
                 </div>
               </div>
-              <span className="text-xl">{room.player2?.avatar || '🦁'}</span>
+              <span className="w-7 h-7 rounded-lg bg-[#E0533C] text-white text-xs font-black flex items-center justify-center shrink-0">
+                #{isRTL ? toPersianDigits(2) : 2}
+              </span>
             </div>
           </div>
 
@@ -443,25 +441,9 @@ export const OnlineDuelScreen: React.FC<Props> = ({
 
       {/* Center Prompt Card */}
       {currentCard && (
-        <div className="bg-[var(--panel)] border-2 border-[var(--line)] rounded-[26px] p-5 shadow-xl text-center space-y-3 relative overflow-hidden">
-          {/* CEFR Level Tag & Flag */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <FlagIcon language={room.targetLanguage} size={18} />
-              <span className="text-[10px] font-black uppercase text-[var(--mute)]">
-                {currentCard.topic.replace('CAT_', '')}
-              </span>
-            </div>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-[var(--turq)]/15 text-[var(--turq)] border border-[var(--turq)]/30">
-              {currentCard.cefrLevel}
-            </span>
-          </div>
-
+        <div className="bg-[var(--panel)] border-2 border-[var(--line)] rounded-[26px] p-5 shadow-xl text-center space-y-2 relative overflow-hidden">
           {/* Main Target prompt */}
           <div className="py-2">
-            <span className="text-[11px] font-bold text-[var(--mute)] block mb-1">
-              {isRTL ? 'معادل یا ترجمه صحیح را انتخاب کن:' : 'Select the correct translation/match:'}
-            </span>
             <h3 className="text-xl sm:text-2xl font-black text-[var(--ink)] leading-snug">
               {currentCard.prompt || currentCard.translation}
             </h3>
@@ -484,14 +466,16 @@ export const OnlineDuelScreen: React.FC<Props> = ({
           const isMySelection = selectedAnswer === choice;
           const showSuccess = room.roundWinner && isCorrectAnswer;
           const showFailure = isMySelection && !isCorrectAnswer;
+          const isChoiceRtl = isRtlLang(currentCard?.targetLanguage || room.targetLanguage);
 
           return (
             <button
               key={`opt-${idx}-${choice}`}
               type="button"
+              dir={isChoiceRtl ? 'rtl' : 'ltr'}
               disabled={myPlayer?.isLocked || room.status !== 'playing' || room.roundWinner !== null}
               onClick={() => handleAnswerClick(choice)}
-              className={`p-3.5 rounded-2xl text-xs sm:text-sm font-black transition-all cursor-pointer flex items-center justify-center text-center shadow-md active:scale-95 disabled:opacity-50 select-none min-h-[64px] ${
+              className={`p-3 rounded-2xl text-xs sm:text-sm font-black leading-snug transition-all cursor-pointer flex items-center justify-center text-center shadow-md active:scale-95 disabled:opacity-50 select-none min-h-[64px] line-clamp-2 break-words whitespace-normal ${
                 showSuccess
                   ? 'bg-emerald-500 text-white scale-102 ring-4 ring-emerald-300'
                   : showFailure
@@ -499,7 +483,7 @@ export const OnlineDuelScreen: React.FC<Props> = ({
                     : 'bg-[var(--panel)] hover:bg-[var(--bg)] border-2 border-[var(--line)] text-[var(--ink)] hover:border-[var(--lapis)]'
               }`}
             >
-              <span>{choice}</span>
+              <span className="line-clamp-2 break-words">{choice}</span>
             </button>
           );
         })}
@@ -553,14 +537,24 @@ export const OnlineDuelScreen: React.FC<Props> = ({
         </div>
       )}
 
-      {/* Exit Modal */}
+      {/* Stop / Pause Game Modal */}
       {showExitModal && (
         <ExitConfirmModal
           isRTL={isRTL}
           onCancel={() => setShowExitModal(false)}
-          onConfirm={() => {
+          onOpenHelp={onOpenHelp ? () => {
             setShowExitModal(false);
-            onExit();
+            onOpenHelp();
+          } : undefined}
+          onExitHome={() => {
+            setShowExitModal(false);
+            if (onExitHome) onExitHome();
+            else onExit();
+          }}
+          onExitSetup={() => {
+            setShowExitModal(false);
+            if (onExitSetup) onExitSetup();
+            else onExit();
           }}
         />
       )}
@@ -568,67 +562,4 @@ export const OnlineDuelScreen: React.FC<Props> = ({
   );
 };
 
-// Reusable Exit Modal
-interface ExitModalProps {
-  isRTL: boolean;
-  onCancel: () => void;
-  onConfirm: () => void;
-}
-
-export const ExitConfirmModal: React.FC<ExitModalProps> = ({
-  isRTL,
-  onCancel,
-  onConfirm
-}) => {
-  return (
-    <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-fade-in font-ui"
-      dir={isRTL ? 'rtl' : 'ltr'}
-      onClick={onCancel}
-    >
-      <div 
-        className="w-full max-w-xs bg-[var(--panel)] border-2 border-rose-500/40 rounded-[24px] p-5 shadow-2xl text-[var(--ink)] space-y-4 text-center"
-        onClick={e => e.stopPropagation()}
-      >
-        <div className="w-12 h-12 rounded-2xl bg-rose-500/15 text-rose-500 flex items-center justify-center mx-auto">
-          <AlertTriangle size={26} />
-        </div>
-
-        <div>
-          <h3 className="text-base font-black text-[var(--ink)]">
-            {isRTL ? 'مطمئنی می‌خوای خارج بشی؟' : 'Are you sure you want to quit?'}
-          </h3>
-          <p className="text-xs text-[var(--mute)] mt-1.5 leading-relaxed">
-            {isRTL 
-              ? 'اگر الان خارج بشی، بازی متوقف خواهد شد و امتیازات ثبت نمی‌شوند.' 
-              : 'If you quit now, the match will end and progress will be lost.'}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-2 pt-1">
-          <button
-            type="button"
-            onClick={() => {
-              sound.playClick();
-              onCancel();
-            }}
-            className="py-2.5 rounded-xl border border-[var(--line)] text-xs font-bold hover:bg-[var(--bg)] cursor-pointer"
-          >
-            {isRTL ? 'ادامه بازی' : 'Keep Playing'}
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              sound.playElimination();
-              onConfirm();
-            }}
-            className="py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-xs font-black shadow-md cursor-pointer"
-          >
-            {isRTL ? 'بله، خروج' : 'Yes, Quit'}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
 export default OnlineDuelScreen;

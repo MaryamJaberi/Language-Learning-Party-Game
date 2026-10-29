@@ -32,193 +32,193 @@ import { LanguagePickerModal } from '../components/LanguagePickerModal';
 const RULES_CHALLENGE_AND_COMBO: Record<string, { challenge: string; combo: string; title: string }> = {
   fa: {
     title: 'کارت‌های چالش و کمبو',
-    challenge: 'کارت‌های چالش ⭐: برخی کارت‌ها دشوارترند و در صورت حدس درست ۲+ امتیاز دارند.',
-    combo: 'کمبو 🔥: حدس‌های متوالی درست زنجیره می‌سازند؛ رد کردن آن را ریست می‌کند. بدون امتیاز اضافی.'
+    challenge: 'کارت‌های چالش: برخی کارت‌ها دشوارترند و در صورت حدس درست ۲+ امتیاز دارند.',
+    combo: 'کمبو: حدس‌های متوالی درست زنجیره می‌سازند؛ رد کردن آن را ریست می‌کند. بدون امتیاز اضافی.'
   },
   en: {
     title: 'Challenge Cards & Combo',
-    challenge: 'Challenge cards ⭐: some cards are harder and score +2 when guessed right.',
-    combo: 'Combo 🔥: guess correctly in a row to build a streak; skipping resets it. No extra points.'
+    challenge: 'Challenge cards: some cards are harder and score +2 when guessed right.',
+    combo: 'Combo: guess correctly in a row to build a streak; skipping resets it. No extra points.'
   },
   'en-US': {
     title: 'Challenge Cards & Combo',
-    challenge: 'Challenge cards ⭐: some cards are harder and score +2 when guessed right.',
-    combo: 'Combo 🔥: guess correctly in a row to build a streak; skipping resets it. No extra points.'
+    challenge: 'Challenge cards: some cards are harder and score +2 when guessed right.',
+    combo: 'Combo: guess correctly in a row to build a streak; skipping resets it. No extra points.'
   },
   nl: {
     title: 'Uitdaagkaarten & Combo',
-    challenge: 'Uitdaagkaarten ⭐: sommige kaarten zijn moeilijker en leveren +2 punten op bij een goed antwoord.',
-    combo: 'Combo 🔥: raad achter elkaar goed voor een reeks; overslaan reset dit. Geen extra punten.'
+    challenge: 'Uitdaagkaarten: sommige kaarten zijn moeilijker en leveren +2 punten op bij een goed antwoord.',
+    combo: 'Combo: raad achter elkaar goed voor een reeks; overslaan reset dit. Geen extra punten.'
   },
   de: {
     title: 'Herausforderungskarten & Kombo',
-    challenge: 'Herausforderungskarten ⭐: Manche Karten sind schwerer und bringen +2 Punkte bei richtiger Antwort.',
-    combo: 'Kombo 🔥: Richtig in Folge raten für eine Serie; Überspringen setzt sie zurück. Keine Extrapunkte.'
+    challenge: 'Herausforderungskarten: Manche Karten sind schwerer und bringen +2 Punkte bei richtiger Antwort.',
+    combo: 'Kombo: Richtig in Folge raten für eine Serie; Überspringen setzt sie zurück. Keine Extrapunkte.'
   },
   fr: {
     title: 'Cartes défi & Combo',
-    challenge: 'Cartes défi ⭐ : certaines cartes sont plus difficiles et rapportent +2 si elles sont réussies.',
-    combo: 'Combo 🔥 : devinez correctement d\'affilée pour une série ; passer réinitialise. Pas de points bonus.'
+    challenge: 'Cartes défi : certaines cartes sont plus difficiles et rapportent +2 si elles sont réussies.',
+    combo: 'Combo : devinez correctement d\'affilée pour une série ; passer réinitialise. Pas de points bonus.'
   },
   es: {
     title: 'Tarjetas de desafío y Combo',
-    challenge: 'Tarjetas de desafío ⭐: algunas tarjetas son más difíciles y dan +2 si se aciertan.',
-    combo: 'Combo 🔥: acierta seguido para crear una racha; pasar la reinicia. Sin puntos extra.'
+    challenge: 'Tarjetas de desafío: algunas tarjetas son más difíciles y dan +2 si se aciertan.',
+    combo: 'Combo: acierta seguido para crear una racha; pasar la reinicia. Sin puntos extra.'
   },
   it: {
     title: 'Carte sfida & Combo',
-    challenge: 'Carte sfida ⭐: alcune carte sono più difficili e valgono +2 punti se indovinate.',
-    combo: 'Combo 🔥: indovina di fila per creare una serie; passare la azzera. Nessun punto extra.'
+    challenge: 'Carte sfida: alcune carte sono più difficili e valgono +2 punti se indovinate.',
+    combo: 'Combo: indovina di fila per creare una serie; passare la azzera. Nessun punto extra.'
   },
   tr: {
     title: 'Meydan Okuma Kartları ve Kombo',
-    challenge: 'Meydan okuma kartları ⭐: bazı kartlar daha zordur ve doğru bilinirse +2 puan kazandırır.',
-    combo: 'Kombo 🔥: seri yapmak için peş peşe doğru bilin; pas geçmek sıfırlar. Ekstra puan yok.'
+    challenge: 'Meydan okuma kartları: bazı kartlar daha zordur ve doğru bilinirse +2 puan kazandırır.',
+    combo: 'Kombo: seri yapmak için peş peşe doğru bilin; pas geçmek sıfırlar. Ekstra puan yok.'
   },
   ar: {
     title: 'بطاقات التحدي والكومبو',
-    challenge: 'بطاقات التحدي ⭐: بعض البطاقات أصعب وتمنح +2 نقطة عند تخمينها بشكل صحيح.',
-    combo: 'كومبو 🔥: خمّن بشكل صحيح متتالٍ لبناء سلسلة؛ التخطي يعيد ضبطها. بدون نقاط إضافية.'
+    challenge: 'بطاقات التحدي: بعض البطاقات أصعب وتمنح +2 نقطة عند تخمينها بشكل صحيح.',
+    combo: 'كومبو: خمّن بشكل صحيح متتالٍ لبناء سلسلة؛ التخطي يعيد ضبطها. بدون نقاط إضافية.'
   },
   ru: {
     title: 'Карты-вызовы и Комбо',
-    challenge: 'Карты-вызовы ⭐: некоторые карты сложнее и дают +2 очка при правильном ответе.',
-    combo: 'Комбо 🔥: угадывайте подряд для серии; пропуск сбрасывает ее. Без дополнительных очков.'
+    challenge: 'Карты-вызовы: некоторые карты сложнее и дают +2 очка при правильном ответе.',
+    combo: 'Комбо: угадывайте подряд для серии; пропуск сбрасывает ее. Без дополнительных очков.'
   },
   zh: {
     title: '挑战卡与连击',
-    challenge: '挑战卡 ⭐：部分卡片难度更高，猜对可得+2分。',
-    combo: '连击 🔥：连续猜对可累积连击；跳过则重置连击。无额外加分。'
+    challenge: '挑战卡：部分卡片难度更高，猜对可得+2分。',
+    combo: '连击：连续猜对可累积连击；跳过则重置连击。无额外加分。'
   },
   ja: {
     title: 'チャレンジカード＆コンボ',
-    challenge: 'チャレンジカード ⭐：難易度が高いカードで、正解すると+2点獲得できます。',
-    combo: 'コンボ 🔥：連続正解でストリークを構築。スキップでリセット。追加点はありません。'
+    challenge: 'チャレンジカード：難易度が高いカードで、正解すると+2点獲得できます。',
+    combo: 'コンボ：連続正解でストリークを構築。スキップでリセット。追加点はありません。'
   },
   ko: {
     title: '챌린지 카드 & 콤보',
-    challenge: '챌린지 카드 ⭐: 더 어려운 카드이며 정답 시 +2점을 획득합니다.',
-    combo: '콤보 🔥: 연속으로 맞히면 연속 기록이 쌓이며, 건너뛰면 초기화됩니다. 추가 점수 없음.'
+    challenge: '챌린지 카드: 더 어려운 카드이며 정답 시 +2점을 획득합니다.',
+    combo: '콤보: 연속으로 맞히면 연속 기록이 쌓이며, 건너뛰면 초기화됩니다. 추가 점수 없음.'
   },
   sv: {
     title: 'Utmaningskort & Combo',
-    challenge: 'Utmaningskort ⭐: vissa kort är svårare och ger +2 poäng vid rätt svar.',
-    combo: 'Combo 🔥: gissa rätt i rad för en svit; att hoppa över återställer den. Inga extrapoäng.'
+    challenge: 'Utmaningskort: vissa kort är svårare och ger +2 poäng vid rätt svar.',
+    combo: 'Combo: gissa rätt i rad för en svit; att hoppa över återställer den. Inga extrapoäng.'
   },
   pl: {
     title: 'Karty wyzwań i Kombinacja',
-    challenge: 'Karty wyzwań ⭐: niektóre karty są trudniejsze i dają +2 punkty za poprawną odpowiedź.',
-    combo: 'Kombinacja 🔥: odgaduj poprawnie z rzędu; pominięcie resetuje serię. Bez dodatkowych punktów.'
+    challenge: 'Karty wyzwań: niektóre karty są trudniejsze i dają +2 punkty za poprawną odpowiedź.',
+    combo: 'Kombinacja: odgaduj poprawnie z rzędu; pominięcie resetuje serię. Bez dodatkowych punktów.'
   },
   uk: {
     title: 'Картки-виклики та Комбо',
-    challenge: 'Картки-виклики ⭐: деякі картки складніші й дають +2 бали за правильну відповідь.',
-    combo: 'Комбо 🔥: відгадуйте поспіль для серії; пропуск скидає її. Без дополнительных балів.'
+    challenge: 'Картки-виклики: деякі картки складніші й дають +2 бали за правильну відповідь.',
+    combo: 'Комбо: відгадуйте поспіль для серії; пропуск скидає її. Без дополнительных балів.'
   },
   pt: {
     title: 'Cartões de Desafio e Combo',
-    challenge: 'Cartões de desafio ⭐: alguns cartões são mais difíceis e valem +2 ao acertar.',
-    combo: 'Combo 🔥: acerte em sequência para criar uma sequência; pular reinicia. Sem pontos extras.'
+    challenge: 'Cartões de desafio: alguns cartões são mais difíciles e valem +2 ao acertar.',
+    combo: 'Combo: acerte em sequência para criar uma sequência; pular reinicia. Sem pontos extras.'
   },
   no: {
     title: 'Utfordringskort og Combo',
-    challenge: 'Utfordringskort ⭐: noen kort er vanskeligere og gir +2 poeng ved riktig svar.',
-    combo: 'Combo 🔥: gjett riktig på rad for en rekke; hopping over tilbakestiller den. Ingen ekstra poeng.'
+    challenge: 'Utfordringskort: noen kort er vanskeligere og gir +2 poeng ved riktig svar.',
+    combo: 'Combo: gjett riktig på rad for en rekke; hopping over tilbakestiller den. Ingen ekstra poeng.'
   },
   da: {
     title: 'Udfordringskort & Combo',
-    challenge: 'Udfordringskort ⭐: nogle kort er sværere og giver +2 point ved rigtigt svar.',
-    combo: 'Combo 🔥: gæt rigtigt i træk for en stime; spring over nulstiller. Ingen ekstra point.'
+    challenge: 'Udfordringskort: nogle kort er sværere og giver +2 point ved rigtigt svar.',
+    combo: 'Combo: gæt rigtigt i træk for en stime; spring over nulstiller. Ingen ekstra point.'
   },
   fi: {
     title: 'Haastekortit ja Combo',
-    challenge: 'Haastekortit ⭐: jotkin kortit ovat vaikeampia ja antavat +2 pistettä oikeasta vastauksesta.',
-    combo: 'Combo 🔥: arvaa oikein peräkkäin sarjaa varten; ohittaminen nollaa. Ei lisäpisteitä.'
+    challenge: 'Haastekortit: jotkin kortit ovat vaikeampia ja antavat +2 pistettä oikeasta vastauksesta.',
+    combo: 'Combo: arvaa oikein peräkkäin sarjaa varten; ohittaminen nollaa. Ei lisäpisteitä.'
   },
   el: {
     title: 'Κάρτες Πρόκλησης & Combo',
-    challenge: 'Κάρτες πρόκλησης ⭐: ορισμένες κάρτες είναι δυσκολότερες και δίνουν +2 πόντους αν απαντηθούν σωστά.',
-    combo: 'Combo 🔥: μαντέψτε σωστά στη σειρά για σερί. Η παράκαμψη επαναφέρει. Χωρίς επιπλέον πόντους.'
+    challenge: 'Κάρτες πρόκλησης: ορισμένες κάρτες είναι δυσκολότερες και δίνουν +2 πόντους αν απαντηθούν σωστά.',
+    combo: 'Combo: μαντέψτε σωστά στη σειρά για σερί. Η παράκαμψη επαναφέρει. Χωρίς επιπλέον πόντους.'
   },
   cs: {
     title: 'Karty výzev a Combo',
-    challenge: 'Karty výzev ⭐: některé karty jsou těžší a za správnou odpověď dávají +2 body.',
-    combo: 'Combo 🔥: hádejte správně v řadě pro sérii; přeskočení ji resetuje. Žádné body navíc.'
+    challenge: 'Karty výzev: některé karty jsou těžší a za správnou odpověď dávají +2 body.',
+    combo: 'Combo: hádejte správně v řadě pro sérii; přeskočení ji resetuje. Žádné body navíc.'
   },
   ro: {
     title: 'Carduri Provocare și Combo',
-    challenge: 'Carduri de provocare ⭐: unele carduri sunt mai grele și aduc +2 puncte dacă sunt ghicite corect.',
-    combo: 'Combo 🔥: ghicește corect consecutiv pentru o serie; trecerea peste resetează. Fără puncte în plus.'
+    challenge: 'Carduri de provocare: unele carduri sunt mai grele și aduc +2 puncte dacă sunt ghicite corect.',
+    combo: 'Combo: ghicește corect consecutiv pentru o serie; trecerea peste resetează. Fără puncte în plus.'
   },
   hu: {
     title: 'Kihíváskártyák és Combo',
-    challenge: 'Kihíváskártyák ⭐: néhány kártya nehezebb és helyes válasz esetén +2 pontot ér.',
-    combo: 'Combo 🔥: találj el többet egymás után a sorozathoz; a kihagyás visszaállítja. Nincs plusz pont.'
+    challenge: 'Kihíváskártyák: néhány kártya nehezebb és helyes válasz esetén +2 pontot ér.',
+    combo: 'Combo: találj el többet egymás után a sorozathoz; a kihagyás visszaállítja. Nincs plusz pont.'
   },
   hi: {
     title: 'चैलेंज कार्ड और कॉम्बो',
-    challenge: 'चैलेंज कार्ड ⭐: कुछ कार्ड कठिन होते हैं और सही अनुमान पर +2 अंक मिलते हैं।',
-    combo: 'कॉम्बो 🔥: स्ट्रीक बनाने के लिए लगातार सही अनुमान लगाएं; छोड़ना इसे रीसेट करता है। कोई अतिरिक्त अंक नहीं।'
+    challenge: 'चैलेंज कार्ड: कुछ कार्ड कठिन होते हैं और सही अनुमान पर +2 अंक मिलते हैं।',
+    combo: 'कॉम्बो: स्ट्रीक बनाने के लिए लगातार सही अनुमान लगाएं; छोड़ना इसे रीसेट करता है। कोई अतिरिक्त अंक नहीं।'
   },
   ur: {
     title: 'چیلنج کارڈز اور کمبو',
-    challenge: 'چیلنج کارڈز ⭐: کچھ کارڈز مشکل ہوتے ہیں اور صحیح جواب پر +2 پوائنٹس ملتے ہیں۔',
-    combo: 'کمبو 🔥: سٹریک بنانے کے لیے مسلسل درست جواب دیں؛ چھوڑنا اسے ری سیٹ کر دیتا ہے۔ کوئی اضافی پوائنٹس نہیں۔'
+    challenge: 'چیلنج کارڈز: کچھ کارڈز مشکل ہوتے ہیں اور صحیح جواب پر +2 پوائنٹس ملتے ہیں۔',
+    combo: 'کمبو: سٹریک بنانے کے لیے مسلسل درست جواب دیں؛ چھوڑنا اسے ری سیٹ کر دیتا ہے۔ کوئی اضافی پوائنٹس نہیں۔'
   },
   id: {
     title: 'Kartu Tantangan & Kombo',
-    challenge: 'Kartu tantangan ⭐: beberapa kartu lebih sulit dan bernilai +2 poin jika dijawab benar.',
-    combo: 'Kombo 🔥: tebak benar beruntun untuk membangun streak; melewati akan meresetnya. Tanpa poin ekstra.'
+    challenge: 'Kartu tantangan: beberapa kartu lebih sulit dan bernilai +2 poin jika dijawab benar.',
+    combo: 'Kombo: tebak benar beruntun untuk membangun streak; melewati akan meresetnya. Tanpa poin ekstra.'
   },
   ms: {
     title: 'Kad Cabaran & Kombo',
-    challenge: 'Kad cabaran ⭐: sesetengah kad lebih sukar dan memberi +2 mata jika dijawab betul.',
-    combo: 'Kombo 🔥: teka betul berturut-turut untuk membina rentak; langkau menetapkannya semula. Tiada mata tambahan.'
+    challenge: 'Kad cabaran: sesetengah kad lebih sukar dan memberi +2 mata jika dijawab betul.',
+    combo: 'Kombo: teka betul berturut-turut untuk membina rentak; langkau menetapkannya semula. Tiada mata tambahan.'
   },
   vi: {
     title: 'Thẻ Thử Thách & Combo',
-    challenge: 'Thẻ thử thách ⭐: một số thẻ khó hơn và được +2 điểm khi đoán đúng.',
-    combo: 'Combo 🔥: đoán đúng liên tiếp để tạo chuỗi; bỏ qua sẽ đặt lại. Không có điểm thưởng.'
+    challenge: 'Thẻ thử thách: một số thẻ khó hơn và được +2 điểm khi đoán đúng.',
+    combo: 'Combo: đoán đúng liên tiếp để tạo chuỗi; bỏ qua sẽ đặt lại. Không có điểm thưởng.'
   },
   th: {
     title: 'การ์ดท้าทายและคอมโบ',
-    challenge: 'การ์ดท้าทาย ⭐: การ์ดยากกว่าและได้ +2 คะแนนเมื่อทายถูก',
-    combo: 'คอมโบ 🔥: ทายถูกติดต่อกันเพื่อสะสมสตรีค การข้ามจะรีเซ็ต ไม่มีคะแนนพิเศษ'
+    challenge: 'การ์ดท้าทาย: การ์ดยากกว่าและได้ +2 คะแนนเมื่อทายถูก',
+    combo: 'คอมโบ: ทายถูกติดต่อกันเพื่อสะสมสตรีค การข้ามจะรีเซ็ต ไม่มีคะแนนพิเศษ'
   },
   tl: {
     title: 'Challenge Cards at Combo',
-    challenge: 'Mga challenge card ⭐: mas mahirap ang ilan at may +2 puntos kapag nahulaan nang tama.',
-    combo: 'Combo 🔥: hulaan nang sunod-sunod para sa streak; pag-skip ay nagre-reset nito. Walang dagdag na puntos.'
+    challenge: 'Mga challenge card: mas mahirap ang ilan at may +2 puntos kapag nahulaan nang tama.',
+    combo: 'Combo: hulaan nang sunod-sunod para sa streak; pag-skip ay nagre-reset nito. Walang dagdag na puntos.'
   },
   ku: {
     title: 'کارتەکانی ئاڵنگاری و کۆمبۆ',
-    challenge: 'کارتەکانی ئاڵنگاری ⭐: هەندێک کارت سەختترن و ئەگەر دروست بوون +٢ خاڵیان هەیە.',
-    combo: 'کۆمبۆ 🔥: لەسەریەک دروست بزانە بۆ دروستکردنی زنجیرە؛ تێپەڕاندن سفر دەکاتەوە. بەبێ خاڵی زیادە.'
+    challenge: 'کارتەکانی ئاڵنگاری: هەندێک کارت سەختترن و ئەگەر دروست بوون +٢ خاڵیان هەیە.',
+    combo: 'کۆمبۆ: لەسەریەک دروست بزانە بۆ دروستکردنی زنجیرە؛ تێپەڕاندن سفر دەکاتەوە. بەبێ خاڵی زیادە.'
   },
   az: {
     title: 'Meydan Oxuma Kartları və Kombo',
-    challenge: 'Meydan oxuma kartları ⭐: bəzi kartlar daha çətindir və düzgün cavabda +2 xal qazandırır.',
-    combo: 'Kombo 🔥: silsilə üçün ardıcıl düzgün tapın; ötürmək onu sıfırlayır. Əlavə xal yoxdur.'
+    challenge: 'Meydan oxuma kartları: bəzi kartlar daha çətindir və düzgün cavabda +2 xal qazandırır.',
+    combo: 'Kombo: silsilə üçün ardıcıl düzgün tapın; ötürmək onu sıfırlayır. Əlavə xal yoxdur.'
   },
   he: {
     title: 'כרטיסי אתגר וקומבו',
-    challenge: 'כרטיסי אתגר ⭐: חלק מהכרטיסים קשים יותר ומעניקים +2 נקודות על תשובה נכונה.',
-    combo: 'קומבו 🔥: נחשו נכון ברצף כדי לבנות רצף; דילוג מאפס אותו. ללא נקודות נוספות.'
+    challenge: 'כרטיסי אתגר: חלק מהכרטיסים קשים יותר ומעניקים +2 נקודות על תשובה נכונה.',
+    combo: 'קומבו: נחשו נכון ברצף כדי לבנות רצף; דילוג מאפס אותו. ללא נקודות נוספות.'
   },
   hy: {
     title: 'Մարտահրավերի քարտեր և Կոմբո',
-    challenge: 'Մարտահրավերի քարտեր ⭐. որոշ քարտեր ավելի բարդ են և ճիշտ պատասխանի դեպքում տալիս են +2 միավոր:',
-    combo: 'Կոմբո 🔥. շարք կազմելու համար անընդմեջ ճիշտ գուշակեք, բաց թողնելը զրոյացնում է: Առանց հավելյալ միավորների:'
+    challenge: 'Մարտահրավերի քարտեր. որոշ քարտեր ավելի բարդ են և ճիշտ պատասխանի դեպքում տալիս են +2 միավոր:',
+    combo: 'Կոմբո. շարք կազմելու համար անընդմեջ ճիշտ գուշակեք, բաց թողնելը զրոյացնում է: Առանց հավելյալ միավորների:'
   },
   ka: {
     title: 'გამოწვევის ბარათები და კომბო',
-    challenge: 'გამოწვევის ბარათები ⭐: ზოგიერთი ბარათი უფრო რთულია და სწორ პასუხზე +2 ქულას იძლევა.',
-    combo: 'კომბო 🔥: გამოიცანით ზედიზედ სერიის შესაქმნელად; გამოტოვება ანულებს მას. დამატებითი ქულების გარეშე.'
+    challenge: 'გამოწვევის ბარათები: ზოგიერთი ბარათი უფრო რთულია და სწორ პასუხზე +2 ქულას იძლევა.',
+    combo: 'კომბო: გამოიცანით ზედიზედ სერიის შესაქმნელად; გამოტოვება ანულებს მას. დამატებითი ქულების გარეშე.'
   },
   bn: {
     title: 'চ্যালেঞ্জ কার্ড এবং কম্বো',
-    challenge: 'চ্যালেঞ্জ কার্ড ⭐: কিছু কার্ড কঠিন এবং সঠিকভাবে অনুমান করলে +২ পয়েন্ট পাওয়া যায়।',
-    combo: 'কম্বো 🔥: স্ট্রিক তৈরি করতে পরপর সঠিক অনুমান করুন; এড়িয়ে গেলে এটি রিসেট হয়। কোনো অতিরিক্ত পয়েন্ট নেই।'
+    challenge: 'চ্যালেঞ্জ কার্ড: কিছু কার্ড কঠিন এবং সঠিকভাবে অনুমান করলে +২ পয়েন্ট পাওয়া যায়।',
+    combo: 'কম্বো: স্ট্রিক তৈরি করতে পরপর সঠিক অনুমান করুন; এড়িয়ে গেলে এটি রিসেট হয়। কোনো অতিরিক্ত পয়েন্ট নেই।'
   }
 };
 
@@ -448,9 +448,10 @@ export const HelpScreen: React.FC<Props> = ({
                   <circle cx="60" cy="60" r="12" fill="#8b5cf6" />
                   <circle cx="60" cy="57" r="5" fill="white" opacity="0.9" />
 
-                  {/* Time Bomb Icon */}
+                  {/* Flat Timer Icon */}
                   <circle cx="204" cy="36" r="10" fill="#f59e0b" />
-                  <text x="200" y="40" fontSize="11">⏱️</text>
+                  <circle cx="204" cy="36" r="6" stroke="white" strokeWidth="1.5" fill="none" />
+                  <path d="M 204 33 L 204 36 L 206.5 36" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
                 </svg>
               </div>
 
@@ -493,7 +494,7 @@ export const HelpScreen: React.FC<Props> = ({
               </div>
 
               {/* Mode 2 Visual Illustration SVG */}
-              <div className="w-full h-36 bg-gradient-to-br from-rose-500/5 via-[var(--bg)] to-amber-500/5 rounded-xl border border-[var(--line)] flex items-center justify-center p-2 overflow-hidden relative">
+              <div dir="ltr" className="w-full h-36 bg-gradient-to-br from-rose-500/5 via-[var(--bg)] to-amber-500/5 rounded-xl border border-[var(--line)] flex items-center justify-center p-2 overflow-hidden relative">
                 <svg viewBox="0 0 320 120" className="w-full h-full max-w-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
                   {/* Phone Bezel */}
                   <rect x="70" y="10" width="180" height="100" rx="16" fill="var(--panel)" stroke="var(--line)" strokeWidth="2" />
@@ -505,7 +506,7 @@ export const HelpScreen: React.FC<Props> = ({
                   <rect x="80" y="22" width="70" height="76" rx="8" fill="#3b82f6" fillOpacity="0.12" />
                   <circle cx="115" cy="40" r="10" fill="#3b82f6" />
                   <rect x="90" y="60" width="50" height="14" rx="4" fill="#3b82f6" />
-                  <text x="96" y="70" fontSize="8" fill="white" fontWeight="bold">PLAYER 1</text>
+                  <text x="115" y="67" textAnchor="middle" dominantBaseline="central" fontSize="8" fill="white" fontWeight="bold">PLAYER 1</text>
                   <rect x="92" y="80" width="22" height="10" rx="3" fill="#10b981" />
                   <rect x="118" y="80" width="22" height="10" rx="3" fill="#ef4444" />
 
@@ -517,7 +518,7 @@ export const HelpScreen: React.FC<Props> = ({
                   <rect x="170" y="22" width="70" height="76" rx="8" fill="#f43f5e" fillOpacity="0.12" />
                   <circle cx="205" cy="40" r="10" fill="#f43f5e" />
                   <rect x="180" y="60" width="50" height="14" rx="4" fill="#f43f5e" />
-                  <text x="186" y="70" fontSize="8" fill="white" fontWeight="bold">PLAYER 2</text>
+                  <text x="205" y="67" textAnchor="middle" dominantBaseline="central" fontSize="8" fill="white" fontWeight="bold">PLAYER 2</text>
                   <rect x="182" y="80" width="22" height="10" rx="3" fill="#10b981" />
                   <rect x="208" y="80" width="22" height="10" rx="3" fill="#ef4444" />
                 </svg>
@@ -527,7 +528,7 @@ export const HelpScreen: React.FC<Props> = ({
               <ul className="text-xs text-[var(--ink)] font-medium space-y-1.5 leading-relaxed bg-[var(--bg)] p-3 rounded-xl border border-[var(--line)]">
                 <li className="flex items-start gap-2">
                   <CheckCircle2 size={14} className="text-rose-500 shrink-0 mt-0.5" />
-                  <span>{isRTL ? 'روی ۱ گوشی با صفحه تقسیم‌شده (دو طرف گوشی) یا آنلاین بین ۲ گوشی با کد اتاق.' : 'Shared split-screen on one device or online 2-phone room.'}</span>
+                  <span>{isRTL ? 'روی ۱ گوشی به صورت روبه‌رو (دو طرف گوشی) یا آنلاین بین ۲ گوشی مستقل.' : 'Face-to-face split-screen on one device or online 2-phone match.'}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 size={14} className="text-rose-500 shrink-0 mt-0.5" />
@@ -535,7 +536,7 @@ export const HelpScreen: React.FC<Props> = ({
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 size={14} className="text-rose-500 shrink-0 mt-0.5" />
-                  <span>{isRTL ? 'امکان بازی با پاسخ صوتی یا لمس گزینه‌های تستی در چند راند نفس‌گیر.' : 'Play with touch response or voice trigger across fast rounds.'}</span>
+                  <span>{isRTL ? 'اشتباه زدن باعث قفل کوتاه دکمه‌های همان بازیکن می‌شود تا رقیب فرصت پاسخ داشته باشد.' : 'Wrong taps trigger a brief lockout, giving your rival a window to score.'}</span>
                 </li>
               </ul>
             </div>
@@ -552,7 +553,7 @@ export const HelpScreen: React.FC<Props> = ({
                       {isRTL ? '۳. چالش تک‌نفره و تست گفتار' : '3. Single-Player & Speech Challenge'}
                     </h3>
                     <span className="text-[10px] text-[var(--mute)] font-bold">
-                      {isRTL ? 'انفرادی • بازیابی فعال ذهن و لیدربرد' : 'Solo • Active Recall & Leaderboard'}
+                      {isRTL ? 'انفرادی • تقویت مکالمه، املا و لیدربرد' : 'Solo • Speech, Spelling & Leaderboard'}
                     </span>
                   </div>
                 </div>
@@ -562,46 +563,48 @@ export const HelpScreen: React.FC<Props> = ({
               </div>
 
               {/* Mode 3 Visual Illustration SVG */}
-              <div className="w-full h-36 bg-gradient-to-br from-emerald-500/5 via-[var(--bg)] to-teal-500/5 rounded-xl border border-[var(--line)] flex items-center justify-center p-2 overflow-hidden relative">
+              <div dir="ltr" className="w-full h-36 bg-gradient-to-br from-emerald-500/5 via-[var(--bg)] to-teal-500/5 rounded-xl border border-[var(--line)] flex items-center justify-center p-2 overflow-hidden relative">
                 <svg viewBox="0 0 320 120" className="w-full h-full max-w-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
                   {/* Flashcard Body */}
                   <rect x="80" y="14" width="160" height="92" rx="14" fill="var(--panel)" stroke="var(--line)" strokeWidth="2" />
                   
                   {/* CEFR Level Badge */}
-                  <rect x="90" y="24" width="36" height="14" rx="4" fill="#10b981" />
-                  <text x="96" y="34" fontSize="9" fill="white" fontWeight="black">B1 CARD</text>
+                  <rect x="90" y="23" width="48" height="16" rx="5" fill="#10b981" />
+                  <text x="114" y="31" textAnchor="middle" dominantBaseline="central" fontSize="8.5" fill="white" fontWeight="900">B1 CARD</text>
 
                   {/* Stopwatch Badge */}
-                  <rect x="194" y="24" width="36" height="14" rx="4" fill="var(--bg)" stroke="var(--line)" />
-                  <text x="198" y="34" fontSize="8" fill="var(--ink)" fontWeight="bold">⏱️ 60s</text>
+                  <rect x="192" y="23" width="38" height="16" rx="5" fill="var(--bg)" stroke="var(--line)" />
+                  <text x="211" y="31" textAnchor="middle" dominantBaseline="central" fontSize="8.5" fill="var(--ink)" fontWeight="bold">60s</text>
 
                   {/* Prompt Text Line */}
-                  <rect x="100" y="48" width="120" height="12" rx="3" fill="var(--ink)" fillOpacity="0.8" />
+                  <rect x="100" y="47" width="120" height="11" rx="3.5" fill="var(--ink)" fillOpacity="0.8" />
                   
                   {/* Active Recall Masked Hint Slots */}
-                  <rect x="104" y="66" width="14" height="16" rx="3" fill="#10b981" fillOpacity="0.2" stroke="#10b981" />
-                  <text x="108" y="78" fontSize="10" fill="#10b981" fontWeight="bold">B</text>
-                  <rect x="122" y="66" width="14" height="16" rx="3" fill="var(--bg)" stroke="var(--line)" />
-                  <text x="126" y="78" fontSize="10" fill="var(--mute)">_</text>
-                  <rect x="140" y="66" width="14" height="16" rx="3" fill="var(--bg)" stroke="var(--line)" />
-                  <text x="144" y="78" fontSize="10" fill="var(--mute)">_</text>
-                  <rect x="158" y="66" width="14" height="16" rx="3" fill="var(--bg)" stroke="var(--line)" />
-                  <text x="162" y="78" fontSize="10" fill="var(--mute)">_</text>
-                  <rect x="176" y="66" width="14" height="16" rx="3" fill="#10b981" fillOpacity="0.2" stroke="#10b981" />
-                  <text x="180" y="78" fontSize="10" fill="#10b981" fontWeight="bold">K</text>
+                  <rect x="98" y="66" width="15" height="17" rx="4" fill="#10b981" fillOpacity="0.18" stroke="#10b981" />
+                  <text x="105.5" y="74.5" textAnchor="middle" dominantBaseline="central" fontSize="9.5" fill="#10b981" fontWeight="bold">B</text>
+                  <rect x="117" y="66" width="15" height="17" rx="4" fill="var(--bg)" stroke="var(--line)" />
+                  <text x="124.5" y="74.5" textAnchor="middle" dominantBaseline="central" fontSize="9.5" fill="var(--mute)" fontWeight="bold">•</text>
+                  <rect x="136" y="66" width="15" height="17" rx="4" fill="var(--bg)" stroke="var(--line)" />
+                  <text x="143.5" y="74.5" textAnchor="middle" dominantBaseline="central" fontSize="9.5" fill="var(--mute)" fontWeight="bold">•</text>
+                  <rect x="155" y="66" width="15" height="17" rx="4" fill="var(--bg)" stroke="var(--line)" />
+                  <text x="162.5" y="74.5" textAnchor="middle" dominantBaseline="central" fontSize="9.5" fill="var(--mute)" fontWeight="bold">•</text>
+                  <rect x="174" y="66" width="15" height="17" rx="4" fill="#10b981" fillOpacity="0.18" stroke="#10b981" />
+                  <text x="181.5" y="74.5" textAnchor="middle" dominantBaseline="central" fontSize="9.5" fill="#10b981" fontWeight="bold">K</text>
 
                   {/* Mic Wave Icon */}
-                  <circle cx="210" cy="74" r="10" fill="#0d9488" />
-                  <path d="M 210 69 C 211 69 212 70 212 71 L 212 74 C 212 75 211 76 210 76 C 209 76 208 75 208 74 L 208 71 C 208 70 209 69 210 69 Z" fill="white" />
-                  <path d="M 206 73 C 206 75.5 207.8 77.5 210 77.5 C 212.2 77.5 214 75.5 214 73" stroke="white" strokeWidth="1.2" strokeLinecap="round" />
+                  <circle cx="211" cy="74.5" r="10" fill="#0d9488" />
+                  <path d="M 211 69.5 C 212 69.5 213 70.5 213 71.5 L 213 74.5 C 213 75.5 212 76.5 211 76.5 C 210 76.5 209 75.5 209 74.5 L 209 71.5 C 209 70.5 210 69.5 211 69.5 Z" fill="white" />
+                  <path d="M 207 73.5 C 207 76 208.8 78 211 78 C 213.2 78 215 76 215 73.5" stroke="white" strokeWidth="1.2" strokeLinecap="round" />
 
-                  {/* Leaderboard Trophy on side */}
+                  {/* Flat Leaderboard Badge on side */}
                   <circle cx="45" cy="60" r="16" fill="#f59e0b" fillOpacity="0.2" stroke="#f59e0b" />
-                  <text x="36" y="66" fontSize="16">🏆</text>
+                  <polygon points="45,51 47.5,56.5 53.5,57.2 49,61.2 50.2,67 45,64 39.8,67 41,61.2 36.5,57.2 42.5,56.5" fill="#f59e0b" />
 
-                  {/* Voice Wave */}
+                  {/* Flat Voice Wave Badge */}
                   <circle cx="275" cy="60" r="16" fill="#10b981" fillOpacity="0.2" stroke="#10b981" />
-                  <text x="267" y="66" fontSize="16">🎙️</text>
+                  <line x1="269" y1="57" x2="269" y2="63" stroke="#10b981" strokeWidth="2" strokeLinecap="round" />
+                  <line x1="275" y1="53" x2="275" y2="67" stroke="#10b981" strokeWidth="2" strokeLinecap="round" />
+                  <line x1="281" y1="57" x2="281" y2="63" stroke="#10b981" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               </div>
 
@@ -609,15 +612,15 @@ export const HelpScreen: React.FC<Props> = ({
               <ul className="text-xs text-[var(--ink)] font-medium space-y-1.5 leading-relaxed bg-[var(--bg)] p-3 rounded-xl border border-[var(--line)]">
                 <li className="flex items-start gap-2">
                   <CheckCircle2 size={14} className="text-emerald-500 shrink-0 mt-0.5" />
-                  <span>{isRTL ? 'بازیابی فعال ذهن (Active Recall): گزینه‌ها به صورت پیش‌فرض پنهان هستند تا حافظه تقویت شود.' : 'Active Recall: Multiple choice options are hidden by default to train memory.'}</span>
+                  <span>{isRTL ? 'تمرین تلفظ صوتی با میکروفون یا نوشتن املای دقیق عبارات به همراه پخش صدای طبیعی و شمرده.' : 'Practice speaking via microphone or typing answers with natural & slow audio playback.'}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 size={14} className="text-emerald-500 shrink-0 mt-0.5" />
-                  <span>{isRTL ? 'انتخاب دلخواه نوع راهنما: حروف کمکی، سرنخ مفهومی، بازکردن گزینه‌ها یا تلفظ صوتی.' : 'Choose your hint: Letter skeleton, concept clue, reveal choices, or slow audio.'}</span>
+                  <span>{isRTL ? 'دکمه راهنمایی هوشمند بالای کارت برای دریافت سرنخ شروع عبارت یا راهنمای تلفظ.' : 'Smart hint button on top of the card for starting words or phonetic pronunciation clues.'}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 size={14} className="text-emerald-500 shrink-0 mt-0.5" />
-                  <span>{isRTL ? 'مسابقه زمان کل (۳۰ تا ۱۲۰ ثانیه) با امتیازدهی متناسب با سطح دشواری CEFR و ثبت در لیدربرد.' : 'Timed Speedrun (30-120s) with CEFR weighted scoring submitted to leaderboard.'}</span>
+                  <span>{isRTL ? 'حالت کارت شمارشی یا مسابقه زمان‌دار با امتیازدهی متناسب با سطح CEFR و ثبت در لیدربرد.' : 'Card count or timed match mode with CEFR-weighted scoring and leaderboard ranking.'}</span>
                 </li>
               </ul>
             </div>
@@ -649,32 +652,32 @@ export const HelpScreen: React.FC<Props> = ({
                   {/* 5 Boxes */}
                   {/* Box 1 (1 Day) */}
                   <rect x="25" y="45" width="46" height="52" rx="8" fill="#f59e0b" fillOpacity="0.15" stroke="#f59e0b" strokeWidth="1.5" />
-                  <text x="35" y="65" fontSize="10" fill="#f59e0b" fontWeight="black">خانه ۱</text>
-                  <text x="37" y="80" fontSize="8" fill="var(--mute)" fontWeight="bold">۱ روز</text>
+                  <text x="48" y="65" textAnchor="middle" fontSize="9.5" fill="#d97706" fontWeight="black">{isRTL ? 'خانه ۱' : 'Box 1'}</text>
+                  <text x="48" y="80" textAnchor="middle" fontSize="8" fill="var(--mute)" fontWeight="bold">{isRTL ? '۱ روز' : 'Day 1'}</text>
 
                   {/* Box 2 (2 Days) */}
                   <rect x="80" y="40" width="46" height="57" rx="8" fill="#f59e0b" fillOpacity="0.25" stroke="#f59e0b" strokeWidth="1.5" />
-                  <text x="90" y="62" fontSize="10" fill="#f59e0b" fontWeight="black">خانه ۲</text>
-                  <text x="92" y="77" fontSize="8" fill="var(--mute)" fontWeight="bold">۲ روز</text>
+                  <text x="103" y="62" textAnchor="middle" fontSize="9.5" fill="#d97706" fontWeight="black">{isRTL ? 'خانه ۲' : 'Box 2'}</text>
+                  <text x="103" y="77" textAnchor="middle" fontSize="8" fill="var(--mute)" fontWeight="bold">{isRTL ? '۲ روز' : 'Day 2'}</text>
 
                   {/* Box 3 (4 Days) */}
                   <rect x="135" y="35" width="46" height="62" rx="8" fill="#f59e0b" fillOpacity="0.35" stroke="#f59e0b" strokeWidth="1.5" />
-                  <text x="145" y="58" fontSize="10" fill="#f59e0b" fontWeight="black">خانه ۳</text>
-                  <text x="147" y="73" fontSize="8" fill="var(--mute)" fontWeight="bold">۴ روز</text>
+                  <text x="158" y="58" textAnchor="middle" fontSize="9.5" fill="#d97706" fontWeight="black">{isRTL ? 'خانه ۳' : 'Box 3'}</text>
+                  <text x="158" y="73" textAnchor="middle" fontSize="8" fill="var(--mute)" fontWeight="bold">{isRTL ? '۴ روز' : 'Day 4'}</text>
 
                   {/* Box 4 (8 Days) */}
                   <rect x="190" y="30" width="46" height="67" rx="8" fill="#f59e0b" fillOpacity="0.45" stroke="#f59e0b" strokeWidth="1.5" />
-                  <text x="200" y="54" fontSize="10" fill="#f59e0b" fontWeight="black">خانه ۴</text>
-                  <text x="202" y="69" fontSize="8" fill="var(--mute)" fontWeight="bold">۸ روز</text>
+                  <text x="213" y="54" textAnchor="middle" fontSize="9.5" fill="#b45309" fontWeight="black">{isRTL ? 'خانه ۴' : 'Box 4'}</text>
+                  <text x="213" y="69" textAnchor="middle" fontSize="8" fill="var(--mute)" fontWeight="bold">{isRTL ? '۸ روز' : 'Day 8'}</text>
 
                   {/* Box 5 (16 Days) */}
                   <rect x="245" y="25" width="48" height="72" rx="8" fill="#f59e0b" fillOpacity="0.6" stroke="#f59e0b" strokeWidth="2" />
-                  <text x="254" y="50" fontSize="10" fill="#15204A" fontWeight="black">خانه ۵</text>
-                  <text x="255" y="65" fontSize="8" fill="#15204A" fontWeight="bold">۱۶ روز</text>
+                  <text x="269" y="50" textAnchor="middle" fontSize="9.5" fill="#15204A" fontWeight="black">{isRTL ? 'خانه ۵' : 'Box 5'}</text>
+                  <text x="269" y="65" textAnchor="middle" fontSize="8" fill="#15204A" fontWeight="bold">{isRTL ? '۱۶ روز' : 'Day 16'}</text>
 
-                  {/* Graduation Trophy */}
-                  <circle cx="269" cy="16" r="10" fill="#10b981" />
-                  <text x="264" y="20" fontSize="10">🎓</text>
+                  {/* Flat Mastery Check Badge */}
+                  <circle cx="269" cy="15" r="9" fill="#10b981" />
+                  <path d="M 265 15 L 268 18 L 273.5 12.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
 
                   {/* Progression green arrow */}
                   <path d="M 50 38 Q 160 15 240 22" stroke="#10b981" strokeWidth="2" strokeDasharray="3 2" fill="none" />
@@ -694,7 +697,7 @@ export const HelpScreen: React.FC<Props> = ({
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 size={14} className="text-amber-500 shrink-0 mt-0.5" />
-                  <span>{isRTL ? 'کارت‌های خانه ۵ پس از موفقیت به مقام تسلط کامل (Mastered 🎓) فارغ‌التحصیل می‌شوند.' : 'Cards clearing Box 5 graduate to permanent mastery status 🎓.'}</span>
+                  <span>{isRTL ? 'کارت‌های خانه ۵ پس از موفقیت به مقام تسلط کامل (Mastered) فارغ‌التحصیل می‌شوند.' : 'Cards clearing Box 5 graduate to permanent mastery status.'}</span>
                 </li>
               </ul>
             </div>

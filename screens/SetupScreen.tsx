@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { GameSettings, Language, CEFRLevel } from '../types';
 import { sound } from '../soundManager';
 import { getRandomCharacters } from '../characters';
-import { tUI, isRtlLang } from '../ui';
-import { CEFR_LEVELS } from '../constants';
+import { tUI, isRtlLang, isPersianLang } from '../ui';
+import { CEFR_LEVELS, getCefrText } from '../constants';
 import { getAvailablePoolCount, getRealSituationCount } from '../cardsData';
 import { SoundHeaderButton } from '../components/SoundHeaderButton';
-import { ArrowLeft, ArrowRight, Check, Search, X, ChevronDown, ChevronUp, Settings, Award, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowRightLeft, Check, Search, X, ChevronDown, ChevronUp, Settings, Award, AlertTriangle, Smartphone, Globe, Wifi, BookOpen } from 'lucide-react';
 
 interface Props {
   settings: GameSettings;
@@ -14,6 +14,7 @@ interface Props {
   onNext: () => void;
   onBack: () => void;
   onOpenHelp?: () => void;
+  onOpenOnline?: () => void;
 }
 
 // Persian Language Names Dictionary
@@ -184,9 +185,13 @@ const TumblerWheel: React.FC<WheelProps> = ({
   );
 };
 
-const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpenHelp }) => {
+const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpenHelp, onOpenOnline }) => {
   const t = tUI(settings.language);
   const isRTL = isRtlLang(settings.language);
+  const isFa = isPersianLang(settings.language);
+
+  // Party Mode Tab: 'local' (Pass & Play 1 Phone) vs 'online' (Online Multi-Phone Room)
+  const [partyTab, setPartyTab] = useState<'local' | 'online'>('local');
 
   // Local UI states
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -201,10 +206,10 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
   const [searchTarget, setSearchTarget] = useState('');
   const [searchUi, setSearchUi] = useState('');
 
-  // Active CEFR Level
-  const currentCefr = settings.cefrLevel || 'all';
+  // Active CEFR Level (strictly A1-C1)
+  const currentCefr = (settings.cefrLevel && settings.cefrLevel !== 'all') ? settings.cefrLevel : 'A1';
   const activeCefrInfo = useMemo(() => {
-    return CEFR_LEVELS.find(l => l.id === currentCefr) || CEFR_LEVELS[CEFR_LEVELS.length - 1];
+    return CEFR_LEVELS.find(l => l.id === currentCefr) || CEFR_LEVELS[0];
   }, [currentCefr]);
 
   // Pool Size Guard: Pre-calculate available cards and safety threshold
@@ -336,12 +341,19 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
     { code: 'uk', name: 'Українська', short: 'UK', enName: 'Ukrainian' }
   ], []);
 
+  const normLang = (code?: string) => (code === 'en-US' ? 'en' : (code || ''));
   const currentNativeCode = (settings.nativeLanguage || settings.language || 'fa') as Language;
+  const normalizedNativeCode = normLang(currentNativeCode);
+  const currentNativeLangInfo = useMemo(() => {
+    return languageOptions.find(l => l.code === normalizedNativeCode) || null;
+  }, [normalizedNativeCode, languageOptions]);
+
   const currentTargetCode = (settings.targetLanguages?.[0] || settings.targetLanguage) as Language | undefined;
+  const normalizedTargetCode = normLang(currentTargetCode);
   const currentTargetLangInfo = useMemo(() => {
-    if (!currentTargetCode) return null;
-    return languageOptions.find(l => l.code === currentTargetCode) || null;
-  }, [currentTargetCode, languageOptions]);
+    if (!normalizedTargetCode) return null;
+    return languageOptions.find(l => l.code === normalizedTargetCode) || null;
+  }, [normalizedTargetCode, languageOptions]);
 
   // Filter languages for Native Dropdown
   const filteredNativeLanguages = useMemo(() => {
@@ -357,7 +369,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
 
   // Filter languages for Target Dropdown (excluding native language)
   const filteredTargetLanguages = useMemo(() => {
-    const list = languageOptions.filter(l => l.code !== currentNativeCode);
+    const list = languageOptions.filter(l => l.code !== normalizedNativeCode);
     const q = searchTarget.trim().toLowerCase();
     if (!q) return list;
     return list.filter(l => 
@@ -366,7 +378,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
       l.code.toLowerCase().includes(q) || 
       l.enName.toLowerCase().includes(q)
     );
-  }, [searchTarget, currentNativeCode, languageOptions]);
+  }, [searchTarget, normalizedNativeCode, languageOptions]);
 
   // Filter languages for UI Language Dropdown
   const filteredUiLanguages = useMemo(() => {
@@ -508,34 +520,38 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
     const mins = Math.floor(s / 60);
     const secs = s % 60;
     const secStr = String(secs).padStart(2, '0');
-    return `${toPersian(mins, isRTL)}:${toPersian(secStr, isRTL)}`;
+    return `${toPersian(mins, isFa)}:${toPersian(secStr, isFa)}`;
   };
 
-  // Compute clean, dynamic Translation Direction options using actual language names
-  const nativeName = isRTL 
-    ? (PERSIAN_LANG_NAMES[currentNativeCode] || languageOptions.find(l => l.code === currentNativeCode)?.name || 'فارسی')
-    : (languageOptions.find(l => l.code === currentNativeCode)?.enName || 'Persian');
-
+  // Compute clean, abbreviated Translation Direction options so labels never truncate
+  const nativeShort = (currentNativeLangInfo?.short || String(normalizedNativeCode).slice(0, 2)).toUpperCase();
   const firstTargetCode = (settings.targetLanguages && settings.targetLanguages[0]) || 'en';
-  const targetName = isRTL
-    ? (PERSIAN_LANG_NAMES[firstTargetCode] || languageOptions.find(l => l.code === firstTargetCode)?.name || 'انگلیسی')
-    : (languageOptions.find(l => l.code === firstTargetCode)?.enName || 'English');
+  const normalizedFirstTarget = normLang(firstTargetCode);
+  const targetShort = (languageOptions.find(l => l.code === normalizedFirstTarget)?.short || String(normalizedFirstTarget).slice(0, 2)).toUpperCase();
+
+  const nativeName = isFa 
+    ? (PERSIAN_LANG_NAMES[normalizedNativeCode] || currentNativeLangInfo?.name || 'فارسی')
+    : (currentNativeLangInfo?.name || currentNativeLangInfo?.enName || 'English');
+
+  const targetName = isFa
+    ? (PERSIAN_LANG_NAMES[normalizedFirstTarget] || languageOptions.find(l => l.code === normalizedFirstTarget)?.name || 'انگلیسی')
+    : (languageOptions.find(l => l.code === normalizedFirstTarget)?.name || languageOptions.find(l => l.code === normalizedFirstTarget)?.enName || 'English');
 
   const dirOptions = [
     { 
       id: 'reverse', 
-      text: isRTL ? `${nativeName} به ${targetName}` : `${nativeName} → ${targetName}`,
-      title: isRTL ? `${nativeName} به ${targetName}` : `${nativeName} to ${targetName}`
+      text: `${nativeShort} → ${targetShort}`,
+      title: isFa ? `${nativeName} به ${targetName}` : `${nativeName} → ${targetName}`
     },
     { 
       id: 'standard', 
-      text: isRTL ? `${targetName} به ${nativeName}` : `${targetName} → ${nativeName}`,
-      title: isRTL ? `${targetName} به ${nativeName}` : `${targetName} to ${nativeName}`
+      text: `${targetShort} → ${nativeShort}`,
+      title: isFa ? `${targetName} به ${nativeName}` : `${targetName} → ${nativeName}`
     },
     { 
       id: 'mixed', 
-      text: isRTL ? 'هر دو' : 'Both',
-      title: isRTL ? 'هر دو' : 'Both'
+      text: t.dirBoth || (isFa ? 'هر دو' : 'Both'),
+      title: t.dirBoth || (isFa ? 'هر دو جهت' : 'Both Directions')
     }
   ];
 
@@ -569,21 +585,19 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
         </div>
 
         <div className="icons relative flex items-center gap-1.5 sm:gap-2 shrink-0">
-          {/* Hint / Guide Button */}
+          {/* Hint / Guide Button (Unified BookOpen notebook icon across the entire app) */}
           <button 
             type="button"
             id="hintBtn" 
             className="w-11 h-11 rounded-full bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 border border-[var(--line)] flex items-center justify-center text-[var(--ink)] shadow-xs active:scale-95 transition-all cursor-pointer" 
-            aria-label={t.guide || 'راهنما'}
-            title={t.guide || 'راهنما'}
+            aria-label={t.guide || (isFa ? 'راهنما' : 'Guide')}
+            title={t.guide || (isFa ? 'راهنما' : 'Guide')}
             onClick={() => {
               sound.playClick();
               setIsSheetOpen(true);
             }}
           >
-            <svg viewBox="0 0 24 24" className="w-5 h-5 stroke-current fill-none stroke-2">
-              <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z" />
-            </svg>
+            <BookOpen size={20} />
           </button>
 
           {/* Sound Toggle Button */}
@@ -603,8 +617,8 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
             type="button"
             id="uiLangBtn" 
             className="w-11 h-11 rounded-full bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 border border-[var(--line)] flex items-center justify-center text-[var(--ink)] shadow-xs active:scale-95 transition-all cursor-pointer" 
-            aria-label={t.uiLanguageLabel || 'زبان برنامه'}
-            title={t.uiLanguageLabel || 'زبان برنامه'}
+            aria-label={t.uiLanguageLabel || (isFa ? 'زبان برنامه' : 'App Language')}
+            title={t.uiLanguageLabel || (isFa ? 'زبان برنامه' : 'App Language')}
             onClick={() => {
               sound.playClick();
               setIsLangPopOpen(prev => !prev);
@@ -612,10 +626,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
               setIsTargetOpen(false);
             }}
           >
-            <svg viewBox="0 0 24 24" className="w-5 h-5 stroke-current fill-none stroke-2">
-              <circle cx="12" cy="12" r="9" />
-              <path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18" />
-            </svg>
+            <Globe size={20} />
           </button>
 
           {/* UI Language Dropdown with Search at the top */}
@@ -649,8 +660,8 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
 
               <div className="max-h-48 overflow-y-auto space-y-1 no-scrollbar overscroll-contain">
                 {filteredUiLanguages.map(l => {
-                  const isChecked = settings.language === l.code;
-                  const localizedSub = isRTL ? PERSIAN_LANG_NAMES[l.code] : l.enName;
+                  const isChecked = normLang(settings.language) === l.code;
+                  const localizedSub = isFa ? PERSIAN_LANG_NAMES[l.code] : l.enName;
                   return (
                     <button
                       key={l.code}
@@ -688,9 +699,77 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
         </div>
       </header>
 
-      {/* PANEL 1: MATCHING SEARCHABLE DROPDOWNS FOR NATIVE AND LEARNING LANGUAGES */}
-      <section className="panel space-y-3">
-        
+      {/* PARTY MODE TABS: Local (1 Phone) vs Online (Multi-Phone Room) */}
+      <div className="mt-2.5 bg-[var(--panel)] p-1.5 rounded-2xl border border-[var(--line)] grid grid-cols-2 gap-1.5 shadow-xs">
+        <button
+          type="button"
+          onClick={() => {
+            sound.playClick();
+            setPartyTab('local');
+          }}
+          className={`min-h-[42px] py-2 px-3 rounded-xl text-xs sm:text-sm font-black flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            partyTab === 'local'
+              ? 'bg-[var(--lapis)] text-white shadow-xs'
+              : 'text-[var(--mute)] hover:text-[var(--ink)] hover:bg-[var(--bg)]'
+          }`}
+        >
+          <Smartphone size={16} />
+          <span>{t.localOnePhone || (isFa ? 'حضوری (۱ گوشی)' : 'Local (1 Phone)')}</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            sound.playClick();
+            setPartyTab('online');
+          }}
+          className={`min-h-[42px] py-2 px-3 rounded-xl text-xs sm:text-sm font-black flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            partyTab === 'online'
+              ? 'bg-[var(--turq)] text-white shadow-xs'
+              : 'text-[var(--mute)] hover:text-[var(--ink)] hover:bg-[var(--bg)]'
+          }`}
+        >
+          <Globe size={16} />
+          <span>{t.onlineMultiPhone || (isFa ? 'آنلاین (چند گوشی)' : 'Online (Multi-Phone)')}</span>
+        </button>
+      </div>
+
+      {/* ONLINE PARTY CALLOUT WHEN ONLINE TAB IS ACTIVE */}
+      {partyTab === 'online' && (
+        <section className="panel space-y-3 border-2 !border-[var(--turq)]/40 animate-fade-in">
+          <div className="flex items-center gap-2.5">
+            <div className="w-10 h-10 rounded-xl bg-[var(--turq)]/15 text-[var(--turq)] flex items-center justify-center shrink-0">
+              <Wifi size={20} />
+            </div>
+            <div>
+              <h2 className="text-sm sm:text-base font-black text-[var(--ink)]">
+                {t.onlinePartyRoomTitle || (isFa ? 'اتاق دورهمی آنلاین (چند گوشی)' : 'Online Party Room (Multi-Phone)')}
+              </h2>
+              <p className="text-xs text-[var(--mute)] font-bold">
+                {t.onlinePartyRoomDesc || (isFa
+                  ? 'ساخت اتاق جدید، ورود با کد اتاق یا مچ‌یابی آنلاین با دوستان'
+                  : 'Create a room, join with a code, or matchmake online with friends')}
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              sound.playStartGame();
+              onOpenOnline?.();
+            }}
+            className="btn-turq w-full !min-h-[48px] text-sm font-black flex items-center justify-center gap-2 shadow-md cursor-pointer"
+          >
+            <Globe size={18} />
+            <span>{t.enterOnlineLobby || (isFa ? 'ورود به لابی آنلاین دورهمی' : 'Enter Online Party Lobby')}</span>
+            {isRTL ? <ArrowLeft size={18} /> : <ArrowRight size={18} />}
+          </button>
+        </section>
+      )}
+
+      {/* PANEL 1: SIDE-BY-SIDE NATIVE & LEARNING LANGUAGES */}
+      <section className="panel space-y-3" id="nativeLangContainer">
         {/* Actionable Error if user deselects all learning languages */}
         {langError && (
           <div className="p-2.5 rounded-[12px] bg-[#E0533C]/15 border border-[#E0533C] text-xs font-bold text-[#E0533C] flex items-center justify-between animate-fade-in">
@@ -701,267 +780,241 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
           </div>
         )}
 
-        {/* 1. NATIVE LANGUAGE DROPDOWN */}
-        <div className="space-y-1.5" role="radiogroup" aria-label={t.myNativeLanguage || (isRTL ? 'زبان من' : 'My Language')}>
-          <div className="flex items-center justify-between px-0.5">
-            <span className="text-xs font-bold text-[var(--mute)] whitespace-nowrap">
-              {t.myNativeLanguage || (isRTL ? 'زبان من:' : 'My Language:')}
-              <span className="sr-only">زبان مادری من</span>
-            </span>
-            <span className="text-xs font-black text-[var(--lapis)] whitespace-nowrap truncate max-w-[140px]">
-              {languageOptions.find(l => l.code === currentNativeCode)?.name || 'فارسی'}
-            </span>
+        {/* 2-Column Side-by-Side Row for Native Language & Learning Language */}
+        <div className="grid grid-cols-[1fr_auto_1fr] items-end gap-2" id="targetLangContainer">
+          {/* Column 1: My Native Language */}
+          <div className="space-y-1.5 min-w-0" role="radiogroup" aria-label={t.myNativeLanguage || (isRTL ? 'زبان من' : 'My Language')}>
+            <div className="flex items-center justify-between px-0.5">
+              <span className="text-[11px] font-bold text-[var(--mute)] truncate">
+                {t.myNativeLanguage || (isRTL ? 'زبان من:' : 'My Language:')}
+                <span className="sr-only">زبان مادری من</span>
+              </span>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                sound.playClick();
+                setIsNativeOpen(prev => !prev);
+                setIsTargetOpen(false);
+                setIsLangPopOpen(false);
+              }}
+              className={`w-full h-11 px-2.5 rounded-xl bg-[var(--bg)] border flex items-center justify-between transition-colors shadow-xs gap-1.5 cursor-pointer ${
+                isNativeOpen ? 'border-[var(--lapis)] ring-2 ring-[var(--lapis)]/15' : 'border-[var(--line)] hover:border-[var(--lapis)]'
+              }`}
+              aria-expanded={isNativeOpen}
+            >
+              <div className="flex items-center gap-1.5 min-w-0">
+                <span className="w-6 h-6 rounded-md bg-[var(--ink)] text-[var(--bg)] font-mono font-black text-[10px] flex items-center justify-center shrink-0">
+                  {currentNativeLangInfo?.short || normalizedNativeCode.slice(0, 2).toUpperCase() || 'EN'}
+                </span>
+                <span className="text-xs font-extrabold text-[var(--ink)] truncate">
+                  {isFa
+                    ? (PERSIAN_LANG_NAMES[normalizedNativeCode] || currentNativeLangInfo?.name || 'فارسی')
+                    : (currentNativeLangInfo?.name || 'English')}
+                </span>
+              </div>
+              <ChevronDown size={15} className={`text-[var(--mute)] transition-transform duration-200 shrink-0 ${isNativeOpen ? 'rotate-180' : ''}`} />
+            </button>
           </div>
 
-          {/* Trigger Button */}
+          {/* Center Swap Button */}
           <button
             type="button"
             onClick={() => {
-              sound.playClick();
-              setIsNativeOpen(prev => !prev);
-              setIsTargetOpen(false);
-              setIsLangPopOpen(false);
+              if (!currentTargetCode) return;
+              sound.playToggle();
+              const prevNative = currentNativeCode;
+              const prevTarget = currentTargetCode;
+              onSave({
+                ...settings,
+                nativeLanguage: prevTarget,
+                targetLanguages: [prevNative],
+                targetLanguage: prevNative
+              });
             }}
-            className="w-full h-11 px-3 rounded-xl bg-[var(--bg)] border border-[var(--line)] hover:border-[var(--lapis)] flex items-center justify-between transition-colors shadow-xs"
-            aria-expanded={isNativeOpen}
+            title={isFa ? 'جابجایی زبان مبدأ و هدف' : 'Swap languages'}
+            className="w-9 h-11 rounded-xl bg-[var(--bg)] hover:bg-[var(--line)] border border-[var(--line)] text-[var(--mute)] hover:text-[var(--ink)] flex items-center justify-center shrink-0 cursor-pointer active:scale-95 transition-all"
           >
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="w-6 h-6 rounded-md bg-[var(--ink)] text-[var(--bg)] font-mono font-black text-[10px] flex items-center justify-center shrink-0">
-                {languageOptions.find(l => l.code === currentNativeCode)?.short || 'FA'}
-              </span>
-              <span className="text-xs font-bold text-[var(--ink)] whitespace-nowrap truncate">
-                {languageOptions.find(l => l.code === currentNativeCode)?.name || 'فارسی'}
-              </span>
-              {!isRTL && (
-                <span className="text-[11px] text-[var(--mute)] whitespace-nowrap truncate hidden sm:inline">
-                  ({languageOptions.find(l => l.code === currentNativeCode)?.enName})
-                </span>
-              )}
-            </div>
-            <ChevronDown size={16} className={`text-[var(--mute)] transition-transform duration-200 shrink-0 ${isNativeOpen ? 'rotate-180' : ''}`} />
+            <ArrowRightLeft size={15} />
           </button>
 
-          {/* Dropdown Menu with Search at the top */}
-          <div className={`p-2.5 rounded-xl bg-[var(--panel)] border border-[var(--line)] shadow-sm space-y-2 ${isNativeOpen ? 'block animate-fade-in' : 'hidden'}`}>
-            <div className="relative">
-              <input
-                type="text"
-                value={searchNative}
-                onChange={(e) => setSearchNative(e.target.value)}
-                placeholder={t.searchLanguages || (isRTL ? 'جستجوی زبان...' : 'Search languages...')}
-                className="w-full h-9 px-3 text-xs rounded-lg bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] placeholder-[var(--mute)] focus:outline-none focus:border-[var(--lapis)] transition-colors pr-8 rtl:pr-8 rtl:pl-3 ltr:pl-8 ltr:pr-3"
-              />
-              <Search size={14} className="absolute top-1/2 -translate-y-1/2 text-[var(--mute)] pointer-events-none rtl:right-2.5 ltr:left-2.5" />
-              {searchNative && (
-                <button 
-                  type="button" 
-                  onClick={() => setSearchNative('')}
-                  className="absolute top-1/2 -translate-y-1/2 text-[var(--mute)] hover:text-[var(--ink)] p-0.5 rtl:left-2 ltr:right-2"
-                >
-                  <X size={12} />
-                </button>
-              )}
+          {/* Column 2: Learning Language */}
+          <div className="space-y-1.5 min-w-0" role="group" aria-label={t.languagesIWantToLearn || (isFa ? 'زبان هدف' : 'Learning Language')}>
+            <div className="flex items-center justify-between px-0.5">
+              <span className="text-[11px] font-bold text-[var(--mute)] truncate">
+                {t.learningLabel || (isFa ? 'زبان یادگیری:' : 'Learning:')}
+              </span>
             </div>
 
-            <div className="max-h-48 overflow-y-auto space-y-1 no-scrollbar overscroll-contain">
-              {filteredNativeLanguages.length === 0 ? (
-                <div className="text-xs text-[var(--mute)] py-2 text-center">{t.noLanguagesFound || 'No languages found'}</div>
-              ) : (
-                filteredNativeLanguages.map(l => {
-                  const isCurrent = currentNativeCode === l.code;
-                  const subName = isRTL ? PERSIAN_LANG_NAMES[l.code] : l.enName;
-                  return (
-                    <button
-                      key={`native-opt-${l.code}`}
-                      type="button"
-                      role="radio"
-                      aria-checked={isCurrent}
-                      onClick={() => handleNativeChange(l.code)}
-                      className={`w-full flex items-center justify-between p-2 rounded-lg text-xs font-bold transition-all min-h-[40px] ${
-                        isCurrent 
-                          ? 'bg-[var(--ink)] text-[var(--bg)]' 
-                          : 'hover:bg-[var(--bg)] text-[var(--ink)]'
-                      }`}
-                    >
-                      <span className="flex items-center gap-2 min-w-0">
-                        <span className={`w-5 h-5 rounded font-mono font-black text-[9px] flex items-center justify-center shrink-0 ${
-                          isCurrent ? 'bg-white/20 text-white' : 'bg-black/10 dark:bg-white/10 text-[var(--ink)]'
-                        }`}>
-                          {l.short}
-                        </span>
-                        <span className="whitespace-nowrap truncate">{l.name}</span>
-                        {subName && subName !== l.name && (
-                          <span className={`text-[10.5px] whitespace-nowrap truncate ${isCurrent ? 'opacity-80' : 'text-[var(--mute)]'}`}>
-                            ({subName})
-                          </span>
-                        )}
-                      </span>
-                      {isCurrent && <Check size={14} className="shrink-0 text-white" />}
-                    </button>
-                  );
-                })
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Arrow Divider */}
-        <div className="flex items-center justify-center text-[var(--mute)] opacity-70 py-0.5">
-          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 5v14M19 12l-7 7-7-7" />
-          </svg>
-        </div>
-
-        {/* 2. LEARNING LANGUAGES DROPDOWN */}
-        <div 
-          id="targetLangContainer"
-          className="space-y-1.5" 
-          role="group" 
-          aria-label={t.languagesIWantToLearn || (isRTL ? 'زبان‌هایی که می‌خوام یاد بگیرم' : 'Languages I Want to Learn')}
-        >
-          <div className="flex items-center justify-between px-0.5">
-            <span className="text-xs font-bold text-[var(--mute)] whitespace-nowrap">
-              {t.languagesIWantToLearn || (isRTL ? 'زبان یادگیری (هدف):' : 'Learning Language:')}
-            </span>
-            <span className="text-xs font-bold text-[var(--lapis)] whitespace-nowrap">
-              {currentTargetLangInfo ? (isRTL ? '۱ زبان فعال' : '1 active') : (isRTL ? 'انتخاب نشده' : 'None selected')}
-            </span>
-          </div>
-
-          {/* Trigger Button - Shows selected language tagged directly in the row with a removal cross */}
-          <button
-            type="button"
-            onClick={() => {
-              sound.playClick();
-              setIsTargetOpen(prev => !prev);
-              setIsNativeOpen(false);
-              setIsLangPopOpen(false);
-            }}
-            className="w-full min-h-[44px] px-3 py-1.5 rounded-xl bg-[var(--bg)] border border-[var(--line)] hover:border-[var(--lapis)] flex items-center justify-between transition-colors shadow-xs gap-2"
-            aria-expanded={isTargetOpen}
-          >
-            <div className="flex items-center gap-2 min-w-0 flex-1">
-              {currentTargetLangInfo ? (
-                /* Tagged Chip in the row with 'X' cross */
-                <span 
-                  data-testid="target-lang-tag"
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[var(--lapis)] text-white text-xs font-bold shadow-xs max-w-full"
-                >
-                  {!isRTL && (
-                    <span className="w-4 h-4 rounded font-mono font-black text-[9px] bg-white/20 flex items-center justify-center shrink-0">
+            <button
+              type="button"
+              onClick={() => {
+                sound.playClick();
+                setIsTargetOpen(prev => !prev);
+                setIsNativeOpen(false);
+                setIsLangPopOpen(false);
+              }}
+              className={`w-full h-11 px-2.5 rounded-xl bg-[var(--bg)] border flex items-center justify-between transition-colors shadow-xs gap-1.5 cursor-pointer ${
+                isTargetOpen ? 'border-[var(--lapis)] ring-2 ring-[var(--lapis)]/15' : 'border-[var(--line)] hover:border-[var(--lapis)]'
+              }`}
+              aria-expanded={isTargetOpen}
+            >
+              <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                {currentTargetLangInfo ? (
+                  <span 
+                    data-testid="target-lang-tag"
+                    className="inline-flex items-center gap-1.5 min-w-0 max-w-full"
+                  >
+                    <span className="w-6 h-6 rounded-md bg-[var(--lapis)] text-white font-mono font-black text-[10px] flex items-center justify-center shrink-0">
                       {currentTargetLangInfo.short}
                     </span>
-                  )}
-                  <span className="whitespace-nowrap truncate">
-                    {isRTL ? (PERSIAN_LANG_NAMES[currentTargetLangInfo.code] || currentTargetLangInfo.name) : currentTargetLangInfo.name}
+                    <span className="text-xs font-extrabold text-[var(--ink)] truncate">
+                      {isFa ? (PERSIAN_LANG_NAMES[currentTargetLangInfo.code] || currentTargetLangInfo.name) : currentTargetLangInfo.name}
+                    </span>
                   </span>
-                  {(() => {
-                    const sub = isRTL ? currentTargetLangInfo.name : currentTargetLangInfo.enName;
-                    const primary = isRTL ? (PERSIAN_LANG_NAMES[currentTargetLangInfo.code] || currentTargetLangInfo.name) : currentTargetLangInfo.name;
-                    return sub && sub !== primary ? (
-                      <span className="text-[10px] opacity-85 whitespace-nowrap truncate">
-                        ({sub})
-                      </span>
-                    ) : null;
-                  })()}
-                  <span
-                    role="button"
-                    tabIndex={0}
-                    aria-label={isRTL ? 'حذف زبان' : 'Remove language'}
-                    onClick={handleRemoveTargetLang}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.stopPropagation();
-                        handleRemoveTargetLang(e as any);
-                      }
-                    }}
-                    className="w-5 h-5 rounded-full bg-white/20 hover:bg-white/40 active:scale-90 flex items-center justify-center shrink-0 cursor-pointer transition-transform ml-0.5 rtl:ml-0 rtl:mr-0.5"
-                    title={isRTL ? 'حذف زبان' : 'Remove language'}
-                  >
-                    <X size={11} strokeWidth={2.5} />
+                ) : (
+                  <span className="text-xs font-bold text-[var(--mute)] truncate">
+                    {t.selectLangPlaceholder || (isFa ? 'انتخاب زبان...' : 'Select...')}
                   </span>
-                </span>
-              ) : (
-                /* Empty state prompting to pick */
-                <span className="text-xs font-bold text-[var(--mute)] flex items-center gap-1.5">
-                  <span className="w-5 h-5 rounded-md bg-[var(--lapis)]/10 text-[var(--lapis)] flex items-center justify-center font-bold text-xs">
-                    +
-                  </span>
-                  <span>{isRTL ? 'انتخاب زبان یادگیری...' : 'Select learning language...'}</span>
-                </span>
-              )}
-            </div>
-
-            <ChevronDown size={16} className={`text-[var(--mute)] transition-transform duration-200 shrink-0 ${isTargetOpen ? 'rotate-180' : ''}`} />
-          </button>
-
-          {/* Dropdown Menu with Search at the top */}
-          <div className={`p-2.5 rounded-xl bg-[var(--panel)] border border-[var(--line)] shadow-sm space-y-2 ${isTargetOpen ? 'block animate-fade-in' : 'hidden'}`} id="chips">
-            <div className="relative">
-              <input
-                type="text"
-                value={searchTarget}
-                onChange={(e) => setSearchTarget(e.target.value)}
-                placeholder={t.searchLanguages || (isRTL ? 'جستجوی زبان...' : 'Search languages...')}
-                className="w-full h-9 px-3 text-xs rounded-lg bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] placeholder-[var(--mute)] focus:outline-none focus:border-[var(--lapis)] transition-colors pr-8 rtl:pr-8 rtl:pl-3 ltr:pl-8 ltr:pr-3"
-              />
-              <Search size={14} className="absolute top-1/2 -translate-y-1/2 text-[var(--mute)] pointer-events-none rtl:right-2.5 ltr:left-2.5" />
-              {searchTarget && (
-                <button 
-                  type="button" 
-                  onClick={() => setSearchTarget('')}
-                  className="absolute top-1/2 -translate-y-1/2 text-[var(--mute)] hover:text-[var(--ink)] p-0.5 rtl:left-2 ltr:right-2"
-                >
-                  <X size={12} />
-                </button>
-              )}
-            </div>
-
-            <div className="max-h-52 overflow-y-auto space-y-1 no-scrollbar overscroll-contain">
-              {filteredTargetLanguages.length === 0 ? (
-                <div className="text-xs text-[var(--mute)] py-2 text-center">{t.noLanguagesFound || 'No languages found'}</div>
-              ) : (
-                filteredTargetLanguages.map(l => {
-                  const isSelected = (settings.targetLanguages?.[0] === l.code) || (settings.targetLanguage === l.code);
-                  const subName = isRTL ? PERSIAN_LANG_NAMES[l.code] : l.enName;
-                  return (
-                    <button
-                      key={`target-opt-${l.code}`}
-                      type="button"
-                      aria-pressed={isSelected}
-                      onClick={() => selectLearningLang(l.code)}
-                      className={`w-full flex items-center justify-between p-2 rounded-lg text-xs font-bold transition-all min-h-[40px] ${
-                        isSelected 
-                          ? 'bg-[var(--lapis)] text-[var(--on-lapis)] shadow-xs' 
-                          : 'hover:bg-[var(--bg)] text-[var(--ink)]'
-                      }`}
-                    >
-                      <span className="flex items-center gap-2 min-w-0">
-                        <span className={`w-5 h-5 rounded font-mono font-black text-[9px] flex items-center justify-center shrink-0 ${
-                          isSelected ? 'bg-white/20 text-white' : 'bg-black/10 dark:bg-white/10 text-[var(--ink)]'
-                        }`}>
-                          {l.short}
-                        </span>
-                        <span className="whitespace-nowrap truncate">{l.name}</span>
-                        {subName && subName !== l.name && (
-                          <span className={`text-[10.5px] whitespace-nowrap truncate ${isSelected ? 'opacity-80' : 'text-[var(--mute)]'}`}>
-                            ({subName})
-                          </span>
-                        )}
-                      </span>
-                      <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
-                        isSelected ? 'bg-white text-[var(--lapis)] border-white' : 'border-[var(--line)] bg-[var(--bg)]'
-                      }`}>
-                        {isSelected && <Check size={12} strokeWidth={3} />}
-                      </div>
-                    </button>
-                  );
-                })
-              )}
-            </div>
+                )}
+              </div>
+              <ChevronDown size={15} className={`text-[var(--mute)] transition-transform duration-200 shrink-0 ${isTargetOpen ? 'rotate-180' : ''}`} />
+            </button>
           </div>
         </div>
 
+        {/* Full-Width Dropdown Menu for Native Language */}
+        <div className={`p-2.5 rounded-xl bg-[var(--panel)] border border-[var(--line)] shadow-sm space-y-2 ${isNativeOpen ? 'block animate-fade-in' : 'hidden'}`}>
+          <div className="relative">
+            <input
+              type="text"
+              value={searchNative}
+              onChange={(e) => setSearchNative(e.target.value)}
+              placeholder={t.searchLanguages || (isFa ? 'جستجوی زبان من...' : 'Search native language...')}
+              className="w-full h-9 px-3 text-xs rounded-lg bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] placeholder-[var(--mute)] focus:outline-none focus:border-[var(--lapis)] transition-colors pr-8 rtl:pr-8 rtl:pl-3 ltr:pl-8 ltr:pr-3"
+            />
+            <Search size={14} className="absolute top-1/2 -translate-y-1/2 text-[var(--mute)] pointer-events-none rtl:right-2.5 ltr:left-2.5" />
+            {searchNative && (
+              <button 
+                type="button" 
+                onClick={() => setSearchNative('')}
+                className="absolute top-1/2 -translate-y-1/2 text-[var(--mute)] hover:text-[var(--ink)] p-0.5 rtl:left-2 ltr:right-2"
+              >
+                <X size={12} />
+              </button>
+            )}
+          </div>
+
+          <div className="max-h-48 overflow-y-auto space-y-1 no-scrollbar overscroll-contain">
+            {filteredNativeLanguages.length === 0 ? (
+              <div className="text-xs text-[var(--mute)] py-2 text-center">{t.noLanguagesFound || 'No languages found'}</div>
+            ) : (
+              filteredNativeLanguages.map(l => {
+                const isCurrent = normalizedNativeCode === l.code;
+                const subName = isFa ? PERSIAN_LANG_NAMES[l.code] : l.enName;
+                return (
+                  <button
+                    key={`native-opt-${l.code}`}
+                    type="button"
+                    role="radio"
+                    aria-checked={isCurrent}
+                    onClick={() => handleNativeChange(l.code)}
+                    className={`w-full flex items-center justify-between p-2 rounded-lg text-xs font-bold transition-all min-h-[40px] ${
+                      isCurrent 
+                        ? 'bg-[var(--ink)] text-[var(--bg)]' 
+                        : 'hover:bg-[var(--bg)] text-[var(--ink)]'
+                    }`}
+                  >
+                    <span className="flex items-center gap-2 min-w-0">
+                      <span className={`w-5 h-5 rounded font-mono font-black text-[9px] flex items-center justify-center shrink-0 ${
+                        isCurrent ? 'bg-white/20 text-white' : 'bg-black/10 dark:bg-white/10 text-[var(--ink)]'
+                      }`}>
+                        {l.short}
+                      </span>
+                      <span className="whitespace-nowrap truncate">{l.name}</span>
+                      {subName && subName !== l.name && (
+                        <span className={`text-[10.5px] whitespace-nowrap truncate ${isCurrent ? 'opacity-80' : 'text-[var(--mute)]'}`}>
+                          ({subName})
+                        </span>
+                      )}
+                    </span>
+                    {isCurrent && <Check size={14} className="shrink-0 text-white" />}
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
+
+        {/* Full-Width Dropdown Menu for Learning Language */}
+        <div className={`p-2.5 rounded-xl bg-[var(--panel)] border border-[var(--line)] shadow-sm space-y-2 ${isTargetOpen ? 'block animate-fade-in' : 'hidden'}`} id="chips">
+          <div className="relative">
+            <input
+              type="text"
+              value={searchTarget}
+              onChange={(e) => setSearchTarget(e.target.value)}
+              placeholder={t.searchLanguages || (isFa ? 'جستجوی زبان یادگیری...' : 'Search learning language...')}
+              className="w-full h-9 px-3 text-xs rounded-lg bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] placeholder-[var(--mute)] focus:outline-none focus:border-[var(--lapis)] transition-colors pr-8 rtl:pr-8 rtl:pl-3 ltr:pl-8 ltr:pr-3"
+            />
+            <Search size={14} className="absolute top-1/2 -translate-y-1/2 text-[var(--mute)] pointer-events-none rtl:right-2.5 ltr:left-2.5" />
+            {searchTarget && (
+              <button 
+                type="button" 
+                onClick={() => setSearchTarget('')}
+                className="absolute top-1/2 -translate-y-1/2 text-[var(--mute)] hover:text-[var(--ink)] p-0.5 rtl:left-2 ltr:right-2"
+              >
+                <X size={12} />
+              </button>
+            )}
+          </div>
+
+          <div className="max-h-52 overflow-y-auto space-y-1 no-scrollbar overscroll-contain">
+            {filteredTargetLanguages.length === 0 ? (
+              <div className="text-xs text-[var(--mute)] py-2 text-center">{t.noLanguagesFound || 'No languages found'}</div>
+            ) : (
+              filteredTargetLanguages.map(l => {
+                const isSelected = (normalizedTargetCode === l.code);
+                const subName = isFa ? PERSIAN_LANG_NAMES[l.code] : l.enName;
+                return (
+                  <button
+                    key={`target-opt-${l.code}`}
+                    type="button"
+                    aria-pressed={isSelected}
+                    onClick={() => {
+                      selectLearningLang(l.code);
+                      setIsTargetOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-between p-2 rounded-lg text-xs font-bold transition-all min-h-[40px] ${
+                      isSelected 
+                        ? 'bg-[var(--lapis)] text-[var(--on-lapis)] shadow-xs' 
+                        : 'hover:bg-[var(--bg)] text-[var(--ink)]'
+                    }`}
+                  >
+                    <span className="flex items-center gap-2 min-w-0">
+                      <span className={`w-5 h-5 rounded font-mono font-black text-[9px] flex items-center justify-center shrink-0 ${
+                        isSelected ? 'bg-white/20 text-white' : 'bg-black/10 dark:bg-white/10 text-[var(--ink)]'
+                      }`}>
+                        {l.short}
+                      </span>
+                      <span className="whitespace-nowrap truncate">{l.name}</span>
+                      {subName && subName !== l.name && (
+                        <span className={`text-[10.5px] whitespace-nowrap truncate ${isSelected ? 'opacity-80' : 'text-[var(--mute)]'}`}>
+                          ({subName})
+                        </span>
+                      )}
+                    </span>
+                    <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
+                      isSelected ? 'bg-white text-[var(--lapis)] border-white' : 'border-[var(--line)] bg-[var(--bg)]'
+                    }`}>
+                      {isSelected && <Check size={12} strokeWidth={3} />}
+                    </div>
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
       </section>
 
       {/* PANEL 2: CEFR LEVEL SELECTION (A1, A2, B1, B2, C1, ALL) */}
@@ -976,15 +1029,15 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
           </span>
         </div>
 
-        {/* Level Pills Responsive Grid (3 cols on small phones, 6 cols on sm+ screens) */}
+        {/* Level Pills Responsive Grid (5 real CEFR levels: A1 to C1) */}
         <div 
-          className="grid grid-cols-3 sm:grid-cols-6 gap-1.5"
+          className="grid grid-cols-5 gap-1.5"
           role="radiogroup" 
           aria-label={t.cefrLevel || (isRTL ? 'سطح دشواری' : 'Proficiency Level')}
         >
           {CEFR_LEVELS.map(level => {
             const isSelected = currentCefr === level.id;
-            const levelName = level.name[settings.language] || level.name.fa || level.name.en || level.id;
+            const levelName = getCefrText(level.name, settings.language) || level.id;
             return (
               <button
                 key={level.id}
@@ -1013,14 +1066,14 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
         {activeCefrInfo && (
           <div className="mt-2.5 p-2.5 rounded-xl bg-[var(--bg)] border border-[var(--line)] text-start space-y-1">
             <div className="text-[11.5px] font-bold text-[var(--ink)] flex items-center gap-1.5 leading-tight">
-              <span>{activeCefrInfo.name[settings.language] || activeCefrInfo.name.fa || activeCefrInfo.name.en}</span>
+              <span>{getCefrText(activeCefrInfo.name, settings.language)}</span>
             </div>
             <p className="text-[10.5px] text-[var(--mute)] leading-relaxed">
-              {activeCefrInfo.desc[settings.language] || activeCefrInfo.desc.fa || activeCefrInfo.desc.en}
+              {getCefrText(activeCefrInfo.desc, settings.language)}
             </p>
             {activeCefrInfo.example && (
               <div className="text-[10px] text-[var(--turq)] font-medium pt-0.5 border-t border-[var(--line)]">
-                {activeCefrInfo.example[settings.language] || activeCefrInfo.example.fa || activeCefrInfo.example.en}
+                {getCefrText(activeCefrInfo.example, settings.language)}
               </div>
             )}
           </div>
@@ -1029,11 +1082,11 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
 
       {/* PANEL 3: PLAYER COUNT (4, 6, 8) */}
       <section className="panel">
-        <div className="lab whitespace-nowrap">{t.howManyPlayers || (isRTL ? 'تعداد بازیکنان' : 'How many players?')}</div>
+        <div className="lab whitespace-nowrap">{t.howManyPlayers || (isFa ? 'تعداد بازیکنان' : 'How many players?')}</div>
         <div className="seg" id="players">
           {[4, 6, 8].map(count => {
             const isChecked = settings.playerCount === count;
-            const countLabel = `${toPersian(count, isRTL)} ${t.players || (isRTL ? 'نفر' : 'players')}`;
+            const countLabel = `${toPersian(count, isFa)} ${t.players || (isFa ? 'نفر' : 'players')}`;
             return (
               <button
                 key={count}
@@ -1076,7 +1129,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                 items={roundOptions}
                 selected={settings.roundsCount}
                 onSelect={(val) => updateSettings('roundsCount', val)}
-                format={(val) => toPersian(val, isRTL)}
+                format={(val) => toPersian(val, isFa)}
                 ariaLabel={t.roundsCountLabel || 'Number of Rounds'}
               />
 
@@ -1086,20 +1139,20 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                 onClick={decrementRound}
                 disabled={settings.roundsCount <= 3}
                 className="w-full min-h-[38px] py-1.5 mt-1 rounded-xl bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center text-[var(--ink)] disabled:opacity-25 disabled:pointer-events-none active:scale-95 transition-all"
-                aria-label={isRTL ? 'کاهش راند' : 'Decrease round'}
-                title={isRTL ? 'کاهش ۱ راند' : '-1 round'}
+                aria-label={isFa ? 'کاهش راند' : 'Decrease round'}
+                title={isFa ? 'کاهش ۱ راند' : '-1 round'}
               >
                 <ChevronDown size={16} />
               </button>
             </div>
             <span className="text-[10px] font-bold text-[var(--mute)] pt-1 whitespace-nowrap">
-              {isRTL ? 'راند (۳ تا ۱۰)' : '3 to 10'}
+              {t.roundsRangeLabel || (isFa ? 'راند (۳ تا ۱۰)' : '3 to 10')}
             </span>
           </div>
 
           {/* Time Column: Separated Minutes (1 by 1) & Seconds (5 by 5) with Steppers */}
           <div className="flex flex-col items-center">
-            <div className="lab whitespace-nowrap truncate w-full text-center">{t.turnTimeLabel || (isRTL ? 'زمان هر دور' : 'Turn Duration')}</div>
+            <div className="lab whitespace-nowrap truncate w-full text-center">{t.turnTimeLabel || (isFa ? 'زمان هر دور' : 'Turn Duration')}</div>
             
             <div className="w-full" dir="ltr">
               {/* Top Increment Steppers */}
@@ -1109,22 +1162,22 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                   onClick={incrementMinute}
                   disabled={currentMin >= 10}
                   className="min-h-[38px] py-1.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center gap-1 text-xs font-bold text-[var(--ink)] disabled:opacity-25 disabled:pointer-events-none active:scale-95 transition-all"
-                  aria-label={isRTL ? 'افزایش دقیقه' : 'Increase minute'}
-                  title={isRTL ? 'افزایش ۱ دقیقه' : '+1 min'}
+                  aria-label={isFa ? 'افزایش دقیقه' : 'Increase minute'}
+                  title={isFa ? 'افزایش ۱ دقیقه' : '+1 min'}
                 >
                   <ChevronUp size={14} />
-                  <span className="whitespace-nowrap">{isRTL ? '+۱د' : '+1m'}</span>
+                  <span className="whitespace-nowrap">{isFa ? '+۱د' : '+1m'}</span>
                 </button>
                 <button 
                   type="button" 
                   onClick={incrementSecond}
                   disabled={currentSec >= 55 && currentMin >= 10}
                   className="min-h-[38px] py-1.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center gap-1 text-xs font-bold text-[var(--ink)] disabled:opacity-25 disabled:pointer-events-none active:scale-95 transition-all"
-                  aria-label={isRTL ? 'افزایش ۵ ثانیه' : 'Increase 5 seconds'}
-                  title={isRTL ? 'افزایش ۵ ثانیه' : '+5 sec'}
+                  aria-label={isFa ? 'افزایش ۵ ثانیه' : 'Increase 5 seconds'}
+                  title={isFa ? 'افزایش ۵ ثانیه' : '+5 sec'}
                 >
                   <ChevronUp size={14} />
-                  <span className="whitespace-nowrap">{isRTL ? '+۵ث' : '+5s'}</span>
+                  <span className="whitespace-nowrap">{isFa ? '+۵ث' : '+5s'}</span>
                 </button>
               </div>
 
@@ -1136,8 +1189,8 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                     items={minuteOptions}
                     selected={currentMin}
                     onSelect={handleMinuteChange}
-                    format={(val) => toPersian(val, isRTL)}
-                    ariaLabel={isRTL ? 'دقیقه' : 'Minutes'}
+                    format={(val) => toPersian(val, isFa)}
+                    ariaLabel={isFa ? 'دقیقه' : 'Minutes'}
                     showWrapper={false}
                   />
                 </div>
@@ -1151,8 +1204,8 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                     items={secondOptions}
                     selected={currentSec}
                     onSelect={handleSecondChange}
-                    format={(val) => toPersian(String(val).padStart(2, '0'), isRTL)}
-                    ariaLabel={isRTL ? 'زمان هر نوبت' : 'Turn Duration'}
+                    format={(val) => toPersian(String(val).padStart(2, '0'), isFa)}
+                    ariaLabel={isFa ? 'زمان هر نوبت' : 'Turn Duration'}
                     ariaValueText={formatTime(settings.roundDuration)}
                     showWrapper={false}
                   />
@@ -1166,22 +1219,22 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                   onClick={decrementMinute}
                   disabled={currentMin <= 0 && currentSec <= 5}
                   className="min-h-[38px] py-1.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center gap-1 text-xs font-bold text-[var(--ink)] disabled:opacity-25 disabled:pointer-events-none active:scale-95 transition-all"
-                  aria-label={isRTL ? 'کاهش دقیقه' : 'Decrease minute'}
-                  title={isRTL ? 'کاهش ۱ دقیقه' : '-1 min'}
+                  aria-label={isFa ? 'کاهش دقیقه' : 'Decrease minute'}
+                  title={isFa ? 'کاهش ۱ دقیقه' : '-1 min'}
                 >
                   <ChevronDown size={14} />
-                  <span className="whitespace-nowrap">{isRTL ? '-۱د' : '-1m'}</span>
+                  <span className="whitespace-nowrap">{isFa ? '-۱د' : '-1m'}</span>
                 </button>
                 <button 
                   type="button" 
                   onClick={decrementSecond}
                   disabled={currentSec <= 5 && currentMin <= 0}
                   className="min-h-[38px] py-1.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center gap-1 text-xs font-bold text-[var(--ink)] disabled:opacity-25 disabled:pointer-events-none active:scale-95 transition-all"
-                  aria-label={isRTL ? 'کاهش ۵ ثانیه' : 'Decrease 5 seconds'}
-                  title={isRTL ? 'کاهش ۵ ثانیه' : '-5 sec'}
+                  aria-label={isFa ? 'کاهش ۵ ثانیه' : 'Decrease 5 seconds'}
+                  title={isFa ? 'کاهش ۵ ثانیه' : '-5 sec'}
                 >
                   <ChevronDown size={14} />
-                  <span className="whitespace-nowrap">{isRTL ? '-۵ث' : '-5s'}</span>
+                  <span className="whitespace-nowrap">{isFa ? '-۵ث' : '-5s'}</span>
                 </button>
               </div>
 
@@ -1189,8 +1242,8 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
 
             {/* Sub-label indicators */}
             <div className="flex items-center justify-around w-full text-[10px] font-bold text-[var(--mute)] pt-1 px-1 whitespace-nowrap" dir="ltr">
-              <span>{isRTL ? 'دقیقه (یکی یکی)' : 'Min (1-by-1)'}</span>
-              <span>{isRTL ? 'ثانیه (۵ تا ۵ تا)' : 'Sec (5-by-5)'}</span>
+              <span>{t.minStepLabel || (isFa ? 'دقیقه (یکی یکی)' : 'Min (1-by-1)')}</span>
+              <span>{t.secStepLabel || (isFa ? 'ثانیه (۵ تا ۵ تا)' : 'Sec (5-by-5)')}</span>
             </div>
           </div>
         </div>
@@ -1263,7 +1316,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
 
         <hr className="border-0 border-t border-[var(--line)] my-2" />
 
-        {/* Direction Segment: Dynamic Human Language Names without "Native" / "Target" */}
+        {/* Direction Segment: Abbreviated Language Codes so labels never truncate */}
         <div className="lab whitespace-nowrap truncate">{t.cardDirection || (isRTL ? 'جهت ترجمه کارت‌ها' : 'Card Translation Direction')}</div>
         <div className="seg sm" id="dir" role="radiogroup" aria-label={t.cardDirection || 'Card Translation Direction'}>
           {dirOptions.map(d => {
@@ -1274,77 +1327,17 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                 type="button"
                 role="radio"
                 aria-checked={isChecked}
-                className="whitespace-nowrap truncate px-1.5 text-[11.5px] sm:text-xs font-bold leading-none min-w-0 min-h-[44px]"
+                className="whitespace-nowrap px-2 text-xs font-extrabold leading-none min-w-0 min-h-[44px]"
                 title={d.title}
                 onClick={() => {
                   sound.playToggle();
                   updateSettings('cardGameMode', d.id);
                 }}
               >
-                <span className="whitespace-nowrap truncate">{d.text}</span>
+                <span className="whitespace-nowrap" dir="ltr">{d.text}</span>
               </button>
             );
           })}
-        </div>
-
-        <hr className="border-0 border-t border-[var(--line)] my-2" />
-
-        {/* Content Type Filter with Situation Guard */}
-        <div className="flex items-center justify-between mb-1">
-          <div className="lab whitespace-nowrap truncate">{t.cardContentType || (isRTL ? 'نوع محتوای کارت‌ها' : 'Card Content Type')}</div>
-          {isSituationDisabled && (
-            <span className="text-[10px] text-amber-700 dark:text-amber-400 font-bold whitespace-nowrap">
-              {isRTL
-                ? `${t.situationDisabled || 'موقعیت غیرفعال'} (${toPersian(realSituationCount, isRTL)} از ${toPersian(requiredCardCount, isRTL)} کارت)`
-                : `${t.situationDisabled || 'Situation disabled'} (${realSituationCount}/${requiredCardCount} cards)`}
-            </span>
-          )}
-        </div>
-        <div className="seg sm" id="contentType" role="radiogroup" aria-label={t.cardContentType || (isRTL ? 'نوع محتوای کارت‌ها' : 'Card Content Type')}>
-          <button
-            type="button"
-            role="radio"
-            aria-checked={(settings.selectedContentType || 'all') === 'all'}
-            className="whitespace-nowrap truncate px-1.5 text-[11.5px] sm:text-xs font-bold leading-none min-w-0 min-h-[44px]"
-            onClick={() => {
-              sound.playToggle();
-              updateSettings('selectedContentType', 'all');
-            }}
-          >
-            {t.allTypes || (isRTL ? 'همه موارد' : 'All Types')}
-          </button>
-          <button
-            type="button"
-            role="radio"
-            aria-checked={settings.selectedContentType === 'Phrase'}
-            className="whitespace-nowrap truncate px-1.5 text-[11.5px] sm:text-xs font-bold leading-none min-w-0 min-h-[44px]"
-            onClick={() => {
-              sound.playToggle();
-              updateSettings('selectedContentType', 'Phrase');
-            }}
-          >
-            {t.vocabAndSentences || (isRTL ? 'واژگان و جملات' : 'Vocab & Sentences')}
-          </button>
-          <button
-            type="button"
-            role="radio"
-            aria-checked={settings.selectedContentType === 'Situation'}
-            disabled={isSituationDisabled}
-            className={`whitespace-nowrap truncate px-1.5 text-[11.5px] sm:text-xs font-bold leading-none min-w-0 min-h-[44px] ${
-              isSituationDisabled ? 'opacity-35 cursor-not-allowed line-through' : ''
-            }`}
-            title={isSituationDisabled ? (isRTL ? 'کارت کافی برای این زبان موجود نیست' : 'Insufficient real cards') : (t.situationType || 'Situation')}
-            onClick={() => {
-              if (isSituationDisabled) {
-                sound.playBuzzer();
-                return;
-              }
-              sound.playToggle();
-              updateSettings('selectedContentType', 'Situation');
-            }}
-          >
-            {t.situationType || (isRTL ? 'موقعیت مکالمه' : 'Situation')}
-          </button>
         </div>
       </section>
 
@@ -1406,36 +1399,58 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
           if (e.target === e.currentTarget) setIsSheetOpen(false);
         }}
       >
-        <div className="sheet-card" role="dialog" aria-labelledby="sheetTitle">
+        <div className="sheet-card" role="dialog" aria-labelledby="sheetTitle" onClick={e => e.stopPropagation()}>
           <div className="sheet-bar" />
-          <h2 id="sheetTitle" className="text-xl font-black mb-2 text-[var(--ink)]">
-            {t.gameRules || (isRTL ? 'راهنمای بازی دور: زبان' : 'Game Rules')}
-          </h2>
+          <div className="flex items-center justify-between mb-2">
+            <h2 id="sheetTitle" className="text-lg font-black text-[var(--ink)] m-0 flex items-center gap-2">
+              <BookOpen size={18} className="text-[var(--lapis)] shrink-0" />
+              <span>{t.gameRules || (isFa ? 'راهنمای بازی دور: زبان' : 'Game Rules')}</span>
+            </h2>
+            <button
+              type="button"
+              onClick={() => setIsSheetOpen(false)}
+              aria-label={t.close || (isFa ? 'بستن' : 'Close')}
+              className="w-8 h-8 rounded-full bg-[var(--bg)] hover:bg-[var(--line)] text-[var(--mute)] hover:text-[var(--ink)] flex items-center justify-center transition-colors cursor-pointer"
+            >
+              <X size={16} />
+            </button>
+          </div>
           <div className="text-xs sm:text-sm text-[var(--ink)]/80 space-y-2.5 leading-relaxed overflow-y-auto max-h-[60vh] pr-1">
             <p>
-              {isRTL 
+              {t.guideText1 || (isFa 
                 ? '«دور» یک بازی گروهی هیجان‌انگیز است که دور یک میز یا به‌صورت آنلاین بین اعضای تیم‌ها بازی می‌شود.'
-                : 'Turn is an exciting party game played around the table or online between team members.'}
+                : 'Turn is an exciting party game played around the table or online between team members.')}
             </p>
             <p>
-              {isRTL
+              {t.guideText2 || (isFa
                 ? 'هم‌تیمی‌های شما روبه‌روی شما می‌نشینند. شما باید کلمه یا عبارت روی کارت را برای هم‌تیمی خود توضیح دهید یا ترجمه کنید تا حدس بزند.'
-                : 'Teammates sit across from each other. The active player explains, describes, or acts out the card content for their partner.'}
-            </p>
-            <p>
-              {isRTL
-                ? 'با هر پاسخ درست، ۱ امتیاز می‌گیرید. اگر نتوانستید، می‌توانید کارت را رد کنید یا زمان را مدیریت نمایید.'
-                : 'Each correct guess awards points. If stuck, skip to save team timer before running out!'}
+                : 'Teammates sit across from each other. The active player explains, describes, or acts out the card content for their partner.')}
             </p>
           </div>
-          <button 
-            type="button" 
-            className="start-btn w-full mt-4" 
-            onClick={() => setIsSheetOpen(false)}
-            aria-label={t.gotIt || (isRTL ? 'فهمیدم' : 'Got it')}
-          >
-            <span>{t.gotIt || (isRTL ? 'فهمیدم' : 'Got it')}</span>
-          </button>
+          <div className="flex flex-col sm:flex-row gap-2 mt-4">
+            {onOpenHelp && (
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playClick();
+                  setIsSheetOpen(false);
+                  onOpenHelp();
+                }}
+                className="w-full py-2.5 px-3 rounded-xl bg-[var(--bg)] hover:bg-[var(--line)]/60 border border-[var(--line)] text-[var(--ink)] text-xs font-black flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <BookOpen size={15} className="text-[var(--lapis)]" />
+                <span>{t.gameRules || (isFa ? 'راهنمای کامل برنامه' : 'Full App Guide')}</span>
+              </button>
+            )}
+            <button 
+              type="button" 
+              className="start-btn w-full" 
+              onClick={() => setIsSheetOpen(false)}
+              aria-label={t.gotIt || (isFa ? 'فهمیدم' : 'Got it')}
+            >
+              <span>{t.gotIt || (isFa ? 'فهمیدم' : 'Got it')}</span>
+            </button>
+          </div>
         </div>
       </div>
 

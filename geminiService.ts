@@ -142,57 +142,210 @@ export async function transcribeAudioBlob(
   return data.text;
 }
 
-// MediaRecorder audio capture helper
+// MediaRecorder audio capture helper with automatic Voice Activity / Silence Detection (VAD)
 export class AudioRecorder {
   private mediaRecorder: MediaRecorder | null = null;
+  private stream: MediaStream | null = null;
   private audioChunks: Blob[] = [];
+  private audioContext: AudioContext | null = null;
+  private vadInterval: number | null = null;
+  private maxDurationTimer: number | null = null;
 
-  async start(): Promise<void> {
+  async start(existingStream?: MediaStream, onSilenceDetected?: () => void): Promise<void> {
     this.audioChunks = [];
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    
-    // Choose mimeType supported by browser
-    const mimeTypes = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4'];
-    let selectedMimeType = '';
-    for (const mt of mimeTypes) {
-      if (MediaRecorder.isTypeSupported(mt)) {
-        selectedMimeType = mt;
-        break;
+    this.cleanupVad();
+
+    if (existingStream && existingStream.active) {
+      this.stream = existingStream;
+    } else {
+      try {
+        this.stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+          },
+        });
+      } catch {
+        // Fallback to unconstrained audio if specific constraints fail on Windows/Bluetooth drivers
+        this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       }
     }
 
-    this.mediaRecorder = selectedMimeType ? new MediaRecorder(stream, { mimeType: selectedMimeType }) : new MediaRecorder(stream);
-    
+    // Choose mimeType supported by browser
+    const mimeTypes = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4'];
+    let selectedMimeType = '';
+    if (typeof MediaRecorder !== 'undefined' && typeof MediaRecorder.isTypeSupported === 'function') {
+      for (const mt of mimeTypes) {
+        if (MediaRecorder.isTypeSupported(mt)) {
+          selectedMimeType = mt;
+          break;
+        }
+      }
+    }
+
+    try {
+      this.mediaRecorder = selectedMimeType
+        ? new MediaRecorder(this.stream, { mimeType: selectedMimeType })
+        : new MediaRecorder(this.stream);
+    } catch {
+      this.mediaRecorder = new MediaRecorder(this.stream);
+    }
+
     this.mediaRecorder.ondataavailable = (event) => {
-      if (event.data.size > 0) {
+      if (event.data && event.data.size > 0) {
         this.audioChunks.push(event.data);
       }
     };
 
-    this.mediaRecorder.start(200); // 200ms slice
+    this.mediaRecorder.start(150); // 150ms slice for responsive short words
+
+    if (onSilenceDetected && this.stream) {
+      this.setupVoiceActivityDetection(this.stream, onSilenceDetected);
+    }
+  }
+
+  private setupVoiceActivityDetection(stream: MediaStream, onSilenceDetected: () => void): void {
+    try {
+      const AudioCtx = (window as any).AudioContext || (window as any).webkitAudioContext;
+      if (AudioCtx) {
+        const ctx: AudioContext = new AudioCtx();
+        this.audioContext = ctx;
+        const source = ctx.createMediaStreamSource(stream);
+        const analyser = ctx.createAnalyser();
+        analyser.fftSize = 512;
+        source.connect(analyser);
+
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+        let hasSpoken = false;
+        let silenceStart = 0;
+        const startedAt = Date.now();
+
+        this.vadInterval = window.setInterval(() => {
+          if (!this.mediaRecorder || this.mediaRecorder.state !== 'recording') {
+            this.cleanupVad();
+            return;
+          }
+          analyser.getByteTimeDomainData(dataArray);
+          let sumSquares = 0;
+          for (let i = 0; i < dataArray.length; i++) {
+            const norm = (dataArray[i] - 128) / 128;
+            sumSquares += norm * norm;
+          }
+          const rms = Math.sqrt(sumSquares / dataArray.length);
+          const now = Date.now();
+
+          if (rms > 0.025) {
+            hasSpoken = true;
+            silenceStart = 0;
+          } else if (hasSpoken) {
+            if (!silenceStart) {
+              silenceStart = now;
+            } else if (now - silenceStart >= 1100) {
+              this.cleanupVad();
+              onSilenceDetected();
+              return;
+            }
+          } else if (now - startedAt >= 4500) {
+            this.cleanupVad();
+            onSilenceDetected();
+            return;
+          }
+        }, 100);
+      }
+    } catch {
+      // Fallback if Web Audio API is unavailable
+    }
+
+    this.maxDurationTimer = window.setTimeout(() => {
+      if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
+        this.cleanupVad();
+        onSilenceDetected();
+      }
+    }, 6500);
+  }
+
+  private cleanupVad(): void {
+    if (this.vadInterval !== null) {
+      clearInterval(this.vadInterval);
+      this.vadInterval = null;
+    }
+    if (this.maxDurationTimer !== null) {
+      clearTimeout(this.maxDurationTimer);
+      this.maxDurationTimer = null;
+    }
+    if (this.audioContext) {
+      try {
+        this.audioContext.close();
+      } catch {}
+      this.audioContext = null;
+    }
   }
 
   stop(): Promise<Blob> {
+    this.cleanupVad();
     return new Promise((resolve, reject) => {
       if (!this.mediaRecorder) {
+        this.cleanupStream();
         return reject(new Error('ضبط‌کننده صوت فعال نیست'));
       }
 
-      this.mediaRecorder.onstop = () => {
-        const mimeType = this.mediaRecorder?.mimeType || 'audio/webm';
+      const recorder = this.mediaRecorder;
+      const mimeType = (recorder.mimeType || 'audio/webm').split(';')[0].trim() || 'audio/webm';
+
+      if (recorder.state === 'inactive') {
         const audioBlob = new Blob(this.audioChunks, { type: mimeType });
-        
-        // Stop audio tracks
-        this.mediaRecorder?.stream.getTracks().forEach(track => track.stop());
+        this.cleanupStream();
+        this.mediaRecorder = null;
+        return resolve(audioBlob);
+      }
+
+      recorder.onstop = () => {
+        const audioBlob = new Blob(this.audioChunks, { type: mimeType });
+        this.cleanupStream();
         this.mediaRecorder = null;
         resolve(audioBlob);
       };
 
-      this.mediaRecorder.stop();
+      try {
+        if (recorder.state === 'recording' && typeof recorder.requestData === 'function') {
+          recorder.requestData();
+        }
+        recorder.stop();
+      } catch (err) {
+        this.cleanupStream();
+        this.mediaRecorder = null;
+        reject(err);
+      }
     });
+  }
+
+  cancel(): void {
+    this.cleanupVad();
+    try {
+      if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
+        this.mediaRecorder.onstop = null;
+        this.mediaRecorder.stop();
+      }
+    } catch {}
+    this.cleanupStream();
+    this.mediaRecorder = null;
+    this.audioChunks = [];
+  }
+
+  private cleanupStream(): void {
+    if (this.stream) {
+      this.stream.getTracks().forEach((track) => {
+        try {
+          track.stop();
+        } catch {}
+      });
+      this.stream = null;
+    }
   }
 
   isRecording(): boolean {
     return this.mediaRecorder !== null && this.mediaRecorder.state === 'recording';
   }
 }
+

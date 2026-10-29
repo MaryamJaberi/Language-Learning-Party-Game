@@ -12,23 +12,23 @@ def update_aab_manifest(manifest_bytes: bytes) -> bytes:
     if old_min_sdk in manifest_bytes:
         manifest_bytes = manifest_bytes.replace(old_min_sdk, new_min_sdk)
 
-    # 2. Replace versionCode (from either 10003 or 10011) to 10012
+    # 2. Replace versionCode (from 10003, 10011, or 10012) to 10013
     v10003 = b'versionCode\x1a\x0510003"\x02\x08\x02(\x9b\x84\x84\x082\x05:\x030\x93N'
     v10011 = b'versionCode\x1a\x0510011"\x02\x08\x02(\x9b\x84\x84\x082\x05:\x030\x9bN'
-    new_vcode = b'versionCode\x1a\x0510012"\x02\x08\x02(\x9b\x84\x84\x082\x05:\x030\x9cN'
-    if v10011 in manifest_bytes:
-        manifest_bytes = manifest_bytes.replace(v10011, new_vcode)
-    elif v10003 in manifest_bytes:
-        manifest_bytes = manifest_bytes.replace(v10003, new_vcode)
+    v10012 = b'versionCode\x1a\x0510012"\x02\x08\x02(\x9b\x84\x84\x082\x05:\x030\x9cN'
+    new_vcode = b'versionCode\x1a\x0510013"\x02\x08\x02(\x9b\x84\x84\x082\x05:\x030\x9dN'
+    for old_vc in (v10012, v10011, v10003):
+        if old_vc in manifest_bytes:
+            manifest_bytes = manifest_bytes.replace(old_vc, new_vcode)
 
-    # 3. Replace versionName (from either 1.0.3 or 1.1.1) to 1.1.2
+    # 3. Replace versionName (from 1.0.3, 1.1.1, or 1.1.2) to 1.1.3
     vname_103 = b'versionName\x1a\x051.0.3'
     vname_111 = b'versionName\x1a\x051.1.1'
-    new_vname = b'versionName\x1a\x051.1.2'
-    if vname_111 in manifest_bytes:
-        manifest_bytes = manifest_bytes.replace(vname_111, new_vname)
-    elif vname_103 in manifest_bytes:
-        manifest_bytes = manifest_bytes.replace(vname_103, new_vname)
+    vname_112 = b'versionName\x1a\x051.1.2'
+    new_vname = b'versionName\x1a\x051.1.3'
+    for old_vn in (vname_112, vname_111, vname_103):
+        if old_vn in manifest_bytes:
+            manifest_bytes = manifest_bytes.replace(old_vn, new_vname)
 
     return manifest_bytes
 
@@ -52,10 +52,12 @@ def main():
         else:
             os.remove(p)
     for item in os.listdir('dist'):
+        if item in ('downloads',):
+            continue
         src = os.path.join('dist', item)
         dst = os.path.join(studio_assets, item)
         if os.path.isdir(src):
-            shutil.copytree(src, dst)
+            shutil.copytree(src, dst, ignore=shutil.ignore_patterns('aistudio', '*embeddedAabData*'))
         else:
             shutil.copy2(src, dst)
     print("Updated android-studio-project assets.")
@@ -82,7 +84,7 @@ def main():
             for file in files:
                 full_path = os.path.join(root, file)
                 rel_path = os.path.relpath(full_path, 'dist')
-                if any(bad in rel_path for bad in ['downloads', 'embeddedAabData']):
+                if any(bad in rel_path for bad in ['downloads', 'embeddedAabData', 'aistudio']):
                     continue
                 aab_entry_name = f"base/assets/dist/{rel_path}"
                 with open(full_path, 'rb') as f:
@@ -115,7 +117,7 @@ def main():
                 for file in files:
                     full_path = os.path.join(root, file)
                     rel_path = os.path.relpath(full_path, 'dist')
-                    if any(bad in rel_path for bad in ['downloads', 'embeddedAabData']):
+                    if any(bad in rel_path for bad in ['downloads', 'embeddedAabData', 'aistudio']):
                         continue
                     apk_entry_name = f"assets/dist/{rel_path}"
                     with open(full_path, 'rb') as f:

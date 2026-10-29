@@ -134,29 +134,20 @@ describe('Complete End-to-End User Flow Tests', () => {
     const cardDismiss2 = screen.queryByText(/لمس صفحه|tap anywhere/i);
     if (cardDismiss2) fireEvent.click(cardDismiss2);
 
-    // Test Pause Game
+    // Test Pause / Stop Game Modal (unified control with Resume, Help, Settings, Exit)
     const pauseBtn = screen.getByLabelText(/توقف بازی|Pause/i);
     fireEvent.click(pauseBtn);
 
-    // Paused Modal appears
-    expect(screen.getAllByText(/بازی متوقف شد/i).length).toBeGreaterThan(0);
+    // Unified Stop Game Modal appears
+    expect(screen.getAllByText(/توقف بازی|بازی موقتاً متوقف شده است/i).length).toBeGreaterThan(0);
     const resumeBtn = screen.getByRole('button', { name: /ادامه بازی/i });
     expect(resumeBtn).toBeInTheDocument();
 
-    // Resume Game
-    fireEvent.click(resumeBtn);
-    expect(screen.queryByRole('button', { name: /ادامه بازی/i })).not.toBeInTheDocument();
-
-    // Test In-Game Sound Toggle
-    const soundBtn = screen.getByLabelText(/قطع و وصل صدا|Sound Toggle/i);
-    expect(soundBtn).toBeInTheDocument();
-    fireEvent.click(soundBtn);
-
-    // Test In-Game Help Modal
-    const inGameHelpBtn = screen.getByLabelText(/راهنمای بازی|Help/i);
+    // Open Game Guide from inside Stop Game Modal
+    const inGameHelpBtn = screen.getByRole('button', { name: /مشاهده راهنمای بازی|Game Guide/i });
     fireEvent.click(inGameHelpBtn);
     expect(screen.getByText(/راهنمای بازی «دور»/i)).toBeInTheDocument();
-    
+
     // Close In-Game Help
     fireEvent.click(screen.getByText('✕'));
     expect(screen.getByRole('button', { name: /درست بود!/i })).toBeInTheDocument();

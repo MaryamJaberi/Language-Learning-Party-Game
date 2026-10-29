@@ -177,14 +177,14 @@ const PlayerNameScreen: React.FC<Props> = ({ settings, onSave, onStart, onBack, 
         </div>
       </header>
 
-      {/* Quick Action & Cartoon Characters Banner */}
+      {/* Quick Action Banner */}
       <div className="shrink-0 mb-2 flex items-center justify-between gap-2 bg-[var(--panel)] p-2.5 border border-[var(--line)] rounded-xl shadow-xs font-ui">
         <div className="flex items-center gap-1.5 min-w-0">
           <Sparkles size={15} className="text-[var(--saffron)] shrink-0" />
           <span className="text-[11px] font-bold text-[var(--mute)] truncate">
             {isRTL 
-              ? 'روی آواتار کلیک کنید تا شخصیت دلخواه خود را انتخاب کنید!' 
-              : 'Tap any avatar to choose your favorite retro character!'}
+              ? 'نام بازیکنان هر تیم را وارد کنید یا تصادفی انتخاب کنید' 
+              : 'Enter player names for each team or randomize'}
           </span>
         </div>
         <button
@@ -193,7 +193,7 @@ const PlayerNameScreen: React.FC<Props> = ({ settings, onSave, onStart, onBack, 
           className="shrink-0 px-2.5 py-1.5 bg-[var(--turq)] hover:brightness-105 active:scale-95 text-white rounded-xl font-bold text-[11px] shadow-xs flex items-center gap-1 transition-all cursor-pointer"
         >
           <Dices size={14} />
-          <span>{isRTL ? 'تصادفی 🎲' : 'Randomize 🎲'}</span>
+          <span>{isRTL ? 'اسامی تصادفی' : 'Randomize'}</span>
         </button>
       </div>
 
@@ -203,30 +203,17 @@ const PlayerNameScreen: React.FC<Props> = ({ settings, onSave, onStart, onBack, 
           const color = getTeamColor(i);
           const colorConfig = COLORS_MAP[color];
           const placeholderName = defaultsList[i] || (isRTL ? `بازیکن ${i + 1}` : `Player ${i + 1}`);
-          const currentAvatarId = (settings.playerAvatars && (settings.playerAvatars[i] as AvatarId)) || 'pirate';
           
           return (
             <div key={i} className="flex items-center gap-2.5 bg-[var(--panel)] p-2.5 border border-[var(--line)] rounded-2xl shadow-xs">
-              {/* Cute Pixel Avatar & Badge */}
-              <button
-                type="button"
-                onClick={() => {
-                  sound.playClick();
-                  setAvatarPickerIndex(i);
-                }}
-                title={isRTL ? 'تغییر آواتار بازیکن' : 'Change Avatar'}
-                className="flex flex-col items-center justify-center shrink-0 group relative p-1 rounded-xl bg-[var(--bg)] hover:bg-[var(--line)]/50 border border-[var(--line)] transition-all active:scale-95 cursor-pointer"
+              {/* Team Badge */}
+              <div
+                className="px-2.5 py-2 rounded-xl text-xs font-black text-white shrink-0 flex items-center gap-1.5 shadow-2xs"
+                style={{ backgroundColor: colorConfig.hex }}
               >
-                <div className="w-10 h-10 flex items-center justify-center relative">
-                  <PixelAvatar id={currentAvatarId} size={38} />
-                  <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[var(--saffron)] flex items-center justify-center text-[8px] text-[var(--ink)] font-bold shadow-xs">
-                    ✏️
-                  </div>
-                </div>
-                <div className={`mt-0.5 px-1.5 py-0.5 rounded-md text-[8.5px] font-bold border border-black/10 ${colorConfig.bg} ${colorConfig.text} uppercase`}>
-                  #{i + 1} {labelColorText(color)}
-                </div>
-              </button>
+                <span>#{i + 1}</span>
+                <span>{labelColorText(color)}</span>
+              </div>
 
               {/* Name Input Box */}
               <div className="flex-1 min-w-0">
@@ -236,7 +223,7 @@ const PlayerNameScreen: React.FC<Props> = ({ settings, onSave, onStart, onBack, 
                   placeholder={placeholderName}
                   value={settings.playerNames[i] || ''}
                   onChange={(e) => updateName(i, e.target.value)}
-                  className="w-full p-2 bg-[var(--bg)] border border-[var(--line)] rounded-xl focus:border-[var(--lapis)] focus:outline-hidden transition-all font-bold text-xs text-[var(--ink)]"
+                  className="w-full p-2.5 bg-[var(--bg)] border border-[var(--line)] rounded-xl focus:border-[var(--lapis)] focus:outline-hidden transition-all font-bold text-xs sm:text-sm text-[var(--ink)]"
                 />
               </div>
 
@@ -248,10 +235,9 @@ const PlayerNameScreen: React.FC<Props> = ({ settings, onSave, onStart, onBack, 
                   const singlePool = getRandomCharacters(effectiveLang, 16);
                   const randomPick = singlePool[Math.floor(Math.random() * singlePool.length)];
                   updateName(i, randomPick);
-                  updateAvatar(i, getRandomAvatar());
                 }}
-                title={isRTL ? 'تغییر این نام و آواتار' : 'Change this name & avatar'}
-                className="p-2 bg-[var(--bg)] hover:bg-[var(--line)]/60 active:scale-95 text-[var(--ink)] border border-[var(--line)] rounded-xl shrink-0 flex items-center justify-center transition-all cursor-pointer"
+                title={isRTL ? 'تغییر نام' : 'Randomize name'}
+                className="p-2.5 bg-[var(--bg)] hover:bg-[var(--line)]/60 active:scale-95 text-[var(--ink)] border border-[var(--line)] rounded-xl shrink-0 flex items-center justify-center transition-all cursor-pointer"
               >
                 <RefreshCw size={14} />
               </button>
@@ -269,7 +255,7 @@ const PlayerNameScreen: React.FC<Props> = ({ settings, onSave, onStart, onBack, 
               sound.playClick();
               onBack();
             }} 
-            className="flex-1 py-3 text-xs sm:text-sm font-bold uppercase flex items-center justify-center gap-1.5 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs transition-all active:scale-98 cursor-pointer"
+            className="btn-ghost flex-1 !min-h-[48px]"
           >
             {isRTL ? <ArrowRight size={15} /> : <ArrowLeft size={15} />}
             <span>{t.back}</span>
@@ -278,28 +264,13 @@ const PlayerNameScreen: React.FC<Props> = ({ settings, onSave, onStart, onBack, 
           <button 
             type="button"
             onClick={handleStartGame} 
-            className="flex-[2] py-3 text-sm sm:text-base font-extrabold uppercase flex items-center justify-center gap-2 rounded-2xl bg-[var(--lapis)] hover:brightness-105 text-[var(--on-lapis)] shadow-md transition-all active:scale-98 cursor-pointer"
+            className="btn-primary flex-[2] !min-h-[48px]"
           >
             <span>{t.start}</span>
             <Zap size={16} fill="currentColor" />
           </button>
         </div>
       </footer>
-
-      {/* Avatar Picker Modal */}
-      <AvatarPickerModal
-        isOpen={avatarPickerIndex !== null}
-        onClose={() => setAvatarPickerIndex(null)}
-        selectedAvatarId={activeAvatarForModal}
-        onSelectAvatar={(avatarId) => {
-          if (avatarPickerIndex !== null) {
-            updateAvatar(avatarPickerIndex, avatarId);
-          }
-        }}
-        playerName={activePlayerNameForModal}
-        language={settings.language}
-      />
-
     </div>
   );
 };

@@ -177,84 +177,281 @@ export interface CEFRLevelInfo {
   badge: string;
 }
 
+export function getCefrText(map: Record<string, string>, lang?: string): string {
+  if (!map) return '';
+  const raw = String(lang || 'en').trim();
+  const normalized = raw === 'en-US' ? 'en' : raw;
+  if (map[raw]) return map[raw];
+  if (map[normalized]) return map[normalized];
+  if (normalized === 'fa') return map.fa || map.en || '';
+  return map.en || '';
+}
+
 export const CEFR_LEVELS: CEFRLevelInfo[] = [
   {
     id: 'A1',
     code: 'A1',
-    name: { fa: 'مبتدی (A1)', en: 'Beginner (A1)', nl: 'Beginner (A1)' },
+    name: {
+      fa: 'مبتدی',
+      en: 'Beginner',
+      'en-US': 'Beginner',
+      nl: 'Beginner',
+      de: 'Anfänger',
+      fr: 'Débutant',
+      es: 'Principiante',
+      it: 'Principiante',
+      tr: 'Başlangıç',
+      ar: 'مبتدئ',
+      ru: 'Начальный',
+      pt: 'Iniciante',
+      zh: '初学者',
+      ja: '初級',
+      ko: '초급',
+      hi: 'शुरुआती',
+      sv: 'Nybörjare',
+      pl: 'Początkujący',
+      uk: 'Початковий'
+    },
     desc: { 
       fa: 'کلمات پایه، احوالپرسی و اصطلاحات روزمره بسیار ساده', 
       en: 'Basic words, greetings, and daily essentials',
-      nl: 'Basiswoorden, begroetingen en eenvoudige zinnen'
+      'en-US': 'Basic words, greetings, and daily essentials',
+      nl: 'Basiswoorden, begroetingen en eenvoudige zinnen',
+      de: 'Grundwörter, Begrüßungen und alltägliche Ausdrücke',
+      fr: 'Mots de base, salutations et expressions du quotidien',
+      es: 'Palabras básicas, saludos y frases cotidianas sencillas',
+      it: 'Parole di base, saluti ed espressioni quotidiane semplici',
+      tr: 'Temel kelimeler, selamlaşma ve günlük basit ifadeler',
+      ar: 'كلمات أساسية، تحيات وعبارات يومية بسيطة جداً',
+      ru: 'Базовые слова, приветствия и простые повседневные фразы'
     },
-    example: { fa: 'مثال: آب، سلام، این چنده؟', en: 'e.g. Water, Hello, How much is this?', nl: 'bijv. Water, Hallo, Mag ik de rekening?' },
+    example: {
+      fa: 'مثال: آب، سلام، این چنده؟',
+      en: 'e.g. Water, Hello, How much is this?',
+      'en-US': 'e.g. Water, Hello, How much is this?',
+      nl: 'bijv. Water, Hallo, Mag ik de rekening?',
+      de: 'z. B. Wasser, Hallo, Wie viel kostet das?',
+      fr: 'ex. Eau, Bonjour, Combien ça coûte ?',
+      es: 'ej. Agua, Hola, ¿Cuánto cuesta esto?',
+      it: 'es. Acqua, Ciao, Quanto costa?',
+      tr: 'örn. Su, Merhaba, Bu ne kadar?',
+      ar: 'مثال: ماء، مرحباً، بكم هذا؟',
+      ru: 'напр. Вода, Привет, Сколько это стоит?'
+    },
     color: '#39FF14',
-    badge: '🟢 A1'
+    badge: 'A1'
   },
   {
     id: 'A2',
     code: 'A2',
-    name: { fa: 'مقدماتی (A2)', en: 'Elementary (A2)', nl: 'Elementair (A2)' },
+    name: {
+      fa: 'مقدماتی',
+      en: 'Elementary',
+      'en-US': 'Elementary',
+      nl: 'Elementair',
+      de: 'Grundlagen',
+      fr: 'Élémentaire',
+      es: 'Elemental',
+      it: 'Elementare',
+      tr: 'Temel',
+      ar: 'أساسي',
+      ru: 'Базовый',
+      pt: 'Elementar',
+      zh: '基础',
+      ja: '初中級',
+      ko: '초중급',
+      hi: 'प्राथमिक',
+      sv: 'Grundläggande',
+      pl: 'Podstawowy',
+      uk: 'Елементарний'
+    },
     desc: { 
       fa: 'جملات کوتاه در رستوران، خرید، مسیر و احوالپرسی', 
       en: 'Short phrases in restaurants, shopping, and directions',
-      nl: 'Korte zinnen in restaurants, winkelen en route'
+      'en-US': 'Short phrases in restaurants, shopping, and directions',
+      nl: 'Korte zinnen in restaurants, winkelen en route',
+      de: 'Kurze Sätze im Restaurant, beim Einkaufen und nach dem Weg fragen',
+      fr: 'Phrases courtes au restaurant, courses et directions',
+      es: 'Frases cortas en restaurantes, compras y direcciones',
+      it: 'Frasi brevi al ristorante, acquisti e indicazioni',
+      tr: 'Restoran, alışveriş ve yön sorma için kısa cümleler',
+      ar: 'جمل قصيرة في المطعم، التسوق، الاتجاهات والتحية',
+      ru: 'Короткие фразы в ресторане, магазине и при поиске дороги'
     },
-    example: { fa: 'مثال: میز برای ۲ نفر، ایستگاه کجاست؟', en: 'e.g. Table for two, Where is the station?', nl: 'bijv. Een tafel voor twee, Waar is het station?' },
+    example: {
+      fa: 'مثال: میز برای ۲ نفر، ایستگاه کجاست؟',
+      en: 'e.g. Table for two, Where is the station?',
+      'en-US': 'e.g. Table for two, Where is the station?',
+      nl: 'bijv. Een tafel voor twee, Waar is het station?',
+      de: 'z. B. Ein Tisch für zwei, Wo ist der Bahnhof?',
+      fr: 'ex. Une table pour deux, Où est la gare ?',
+      es: 'ej. Mesa para dos, ¿Dónde está la estación?',
+      it: 'es. Tavolo per due, Dov’è la stazione?',
+      tr: 'örn. İki kişilik masa, İstasyon nerede?',
+      ar: 'مثال: طاولة لشخصين، أين المحطة؟',
+      ru: 'напр. Столик на двоих, Где находится вокзал?'
+    },
     color: '#FFE600',
-    badge: '🟡 A2'
+    badge: 'A2'
   },
   {
     id: 'B1',
     code: 'B1',
-    name: { fa: 'متوسط (B1)', en: 'Intermediate (B1)', nl: 'Gevorderd (B1)' },
+    name: {
+      fa: 'متوسط',
+      en: 'Intermediate',
+      'en-US': 'Intermediate',
+      nl: 'Gevorderd',
+      de: 'Mittelstufe',
+      fr: 'Intermédiaire',
+      es: 'Intermedio',
+      it: 'Intermedio',
+      tr: 'Orta',
+      ar: 'متوسط',
+      ru: 'Средний',
+      pt: 'Intermediário',
+      zh: '中级',
+      ja: '中級',
+      ko: '중급',
+      hi: 'मध्यम',
+      sv: 'Medel',
+      pl: 'Średniozaawansowany',
+      uk: 'Середній'
+    },
     desc: { 
       fa: 'مکالمات کاری، سفر، احساسات و بیان نظر شخصی', 
       en: 'Conversations at work, travel, and personal opinions',
-      nl: 'Gesprekken op werk, reizen en meningen uiten'
+      'en-US': 'Conversations at work, travel, and personal opinions',
+      nl: 'Gesprekken op werk, reizen en meningen uiten',
+      de: 'Gespräche bei der Arbeit, auf Reisen und eigene Meinungen',
+      fr: 'Conversations au travail, voyages et opinions personnelles',
+      es: 'Conversaciones en el trabajo, viajes y opiniones personales',
+      it: 'Conversazioni di lavoro, viaggi e opinioni personali',
+      tr: 'İş konuşmaları, seyahat, duygular ve kişisel görüşler',
+      ar: 'محادثات العمل، السفر، المشاعر والتعبير عن الرأي الشخصي',
+      ru: 'Разговоры на работе, в путешествиях и выражение своего мнения'
     },
-    example: { fa: 'مثال: قرار ملاقات، مصاحبه، شرح خاطره', en: 'e.g. Meeting setup, Interview, Storytelling', nl: 'bijv. Afspraak maken, Sollicitatiegesprek' },
+    example: {
+      fa: 'مثال: قرار ملاقات، مصاحبه، شرح خاطره',
+      en: 'e.g. Meeting setup, Interview, Storytelling',
+      'en-US': 'e.g. Meeting setup, Interview, Storytelling',
+      nl: 'bijv. Afspraak maken, Sollicitatiegesprek',
+      de: 'z. B. Termin vereinbaren, Vorstellungsgespräch',
+      fr: 'ex. Prendre rendez-vous, Entretien, Raconter une histoire',
+      es: 'ej. Concertar cita, Entrevista, Contar una experiencia',
+      it: 'es. Fissare un incontro, Colloquio, Raccontare un’esperienza',
+      tr: 'örn. Toplantı ayarlama, Mülakat, Anı anlatma',
+      ar: 'مثال: تحديد موعد، مقابلة عمل، سرد تجربة',
+      ru: 'напр. Назначение встречи, Собеседование, Рассказ о событии'
+    },
     color: '#00F0FF',
-    badge: '🔵 B1'
+    badge: 'B1'
   },
   {
     id: 'B2',
     code: 'B2',
-    name: { fa: 'متوسط پیشرفته (B1+)', en: 'Intermediate+ (B1+)', nl: 'Gevorderd+ (B1+)' },
+    name: {
+      fa: 'فرامتوسط',
+      en: 'Upper-Int',
+      'en-US': 'Upper-Int',
+      nl: 'Gevorderd+',
+      de: 'Gehoben',
+      fr: 'Avancé-Int',
+      es: 'Intermedio+',
+      it: 'Intermedio+',
+      tr: 'Orta-Üst',
+      ar: 'فوق المتوسط',
+      ru: 'Выше среднего',
+      pt: 'Pós-Interm.',
+      zh: '中高级',
+      ja: '中上級',
+      ko: '중고급',
+      hi: 'उच्च-मध्यम',
+      sv: 'Övre medel',
+      pl: 'Выżej średni',
+      uk: 'Вище середнього'
+    },
     desc: { 
       fa: 'واژگان غنی‌تر، اصطلاحات کاربردی و تقویت روان‌زبانی', 
       en: 'Extended vocabulary, practical idioms, and fluency building',
-      nl: 'Uitgebreide woordenschat en praktische idiomen'
+      'en-US': 'Extended vocabulary, practical idioms, and fluency building',
+      nl: 'Uitgebreide woordenschat en praktische idiomen',
+      de: 'Erweiterter Wortschatz, Redewendungen und flüssiges Sprechen',
+      fr: 'Vocabulaire enrichi, expressions idiomatiques et fluidité',
+      es: 'Vocabulario amplio, modismos prácticos y fluidez',
+      it: 'Vocabolario ampio, modi di dire pratici e fluidità',
+      tr: 'Zengin kelime dağarcığı, deyimler ve akıcı konuşma',
+      ar: 'مفردات أغنى، تعبيرات اصطلاحية عملية وبناء الطلاقة',
+      ru: 'Расширенный словарный запас, практичные идиомы и беглость'
     },
-    example: { fa: 'مثال: قرارداد کاری، مذاکره، بحث روزمره', en: 'e.g. Contract, Negotiation, Everyday debate', nl: 'bijv. Onderhandelen, Werkcontract bespreken' },
+    example: {
+      fa: 'مثال: قرارداد کاری، مذاکره، بحث روزمره',
+      en: 'e.g. Contract, Negotiation, Everyday debate',
+      'en-US': 'e.g. Contract, Negotiation, Everyday debate',
+      nl: 'bijv. Onderhandelen, Werkcontract bespreken',
+      de: 'z. B. Arbeitsvertrag, Verhandlung, Diskussion',
+      fr: 'ex. Contrat, Négociation, Débat quotidien',
+      es: 'ej. Contrato, Negociación, Debate cotidiano',
+      it: 'es. Contratto, Negoziazione, Dibattito quotidiano',
+      tr: 'örn. İş sözleşmesi, Müzakere, Günlük tartışma',
+      ar: 'مثال: عقد عمل، تفاوض، نقاش يومي',
+      ru: 'напр. Трудовой договор, Переговоры, Повседневный спор'
+    },
     color: '#FF007F',
-    badge: '🟣 B1+'
+    badge: 'B2'
   },
   {
     id: 'C1',
     code: 'C1',
-    name: { fa: 'پیشرفته (C1)', en: 'Advanced (C1)', nl: 'Gevorderd (C1)' },
+    name: {
+      fa: 'پیشرفته',
+      en: 'Advanced',
+      'en-US': 'Advanced',
+      nl: 'Vergevorderd',
+      de: 'Fortgeschritten',
+      fr: 'Avancé',
+      es: 'Avanzado',
+      it: 'Avanzato',
+      tr: 'İleri',
+      ar: 'متقدم',
+      ru: 'Продвинутый',
+      pt: 'Avançado',
+      zh: '高级',
+      ja: '上級',
+      ko: '고급',
+      hi: 'उन्नत',
+      sv: 'Avancerad',
+      pl: 'Zaawansowany',
+      uk: 'Просунутий'
+    },
     desc: { 
       fa: 'اصطلاحات عامیانه عمیق، شوخی‌ها، ضرب‌المثل‌ها و مفاهیم پیچیده', 
       en: 'Native nuances, humor, proverbs, and complex themes',
-      nl: 'Diepe nuances, humor, spreekwoorden en complexe ideeën'
+      'en-US': 'Native nuances, humor, proverbs, and complex themes',
+      nl: 'Diepe nuances, humor, spreekwoorden en complexe ideeën',
+      de: 'Muttersprachliche Nuancen, Humor, Sprichwörter und komplexe Themen',
+      fr: 'Nuances natives, humour, proverbes et thèmes complexes',
+      es: 'Matices nativos, humor, proverbios y temas complejos',
+      it: 'Sfumature madrelingua, umorismo, proverbi e temi complessi',
+      tr: 'Derin deyimler, mizah, atasözleri ve karmaşık kavramlar',
+      ar: 'تعبيرات عميقة، فكاهة، أمثال ومفاهيم معقدة',
+      ru: 'Тонкие нюансы, юмор, пословицы и сложные темы'
     },
-    example: { fa: 'مثال: ضرب‌المثل‌های اصیل، استعاره‌ها', en: 'e.g. Subtle idioms, cultural metaphors', nl: 'bijv. Spreekwoorden en culturele metaforen' },
+    example: {
+      fa: 'مثال: ضرب‌المثل‌های اصیل، استعاره‌ها',
+      en: 'e.g. Subtle idioms, cultural metaphors',
+      'en-US': 'e.g. Subtle idioms, cultural metaphors',
+      nl: 'bijv. Spreekwoorden en culturele metaforen',
+      de: 'z. B. Feine Redewendungen, kulturelle Metaphern',
+      fr: 'ex. Expressions subtiles, métaphores culturelles',
+      es: 'ej. Modismos sutiles, metáforas culturales',
+      it: 'es. Modi di dire sottili, metafore culturali',
+      tr: 'örn. İnce deyimler, kültürel metaforlar',
+      ar: 'مثال: أمثال أصيلة، استعارات ثقافية',
+      ru: 'напр. Тонкие идиомы, культурные метафоры'
+    },
     color: '#7B2CBF',
-    badge: '🔴 C1'
-  },
-  {
-    id: 'all',
-    code: 'ALL',
-    name: { fa: 'ترکیبی (همه سطوح)', en: 'Mixed (All Levels)', nl: 'Gemengd (Alle Niveaus)' },
-    desc: { 
-      fa: 'ترکیب هیجان‌انگیز و متنوع از مبتدی تا پیشرفته', 
-      en: 'Exciting balanced mix from beginner to advanced',
-      nl: 'Afwisselende mix van beginner tot gevorderd'
-    },
-    example: { fa: 'چالش متعادل برای همه هم‌تیمی‌ها', en: 'Dynamic balance for all team members', nl: 'Dynamische uitdaging voor elk team' },
-    color: '#00F0FF',
-    badge: '🌈 ALL'
+    badge: 'C1'
   }
 ];
 
@@ -300,7 +497,7 @@ export const DEFAULT_SETTINGS: GameSettings = {
   roundsCount: 3,
   roundDuration: 60,
   difficulty: 'easy',
-  cefrLevel: 'all',
+  cefrLevel: 'A1',
   nativeLanguage: 'fa',
   targetLanguages: ['en-US', 'nl'],
   cardGameMode: 'mixed',

@@ -40,50 +40,62 @@ export const AvatarPickerModal: React.FC<Props> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/75 backdrop-blur-sm animate-fade-in" dir={isRTL ? 'rtl' : 'ltr'}>
-      <div className="w-full max-w-sm bg-gradient-to-br from-[#1e1b4b] via-[#2e1065] to-[#4c0519] border-[3.5px] border-[#0f172a] rounded-3xl p-3.5 sm:p-4 text-white shadow-[6px_6px_0px_0px_#0f172a] flex flex-col max-h-[88vh]">
-        
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-slate-900/50 backdrop-blur-md animate-fade-in"
+      dir={isRTL ? 'rtl' : 'ltr'}
+      onClick={() => {
+        sound.playClick();
+        onClose();
+      }}
+    >
+      <div
+        className="w-full max-w-sm bg-[var(--panel)] border border-[var(--line)] rounded-[24px] p-4 sm:p-5 text-[var(--ink)] shadow-2xl flex flex-col max-h-[88vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
-        <div className="flex items-center justify-between pb-2.5 mb-2 border-b-2 border-white/10 shrink-0">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-[#FFE600] text-[#1e1b4b] border-2 border-[#0f172a] flex items-center justify-center font-black shadow-[1.5px_1.5px_0px_0px_#0f172a]">
-              <Sparkles size={16} />
+        <div className="flex items-center justify-between pb-3 mb-3 border-b border-[var(--line)] shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-[var(--lapis)]/10 text-[var(--lapis)] border border-[var(--lapis)]/20 flex items-center justify-center font-black">
+              <Sparkles size={18} />
             </div>
             <div>
-              <h3 className="text-sm font-black text-white leading-tight">
-                {t.chooseCuteAvatar || (isRTL ? 'انتخاب آواتار بامزه' : 'Choose Cute Avatar')}
+              <h3 className="text-sm font-black text-[var(--ink)] leading-tight">
+                {(t.chooseCuteAvatar || (isRTL ? 'انتخاب آواتار' : 'Choose Avatar')).replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '').trim()}
               </h3>
-              <span className="text-[10.5px] text-[#FFE600] font-bold block">
+              <span className="text-[11px] text-[var(--muted)] font-bold block mt-0.5">
                 {isRTL ? `برای: ${playerName}` : `For: ${playerName}`}
               </span>
             </div>
           </div>
 
           <button
+            type="button"
             onClick={() => {
               sound.playClick();
               onClose();
             }}
-            className="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 border border-white/20 flex items-center justify-center text-white transition-all"
+            className="w-8 h-8 rounded-full bg-[var(--bg)] hover:bg-slate-200/70 dark:hover:bg-slate-800 active:scale-95 border border-[var(--line)] flex items-center justify-center text-[var(--muted)] hover:text-[var(--ink)] transition-all cursor-pointer"
           >
             <X size={16} />
           </button>
         </div>
 
         {/* Quick Random Button */}
-        <div className="mb-2 shrink-0">
+        <div className="mb-3 shrink-0">
           <button
             type="button"
             onClick={handleRandomize}
-            className="w-full py-2 px-3 bg-[#10b981] hover:bg-emerald-600 active:translate-y-0.5 text-[#0f172a] border-2 border-[#0f172a] rounded-xl font-black text-xs shadow-[2px_2px_0px_0px_#0f172a] flex items-center justify-center gap-1.5 transition-all"
+            className="w-full py-2.5 px-3.5 bg-[var(--bg)] hover:bg-[var(--lapis)]/10 hover:border-[var(--lapis)]/30 active:scale-[0.99] text-[var(--lapis)] border border-[var(--line)] rounded-xl font-black text-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
           >
             <Dices size={16} />
-            <span>{t.randomAvatarBtn || (isRTL ? 'انتخاب تصادفی آواتار 🎲' : 'Random Avatar 🎲')}</span>
+            <span>
+              {(t.randomAvatarBtn || (isRTL ? 'انتخاب تصادفی آواتار' : 'Random Avatar')).replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '').trim()}
+            </span>
           </button>
         </div>
 
         {/* Grid of Avatars */}
-        <div className="min-h-0 flex-1 overflow-y-auto pr-0.5 grid grid-cols-3 gap-2 overscroll-contain pb-1">
+        <div className="min-h-0 flex-1 overflow-y-auto pr-0.5 grid grid-cols-3 gap-2.5 overscroll-contain pb-1">
           {AVATARS_LIST.map((av) => {
             const isSelected = selectedAvatarId === av.id;
             const displayName = isRTL ? av.name.fa : av.name.en;
@@ -93,22 +105,22 @@ export const AvatarPickerModal: React.FC<Props> = ({
                 key={av.id}
                 type="button"
                 onClick={() => handleSelect(av.id)}
-                className={`flex flex-col items-center justify-center p-2 rounded-2xl border-2 transition-all active:scale-95 text-center relative ${
+                className={`flex flex-col items-center justify-center p-2.5 rounded-2xl border transition-all active:scale-95 text-center relative cursor-pointer ${
                   isSelected
-                    ? 'bg-[#FFE600] border-white shadow-[0_0_12px_rgba(255,230,0,0.8)]'
-                    : 'bg-[#18122B] hover:bg-[#251a44] border-white/15'
+                    ? 'bg-[var(--lapis)]/10 border-[var(--lapis)] shadow-sm'
+                    : 'bg-[var(--bg)] hover:border-[var(--lapis)]/40 border-[var(--line)]'
                 }`}
               >
                 {isSelected && (
-                  <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[#10b981] border-2 border-[#0f172a] flex items-center justify-center text-white">
-                    <Check size={12} strokeWidth={3} />
+                  <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[var(--lapis)] border-2 border-[var(--panel)] flex items-center justify-center text-white shadow-sm">
+                    <Check size={11} strokeWidth={3} />
                   </div>
                 )}
                 <div className="w-12 h-12 flex items-center justify-center">
                   <PixelAvatar id={av.id} size={44} animate={isSelected} />
                 </div>
-                <span className={`text-[10px] font-black mt-1 truncate max-w-full ${
-                  isSelected ? 'text-[#1e1b4b]' : 'text-slate-200'
+                <span className={`text-[10.5px] font-black mt-1.5 truncate max-w-full ${
+                  isSelected ? 'text-[var(--lapis)]' : 'text-[var(--ink)]'
                 }`}>
                   {displayName}
                 </span>

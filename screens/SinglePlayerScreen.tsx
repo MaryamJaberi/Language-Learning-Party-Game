@@ -18,12 +18,14 @@ import { recordMistake, recordMistakeSuccess } from '../mistakeReviewService';
 import { feedbackDirector } from '../feedbackDirector';
 import { SoundHeaderButton } from '../components/SoundHeaderButton';
 import ExitConfirmModal from '../components/ExitConfirmModal';
+import { PracticeTourModal } from '../components/PracticeTourModal';
 import { generateChallengingReflexOptions } from '../utils/testQuestionEngine';
 import { getPronunciationHint } from '../pronunciationService';
 import { 
   Mic, 
   MicOff, 
   Volume2, 
+  Volume1,
   VolumeX, 
   Send, 
   Sparkles, 
@@ -56,7 +58,9 @@ import {
   Clock,
   SkipForward,
   PenTool,
-  Award
+  Award,
+  Star,
+  Pause
 } from 'lucide-react';
 import { transcribeAudioBlob, AudioRecorder } from '../geminiService';
 
@@ -128,9 +132,13 @@ const SinglePlayerScreen: React.FC<Props> = ({
   const [randomHintMessage, setRandomHintMessage] = useState<string | null>(null);
   const [showRandomHint, setShowRandomHint] = useState<boolean>(false);
   
-  // Microphone Permission Request State
+  // Microphone Permission Request & Interactive Troubleshooter State
   const [showMicPermissionModal, setShowMicPermissionModal] = useState(false);
   const [micPermissionError, setMicPermissionError] = useState<string | null>(null);
+  const [micErrorReason, setMicErrorReason] = useState<'denied' | 'no_device' | 'in_use' | 'iframe_blocked' | null>(null);
+  const [micTestSuccess, setMicTestSuccess] = useState(false);
+  const [copiedDirectUrl, setCopiedDirectUrl] = useState(false);
+  const [showQuickChoicesFallback, setShowQuickChoicesFallback] = useState(false);
   const [isRequestingMic, setIsRequestingMic] = useState(false);
   const [actionableError, setActionableError] = useState<string | null>(null);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
@@ -161,6 +169,23 @@ const SinglePlayerScreen: React.FC<Props> = ({
   const [autoAdvance, setAutoAdvance] = useState<boolean>(initialSettings.autoAdvance || false);
   const autoAdvanceTimerRef = useRef<number | null>(null);
 
+  // User Onboarding Tour & Progressive Disclosure States (Anti-Cognitive Overload)
+  const [showTourModal, setShowTourModal] = useState<boolean>(false);
+  const [showMoreDetails, setShowMoreDetails] = useState<boolean>(false);
+  const [showSkippedDetails, setShowSkippedDetails] = useState<boolean>(false);
+  const [isPlayingAudio, setIsPlayingAudio] = useState<boolean>(false);
+
+  // Initial mount: Silence BGM during study and check if onboarding tour is needed
+  useEffect(() => {
+    sound.stopBGM();
+    try {
+      const tourSeen = localStorage.getItem('dor_practice_tour_seen');
+      if (!tourSeen) {
+        setShowTourModal(true);
+      }
+    } catch {}
+  }, []);
+
   // Active Recall & Options State
   const [revealedOptions, setRevealedOptions] = useState<boolean>(initialSettings.hideOptionsByDefault !== true);
   const [activeHintType, setActiveHintType] = useState<'none' | 'letters' | 'word' | 'options' | 'audio'>('none');
@@ -185,6 +210,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
   const startTimeRef = useRef<number>(Date.now());
   const recognitionRef = useRef<any>(null);
   const isUserSpeakingRef = useRef<boolean>(false);
+  const liveTranscriptRef = useRef<string>('');
 
   // Personal Records
   const [personalRecords] = useState(getPersonalRecords());
@@ -244,31 +270,37 @@ const SinglePlayerScreen: React.FC<Props> = ({
         for (let i = 0; i < event.results.length; i++) {
           transcript += event.results[i][0].transcript;
         }
-        setUserInput(transcript);
-        setActionableError(null);
+        const clean = transcript.trim();
+        if (clean) {
+          liveTranscriptRef.current = clean;
+          setUserInput(clean);
+          setActionableError(null);
+        }
       };
 
       recognition.onerror = (event: any) => {
         console.warn('Speech recognition error:', event.error);
+        // Never overwrite AudioRecorder (getUserMedia) or show false iframe errors if MediaDevices is available
+        if (geminiRecorderRef.current?.isRecording() || (typeof navigator !== 'undefined' && !!navigator.mediaDevices?.getUserMedia)) {
+          return;
+        }
         if (event.error === 'not-allowed' || event.error === 'permission-denied') {
           setIsListening(false);
           isUserSpeakingRef.current = false;
+          const inIframe = typeof window !== 'undefined' && window.self !== window.top;
+          setMicErrorReason(inIframe ? 'iframe_blocked' : 'denied');
           setActionableError(
             isRTL
-              ? 'دسترسی به میکروفون مسدود است. راه‌حل: در نوار آدرس مرورگر روی علامت قفل یا میکروفون بزنید و اجازه دسترسی (Allow) دهید، یا پاسخ را در کادر پایین تایپ نمایید.'
-              : 'Microphone access is denied. Fix: Allow microphone in browser settings or type your answer.'
+              ? 'دسترسی به میکروفون مسدود است. از آیکون کنار آدرس مرورگر، میکروفون را Allow کنید و صفحه را رفرش نمایید.'
+              : 'Microphone access is blocked. Allow microphone in your browser address bar and reload.'
           );
         }
       };
 
       recognition.onend = () => {
-        if (isUserSpeakingRef.current) {
-          try {
-            recognition.start();
-            return;
-          } catch {
-            // ignore
-          }
+        // Keep listening state active if AudioRecorder is still recording
+        if (geminiRecorderRef.current?.isRecording()) {
+          return;
         }
         setIsListening(false);
         isUserSpeakingRef.current = false;
@@ -306,9 +338,15 @@ const SinglePlayerScreen: React.FC<Props> = ({
     setRevealedOptions(settings.hideOptionsByDefault !== true);
     setActiveHintType('none');
     setRevealedLettersCount(1);
+    setShowMoreDetails(false);
+    setShowSkippedDetails(false);
+    setIsPlayingAudio(false);
     startTimeRef.current = Date.now();
 
     // In single-player card game, cards are relaxed and untimed (no countdown expiring cards)
+
+    // Preload card audio into memory cache so clicking Play Audio / Slow is instant
+    sound.preloadTTS(currentCard.targetText, currentCard.targetLanguage);
 
     // Audio is an on-demand hint in translation/reading modes.
     // Only in audio_only mode (where text is hidden for listening challenge) does it play automatically.
@@ -352,46 +390,100 @@ const SinglePlayerScreen: React.FC<Props> = ({
     return () => clearInterval(interval);
   }, [isTimedMatch]);
 
-  const toggleListening = async () => {
-    sound.playClick();
+  const stopMicAndTranscribeToInput = async (shouldSubmitAfter = false) => {
+    const existingSpeechText = (liveTranscriptRef.current || userInput).trim();
+    isUserSpeakingRef.current = false;
+    setIsListening(false);
+    setIsGeminiRecording(false);
+    try {
+      recognitionRef.current?.stop();
+    } catch {
+      // ignore
+    }
 
-    if (isListening || isGeminiRecording || isUserSpeakingRef.current) {
-      // User stops speaking
-      isUserSpeakingRef.current = false;
-      setIsListening(false);
-      setIsGeminiRecording(false);
-      try {
-        recognitionRef.current?.stop();
-      } catch {
-        // ignore
+    if (geminiRecorderRef.current) {
+      const recorder = geminiRecorderRef.current;
+      geminiRecorderRef.current = null;
+
+      // If Web Speech API already captured words/sentence live in the input box, use it directly
+      if (existingSpeechText) {
+        recorder.cancel();
+        setUserInput(existingSpeechText);
+        setActionableError(null);
+        if (shouldSubmitAfter) {
+          submitAnswer(existingSpeechText);
+        }
+        return;
       }
 
-      // If AudioRecorder was recording, stop and transcribe with Gemini
-      if (geminiRecorderRef.current) {
-        setIsTranscribingWithGemini(true);
-        try {
-          const audioBlob = await geminiRecorderRef.current.stop();
+      setIsTranscribingWithGemini(true);
+      try {
+        const audioBlob = await recorder.stop();
+        if (audioBlob && audioBlob.size > 50) {
           const targetLang = settings.displayMode === 'translate_to_native'
             ? (currentCard?.nativeLanguage || settings.nativeLanguage || (isRTL ? 'fa' : 'en'))
             : (currentCard?.targetLanguage || settings.targetLanguage || 'en');
           const transcribed = await transcribeAudioBlob(audioBlob, targetLang);
           if (transcribed && transcribed.trim()) {
-            setUserInput(transcribed.trim());
-            sound.playSuccess();
+            const cleanText = transcribed.trim();
+            liveTranscriptRef.current = cleanText;
+            setUserInput(cleanText);
+            setActionableError(null);
+            if (shouldSubmitAfter) {
+              submitAnswer(cleanText);
+            }
+            return;
           }
-        } catch (err: any) {
-          console.warn('Gemini audio transcribe fallback:', err);
-        } finally {
-          setIsTranscribingWithGemini(false);
-          geminiRecorderRef.current = null;
         }
+        const fallbackText = (liveTranscriptRef.current || userInput).trim();
+        if (fallbackText) {
+          setUserInput(fallbackText);
+          if (shouldSubmitAfter) {
+            submitAnswer(fallbackText);
+          }
+          return;
+        }
+        setActionableError(
+          isRTL
+            ? 'صدایی تشخیص داده نشد. لطفاً نزدیک میکروفون صحبت کنید یا پاسخ را تایپ نمایید.'
+            : 'No speech was detected. Please speak clearly into the microphone or type your answer.'
+        );
+      } catch (err: any) {
+        console.warn('Gemini audio transcribe fallback:', err);
+        const fallbackText = (liveTranscriptRef.current || userInput).trim();
+        if (fallbackText) {
+          setUserInput(fallbackText);
+          if (shouldSubmitAfter) {
+            submitAnswer(fallbackText);
+          }
+        } else {
+          setActionableError(
+            isRTL
+              ? 'خطا در تبدیل صدا به متن. لطفاً دوباره روی دکمه صحبت بزنید یا پاسخ را تایپ کنید.'
+              : 'Could not transcribe speech. Please tap Speak again or type your answer.'
+          );
+        }
+      } finally {
+        setIsTranscribingWithGemini(false);
       }
+    } else if (existingSpeechText) {
+      setUserInput(existingSpeechText);
+      if (shouldSubmitAfter) {
+        submitAnswer(existingSpeechText);
+      }
+    }
+  };
+
+  const toggleListening = async () => {
+    sound.playClick();
+
+    if (isListening || isGeminiRecording || isUserSpeakingRef.current) {
+      await stopMicAndTranscribeToInput(false);
     } else {
-      // User starts speaking
+      // User starts speaking: convert speech to text in the input box
+      liveTranscriptRef.current = '';
       setUserInput('');
       setActionableError(null);
-      isUserSpeakingRef.current = true;
-      setIsListening(true);
 
       const isReverseToNative = settings.displayMode === 'translate_to_native';
       const nativeCode = currentCard?.nativeLanguage || settings.nativeLanguage || (isRTL ? 'fa' : 'en');
@@ -403,27 +495,80 @@ const SinglePlayerScreen: React.FC<Props> = ({
         ? (nativeInfo?.speechCode || SPEECH_LANG_MAP[nativeCode] || (nativeCode === 'fa' ? 'fa-IR' : 'en-US'))
         : (langInfo?.speechCode || SPEECH_LANG_MAP[targetLang] || 'en-US');
 
-      // 1. Try starting Web Speech API for immediate streaming feedback
+      // 1. Start Google / Browser SpeechRecognition (webkitSpeechRecognition) so words & sentences appear live in the input box
+      let speechStarted = false;
       if (speechSupported && recognitionRef.current) {
         try {
           recognitionRef.current.lang = langCode;
           recognitionRef.current.start();
+          speechStarted = true;
+          isUserSpeakingRef.current = true;
+          setIsListening(true);
         } catch (e: any) {
-          console.warn('Speech recognition start fallback:', e);
+          console.warn('Speech recognition start notice:', e);
         }
       }
 
-      // 2. Also start high-fidelity AudioRecorder for Gemini smart transcription
+      // 2. Also start AudioRecorder with automatic Voice Activity / Silence Detection (VAD)
+      // so speech is automatically converted into text in userInput when the user finishes speaking
+      let recorderStarted = false;
+      let caughtErrorName = '';
       try {
-        geminiRecorderRef.current = new AudioRecorder();
-        await geminiRecorderRef.current.start();
+        if (geminiRecorderRef.current) {
+          geminiRecorderRef.current.cancel();
+        }
+        const recorder = new AudioRecorder();
+        await recorder.start(undefined, () => {
+          void stopMicAndTranscribeToInput(false);
+        });
+        geminiRecorderRef.current = recorder;
+        recorderStarted = true;
+        isUserSpeakingRef.current = true;
         setIsGeminiRecording(true);
+        setIsListening(true);
+        setActionableError(null);
+        setMicErrorReason(null);
       } catch (err: any) {
         console.warn('Gemini recorder mic fallback:', err);
-        if (!speechSupported) {
-          setMicPermissionError(isRTL ? 'دسترسی به میکروفون مجاز نشد.' : 'Microphone access denied.');
-          setIsListening(false);
-          isUserSpeakingRef.current = false;
+        caughtErrorName = `${err?.name || ''} ${err?.message || ''}`;
+        geminiRecorderRef.current = null;
+      }
+
+      if (!recorderStarted && !speechStarted) {
+        isUserSpeakingRef.current = false;
+        setIsListening(false);
+        setIsGeminiRecording(false);
+
+        const inIframe = typeof window !== 'undefined' && window.self !== window.top;
+
+        if (caughtErrorName.includes('NotFound') || caughtErrorName.includes('DevicesNotFound')) {
+          setMicErrorReason('no_device');
+          setActionableError(
+            isRTL
+              ? 'هیچ میکروفونی روی دستگاه شما شناسایی نشد. میکروفون یا هندزفری را متصل کنید یا پاسخ را تایپ نمایید.'
+              : 'No microphone was detected on your device. Connect a microphone or type your answer.'
+          );
+        } else if (caughtErrorName.includes('NotReadable') || caughtErrorName.includes('TrackStart')) {
+          setMicErrorReason('in_use');
+          setActionableError(
+            isRTL
+              ? 'میکروفون در حال حاضر توسط برنامه یا تب دیگری اشغال شده است. برنامه‌های دیگر را ببندید و دوباره تست کنید.'
+              : 'Your microphone is currently busy in another app or tab. Close other apps and retry.'
+          );
+        } else if (inIframe) {
+          setMicErrorReason('iframe_blocked');
+          setActionableError(
+            isRTL
+              ? 'پس از روشن کردن میکروفون در مرورگر، یک‌بار روی «بارگذاری مجدد پیش‌نمایش» بزنید یا بازی را با آیکون 🔗 (بالای پیش‌نمایش) در تب جدید باز کنید.'
+              : 'After enabling Microphone in Chrome, reload the preview frame or open the app in a new tab via the 🔗 icon above the preview.'
+          );
+        } else {
+          setMicErrorReason('denied');
+          setActionableError(
+            isRTL
+              ? 'دسترسی به میکروفون مسدود است. پس از روشن کردن Microphone در آیکون کنار آدرس مرورگر، یک‌بار صفحه را رفرش کنید.'
+              : 'Microphone access is blocked. After enabling Microphone in the browser address bar, reload the page.'
+          );
         }
       }
     }
@@ -433,32 +578,75 @@ const SinglePlayerScreen: React.FC<Props> = ({
     sound.playClick();
     setIsRequestingMic(true);
     setMicPermissionError(null);
+    setMicTestSuccess(false);
 
     try {
-      if (typeof navigator !== 'undefined' && navigator.mediaDevices?.getUserMedia) {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        // Stop the temporary track immediately so Web Speech API has exclusive access to the microphone
-        stream.getTracks().forEach(track => track.stop());
+      if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
+        throw new Error('NotSupportedError');
       }
 
+      // Acquire stream directly inside the user click gesture and pass it straight to AudioRecorder with VAD!
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      if (geminiRecorderRef.current) {
+        geminiRecorderRef.current.cancel();
+      }
+      const recorder = new AudioRecorder();
+      await recorder.start(stream, () => {
+        void stopMicAndTranscribeToInput(false);
+      });
+      geminiRecorderRef.current = recorder;
+
+      if (speechSupported && recognitionRef.current) {
+        try {
+          recognitionRef.current.start();
+        } catch {}
+      }
+
+      isUserSpeakingRef.current = true;
+      setIsGeminiRecording(true);
+      setIsListening(true);
+      setMicTestSuccess(true);
+      setMicErrorReason(null);
+      setActionableError(null);
+      setMicPermissionError(null);
       setShowMicPermissionModal(false);
-      setUserInput('');
-
-      const targetLang = currentCard?.targetLanguage || settings.targetLanguage;
-      const langInfo = SUPPORTED_LANGUAGES.find(l => l.code === targetLang);
-      const langCode = langInfo?.speechCode || SPEECH_LANG_MAP[targetLang] || 'en-US';
-
-      if (recognitionRef.current) {
-        recognitionRef.current.lang = langCode;
-        recognitionRef.current.start();
-      }
+      sound.playCorrect();
     } catch (err: any) {
       console.warn('Microphone permission request error:', err);
-      setMicPermissionError(
-        isRTL 
-          ? 'دسترسی به میکروفون داده نشد یا مسدود شده است. لطفاً در نوار آدرس مرورگر (آیکون قفل/میکروفون) دسترسی میکروفون را مجاز نمایید.'
-          : 'Microphone permission was denied. Please allow microphone access in your browser address bar.'
-      );
+      const errName = `${err?.name || ''} ${err?.message || ''}`;
+      const inIframe = typeof window !== 'undefined' && window.self !== window.top;
+      setShowQuickChoicesFallback(true);
+
+      if (errName.includes('NotFound') || errName.includes('DevicesNotFound')) {
+        setMicErrorReason('no_device');
+        setMicPermissionError(
+          isRTL
+            ? 'میکروفونی به دستگاه شما متصل نیست یا در تنظیمات ویندوز غیرفعال است.'
+            : 'No microphone hardware found or disabled in OS settings.'
+        );
+      } else if (errName.includes('NotReadable') || errName.includes('TrackStart')) {
+        setMicErrorReason('in_use');
+        setMicPermissionError(
+          isRTL
+            ? 'میکروفون توسط برنامه دیگری درگیر است. سایر برنامه‌های صوتی را ببندید.'
+            : 'Microphone is busy in another application.'
+        );
+      } else if (inIframe) {
+        setMicErrorReason('iframe_blocked');
+        setMicPermissionError(
+          isRTL
+            ? 'مرورگر کروم دسترسی میکروفون را داخل قاب پیش‌نمایش (Preview) اعمال نکرده است. راه‌حل قطعی: ۱) روی دکمه «بارگذاری مجدد پیش‌نمایش» در پایین بزنید، یا ۲) روی آیکون 🔗 در نوار بالای پیش‌نمایش کلیک کنید تا بازی در تب مستقل باز شود.'
+            : 'Chrome has not applied microphone access to the embedded Preview frame yet. Fix: 1) Click "Reload Preview" below, or 2) Click the 🔗 icon at the top of the preview bar to open in a full tab.'
+        );
+      } else {
+        setMicErrorReason('denied');
+        setMicPermissionError(
+          isRTL 
+            ? 'پس از روشن کردن تیک Microphone در نوار آدرس مرورگر، حتماً یک‌بار صفحه را رفرش (F5) کنید تا تغییر اعمال شود.'
+            : 'After turning Microphone ON in your browser address bar, please reload the page (F5) to apply the change.'
+        );
+      }
     } finally {
       setIsRequestingMic(false);
     }
@@ -467,13 +655,23 @@ const SinglePlayerScreen: React.FC<Props> = ({
   const handlePlayAudio = () => {
     if (!currentCard) return;
     sound.playClick();
-    sound.speakNative(currentCard.targetText, currentCard.targetLanguage);
+    setIsPlayingAudio(true);
+    sound.speakNative(currentCard.targetText, currentCard.targetLanguage, {
+      onEnd: () => setIsPlayingAudio(false)
+    });
+    // Fallback timer to reset playing state
+    window.setTimeout(() => setIsPlayingAudio(false), 3000);
   };
 
   const handlePlaySlowAudio = () => {
     if (!currentCard) return;
     sound.playClick();
-    sound.speakSlow(currentCard.targetText, currentCard.targetLanguage);
+    setIsPlayingAudio(true);
+    sound.speakSlow(currentCard.targetText, currentCard.targetLanguage, {
+      onEnd: () => setIsPlayingAudio(false)
+    });
+    // Fallback timer to reset playing state
+    window.setTimeout(() => setIsPlayingAudio(false), 4500);
   };
 
   // Keyboard ergonomics for desktop / tablet flow state (1-4 choices, Space audio, S slow, H hint, Z zen)
@@ -584,9 +782,9 @@ const SinglePlayerScreen: React.FC<Props> = ({
         points,
         combo: newStreak,
         label: currentCard.isCreative
-          ? `+${points} 🎭 خلاقانه (${currentCard.cefrLevel})`
+          ? `+${points} خلاقانه (${currentCard.cefrLevel})`
           : currentCard.isChallenge 
-            ? `+${points} ⭐ چالش (${currentCard.cefrLevel})` 
+            ? `+${points} چالش (${currentCard.cefrLevel})` 
             : newStreak > 1 ? `+${points} ×${newStreak} (${currentCard.cefrLevel})` : `+${points} ${t.pointsUnit || (isRTL ? 'امتیاز' : 'PTS')} (${currentCard.cefrLevel})`
       });
 
@@ -606,7 +804,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
       } else if (newStreak === 3 || newStreak === 5 || newStreak === 10) {
         feedbackDirector.triggerLeaderboardDelta({
           type: 'threshold',
-          subText: `تسلط بر ${newStreak} کلمه پیاپی 🔥`
+          subText: `تسلط بر ${newStreak} کلمه پیاپی`
         });
       }
 
@@ -641,6 +839,10 @@ const SinglePlayerScreen: React.FC<Props> = ({
   };
 
   const handleCheckAnswer = () => {
+    if (isListening || isGeminiRecording || isUserSpeakingRef.current) {
+      void stopMicAndTranscribeToInput(true);
+      return;
+    }
     submitAnswer(userInput);
   };
 
@@ -654,172 +856,57 @@ const SinglePlayerScreen: React.FC<Props> = ({
     if (!currentCard) return;
     sound.playPowerUp();
 
-    // The language of the hint MUST strictly match the Guide language (currentCard.nativeLanguage || settings.nativeLanguage)
-    const guideLang = currentCard.nativeLanguage || settings.nativeLanguage || (isRTL ? 'fa' : 'en');
-
     const isReverse = settings.displayMode === 'translate_to_native';
-    const fullText = (isReverse ? currentCard.translation : currentCard.targetText || '').trim();
-    const words = fullText.split(/\s+/).filter(Boolean);
+    const isReadingMode = settings.displayMode === 'text_and_audio';
+    const expectedText = (isReverse ? currentCard.translation : currentCard.targetText || '').trim();
+    const words = expectedText.split(/\s+/).filter(Boolean);
 
     const hintsPool: string[] = [];
 
-    // Helper to format cloze prompts in the exact guide language
-    const getClozeLabel = (type: 'fill_key' | 'frame' | 'structure' | 'grammar') => {
-      switch (guideLang) {
-        case 'fa':
-        case 'ku':
-          if (type === 'fill_key') return 'بخش مهم جمله را کامل کنید:';
-          if (type === 'frame') return 'قالب جمله و تکمیل بخش پایانی:';
-          if (type === 'structure') return 'تکمیل جای خالی در جمله:';
-          return 'نکته گرامری جمله:';
-        case 'ar':
-          if (type === 'fill_key') return 'أكمل الجزء المهم من الجملة:';
-          if (type === 'frame') return 'هيكل الجملة وإكمال الجزء الأخير:';
-          if (type === 'structure') return 'املأ الفراغ في الجملة:';
-          return 'القاعدة النحوية:';
-        case 'tr':
-          if (type === 'fill_key') return 'Cümlenin önemli kısmını tamamlayın:';
-          if (type === 'frame') return 'Cümle kalıbı ve tamamlama:';
-          if (type === 'structure') return 'Cümledeki boşluğu doldurun:';
-          return 'Dilbilgisi ipucu:';
-        case 'nl':
-          if (type === 'fill_key') return 'Vul het belangrijke deel van de zin in:';
-          if (type === 'frame') return 'Zinsstructuur en aanvulling:';
-          if (type === 'structure') return 'Vul de open plek in de zin aan:';
-          return 'Grammaticaal punt:';
-        case 'de':
-          if (type === 'fill_key') return 'Ergänzen Sie den wichtigen Teil des Satzes:';
-          if (type === 'frame') return 'Satzbau und Ergänzung:';
-          if (type === 'structure') return 'Füllen Sie die Lücke im Satz:';
-          return 'Grammatik-Tipp:';
-        case 'fr':
-          if (type === 'fill_key') return 'Complétez la partie essentielle de la phrase :';
-          if (type === 'frame') return 'Structure de phrase et fin à compléter :';
-          if (type === 'structure') return 'Remplissez le blanc dans la phrase :';
-          return 'Point de grammaire :';
-        case 'es':
-          if (type === 'fill_key') return 'Completa la parte clave de la oración:';
-          if (type === 'frame') return 'Estructura de la oración para completar:';
-          if (type === 'structure') return 'Llena el espacio en la oración:';
-          return 'Punto gramatical:';
-        case 'it':
-          if (type === 'fill_key') return 'Completa la parte chiave della frase:';
-          if (type === 'frame') return 'Struttura della frase da completare:';
-          if (type === 'structure') return 'Riempi lo spazio vuoto nella frase:';
-          return 'Punto grammaticale:';
-        case 'ru':
-          if (type === 'fill_key') return 'Заполните ключевую часть предложения:';
-          if (type === 'frame') return 'Начало фразы с пропуском:';
-          if (type === 'structure') return 'Вставьте пропущенную часть:';
-          return 'Грамматическая подсказка:';
-        default:
-          if (type === 'fill_key') return 'Fill in the key part of the sentence:';
-          if (type === 'frame') return 'Sentence starter frame:';
-          if (type === 'structure') return 'Fill in the blank in the sentence:';
-          return 'Grammar clue:';
+    if (!isReadingMode && expectedText) {
+      if (words.length >= 2) {
+        // Show the first word(s) and mask the rest of the expected answer
+        const revealCount = Math.max(1, Math.ceil(words.length / 2));
+        const revealedPart = words.slice(0, revealCount).join(' ');
+        const hiddenPart = words.slice(revealCount).map(w => '___').join(' ');
+        const label = isRTL ? 'شروع پاسخ:' : 'Answer starts with:';
+        hintsPool.push(`${label} «${revealedPart} ${hiddenPart}»`);
+      } else if (words.length === 1 && words[0].length > 2) {
+        const cleanWord = words[0];
+        const firstTwo = cleanWord.slice(0, Math.min(2, cleanWord.length - 1));
+        const label = isRTL ? 'حروف اول پاسخ:' : 'First letters:';
+        hintsPool.push(`${label} «${firstTwo}...» (${cleanWord.length} ${isRTL ? 'حرف' : 'letters'})`);
       }
-    };
+    }
 
-    // Common grammatical stopwords
-    const stopWords = new Set([
-      'the', 'a', 'an', 'is', 'am', 'are', 'was', 'were', 'to', 'in', 'on', 'at', 'of', 'for', 'with', 'by', 'that', 'this', 'it',
-      'de', 'het', 'een', 'is', 'zijn', 'was', 'van', 'in', 'op', 'te', 'om', 'met', 'voor', 'dat', 'dit', 'er', 'en',
-      'der', 'die', 'das', 'ein', 'eine', 'ist', 'sind', 'war', 'von', 'in', 'auf', 'zu', 'mit', 'für', 'dass', 'und',
-      'le', 'la', 'les', 'un', 'une', 'est', 'sont', 'de', 'du', 'en', 'dans', 'à', 'pour', 'avec', 'que', 'qui',
-      'el', 'la', 'los', 'las', 'un', 'una', 'es', 'son', 'de', 'del', 'en', 'a', 'para', 'con', 'que',
-      'این', 'آن', 'از', 'به', 'با', 'در', 'که', 'را', 'رو', 'است', 'هست', 'بود', 'شد', 'یک', 'تا'
-    ]);
-
-    // 1. Cloze Sentence Formats (Fill in key parts of the sentence - NO first-letter reveals)
-    if (words.length >= 2) {
-      const contentIndices: number[] = [];
-      words.forEach((w, idx) => {
-        const clean = w.replace(/[.,!?;:"'«»()]/g, '').toLowerCase();
-        if (!stopWords.has(clean) && clean.length >= 3) {
-          contentIndices.push(idx);
+    // Add phonetic pronunciation hint when user needs to say/type targetText
+    if (!isReverse) {
+      if (currentCard.pronunciation) {
+        const pronLabel = isRTL ? 'راهنمای تلفظ:' : 'Pronunciation:';
+        hintsPool.push(`${pronLabel} /${currentCard.pronunciation}/`);
+      } else {
+        const pron = getPronunciationHint(
+          currentCard.targetText,
+          currentCard.targetLanguage,
+          isRTL ? 'fa' : 'en',
+          currentCard.pronunciation
+        );
+        if (pron) {
+          hintsPool.push(pron);
         }
-      });
-
-      const targetIndices = contentIndices.length > 0 ? contentIndices : words.map((_, i) => i);
-
-      // Blank out the primary key content word (e.g. key verb or main noun)
-      const bestIndex = targetIndices.reduce((best, curr) => {
-        return words[curr].length > words[best].length ? curr : best;
-      }, targetIndices[0]);
-
-      const clozeA = words.map((w, idx) => idx === bestIndex ? '[______]' : w).join(' ');
-      hintsPool.push(`${getClozeLabel('fill_key')} «${clozeA}»`);
-
-      // Variation B: Blank out secondary important part
-      if (targetIndices.length > 1) {
-        const secondIndex = targetIndices.find(idx => idx !== bestIndex) ?? targetIndices[0];
-        const clozeB = words.map((w, idx) => idx === secondIndex ? '[______]' : w).join(' ');
-        hintsPool.push(`${getClozeLabel('structure')} «${clozeB}»`);
       }
-
-      // Variation C: Sentence starter frame (providing structural lead-in with tail blank)
-      if (words.length >= 3) {
-        const starterCount = Math.max(1, Math.floor(words.length * 0.6));
-        const starterWords = words.slice(0, starterCount).join(' ');
-        hintsPool.push(`${getClozeLabel('frame')} «${starterWords} [______]»`);
-      }
-    } else {
-      // Single word item: Provide sentence completion frame
-      hintsPool.push(`${getClozeLabel('fill_key')} «... [______] ...»`);
     }
 
-    // 2. Grammar Point in Guide Language
-    if (currentCard.grammarPoint) {
-      hintsPool.push(`${getClozeLabel('grammar')} ${currentCard.grammarPoint}`);
-    }
-
-    // 3. Situational Context / Topic in Guide Language
-    if (currentCard.scenarioRole || currentCard.topic) {
-      const topicLabel = currentCard.scenarioRole || currentCard.topic;
-      const contextLabel = guideLang === 'fa' || guideLang === 'ku' ? 'موقعیت مکالمه و کاربرد:' :
-        guideLang === 'ar' ? 'سياق المحادثة والاستخدام:' :
-        guideLang === 'tr' ? 'Konuşma bağlamı ve kullanım:' :
-        guideLang === 'nl' ? 'Gesprekscontext en gebruik:' :
-        guideLang === 'de' ? 'Gesprächskontext und Anwendung:' :
-        guideLang === 'fr' ? 'Contexte de conversation :' :
-        guideLang === 'es' ? 'Contexto de conversación:' :
-        'Conversation context & usage:';
-      hintsPool.push(`${contextLabel} ${topicLabel}`);
-    }
-
-    // 4. Pedagogical note from card in Guide Language
-    if (currentCard.hint) {
-      const clueLabel = guideLang === 'fa' || guideLang === 'ku' ? 'سرنخ یادگیری:' :
-        guideLang === 'ar' ? 'تلميح تعليمي:' :
-        guideLang === 'tr' ? 'Öğrenme ipucu:' :
-        guideLang === 'nl' ? 'Leertip:' :
-        guideLang === 'de' ? 'Lernhinweis:' :
-        guideLang === 'fr' ? 'Indice d’apprentissage :' :
-        guideLang === 'es' ? 'Pista de aprendizaje:' :
-        'Learning clue:';
-      hintsPool.push(`${clueLabel} ${currentCard.hint}`);
-    }
-
-    // 5. Pronunciation guidance
-    const pron = getPronunciationHint(
-      currentCard.targetText,
-      currentCard.targetLanguage,
-      guideLang,
-      currentCard.pronunciation
-    );
-    if (pron) {
-      hintsPool.push(pron);
+    // In reading/audio modes, also offer meaning if not already shown
+    if ((isReadingMode || settings.displayMode === 'audio_only') && currentCard.translation) {
+      const meaningLabel = isRTL ? 'معنی عبارت:' : 'Meaning:';
+      hintsPool.push(`${meaningLabel} ${currentCard.translation}`);
     }
 
     if (hintsPool.length === 0) {
-      const meaningLabel = guideLang === 'fa' || guideLang === 'ku' ? 'معنی:' :
-        guideLang === 'ar' ? 'المعنى:' :
-        guideLang === 'nl' ? 'Betekenis:' :
-        guideLang === 'de' ? 'Bedeutung:' :
-        guideLang === 'fr' ? 'Sens :' :
-        guideLang === 'es' ? 'Significado:' :
-        'Meaning:';
-      hintsPool.push(`${meaningLabel} ${currentCard.translation}`);
+      const fallbackText = isReverse ? currentCard.translation : currentCard.targetText;
+      const fallbackLabel = isRTL ? 'راهنمایی:' : 'Clue:';
+      hintsPool.push(`${fallbackLabel} ${fallbackText.slice(0, Math.max(2, Math.floor(fallbackText.length / 2)))}...`);
     }
 
     const chosen = hintsPool[Math.floor(Math.random() * hintsPool.length)];
@@ -840,6 +927,14 @@ const SinglePlayerScreen: React.FC<Props> = ({
         // ignore
       }
     }
+    if (geminiRecorderRef.current) {
+      try {
+        geminiRecorderRef.current.stop();
+      } catch {}
+      geminiRecorderRef.current = null;
+    }
+    setIsGeminiRecording(false);
+    setShowSkippedDetails(false);
     setSkippedCardInfo({
       card: currentCard,
       targetText: currentCard.targetText,
@@ -973,7 +1068,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
       className="app w-full max-w-lg sm:max-w-xl md:max-w-2xl mx-auto min-h-full flex-1 px-3 sm:px-4 pb-12 font-ui relative flex flex-col justify-between overflow-y-auto overscroll-contain"
       dir={isRTL ? 'rtl' : 'ltr'}
     >
-      {/* 1. Header (clean, focused, icon-only exit & clear progress) */}
+      {/* 1. Header (clean, focused: ONLY Stop Game button + progress & score) */}
       <header className="sticky top-0 z-20 bg-[var(--bg)] flex items-center justify-between py-2 px-0.5 border-b border-[var(--line)]/50 shrink-0">
         <div className="flex items-center gap-2.5 min-w-0">
           <button
@@ -982,11 +1077,12 @@ const SinglePlayerScreen: React.FC<Props> = ({
               sound.playClick();
               setShowExitConfirm(true);
             }}
-            className="w-9 h-9 rounded-xl border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 hover:bg-rose-100 flex items-center justify-center transition-all active:scale-95 shadow-xs cursor-pointer shrink-0"
-            aria-label={t.exit || (isRTL ? 'خروج' : 'Exit')}
-            title={t.exit || (isRTL ? 'خروج از بازی' : 'Exit Game')}
+            className="h-9 px-3 rounded-xl border border-[var(--line)] bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-xs cursor-pointer shrink-0 font-extrabold text-xs"
+            aria-label={t.pause || (isRTL ? 'توقف بازی' : 'Pause Game')}
+            title={t.pause || (isRTL ? 'توقف بازی' : 'Pause Game')}
           >
-            <ArrowLeft size={17} className={isRTL ? 'rotate-180' : ''} />
+            <Pause size={15} className="text-[var(--lapis)] shrink-0" />
+            <span>{isRTL ? 'توقف بازی' : 'Pause'}</span>
           </button>
           <div className="min-w-0">
             <h1 className="text-sm font-black leading-tight text-[var(--ink)] truncate">
@@ -1034,8 +1130,9 @@ const SinglePlayerScreen: React.FC<Props> = ({
       <div className="mt-2 shrink-0">
         {streak > 1 && (
           <div className="flex justify-end mb-1">
-            <span className="text-amber-500 font-extrabold text-[11px] flex items-center gap-0.5">
-              🔥 {toPersian(streak, isRTL)} {isRTL ? 'پیاپی' : 'streak'}
+            <span className="text-amber-500 font-extrabold text-[11px] flex items-center gap-1">
+              <Flame size={12} className="text-amber-500" />
+              <span>{toPersian(streak, isRTL)} {isRTL ? 'پیاپی' : 'streak'}</span>
             </span>
           </div>
         )}
@@ -1047,18 +1144,85 @@ const SinglePlayerScreen: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* Actionable Error Banner if mic/input issue */}
+      {/* Actionable Error & Interactive Microphone Helper Banner */}
       {actionableError && (
-        <div className="mt-2 p-2.5 rounded-[14px] bg-[var(--panel)] border border-[var(--danger)] text-[var(--danger)] text-xs font-bold flex items-start gap-2 text-start leading-relaxed shadow-xs">
-          <AlertTriangle size={15} className="shrink-0 mt-0.5" />
-          <div className="flex-1">{actionableError}</div>
+        <div className="mt-1.5 p-2.5 rounded-2xl bg-[var(--panel)] border border-[var(--danger)]/60 text-[var(--danger)] text-xs font-bold flex flex-col gap-2 text-start leading-relaxed shadow-xs animate-fade-in">
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex items-start gap-2 min-w-0">
+              <AlertTriangle size={15} className="shrink-0 mt-0.5" />
+              <span className="whitespace-normal break-words">{actionableError}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setActionableError(null);
+                setMicErrorReason(null);
+              }}
+              className="text-[var(--danger)]/70 hover:text-[var(--danger)] p-0.5 cursor-pointer shrink-0"
+              aria-label={isRTL ? 'بستن' : 'Dismiss'}
+            >
+              <X size={14} />
+            </button>
+          </div>
+
+          {/* Interactive Helper Buttons when Microphone fails */}
+          {micErrorReason && (
+            <div className="flex flex-wrap items-center gap-1.5 pt-1 border-t border-[var(--danger)]/20">
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playClick();
+                  window.location.reload();
+                }}
+                className="px-2.5 py-1 rounded-xl bg-[var(--lapis)] text-[var(--on-lapis)] text-[11px] font-extrabold flex items-center gap-1 cursor-pointer active:scale-95 transition-all shadow-2xs"
+              >
+                <RotateCcw size={12} />
+                <span>{isRTL ? 'بارگذاری مجدد پیش‌نمایش (اعمال دسترسی)' : 'Reload Preview (Apply Permission)'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playClick();
+                  setMicPermissionError(null);
+                  setShowMicPermissionModal(true);
+                }}
+                className="px-2.5 py-1 rounded-xl bg-[var(--bg)] hover:bg-[var(--lapis-soft)] text-[var(--ink)] border border-[var(--line)] text-[11px] font-extrabold flex items-center gap-1 cursor-pointer active:scale-95 transition-all"
+              >
+                <Settings2 size={12} />
+                <span>{isRTL ? 'راهنمای کامل و لینک مستقیم' : 'Full Guide & Direct Link'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleGrantPermissionAndStart}
+                disabled={isRequestingMic}
+                className="px-2.5 py-1 rounded-xl bg-teal-500/15 hover:bg-teal-500/25 text-[var(--turq)] border border-teal-500/30 text-[11px] font-extrabold flex items-center gap-1 cursor-pointer active:scale-95 transition-all"
+              >
+                <Mic size={12} className={isRequestingMic ? 'animate-pulse' : ''} />
+                <span>{isRequestingMic ? (isRTL ? 'در حال تست...' : 'Testing...') : (isRTL ? 'تست مجدد میکروفون' : 'Retry Mic')}</span>
+              </button>
+            </div>
+          )}
         </div>
       )}
 
       {/* 4. Center Interactive Flashcard in .panel style */}
-      <div className="panel my-2 flex-1 flex flex-col justify-between relative !p-5">
-        {/* Top of card: Audio pronunciation controls (Only shown if voice is actually supported) */}
-        <div className="flex items-center justify-end mb-2 min-h-[36px]">
+      <div className="panel my-1.5 flex-1 flex flex-col justify-between relative !p-3.5 sm:!p-4">
+        {/* Top of card: Clear instruction badge & smart clue button */}
+        <div className="flex items-center justify-between mb-1.5 min-h-[28px]">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-[var(--lapis-soft)] text-[var(--lapis)] text-[11px] font-extrabold">
+            <span>
+              {settings.displayMode === 'translate_to_target'
+                ? (isRTL ? 'به زبان هدف ترجمه کنید:' : 'Translate to target language:')
+                : settings.displayMode === 'translate_to_native'
+                  ? (isRTL ? 'معنی عبارت را بنویسید یا بگویید:' : 'Translate to your native language:')
+                  : settings.displayMode === 'audio_only'
+                    ? (isRTL ? 'گوش دهید و عبارت را بنویسید یا بگویید:' : 'Listen and type or speak:')
+                    : (isRTL ? 'عبارت زیر را بخوانید یا تایپ کنید:' : 'Read aloud or type this phrase:')}
+            </span>
+          </div>
+
           {/* Hidden test-accessible hint trigger for automated audit tests */}
           <button
             type="button"
@@ -1069,36 +1233,23 @@ const SinglePlayerScreen: React.FC<Props> = ({
             tabIndex={-1}
           />
 
-          {sound.isVoiceSupportedFor(currentCard.targetLanguage) && (
-            <div className="flex items-center gap-1.5">
-              <button
-                type="button"
-                onClick={handlePlayAudio}
-                className="w-10 h-10 rounded-xl border border-[var(--line)] bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] flex items-center justify-center cursor-pointer transition-all active:scale-95 shadow-2xs"
-                aria-label={t.audioPronunciation || (isRTL ? 'پخش تلفظ صوتی' : 'Audio Pronunciation')}
-                title={t.audioPronunciation || (isRTL ? 'پخش تلفظ صوتی' : 'Audio Pronunciation')}
-              >
-                <Volume2 size={18} />
-              </button>
-
-              <button
-                type="button"
-                onClick={handlePlaySlowAudio}
-                className="w-10 h-10 rounded-xl border border-[var(--line)] bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] flex items-center justify-center cursor-pointer transition-all active:scale-95 shadow-2xs text-[11px] font-black"
-                aria-label={t.slowAudioLabel || (isRTL ? 'پخش شمرده' : 'Slow Audio')}
-                title={t.slowAudioLabel || (isRTL ? 'پخش شمرده' : 'Slow Speech')}
-              >
-                🐢
-              </button>
-            </div>
-          )}
+          {/* Compact quick hint trigger button */}
+          <button
+            type="button"
+            onClick={handleTriggerRandomHint}
+            className="px-2.5 py-1 rounded-lg border border-[var(--line)] bg-[var(--bg)] hover:bg-[var(--panel)] text-[var(--ink)] text-[11px] font-extrabold flex items-center gap-1 cursor-pointer active:scale-95 transition-all"
+            title={isRTL ? 'دریافت راهنمایی' : 'Get a clue'}
+          >
+            <Lightbulb size={13} className="text-amber-500" />
+            <span>{isRTL ? 'راهنمایی' : 'Clue'}</span>
+          </button>
         </div>
 
         {/* Random Hint Toast Bubble (multi-word, fully readable) */}
         {showRandomHint && randomHintMessage && (
-          <div data-testid="hint-bubble" className="mb-2 p-2.5 rounded-xl bg-amber-500/15 border border-amber-400/40 text-amber-900 dark:text-amber-200 text-xs font-bold flex items-center justify-between animate-fade-in shadow-2xs gap-2">
+          <div data-testid="hint-bubble" className="mb-1.5 p-2 rounded-xl bg-amber-500/15 border border-amber-400/40 text-amber-900 dark:text-amber-200 text-xs font-bold flex items-center justify-between animate-fade-in shadow-2xs gap-2">
             <div className="flex items-start gap-2 min-w-0">
-              <Lightbulb size={16} className="text-amber-500 shrink-0 mt-0.5" />
+              <Lightbulb size={15} className="text-amber-500 shrink-0 mt-0.5" />
               <span className="leading-relaxed break-words">{randomHintMessage}</span>
             </div>
             <button
@@ -1107,7 +1258,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
               className="text-amber-700 dark:text-amber-300 hover:text-amber-900 p-0.5 cursor-pointer shrink-0"
               aria-label={isRTL ? 'بستن' : 'Close'}
             >
-              <X size={14} />
+              <X size={13} />
             </button>
           </div>
         )}
@@ -1116,63 +1267,117 @@ const SinglePlayerScreen: React.FC<Props> = ({
         <div className="flex-1 flex flex-col items-center justify-center py-2">
           {/* State: Skipped Card Review (User sees correct answer before proceeding to next card) */}
           {skippedCardInfo ? (
-            <div className="py-2 flex flex-col items-center justify-center w-full text-center animate-fade-in">
-              <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-800 dark:text-amber-300 text-xs font-black mb-3">
+            <div className="py-1 flex flex-col items-center justify-center w-full text-center animate-fade-in">
+              <div className="inline-flex items-center gap-1.5 text-amber-700 dark:text-amber-400 text-xs font-extrabold mb-1.5">
                 <CheckCircle2 size={14} className="text-amber-500" />
                 <span>{isRTL ? 'پاسخ صحیح کارت' : 'Correct Card Answer'}</span>
               </div>
 
               <div 
                 dir={isRtlLang(skippedCardInfo.card.targetLanguage) ? 'rtl' : 'ltr'}
-                className="text-2xl sm:text-3xl font-black text-[var(--ink)] tracking-tight leading-snug py-1 select-text"
+                className="text-xl sm:text-2xl font-black text-[var(--ink)] tracking-tight leading-snug py-0.5 select-text"
               >
                 {skippedCardInfo.targetText}
               </div>
 
+              {skippedCardInfo.pronunciation && (
+                <div className="text-xs font-bold text-[var(--lapis)] mt-0.5">
+                  /{skippedCardInfo.pronunciation}/
+                </div>
+              )}
+
               <div 
                 dir={isRtlLang(skippedCardInfo.card.nativeLanguage || settings.nativeLanguage || 'fa') ? 'rtl' : 'ltr'}
-                className="text-sm sm:text-base font-bold text-[var(--mute)] mt-1 mb-3 select-text"
+                className="text-sm sm:text-base font-bold text-[var(--mute)] mt-1.5 mb-2 select-text"
               >
                 {skippedCardInfo.translation}
               </div>
 
-              {/* Grammar / Pedagogical Clue if present (Clean and non-repetitive) */}
-              {skippedCardInfo.grammarPoint && (
-                <div className="max-w-xs text-xs font-medium text-[var(--ink)] bg-[var(--panel)] p-2.5 rounded-xl border border-[var(--line)] mb-4 text-start leading-relaxed shadow-2xs">
-                  <span className="font-bold text-[var(--lapis)]">{isRTL ? 'نکته گرامری: ' : 'Grammar Note: '}</span>
-                  <span>{skippedCardInfo.grammarPoint}</span>
-                </div>
-              )}
+              {/* Unified Audio Controls on Skipped Card Review */}
+              <div className="flex items-center justify-center gap-2 my-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playClick();
+                    setIsPlayingAudio(true);
+                    sound.speakNative(skippedCardInfo.targetText, skippedCardInfo.card.targetLanguage, {
+                      onEnd: () => setIsPlayingAudio(false)
+                    });
+                    window.setTimeout(() => setIsPlayingAudio(false), 3000);
+                  }}
+                  className="btn-primary !min-h-[34px] !h-8.5 !px-3 !py-1 !text-xs !rounded-xl flex items-center gap-1.5 cursor-pointer"
+                  aria-label={t.audioPronunciation || (isRTL ? 'پخش تلفظ صوتی' : 'Play Audio')}
+                >
+                  <Volume2 size={14} className={isPlayingAudio ? 'animate-pulse' : ''} />
+                  <span>{isPlayingAudio ? (isRTL ? 'در حال پخش...' : 'Playing...') : (isRTL ? 'پخش صدا' : 'Play Audio')}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playClick();
+                    setIsPlayingAudio(true);
+                    sound.speakSlow(skippedCardInfo.targetText, skippedCardInfo.card.targetLanguage, {
+                      onEnd: () => setIsPlayingAudio(false)
+                    });
+                    window.setTimeout(() => setIsPlayingAudio(false), 4500);
+                  }}
+                  className="btn-ghost !min-h-[34px] !h-8.5 !px-2.5 !py-1 !text-xs !rounded-xl flex items-center gap-1 cursor-pointer"
+                  aria-label={t.slowAudioLabel || (isRTL ? 'پخش شمرده' : 'Slow Audio')}
+                >
+                  <Volume1 size={14} className="text-[var(--turq)]" />
+                  <span>{isRTL ? 'شمرده' : 'Slow'}</span>
+                </button>
+              </div>
 
               {/* Proceed to Next Card Button */}
               <button
                 type="button"
                 onClick={handleConfirmSkipAndNext}
-                className="btn-turq !min-h-[42px] !px-5 !text-xs sm:!text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-lg transition-all active:scale-95 font-bold"
+                className="btn-turq !min-h-[36px] !h-9 !px-5 !text-xs !rounded-xl flex items-center justify-center gap-1.5 cursor-pointer mt-1"
               >
                 <span>{isRTL ? 'کارت بعدی' : 'Next Card'}</span>
-                <ArrowRight size={15} className={isRTL ? 'rotate-180' : ''} />
+                <ArrowRight size={14} className={isRTL ? 'rotate-180' : ''} />
               </button>
             </div>
           ) : settings.displayMode === 'audio_only' && !evaluation?.isCorrect ? (
             /* Mode 1: Audio-Only */
-            <div className="py-4 flex flex-col items-center justify-center gap-3">
-              <div className="w-16 h-16 rounded-full bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center animate-pulse">
-                <Headphones size={30} />
+            <div className="py-2 flex flex-col items-center justify-center gap-2.5 w-full">
+              <div className="w-14 h-14 rounded-full bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center animate-pulse">
+                <Headphones size={26} />
               </div>
-              <p className="text-sm font-bold text-[var(--ink)] text-center">
-                {isRTL ? 'گوش دهید و کلمه شنیده‌شده را بگویید یا بنویسید' : 'Listen and repeat or type what you hear'}
+              <p className="text-xs sm:text-sm font-bold text-[var(--ink)] text-center">
+                {isRTL ? 'گوش دهید و عبارت شنیده‌شده را بگویید یا بنویسید' : 'Listen and repeat or type what you hear'}
               </p>
+
+              {/* Unified Audio Controls */}
+              <div className="flex items-center justify-center gap-2 mt-1">
+                <button
+                  type="button"
+                  onClick={handlePlayAudio}
+                  className="btn-primary !min-h-[34px] !h-8.5 !px-3 !py-1 !text-xs !rounded-xl flex items-center gap-1.5 cursor-pointer"
+                  aria-label={t.audioPronunciation || (isRTL ? 'پخش تلفظ صوتی' : 'Play Audio')}
+                >
+                  <Volume2 size={14} className={isPlayingAudio ? 'animate-pulse' : ''} />
+                  <span>{isPlayingAudio ? (isRTL ? 'در حال پخش...' : 'Playing...') : (isRTL ? 'پخش صدا' : 'Play Audio')}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handlePlaySlowAudio}
+                  className="btn-ghost !min-h-[34px] !h-8.5 !px-2.5 !py-1 !text-xs !rounded-xl flex items-center gap-1 cursor-pointer"
+                  aria-label={t.slowAudioLabel || (isRTL ? 'پخش شمرده' : 'Slow Audio')}
+                >
+                  <Volume1 size={14} className="text-[var(--turq)]" />
+                  <span>{isRTL ? 'شمرده' : 'Slow'}</span>
+                </button>
+              </div>
             </div>
           ) : settings.displayMode === 'translate_to_target' ? (
-            /* Mode 2: Translate to Target (Native prompt visible in Persian, target text hidden) */
-            <div className="py-2 flex flex-col items-center justify-center w-full">
-              <span className="text-xs font-bold text-[var(--mute)] mb-2">
-                {isRTL ? 'معادل این عبارت را به زبان هدف بگویید یا بنویسید:' : 'Say or type in target language:'}
-              </span>
+            /* Mode 2: Translate to Target (Native prompt visible, target text hidden until revealed/correct) */
+            <div className="py-1.5 flex flex-col items-center justify-center w-full text-center">
               <div 
                 dir={isRtlLang(currentCard.nativeLanguage || settings.nativeLanguage || 'fa') ? 'rtl' : 'ltr'}
-                className="text-2xl sm:text-3xl font-black text-[var(--ink)] tracking-tight leading-snug py-1"
+                className="text-xl sm:text-2xl font-black text-[var(--ink)] tracking-tight leading-snug py-0.5"
               >
                 {currentCard.translation}
               </div>
@@ -1180,49 +1385,127 @@ const SinglePlayerScreen: React.FC<Props> = ({
               {(isRevealed || evaluation?.isCorrect) && (
                 <div 
                   dir={isRtlLang(currentCard.targetLanguage) ? 'rtl' : 'ltr'}
-                  className="mt-3 text-lg sm:text-xl font-black text-[var(--turq)] bg-[var(--bg)] px-4 py-1.5 rounded-[12px] border border-[var(--line)]"
+                  className="mt-2 text-base sm:text-lg font-black text-[var(--turq)] bg-[var(--bg)] px-3.5 py-1 rounded-xl border border-[var(--line)]"
                 >
                   {currentCard.targetText}
                 </div>
               )}
+
+              {/* Unified Audio Controls */}
+              <div className="flex items-center justify-center gap-2 mt-3">
+                <button
+                  type="button"
+                  onClick={handlePlayAudio}
+                  className="btn-primary !min-h-[34px] !h-8.5 !px-3 !py-1 !text-xs !rounded-xl flex items-center gap-1.5 cursor-pointer"
+                  aria-label={t.audioPronunciation || (isRTL ? 'پخش تلفظ صوتی' : 'Play Audio')}
+                >
+                  <Volume2 size={14} className={isPlayingAudio ? 'animate-pulse' : ''} />
+                  <span>{isPlayingAudio ? (isRTL ? 'در حال پخش...' : 'Playing...') : (isRTL ? 'پخش صدا' : 'Play Audio')}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handlePlaySlowAudio}
+                  className="btn-ghost !min-h-[34px] !h-8.5 !px-2.5 !py-1 !text-xs !rounded-xl flex items-center gap-1 cursor-pointer"
+                  aria-label={t.slowAudioLabel || (isRTL ? 'پخش شمرده' : 'Slow Audio')}
+                >
+                  <Volume1 size={14} className="text-[var(--turq)]" />
+                  <span>{isRTL ? 'شمرده' : 'Slow'}</span>
+                </button>
+              </div>
             </div>
           ) : settings.displayMode === 'translate_to_native' ? (
-            /* Mode 3: Translate to Native (Target text visible, native meaning hidden in Persian) */
-            <div className="py-2 flex flex-col items-center justify-center w-full">
-              <span className="text-xs font-bold text-[var(--mute)] mb-2">
-                {isRTL ? 'معنی این عبارت را به زبان مادری بگویید یا بنویسید:' : 'Say or type in your native language:'}
-              </span>
+            /* Mode 3: Translate to Native (Target text visible, native meaning hidden until revealed/correct) */
+            <div className="py-1.5 flex flex-col items-center justify-center w-full text-center">
               <div 
                 dir={isRtlLang(currentCard.targetLanguage) ? 'rtl' : 'ltr'}
-                className="text-2xl sm:text-3xl font-black text-[var(--ink)] tracking-tight leading-snug py-1"
+                className="text-xl sm:text-2xl font-black text-[var(--ink)] tracking-tight leading-snug py-0.5"
               >
                 {currentCard.targetText}
               </div>
+
+              {currentCard.pronunciation && (
+                <div className="text-xs font-bold text-[var(--mute)] mt-0.5">
+                  /{currentCard.pronunciation}/
+                </div>
+              )}
 
               {(isRevealed || evaluation?.isCorrect) && (
                 <div 
                   dir={isRtlLang(currentCard.nativeLanguage || settings.nativeLanguage || 'fa') ? 'rtl' : 'ltr'}
-                  className="mt-3 text-lg sm:text-xl font-black text-[var(--lapis)] bg-[var(--bg)] px-4 py-1.5 rounded-[12px] border border-[var(--line)]"
+                  className="mt-2 text-base sm:text-lg font-black text-[var(--lapis)] bg-[var(--bg)] px-3.5 py-1 rounded-xl border border-[var(--line)]"
                 >
                   {currentCard.translation}
                 </div>
               )}
+
+              {/* Unified Audio Controls */}
+              <div className="flex items-center justify-center gap-2 mt-3">
+                <button
+                  type="button"
+                  onClick={handlePlayAudio}
+                  className="btn-primary !min-h-[34px] !h-8.5 !px-3 !py-1 !text-xs !rounded-xl flex items-center gap-1.5 cursor-pointer"
+                  aria-label={t.audioPronunciation || (isRTL ? 'پخش تلفظ صوتی' : 'Play Audio')}
+                >
+                  <Volume2 size={14} className={isPlayingAudio ? 'animate-pulse' : ''} />
+                  <span>{isPlayingAudio ? (isRTL ? 'در حال پخش...' : 'Playing...') : (isRTL ? 'پخش صدا' : 'Play Audio')}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handlePlaySlowAudio}
+                  className="btn-ghost !min-h-[34px] !h-8.5 !px-2.5 !py-1 !text-xs !rounded-xl flex items-center gap-1 cursor-pointer"
+                  aria-label={t.slowAudioLabel || (isRTL ? 'پخش شمرده' : 'Slow Audio')}
+                >
+                  <Volume1 size={14} className="text-[var(--turq)]" />
+                  <span>{isRTL ? 'شمرده' : 'Slow'}</span>
+                </button>
+              </div>
             </div>
           ) : (
-            /* Mode 4: Text & Audio (Standard Reading & Speech) */
-            <div className="py-2 flex flex-col items-center justify-center w-full">
+            /* Mode 4: Text & Audio (Reading & Speech - shows target phrase and translation clearly) */
+            <div className="py-1.5 flex flex-col items-center justify-center w-full text-center">
               <div 
                 dir={isRtlLang(currentCard.targetLanguage) ? 'rtl' : 'ltr'}
-                className="text-2xl sm:text-3xl font-black text-[var(--ink)] tracking-tight leading-snug py-1"
+                className="text-xl sm:text-2xl font-black text-[var(--ink)] tracking-tight leading-snug py-0.5"
               >
                 {currentCard.targetText}
               </div>
 
+              {currentCard.pronunciation && (
+                <div className="text-xs font-bold text-[var(--lapis)] mt-0.5">
+                  /{currentCard.pronunciation}/
+                </div>
+              )}
+
               <div 
                 dir={isRtlLang(currentCard.nativeLanguage || settings.nativeLanguage || 'fa') ? 'rtl' : 'ltr'}
-                className="text-sm font-bold text-[var(--mute)] mt-1.5"
+                className="text-xs sm:text-sm font-bold text-[var(--mute)] mt-1.5"
               >
                 {currentCard.translation}
+              </div>
+
+              {/* Unified Audio Controls */}
+              <div className="flex items-center justify-center gap-2 mt-3">
+                <button
+                  type="button"
+                  onClick={handlePlayAudio}
+                  className="btn-primary !min-h-[34px] !h-8.5 !px-3 !py-1 !text-xs !rounded-xl flex items-center gap-1.5 cursor-pointer"
+                  aria-label={t.audioPronunciation || (isRTL ? 'پخش تلفظ صوتی' : 'Play Audio')}
+                >
+                  <Volume2 size={14} className={isPlayingAudio ? 'animate-pulse' : ''} />
+                  <span>{isPlayingAudio ? (isRTL ? 'در حال پخش...' : 'Playing...') : (isRTL ? 'پخش صدا' : 'Play Audio')}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handlePlaySlowAudio}
+                  className="btn-ghost !min-h-[34px] !h-8.5 !px-2.5 !py-1 !text-xs !rounded-xl flex items-center gap-1 cursor-pointer"
+                  aria-label={t.slowAudioLabel || (isRTL ? 'پخش شمرده' : 'Slow Audio')}
+                >
+                  <Volume1 size={14} className="text-[var(--turq)]" />
+                  <span>{isRTL ? 'شمرده' : 'Slow'}</span>
+                </button>
               </div>
             </div>
           )}
@@ -1232,20 +1515,20 @@ const SinglePlayerScreen: React.FC<Props> = ({
       {/* Answer Feedback & Correction Banner */}
       {evaluation && (
         <div className="my-1.5 shrink-0 animate-fade-in font-ui">
-          <div className={`p-3 rounded-[14px] border text-xs font-bold ${
+          <div className={`p-3.5 rounded-[16px] border text-xs font-bold shadow-xs ${
             evaluation.isCorrect 
               ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 text-emerald-800 dark:text-emerald-200' 
               : 'bg-rose-50 dark:bg-rose-950/40 border-rose-300 text-rose-800 dark:text-rose-200'
           }`}>
             <div className="flex items-start justify-between gap-2">
-              <div className="flex items-start gap-2 flex-1">
+              <div className="flex items-start gap-2 flex-1 min-w-0">
                 {evaluation.isCorrect ? (
                   <CheckCircle2 size={18} className="text-emerald-600 shrink-0 mt-0.5" />
                 ) : (
                   <XCircle size={18} className="text-rose-600 shrink-0 mt-0.5" />
                 )}
-                <div>
-                  <div className="font-bold text-sm text-[var(--ink)]">{evaluation.feedbackMessage}</div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-bold text-sm text-[var(--ink)] leading-snug">{evaluation.feedbackMessage}</div>
                   {evaluation.isCorrect && (
                     <div className="text-[11px] text-emerald-600 mt-0.5 font-bold">
                       +{toPersian(evaluation.pointsAwarded, isRTL)} {t.pointsUnit || (isRTL ? 'امتیاز' : 'PTS')}
@@ -1254,21 +1537,11 @@ const SinglePlayerScreen: React.FC<Props> = ({
                 </div>
               </div>
 
-              {/* Try Again / Next Action */}
-              {!evaluation.isCorrect ? (
-                <button
-                  type="button"
-                  onClick={handleTryAgain}
-                  className="btn-danger !min-h-[38px] !text-xs !py-1 !px-3"
-                >
-                  <RotateCcw size={13} />
-                  <span>{t.tryAgain}</span>
-                </button>
-              ) : (
+              {evaluation.isCorrect && (
                 <button
                   type="button"
                   onClick={() => handleNextCard(false)}
-                  className="btn-turq !min-h-[38px] !text-xs !py-1 !px-3"
+                  className="btn-turq !min-h-[38px] !text-xs !py-1 !px-3 shrink-0"
                 >
                   <span>{t.nextCard}</span>
                   <ArrowRight size={13} className={isRTL ? 'rotate-180' : ''} />
@@ -1276,124 +1549,143 @@ const SinglePlayerScreen: React.FC<Props> = ({
               )}
             </div>
 
-            {/* Actionable guidance if incorrect */}
+            {/* Actionable buttons & guidance if incorrect */}
             {!evaluation.isCorrect && (
-              <div className="mt-1.5 pt-1.5 border-t border-rose-200 text-[10.5px] font-medium leading-relaxed opacity-90">
-                {isRTL 
-                  ? 'راه‌حل: با دکمه «صدا» تلفظ را گوش کنید، روی «مشاهده پاسخ» بزنید یا دکمه «تلاش مجدد» را برای پاسخگویی دوباره لمس نمایید.'
-                  : 'Fix: Tap the Listen button, tap Reveal Hint, or tap Try Again to retry.'}
+              <div className="mt-2.5 pt-2.5 border-t border-rose-200 dark:border-rose-800/50 space-y-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleTryAgain}
+                    className="btn-danger !min-h-[38px] !text-xs !py-1.5 !px-3.5 flex items-center gap-1.5 cursor-pointer shadow-xs"
+                  >
+                    <RotateCcw size={14} />
+                    <span>{isRTL ? 'تلاش مجدد' : 'Try Again'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handlePlayAudio}
+                    className="btn-ghost !min-h-[38px] !text-xs !py-1.5 !px-3.5 flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Volume2 size={14} className="text-[var(--lapis)]" />
+                    <span>{isRTL ? 'شنیدن تلفظ' : 'Listen'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      sound.playClick();
+                      setIsRevealed(true);
+                    }}
+                    className="btn-ghost !min-h-[38px] !text-xs !py-1.5 !px-3.5 flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Eye size={14} />
+                    <span>{isRTL ? 'مشاهده پاسخ' : 'Show Answer'}</span>
+                  </button>
+                </div>
               </div>
             )}
           </div>
         </div>
       )}
 
-      {/* 5. Minimalist Ergonomic Input Bar: Type / Voice / Check / Skip */}
-      <div className="space-y-2 shrink-0 font-ui mt-1">
-        {isTranscribingWithGemini && (
-          <div className="p-2 rounded-xl bg-teal-500/15 border border-teal-500/30 text-[var(--turq)] text-xs font-bold flex items-center justify-center gap-2 animate-pulse">
-            <Sparkles size={14} />
-            <span>{isRTL ? 'در حال رونویسی دقیق گفتار با هوش مصنوعی...' : 'Transcribing speech with AI...'}</span>
-          </div>
-        )}
-
-        {/* Active Listening Status Indicator - User controls when speech ends */}
-        {(isListening || isGeminiRecording) && (
-          <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs font-bold flex items-center justify-between animate-fade-in shadow-2xs">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping shrink-0" />
-              <span>
-                {isRTL 
-                  ? 'در حال شنیدن گفتار... هر زمان تمام شد، روی پایان ضبط یا میکروفون بزنید.' 
-                  : 'Listening... Tap mic again or Done when finished.'}
-              </span>
+      {/* 5. Minimalist Ergonomic Input Bar: Type / Voice-to-Text / Check / Skip */}
+      <div className="space-y-1.5 shrink-0 font-ui mt-1">
+        {/* Compact Input and 3 Action Buttons Row (Only active during live card guessing, hidden when answered correctly or during skipped review) */}
+        {!skippedCardInfo && !evaluation?.isCorrect && (
+          <div className="space-y-1.5">
+            {/* Slim Text Input */}
+            <div className="relative w-full flex items-center">
+              <input
+                ref={textInputRef}
+                type="text"
+                dir={
+                  userInput.trim()
+                    ? (isRtlLang(settings.displayMode === 'translate_to_native' ? (currentCard?.nativeLanguage || settings.nativeLanguage || (isRTL ? 'fa' : 'en')) : (currentCard?.targetLanguage || settings.targetLanguage || 'en')) ? 'rtl' : 'ltr')
+                    : (isRTL ? 'rtl' : 'ltr')
+                }
+                value={userInput}
+                onChange={e => {
+                  liveTranscriptRef.current = e.target.value;
+                  setUserInput(e.target.value);
+                }}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') handleCheckAnswer();
+                }}
+                placeholder={
+                  isTranscribingWithGemini
+                    ? (isRTL ? 'در حال تبدیل صدا به کلمه و جمله...' : 'Converting voice to text...')
+                    : (isListening || isGeminiRecording)
+                      ? (isRTL ? 'در حال شنیدن... صحبت کنید تا به متن تبدیل شود' : 'Listening... Speak to convert to text')
+                      : (t.enterAnswerPlaceholder || (isRTL ? 'پاسخ را تایپ کنید یا با میکروفون بگویید...' : 'Type or speak your answer...'))
+                }
+                className={`w-full bg-[var(--panel)] text-[var(--ink)] px-3 py-1.5 h-9 rounded-xl border text-xs font-bold focus:outline-none transition-colors shadow-2xs ${
+                  isListening || isGeminiRecording
+                    ? 'border-[var(--turq)] ring-2 ring-[var(--turq)]/20'
+                    : 'border-[var(--line)] focus:border-[var(--lapis)]'
+                }`}
+              />
             </div>
-            <button
-              type="button"
-              onClick={toggleListening}
-              className="px-2.5 py-1 rounded-lg bg-rose-500 hover:bg-rose-600 text-white text-[11px] font-black cursor-pointer shadow-xs active:scale-95"
-            >
-              {isRTL ? 'پایان ضبط' : 'Done'}
-            </button>
-          </div>
-        )}
 
-        {/* Unified Input and Controls Row (Only active during live card guessing, hidden during skipped review) */}
-        {!skippedCardInfo && (
-          <div className="space-y-2 pt-1">
-            {/* Text Input with Submit Button */}
-            <div className="flex items-center gap-2">
-              <div className="relative flex-1 min-w-0 flex items-center">
-                <input
-                  ref={textInputRef}
-                  type="text"
-                  dir={isRtlLang(settings.displayMode === 'translate_to_native' ? (currentCard?.nativeLanguage || settings.nativeLanguage || (isRTL ? 'fa' : 'en')) : (currentCard?.targetLanguage || settings.targetLanguage || 'en')) ? 'rtl' : 'ltr'}
-                  value={userInput}
-                  onChange={e => setUserInput(e.target.value)}
-                  onKeyDown={e => {
-                    if (e.key === 'Enter') handleCheckAnswer();
-                  }}
-                  placeholder={isRTL ? 'پاسخ را بنویسید یا با میکروفون بگویید...' : 'Type or speak answer...'}
-                  className="w-full bg-[var(--panel)] text-[var(--ink)] px-3.5 py-2 h-11 rounded-xl border border-[var(--line)] text-xs sm:text-sm font-bold focus:outline-none focus:border-[var(--lapis)] transition-colors shadow-2xs"
-                />
-              </div>
-
+            {/* Compact 3-Button Action Bar (Check Answer + Voice-to-Text Mic + Skip) */}
+            <div className="grid grid-cols-3 gap-1.5">
               <button
                 type="button"
                 onClick={handleCheckAnswer}
-                className="btn-primary !h-11 !px-4 whitespace-nowrap shrink-0 flex items-center justify-center gap-1.5 font-bold text-xs sm:text-sm shadow-xs rounded-xl"
-                aria-label={isRTL ? 'ثبت پاسخ' : 'Check'}
+                disabled={isTranscribingWithGemini}
+                className="btn-primary !min-h-[34px] !h-8.5 !px-2.5 !py-1 !text-xs !rounded-xl whitespace-nowrap flex items-center justify-center gap-1.5 font-extrabold cursor-pointer disabled:opacity-60"
+                aria-label={t.checkAnswer || (isRTL ? 'بررسی پاسخ' : 'Check Answer')}
               >
-                <Send size={14} className={isRTL ? 'rotate-180' : ''} />
-                <span>{isRTL ? 'ثبت پاسخ' : 'Check'}</span>
-              </button>
-            </div>
-
-            {/* 3-Column Ergonomic Action Bar (نوشتن، رد کردن، لمس برای صحبت) */}
-            <div className="grid grid-cols-3 gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  sound.playClick();
-                  textInputRef.current?.focus();
-                }}
-                className="min-h-[44px] px-2 py-2 rounded-xl border border-[var(--line)] bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] flex items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-95 shadow-2xs text-xs font-bold"
-                aria-label={t.writeBtn || (isRTL ? 'نوشتن' : 'Write')}
-              >
-                <span>✍️</span>
-                <span className="truncate">{t.writeBtn || (isRTL ? 'نوشتن' : 'Write')}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={handleSkip}
-                className="min-h-[44px] px-2 py-2 rounded-xl border border-[var(--line)] bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--mute)] hover:text-[var(--ink)] flex items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-95 shadow-2xs text-xs font-bold"
-                aria-label={t.skipBtn || (isRTL ? 'رد کردن' : 'Skip')}
-                title={isRTL ? 'رد کردن این کارت و مشاهده پاسخ صحیح' : 'Skip card & see correct answer'}
-              >
-                <SkipForward size={15} className="shrink-0" />
-                <span className="truncate">{t.skipBtn || (isRTL ? 'رد کردن' : 'Skip')}</span>
+                <Send size={13} className={`shrink-0 ${isRTL ? 'rotate-180' : ''}`} />
+                <span className="truncate">{t.checkAnswer || (isRTL ? 'بررسی پاسخ' : 'Check')}</span>
               </button>
 
               <button
                 type="button"
                 onClick={toggleListening}
-                className={`min-h-[44px] px-2 py-2 rounded-xl border flex items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-95 shadow-2xs text-xs font-bold ${
-                  isListening || isGeminiRecording
-                    ? 'bg-rose-500 border-rose-600 text-white animate-pulse'
-                    : 'bg-[var(--lapis-soft)] border-[var(--lapis)]/30 text-[var(--lapis)] hover:brightness-95'
+                disabled={isTranscribingWithGemini}
+                className={`min-h-[34px] h-8.5 px-2.5 py-1 rounded-xl border flex items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-95 shadow-2xs text-xs font-extrabold ${
+                  isTranscribingWithGemini
+                    ? 'bg-teal-500/15 border-teal-500/40 text-[var(--turq)] animate-pulse'
+                    : isListening || isGeminiRecording
+                      ? 'bg-[var(--turq)] border-[var(--turq)] text-white animate-pulse'
+                      : 'bg-[var(--lapis-soft)] border-[var(--lapis)]/30 text-[var(--lapis)] hover:brightness-95'
                 }`}
-                aria-label={t.touchToSpeakBtn || (isRTL ? 'لمس برای صحبت' : 'Touch to Speak')}
+                aria-label={t.touchToSpeakBtn || (isRTL ? 'تبدیل صوت به متن (میکروفون)' : 'Voice to Text')}
               >
-                {isListening || isGeminiRecording ? <MicOff size={15} className="shrink-0" /> : <Mic size={15} className="shrink-0" />}
-                <span className="truncate">{t.touchToSpeakBtn || (isRTL ? 'لمس برای صحبت' : 'Touch to Speak')}</span>
+                {isListening || isGeminiRecording ? <MicOff size={14} className="shrink-0" /> : <Mic size={14} className="shrink-0" />}
+                <span className="truncate">
+                  {isTranscribingWithGemini
+                    ? (isRTL ? 'در حال تبدیل...' : 'Converting...')
+                    : isListening || isGeminiRecording
+                      ? (isRTL ? 'در حال شنیدن...' : 'Listening...')
+                      : (isRTL ? 'صحبت' : 'Speak')}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleSkip}
+                className="btn-ghost !min-h-[34px] !h-8.5 !px-2.5 !py-1 !text-xs !rounded-xl flex items-center justify-center gap-1.5 cursor-pointer"
+                aria-label={t.skipBtn || (isRTL ? 'رد کردن / مشاهده پاسخ' : 'Skip / Show Answer')}
+                title={isRTL ? 'رد کردن این کارت و مشاهده پاسخ صحیح' : 'Skip card & see correct answer'}
+              >
+                <SkipForward size={14} className="shrink-0" />
+                <span className="truncate">{t.skipBtn || (isRTL ? 'رد کردن' : 'Skip')}</span>
               </button>
             </div>
           </div>
         )}
       </div>
 
-      {/* Explicit Microphone Permission Modal */}
+      {/* Onboarding Interactive Button Guide Modal */}
+      <PracticeTourModal
+        isOpen={showTourModal}
+        onClose={() => setShowTourModal(false)}
+        isRTL={isRTL}
+      />
+
+      {/* Interactive Microphone Troubleshooter & Permission Guide Modal */}
       {showMicPermissionModal && (
         <div 
           className="sheet"
@@ -1406,65 +1698,161 @@ const SinglePlayerScreen: React.FC<Props> = ({
           dir={isRTL ? 'rtl' : 'ltr'}
         >
           <div 
-            className="sheet-box text-center"
+            className="sheet-box text-start max-w-md w-full"
             onClick={e => e.stopPropagation()}
           >
-            {/* Microphone Icon */}
-            <div className="w-14 h-14 mx-auto mb-3 rounded-full bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center">
-              <Mic size={26} />
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center shrink-0">
+                  <Mic size={20} />
+                </div>
+                <div>
+                  <h3 className="text-sm sm:text-base font-black text-[var(--ink)]">
+                    {isRTL ? 'چرا میکروفون با وجود روشن بودن کار نمی‌کند؟' : 'Why Mic Fails Even When Enabled'}
+                  </h3>
+                  <p className="text-[11px] font-bold text-[var(--mute)]">
+                    {micErrorReason === 'no_device'
+                      ? (isRTL ? 'وضعیت: میکروفونی در سیستم یافت نشد' : 'Status: No microphone detected')
+                      : micErrorReason === 'in_use'
+                        ? (isRTL ? 'وضعیت: میکروفون در برنامه دیگری درگیر است' : 'Status: Microphone busy in another app')
+                        : (isRTL ? 'وضعیت: محدودیت قاب پیش‌نمایش (Preview Iframe)' : 'Status: Preview Iframe Restriction')}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowMicPermissionModal(false)}
+                className="w-8 h-8 rounded-xl bg-[var(--bg)] text-[var(--mute)] hover:text-[var(--ink)] flex items-center justify-center cursor-pointer"
+              >
+                <X size={16} />
+              </button>
             </div>
 
-            <h3 className="text-base font-black text-[var(--ink)] mb-2">
-              {isRTL ? 'نیاز به دسترسی میکروفون' : 'Microphone Permission Needed'}
-            </h3>
+            {/* Visual Step-by-Step Guide specifically for Preview Iframe & Chrome Permission Reload */}
+            <div className="bg-[var(--bg)] border border-[var(--line)] rounded-2xl p-3 mb-3 space-y-2.5 text-xs">
+              <div className="flex items-start gap-2.5">
+                <span className="w-5 h-5 rounded-full bg-[var(--lapis)] text-white text-[11px] font-black flex items-center justify-center shrink-0 mt-0.5">
+                  {isRTL ? '۱' : '1'}
+                </span>
+                <p className="text-[var(--ink)] font-bold leading-relaxed">
+                  {isRTL
+                    ? 'اگر تیک Microphone در بالای مرورگر روشن است، کروم تا پیش از رفرش شدن صفحه، دسترسی را به قاب پیش‌نمایش نمی‌دهد. روی دکمه «بارگذاری مجدد پیش‌نمایش» در پایین بزنید.'
+                    : 'When you turn Microphone ON in Chrome, it does not apply to the preview frame until reloaded. Tap "Reload Preview" below.'}
+                </p>
+              </div>
 
-            <p className="text-xs text-[var(--mute)] mb-4 leading-relaxed">
-              {isRTL 
-                ? 'برای بررسی زنده تلفظ، به دسترسی میکروفون نیاز است. پردازش صدا کاملاً به صورت محلی بر روی دستگاه انجام می‌شود و هیچ فایلی ضبط یا در سرور ذخیره نمی‌شود.'
-                : 'To score your pronunciation, microphone access is required. Audio is processed strictly on-device in real-time. No voice data is recorded or stored on servers.'}
-            </p>
+              <div className="flex items-start gap-2.5">
+                <span className="w-5 h-5 rounded-full bg-[var(--lapis)] text-white text-[11px] font-black flex items-center justify-center shrink-0 mt-0.5">
+                  {isRTL ? '۲' : '2'}
+                </span>
+                <p className="text-[var(--ink)] font-bold leading-relaxed">
+                  {isRTL
+                    ? 'راه‌حل ۱۰۰٪ قطعی: در نوار سفید بالای همین پیش‌نمایش، روی آیکون باز کردن در تب جدید (🔗) کلیک کنید تا بازی خارج از قاب پیش‌نمایش و با میکروفون کامل اجرا شود.'
+                    : '100% Guaranteed Fix: Click the Open in New Tab icon (🔗) in the toolbar right above this preview so the app runs outside the preview frame.'}
+                </p>
+              </div>
+
+              <div className="flex items-start gap-2.5">
+                <span className="w-5 h-5 rounded-full bg-teal-600 text-white text-[11px] font-black flex items-center justify-center shrink-0 mt-0.5">
+                  {isRTL ? '۳' : '3'}
+                </span>
+                <p className="text-[var(--ink)] font-bold leading-relaxed">
+                  {isRTL
+                    ? 'اگر می‌خواهید در همین صفحه بمانید، «۴ گزینه آماده پاسخ» در پایین کارت برایتان فعال شده است تا با یک کلیک بازی کنید.'
+                    : 'To keep playing right here, 4 Quick Answer Choices are active on the card so you can answer with 1 tap.'}
+                </p>
+              </div>
+            </div>
+
+            {micTestSuccess && (
+              <div className="mb-3 p-2.5 bg-emerald-500/15 border border-emerald-500/40 text-emerald-700 dark:text-emerald-300 rounded-xl text-xs font-extrabold flex items-center gap-2">
+                <CheckCircle2 size={16} className="shrink-0" />
+                <span>{isRTL ? 'میکروفون با موفقیت فعال شد! در حال ضبط...' : 'Microphone enabled! Recording...'}</span>
+              </div>
+            )}
 
             {micPermissionError && (
-              <div className="mb-3 p-2 bg-rose-50 text-rose-700 rounded-lg text-xs">
+              <div className="mb-3 p-2.5 bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 rounded-xl text-xs font-bold leading-relaxed">
                 {micPermissionError}
               </div>
             )}
 
-            <div className="flex gap-2 justify-center">
+            <div className="flex flex-col gap-2">
               <button
                 type="button"
                 onClick={() => {
                   sound.playClick();
-                  setShowMicPermissionModal(false);
+                  window.location.reload();
                 }}
-                className="btn-ghost !flex-1"
+                className="btn-primary !w-full !py-2.5 !text-xs flex items-center justify-center gap-2 cursor-pointer"
               >
-                {isRTL ? 'انصراف' : 'Cancel'}
+                <RotateCcw size={15} />
+                <span>
+                  {isRTL ? '۱. بارگذاری مجدد پیش‌نمایش (اعمال دسترسی میکروفون)' : '1. Reload Preview (Apply Mic Permission)'}
+                </span>
               </button>
+
+              <button
+                type="button"
+                onClick={async () => {
+                  sound.playClick();
+                  try {
+                    await navigator.clipboard.writeText(window.location.href);
+                    setCopiedDirectUrl(true);
+                    window.setTimeout(() => setCopiedDirectUrl(false), 3500);
+                  } catch {}
+                }}
+                className="w-full py-2 px-3 rounded-xl bg-[var(--bg)] hover:bg-[var(--lapis-soft)] text-[var(--ink)] border border-[var(--line)] text-xs font-extrabold flex items-center justify-center gap-1.5 cursor-pointer transition-all"
+              >
+                {copiedDirectUrl ? <CheckCircle2 size={14} className="text-emerald-600" /> : <KeyRound size={14} className="text-[var(--lapis)]" />}
+                <span>
+                  {copiedDirectUrl
+                    ? (isRTL ? 'لینک مستقیم کپی شد! در یک تب جدید مرورگر Paste کنید' : 'Direct link copied! Paste in a new browser tab')
+                    : (isRTL ? '۲. کپی لینک مستقیم برنامه (برای باز کردن در تب جدید)' : '2. Copy Direct App URL (Open in New Tab)')}
+                </span>
+              </button>
+
               <button
                 type="button"
                 onClick={handleGrantPermissionAndStart}
                 disabled={isRequestingMic}
-                className="btn-primary !flex-1"
+                className="w-full py-2 px-3 rounded-xl bg-[var(--bg)] hover:bg-[var(--lapis-soft)] text-[var(--lapis)] border border-[var(--lapis)]/30 text-xs font-extrabold flex items-center justify-center gap-1.5 cursor-pointer transition-all"
               >
-                {isRequestingMic ? (isRTL ? 'در حال فعال‌سازی...' : 'Activating...') : (isRTL ? 'تأیید و فعال‌سازی' : 'Allow')}
+                <Mic size={14} className={isRequestingMic ? 'animate-pulse' : ''} />
+                <span>
+                  {isRequestingMic
+                    ? (isRTL ? 'در حال بررسی میکروفون...' : 'Testing Microphone...')
+                    : (isRTL ? 'تست مستقیم میکروفون در همین پنجره' : 'Test Microphone Now')}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playClick();
+                  setShowQuickChoicesFallback(true);
+                  setShowMicPermissionModal(false);
+                  setActionableError(null);
+                }}
+                className="w-full py-2 px-3 rounded-xl bg-teal-500/15 hover:bg-teal-500/25 text-[var(--turq)] border border-teal-500/30 text-xs font-extrabold flex items-center justify-center gap-1.5 cursor-pointer transition-all"
+              >
+                <Sparkles size={14} />
+                <span>{isRTL ? 'ادامه بازی با ۴ گزینه آماده (بدون نیاز به میکروفون)' : 'Play with 4 Quick Choices (No Mic Needed)'}</span>
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Exit Confirmation Modal */}
+      {/* Stop / Pause Game Modal */}
       {showExitConfirm && (
         <ExitConfirmModal
           isRTL={isRTL}
-          title={isRTL ? 'خروج از تمرین انفرادی' : 'Leave Practice?'}
-          message={isRTL 
-            ? 'می‌خواهید به صفحه اول برگردید یا تنظیمات تمرین تک‌نفره؟'
-            : 'Return to Home screen or Single-Player settings?'}
-          homeLabel={isRTL ? 'برگشت به صفحه اول' : 'Return to Home Screen'}
-          setupLabel={isRTL ? 'تنظیمات تمرین انفرادی' : 'Single-Player Settings'}
           onCancel={() => setShowExitConfirm(false)}
+          onOpenHelp={() => {
+            setShowExitConfirm(false);
+            setShowTourModal(true);
+          }}
           onExitHome={() => {
             setShowExitConfirm(false);
             if (onExitHome) onExitHome();

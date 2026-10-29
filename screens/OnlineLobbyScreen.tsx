@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { OnlineRoomState, OnlinePlayer, GameSettings, Language, TeamColor } from '../types';
 import { COLORS_MAP, SUPPORTED_LANGUAGES } from '../constants';
 import { TRANSLATIONS, NATIVE_LANGUAGE_NAMES } from '../translations';
-import { isRtlLang } from '../ui';
+import { tUI, isRtlLang } from '../ui';
 import { TeamMascot } from '../components/Mascots';
 import { sound } from '../soundManager';
 import { 
@@ -60,7 +60,7 @@ export const OnlineLobbyScreen: React.FC<Props> = ({
   onStartDuelGame,
   onBack
 }) => {
-  const t = TRANSLATIONS[language] || TRANSLATIONS.fa;
+  const t = tUI(language);
   const isRTL = isRtlLang(language);
   const myDeviceId = getDeviceId();
 

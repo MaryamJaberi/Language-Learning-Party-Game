@@ -69,7 +69,7 @@ describe('Admin Role and Download Visibility Protection', () => {
     expect(screen.queryByText(/مدیر/i)).not.toBeInTheDocument();
   });
 
-  test('UserProfileModal displays Downloads tab and Admin badge for admin user', () => {
+  test('UserProfileModal displays Downloads tab for admin user', () => {
     const adminUser = { uid: 'admin-1', email: adminEmail, displayName: 'Mohammad' } as any;
 
     render(
@@ -81,8 +81,7 @@ describe('Admin Role and Download Visibility Protection', () => {
       />
     );
 
-    // Admin should see Downloads tab and crown / admin badge
+    // Admin should see Downloads tab
     expect(screen.getByText(/دانلودها \(مدیر\)/i)).toBeInTheDocument();
-    expect(screen.getByText(/مدیر کل \(Admin\)/i)).toBeInTheDocument();
   });
 });

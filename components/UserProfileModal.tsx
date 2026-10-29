@@ -344,15 +344,15 @@ export const UserProfileModal: React.FC<Props> = ({
         className="w-full max-w-lg max-h-[92dvh] flex flex-col bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] rounded-[28px] shadow-2xl overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
-        {/* Material Design 3 Dialog Header */}
-        <div className="bg-[var(--panel)] p-5 sm:p-6 pb-4 border-b border-[var(--line)] shrink-0">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3.5">
+        {/* Material Design 3 Dialog Header (Compact) */}
+        <div className="bg-[var(--panel)] px-4 sm:px-5 pt-4 pb-3 border-b border-[var(--line)] shrink-0">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-3 min-w-0">
               {currentUser?.photoURL ? (
                 <img 
                   src={currentUser.photoURL} 
                   alt="Avatar" 
-                  className="w-12 h-12 rounded-full border border-[var(--line)] shadow-xs object-cover" 
+                  className="w-11 h-11 rounded-full border border-[var(--line)] shadow-xs object-cover shrink-0" 
                   referrerPolicy="no-referrer"
                 />
               ) : (
@@ -429,8 +429,7 @@ export const UserProfileModal: React.FC<Props> = ({
                       )}
                       {isAdmin && (
                         <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[11px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                          <span>👑</span>
-                          <span>{t.adminBadge || (isRTL ? 'مدیر کل' : 'Admin')}</span>
+                          <span>{isRTL ? 'مدیر کل' : 'Admin'}</span>
                         </span>
                       )}
                       {currentUser && !isAdmin && (
@@ -482,20 +481,40 @@ export const UserProfileModal: React.FC<Props> = ({
             </div>
           )}
 
-          {/* Cloud Auth Bar with M3 Button styling & Mobile S23+ Friendly Direct Redirect */}
-          <div className="mt-3.5 pt-3 border-t border-[var(--line)] text-xs space-y-2.5">
+          {/* Cloud Auth Bar & Haptics Control */}
+          <div className="mt-2.5 pt-2.5 border-t border-[var(--line)] text-xs space-y-2">
             {currentUser ? (
-              <div className="flex items-center justify-between">
-                <button 
-                  type="button"
-                  onClick={handleSignOut}
-                  className="flex items-center gap-1.5 h-9 px-3.5 rounded-full text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 border border-rose-200 dark:border-rose-900/40 text-xs font-semibold transition-all active:scale-95 cursor-pointer"
-                >
-                  <LogOut size={14} strokeWidth={2} />
-                  <span>{isRTL ? 'خروج از حساب' : 'Sign Out'}</span>
-                </button>
+              <div className="flex items-center justify-between gap-2 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <button 
+                    type="button"
+                    onClick={handleSignOut}
+                    className="flex items-center gap-1.5 h-8 px-3 rounded-full text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 border border-rose-200 dark:border-rose-900/40 text-xs font-semibold transition-all active:scale-95 cursor-pointer"
+                  >
+                    <LogOut size={13} strokeWidth={2} />
+                    <span>{isRTL ? 'خروج از حساب' : 'Sign Out'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const next = !isHapticsOn;
+                      sound.setHapticsEnabled(next);
+                      setIsHapticsOn(next);
+                      if (next) sound.hapticFeedback('success');
+                    }}
+                    className={`flex items-center gap-1.5 h-8 px-3 rounded-full border text-[11px] font-semibold transition-all cursor-pointer ${
+                      isHapticsOn
+                        ? 'bg-[var(--lapis-soft)] border-[var(--lapis)]/30 text-[var(--lapis)]'
+                        : 'bg-[var(--bg)] border-[var(--line)] text-[var(--mute)]'
+                    }`}
+                    title={isRTL ? 'ویبره لمسی گوشی' : 'Mobile haptic vibration feedback'}
+                  >
+                    <Smartphone size={13} />
+                    <span>{isRTL ? (isHapticsOn ? 'ویبره: روشن' : 'ویبره: خاموش') : (isHapticsOn ? 'Haptics: ON' : 'Haptics: OFF')}</span>
+                  </button>
+                </div>
                 <div className="flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
-                  <ShieldCheck size={16} className="text-emerald-500" />
+                  <ShieldCheck size={15} className="text-emerald-500" />
                   <span>{isRTL ? 'همگام با کلود' : 'Cloud Synced'}</span>
                 </div>
               </div>
@@ -517,8 +536,8 @@ export const UserProfileModal: React.FC<Props> = ({
                 <div className="px-3 py-1.5 rounded-xl bg-[var(--bg)] border border-[var(--line)] text-[11px] text-[var(--mute)] text-start leading-relaxed flex items-center justify-between gap-2">
                   <span>
                     {isRTL
-                      ? '💡 حالت مهمان فعال است (ذخیره آفلاین رکوردها و لایتنر روی گوشی). برای پشتیبان‌گیری ابری و ثبت امتیاز در لیدربرد جهانی، وارد حساب گوگل شوید.'
-                      : '💡 Guest mode is active (records & Leitner saved locally). Sign in with Google for cloud backup & global leaderboard.'}
+                      ? 'حالت مهمان فعال است (ذخیره آفلاین رکوردها و لایتنر روی گوشی). برای پشتیبان‌گیری ابری و ثبت امتیاز در لیدربرد جهانی، وارد حساب گوگل شوید.'
+                      : 'Guest mode is active (records & Leitner saved locally). Sign in with Google for cloud backup & global leaderboard.'}
                   </span>
                 </div>
 
@@ -603,40 +622,6 @@ export const UserProfileModal: React.FC<Props> = ({
           </div>
         </div>
 
-        {/* Quick Mobile Haptics & Feedback Bar */}
-        <div className="px-4 py-2 bg-[var(--bg)] border-b border-[var(--line)] flex items-center justify-between text-xs font-semibold shrink-0">
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                const next = !isHapticsOn;
-                sound.setHapticsEnabled(next);
-                setIsHapticsOn(next);
-                if (next) sound.hapticFeedback('success');
-              }}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-xl border text-[11px] font-bold transition-all cursor-pointer ${
-                isHapticsOn
-                  ? 'bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400'
-                  : 'bg-[var(--panel)] border-[var(--line)] text-[var(--mute)]'
-              }`}
-              title={isRTL ? 'ویبره لمسی گوشی در هنگام پاسخ درست، خطا و کومبو' : 'Mobile haptic vibration feedback'}
-            >
-              <Smartphone size={13} className={isHapticsOn ? 'animate-pulse text-amber-500' : ''} />
-              <span>{isRTL ? (isHapticsOn ? 'ویبره لمسی: روشن ⚡' : 'ویبره لمسی: خاموش') : (isHapticsOn ? 'Haptics: ON ⚡' : 'Haptics: OFF')}</span>
-            </button>
-          </div>
-          <button
-            type="button"
-            onClick={() => {
-              sound.hapticFeedback('streak');
-              sound.playScoreTick(3);
-            }}
-            className="text-[10px] text-[var(--lapis)] hover:underline font-bold cursor-pointer"
-          >
-            {isRTL ? 'تست ویبره 📳' : 'Test Buzz 📳'}
-          </button>
-        </div>
-
         {/* Material Design 3 Primary Scrollable Tabs */}
         <div className="flex items-center gap-1 border-b border-[var(--line)] bg-[var(--panel)] px-2 sm:px-4 overflow-x-auto no-scrollbar scroll-smooth shrink-0">
           {tabList.map((tab) => {
@@ -652,13 +637,13 @@ export const UserProfileModal: React.FC<Props> = ({
                   sound.playClick();
                   setActiveTab(tab.id);
                 }}
-                className={`relative flex items-center gap-2 px-3 sm:px-4 py-3 min-h-[48px] text-xs sm:text-sm whitespace-nowrap transition-colors cursor-pointer shrink-0 rounded-t-xl ${
+                className={`relative flex items-center gap-1.5 px-3 py-2.5 min-h-[42px] text-xs whitespace-nowrap transition-colors cursor-pointer shrink-0 rounded-t-xl ${
                   isActive
                     ? 'font-bold text-[var(--lapis)] dark:text-blue-400 bg-blue-50/40 dark:bg-blue-950/20'
                     : 'font-medium text-[var(--mute)] hover:text-[var(--ink)] hover:bg-slate-100/50 dark:hover:bg-slate-800/50'
                 }`}
               >
-                <Icon size={17} strokeWidth={isActive ? 2.2 : 1.8} className={isActive ? 'text-[var(--lapis)] dark:text-blue-400' : 'text-[var(--mute)]'} />
+                <Icon size={15} strokeWidth={isActive ? 2.2 : 1.8} className={isActive ? 'text-[var(--lapis)] dark:text-blue-400' : 'text-[var(--mute)]'} />
                 <span>{tab.label}</span>
                 {isActive && (
                   <span className="absolute bottom-0 inset-x-2 h-[3px] bg-[var(--lapis)] dark:bg-blue-400 rounded-t-full transition-all" />
@@ -669,7 +654,7 @@ export const UserProfileModal: React.FC<Props> = ({
         </div>
 
         {/* Tab Contents Scroll Area */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 font-ui">
+        <div className="flex-1 overflow-y-auto p-3.5 sm:p-4 space-y-3.5 font-ui">
           
           {/* TAB 1: MATCH HISTORY */}
           {activeTab === 'history' && (
@@ -701,15 +686,15 @@ export const UserProfileModal: React.FC<Props> = ({
               )}
 
               {allHistory.length === 0 ? (
-                <div className="py-10 px-6 text-center rounded-[24px] bg-slate-50/80 dark:bg-slate-900/40 border border-[var(--line)] space-y-3">
-                  <div className="w-14 h-14 rounded-full bg-blue-50 dark:bg-blue-950/50 text-[var(--lapis)] dark:text-blue-400 flex items-center justify-center mx-auto shadow-xs">
-                    <History size={26} strokeWidth={2} />
+                <div className="py-6 px-5 text-center rounded-[22px] bg-slate-50/80 dark:bg-slate-900/40 border border-[var(--line)] space-y-2.5">
+                  <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-950/50 text-[var(--lapis)] dark:text-blue-400 flex items-center justify-center mx-auto shadow-xs">
+                    <History size={22} strokeWidth={2} />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="text-base font-bold text-[var(--ink)]">
+                    <h3 className="text-sm sm:text-base font-bold text-[var(--ink)]">
                       {isRTL ? 'هنوز بازی‌ای ثبت نشده است' : 'No matches played yet'}
                     </h3>
-                    <p className="text-xs sm:text-sm text-[var(--mute)] leading-relaxed font-normal max-w-xs mx-auto">
+                    <p className="text-xs text-[var(--mute)] leading-relaxed font-normal max-w-xs mx-auto">
                       {isRTL 
                         ? 'پس از پایان اولین مسابقه دورهمی یا انفرادی، جزئیات امتیازها و برندگان در این قسمت ثبت می‌شود.' 
                         : 'After finishing your first party or solo game, match scores and winners will be saved here.'}
@@ -740,7 +725,7 @@ export const UserProfileModal: React.FC<Props> = ({
                         </div>
                         {item.totalScore !== undefined && (
                           <span className="font-bold text-[var(--lapis)] font-mono text-xs">
-                            {item.totalScore} {t.pointsUnit || (isRTL ? 'امتیاز' : 'PTS')}
+                            {item.totalScore} {isRTL ? 'امتیاز' : 'PTS'}
                           </span>
                         )}
                       </div>
@@ -760,7 +745,7 @@ export const UserProfileModal: React.FC<Props> = ({
                     {isRTL ? 'بهترین رکورد ثبت‌شده شما' : 'Your Personal Best'}
                   </span>
                   <div className="text-2xl font-bold text-[var(--ink)] font-display mt-0.5">
-                    {records.highestScore} <span className="text-xs text-amber-600 font-bold">{t.pointsUnit || (isRTL ? 'امتیاز' : 'PTS')}</span>
+                    {records.highestScore} <span className="text-xs text-amber-600 font-bold">{isRTL ? 'امتیاز' : 'PTS'}</span>
                   </div>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-amber-500/15 text-amber-600 flex items-center justify-center border border-amber-500/30 shadow-xs">
@@ -819,60 +804,61 @@ export const UserProfileModal: React.FC<Props> = ({
 
           {/* TAB 3: LEITNER 5-BOX SPACED REPETITION (Single Player Only) */}
           {activeTab === 'leitner' && (
-            <div className="space-y-3.5 text-start">
-              <div className="p-4 rounded-[22px] bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/25 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-amber-500 text-white flex items-center justify-center shadow-xs shrink-0">
-                      <Box size={20} strokeWidth={2} />
+            <div className="space-y-3 text-start">
+              <div className="p-3.5 rounded-[22px] bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/25 space-y-2.5">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-9 h-9 rounded-full bg-amber-500 text-white flex items-center justify-center shadow-xs shrink-0">
+                      <Box size={18} strokeWidth={2} />
                     </div>
-                    <div>
-                      <h3 className="text-sm font-bold text-[var(--ink)]">
-                        {isRTL ? 'جعبه لایتنر ۵ خانه' : '5-Box Leitner (Solo Spaced Repetition)'}
+                    <div className="min-w-0">
+                      <h3 className="text-sm font-bold text-[var(--ink)] truncate">
+                        {isRTL ? 'جعبه لایتنر ۵ خانه' : '5-Box Leitner (Spaced Repetition)'}
                       </h3>
-                      <p className="text-xs text-[var(--mute)]">
+                      <p className="text-[11px] text-[var(--mute)] truncate">
                         {isRTL ? 'مرور روزانه طبق منحنی فراموشی ابینگهاوس' : 'Daily spaced repetition intervals'}
                       </p>
                     </div>
                   </div>
-                  <span className="text-xs font-bold text-amber-700 dark:text-amber-400 bg-amber-500/15 px-2.5 py-0.5 rounded-full border border-amber-500/20 shrink-0">
-                    🔥 {leitnerState.consecutiveStreak} {isRTL ? 'روز استریک' : 'streak'}
+                  <span className="text-xs font-bold text-amber-700 dark:text-amber-400 bg-amber-500/15 px-2.5 py-1 rounded-full border border-amber-500/20 shrink-0 inline-flex items-center gap-1">
+                    <Flame size={13} className="text-amber-500" />
+                    <span>{leitnerState.consecutiveStreak} {isRTL ? 'روز استریک' : 'streak'}</span>
                   </span>
                 </div>
 
                 {/* Leitner Stats Row */}
-                <div className="grid grid-cols-3 gap-2 pt-1 text-center">
-                  <div className="p-2.5 rounded-[16px] bg-[var(--panel)] border border-[var(--line)]">
-                    <span className="text-lg font-bold text-amber-600 block">
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div className="p-2 rounded-[14px] bg-[var(--panel)] border border-[var(--line)]">
+                    <span className="text-base font-bold text-amber-600 block">
                       {getDueLeitnerCards(leitnerState).length}
                     </span>
                     <span className="text-[11px] text-[var(--mute)] font-medium">
-                      {isRTL ? 'آماده امروز ⚡' : 'Due Today ⚡'}
+                      {isRTL ? 'آماده امروز' : 'Due Today'}
                     </span>
                   </div>
-                  <div className="p-2.5 rounded-[16px] bg-[var(--panel)] border border-[var(--line)]">
-                    <span className="text-lg font-bold text-emerald-600 block">
+                  <div className="p-2 rounded-[14px] bg-[var(--panel)] border border-[var(--line)]">
+                    <span className="text-base font-bold text-emerald-600 block">
                       {leitnerState.totalCardsMastered}
                     </span>
                     <span className="text-[11px] text-[var(--mute)] font-medium">
-                      {isRTL ? 'مسلط شده 🏆' : 'Mastered 🏆'}
+                      {isRTL ? 'مسلط شده' : 'Mastered'}
                     </span>
                   </div>
-                  <div className="p-2.5 rounded-[16px] bg-[var(--panel)] border border-[var(--line)]">
-                    <span className="text-lg font-bold text-[var(--ink)] block">
+                  <div className="p-2 rounded-[14px] bg-[var(--panel)] border border-[var(--line)]">
+                    <span className="text-base font-bold text-[var(--ink)] block">
                       {leitnerState.cards.length}
                     </span>
                     <span className="text-[11px] text-[var(--mute)] font-medium">
-                      {isRTL ? 'کل کارت‌ها 📦' : 'Total Cards 📦'}
+                      {isRTL ? 'کل کارت‌ها' : 'Total Cards'}
                     </span>
                   </div>
                 </div>
 
                 {/* 5-Boxes Distribution Visualizer */}
-                <div className="space-y-1.5 pt-1">
-                  <div className="flex items-center justify-between text-xs font-medium text-[var(--mute)]">
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between text-[11px] font-medium text-[var(--mute)]">
                     <span>{isRTL ? 'توزیع کارت‌ها در ۵ خانه لایتنر:' : '5 Leitner Boxes:'}</span>
-                    <span>{isRTL ? '۱ ➔ ۲ ➔ ۴ ➔ ۸ ➔ ۱۵ روز' : '1 -> 2 -> 4 -> 8 -> 15 days'}</span>
+                    <span>{isRTL ? '۱ • ۲ • ۴ • ۸ • ۱۶ روز' : '1 • 2 • 4 • 8 • 16 days'}</span>
                   </div>
                   <div className="grid grid-cols-5 gap-1.5 text-center">
                     {[0, 1, 2, 3, 4].map(bIdx => {
@@ -880,7 +866,7 @@ export const UserProfileModal: React.FC<Props> = ({
                       return (
                         <div 
                           key={`box-${bIdx}`}
-                          className={`p-2 rounded-[14px] border text-center transition-all ${
+                          className={`p-1.5 rounded-[12px] border text-center transition-all ${
                             bIdx === 4
                               ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600'
                               : 'bg-[var(--panel)] border-[var(--line)] text-[var(--ink)]'
@@ -1138,7 +1124,7 @@ export const UserProfileModal: React.FC<Props> = ({
                   className="w-full h-11 bg-gradient-to-r from-[var(--turq)] to-[var(--lapis)] text-white rounded-full font-bold text-xs flex items-center justify-center gap-2 shadow-xs active:scale-98 transition-all cursor-pointer"
                 >
                   <MapPin size={16} strokeWidth={2} />
-                  <span>{isRTL ? 'ورود به نقشه قرارهای بازی و کافه‌ها 📍' : 'Open Meetups & Cafes Map 📍'}</span>
+                  <span>{isRTL ? 'ورود به نقشه قرارهای بازی و کافه‌ها' : 'Open Meetups & Cafes Map'}</span>
                 </button>
               </div>
             </div>
@@ -1371,7 +1357,7 @@ export const UserProfileModal: React.FC<Props> = ({
                   </div>
                   <div className="flex items-start gap-2 bg-[var(--panel)] p-2.5 rounded-[14px] border border-[var(--line)]">
                     <span className="w-5 h-5 rounded-full bg-[var(--bg)] text-[var(--ink)] font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">۲</span>
-                    <span>{isRTL ? 'گزینه «Add to Home Screen» (افزودن به صفحه اصلی ➕) را انتخاب کنید.' : 'Scroll and select "Add to Home Screen" (➕).'}</span>
+                    <span>{isRTL ? 'گزینه «Add to Home Screen» (افزودن به صفحه اصلی) را انتخاب کنید.' : 'Scroll and select "Add to Home Screen".'}</span>
                   </div>
                   <div className="flex items-start gap-2 bg-[var(--panel)] p-2.5 rounded-[14px] border border-[var(--line)]">
                     <span className="w-5 h-5 rounded-full bg-[var(--bg)] text-[var(--ink)] font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">۳</span>

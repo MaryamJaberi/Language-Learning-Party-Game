@@ -1,5 +1,5 @@
-import React from 'react';
-import { AlertTriangle, Home, Sliders, X, Play } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { Home, Sliders, X, Play, BookOpen, Pause } from 'lucide-react';
 import { sound } from '../soundManager';
 
 interface Props {
@@ -11,10 +11,12 @@ interface Props {
   confirmLabel?: string;
   homeLabel?: string;
   setupLabel?: string;
+  helpLabel?: string;
   onCancel: () => void;
   onConfirm?: () => void;
   onExitHome?: () => void;
   onExitSetup?: () => void;
+  onOpenHelp?: () => void;
 }
 
 export const ExitConfirmModal: React.FC<Props> = ({
@@ -23,20 +25,33 @@ export const ExitConfirmModal: React.FC<Props> = ({
   title,
   message,
   cancelLabel,
-  confirmLabel,
   homeLabel,
   setupLabel,
+  helpLabel,
   onCancel,
   onConfirm,
   onExitHome,
-  onExitSetup
+  onExitSetup,
+  onOpenHelp
 }) => {
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onCancel();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onCancel]);
+
   if (!isOpen) return null;
 
-  const defaultTitle = isRTL ? 'خروج از بازی' : 'Leave Match?';
+  const defaultTitle = isRTL ? 'توقف بازی' : 'Game Paused';
   const defaultMessage = isRTL 
-    ? 'می‌خواهید به کدام صفحه بازگردید؟ پیشرفت این دست ثبت نخواهد شد.'
-    : 'Where would you like to return? Current round progress will not be saved.';
+    ? 'بازی متوقف شده است. یکی از گزینه‌های زیر را انتخاب کنید:'
+    : 'Game is paused. Choose an option below:';
 
   const handleGoHome = () => {
     sound.playElimination();
@@ -52,19 +67,25 @@ export const ExitConfirmModal: React.FC<Props> = ({
     else onCancel();
   };
 
+  const handleOpenHelp = () => {
+    sound.playClick();
+    onCancel();
+    if (onOpenHelp) onOpenHelp();
+  };
+
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs animate-fade-in font-ui"
+      className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-fade-in font-ui"
       dir={isRTL ? 'rtl' : 'ltr'}
-      onClick={onCancel}
+      onClick={() => {
+        sound.playClick();
+        onCancel();
+      }}
     >
       <div 
-        className="w-full max-w-xs sm:max-w-sm bg-[var(--panel)] border-2 border-rose-500/40 rounded-[28px] p-5 sm:p-6 shadow-2xl text-[var(--ink)] space-y-4 text-center relative overflow-hidden"
+        className="w-full max-w-xs sm:max-w-sm bg-[var(--panel)] border border-[var(--line)] rounded-[24px] p-5 sm:p-6 shadow-2xl text-[var(--ink)] space-y-4 text-center relative overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
-        {/* Subtle red neon glow */}
-        <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-32 h-32 bg-rose-500/15 rounded-full blur-xl pointer-events-none" />
-
         {/* Top-corner Cross (X) to dismiss/cancel */}
         <button
           type="button"
@@ -72,15 +93,15 @@ export const ExitConfirmModal: React.FC<Props> = ({
             sound.playClick();
             onCancel();
           }}
-          className="absolute top-4 rtl:left-4 ltr:right-4 w-8 h-8 rounded-full bg-[var(--bg)] hover:bg-[var(--line)] text-[var(--mute)] hover:text-[var(--ink)] flex items-center justify-center transition-colors cursor-pointer"
-          title={isRTL ? 'پشیمان شدم (ادامه بازی)' : 'Cancel & continue playing'}
+          className="absolute top-3.5 rtl:left-3.5 ltr:right-3.5 w-8 h-8 rounded-full bg-[var(--bg)] hover:bg-[var(--line)] text-[var(--mute)] hover:text-[var(--ink)] flex items-center justify-center transition-colors cursor-pointer z-10"
+          title={isRTL ? 'ادامه بازی' : 'Continue playing'}
           aria-label={isRTL ? 'بستن پنجره خروج' : 'Close exit dialog'}
         >
           <X size={16} />
         </button>
 
-        <div className="w-13 h-13 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-500 flex items-center justify-center mx-auto shadow-inner mt-1">
-          <AlertTriangle size={26} className="animate-pulse" />
+        <div className="w-12 h-12 rounded-2xl bg-[var(--lapis-soft)] border border-[var(--lapis)]/30 text-[var(--lapis)] flex items-center justify-center mx-auto shadow-xs">
+          <Pause size={24} />
         </div>
 
         <div className="space-y-1">
@@ -94,17 +115,33 @@ export const ExitConfirmModal: React.FC<Props> = ({
 
         {/* Action Buttons */}
         <div className="space-y-2 pt-1">
-          {/* Button 1: Return to Home / Intro */}
+          {/* Button 1: Resume / Keep Playing */}
           <button
             type="button"
-            onClick={handleGoHome}
-            className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white text-xs font-black shadow-sm cursor-pointer active:scale-98 transition-all flex items-center justify-center gap-2"
+            onClick={() => {
+              sound.playClick();
+              onCancel();
+            }}
+            className="w-full py-2.5 px-3 rounded-xl bg-[var(--lapis)] hover:brightness-95 text-[var(--on-lapis)] text-xs font-black shadow-xs cursor-pointer active:scale-98 transition-all flex items-center justify-center gap-2"
           >
-            <Home size={15} />
-            <span>{homeLabel || (isRTL ? 'برگشت به صفحه اول' : 'Return to Home Screen')}</span>
+            <Play size={15} />
+            <span>{cancelLabel || (isRTL ? 'ادامه بازی' : 'Resume Game')}</span>
+            <span className="sr-only">{isRTL ? 'پشیمان شدم (ادامه بازی 🎮)' : 'Cancel & Keep Playing'}</span>
           </button>
 
-          {/* Button 2: Return to Settings / Setup */}
+          {/* Button 2: Open Help / Guide (if provided) */}
+          {onOpenHelp && (
+            <button
+              type="button"
+              onClick={handleOpenHelp}
+              className="w-full py-2.5 px-3 rounded-xl bg-[var(--bg)] hover:bg-[var(--line)]/50 border border-[var(--line)] text-[var(--ink)] text-xs font-black shadow-2xs cursor-pointer active:scale-98 transition-all flex items-center justify-center gap-2"
+            >
+              <BookOpen size={15} className="text-[var(--turq)]" />
+              <span>{helpLabel || (isRTL ? 'مشاهده راهنمای بازی' : 'Game Guide & Help')}</span>
+            </button>
+          )}
+
+          {/* Button 3: Return to Settings / Setup */}
           <button
             type="button"
             onClick={handleGoSetup}
@@ -115,17 +152,15 @@ export const ExitConfirmModal: React.FC<Props> = ({
             {setupLabel && isRTL && <span className="sr-only">برگشت به صفحه تنظیمات</span>}
           </button>
 
-          {/* Button 3: Cancel / Keep Playing */}
+          {/* Button 4: Return to Home / Exit Game */}
           <button
             type="button"
-            onClick={() => {
-              sound.playClick();
-              onCancel();
-            }}
-            className="w-full py-2 px-3 rounded-xl text-xs font-bold text-[var(--mute)] hover:text-[var(--ink)] hover:bg-[var(--bg)] cursor-pointer transition-colors flex items-center justify-center gap-1.5"
+            onClick={handleGoHome}
+            className="w-full py-2.5 px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-black shadow-xs cursor-pointer active:scale-98 transition-all flex items-center justify-center gap-2"
           >
-            <Play size={13} />
-            <span>{isRTL ? 'پشیمان شدم (ادامه بازی 🎮)' : 'Cancel & Keep Playing 🎮'}</span>
+            <Home size={15} />
+            <span>{homeLabel || (isRTL ? 'خروج از بازی (صفحه اول)' : 'Exit Game (Home Screen)')}</span>
+            <span className="sr-only">{isRTL ? 'برگشت به صفحه اول' : 'Return to Home Screen'}</span>
           </button>
         </div>
       </div>
@@ -134,3 +169,4 @@ export const ExitConfirmModal: React.FC<Props> = ({
 };
 
 export default ExitConfirmModal;
+

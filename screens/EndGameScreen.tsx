@@ -131,7 +131,7 @@ const EndGameScreen: React.FC<Props> = ({
           }`}
         >
           <Trophy size={14} className={activeTab === 'podium' ? 'text-[var(--saffron)]' : ''} />
-          <span>{isRTL ? 'سکوی قهرمانی 🏆' : 'Podium 🏆'}</span>
+          <span>{isRTL ? 'سکوی قهرمانی' : 'Podium'}</span>
         </button>
 
         <button
@@ -146,7 +146,7 @@ const EndGameScreen: React.FC<Props> = ({
           }`}
         >
           <Award size={14} />
-          <span>{isRTL ? 'گزارش یادگیری 📊' : 'Stats 📊'}</span>
+          <span>{isRTL ? 'گزارش یادگیری' : 'Stats'}</span>
         </button>
 
         <button
@@ -187,7 +187,7 @@ const EndGameScreen: React.FC<Props> = ({
                 <Sparkles size={16} className="text-[var(--turq)]" />
               </div>
               <p className="text-[11px] text-[var(--mute)] font-bold uppercase tracking-wide">
-                {language === 'fa' ? '✨ تبریک به قهرمانان مسابقه یادگیری زبان! ✨' : '✨ CHAMPIONS OF THE LANGUAGE PARTY! ✨'}
+                {language === 'fa' ? 'تبریک به قهرمانان مسابقه یادگیری زبان!' : 'CHAMPIONS OF THE LANGUAGE PARTY!'}
               </p>
             </div>
 
@@ -379,8 +379,8 @@ const EndGameScreen: React.FC<Props> = ({
                 <Flame size={15} />
                 <span>
                   {isRTL 
-                    ? `مرور ${missedCards.length} کلمه اشتباه در جعبه لایتنر 📥` 
-                    : `Practice ${missedCards.length} Missed Words in Leitner Box 📥`}
+                    ? `مرور ${missedCards.length} کلمه اشتباه در جعبه لایتنر` 
+                    : `Practice ${missedCards.length} Missed Words in Leitner Box`}
                 </span>
               </button>
             )}
@@ -498,7 +498,7 @@ const EndGameScreen: React.FC<Props> = ({
           className="w-full py-3 text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-2 rounded-2xl bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border border-[var(--line)] shadow-xs transition-all active:scale-98 cursor-pointer"
         >
           <Share2 size={16} className="text-[var(--lapis)]" />
-          <span>{language === 'fa' ? 'اشتراک‌گذاری کارنامه مسابقه 📤' : 'Share Match Scorecard 📤'}</span>
+          <span>{language === 'fa' ? 'اشتراک‌گذاری کارنامه مسابقه' : 'Share Match Scorecard'}</span>
         </button>
 
         {/* Play Again button */}

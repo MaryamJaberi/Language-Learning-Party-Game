@@ -132,8 +132,8 @@ const IntroScreen: React.FC<Props> = ({
   };
 
   const currentLangInfo = SUPPORTED_LANGUAGES.find(l => l.code === language) || SUPPORTED_LANGUAGES[0];
-  const currentCefr = settings?.cefrLevel || 'all';
-  const activeCefrInfo = CEFR_LEVELS.find(l => l.id === currentCefr) || CEFR_LEVELS[5]; // default all
+  const currentCefr = (settings?.cefrLevel && settings.cefrLevel !== 'all') ? settings.cefrLevel : 'A1';
+  const activeCefrInfo = CEFR_LEVELS.find(l => l.id === currentCefr) || CEFR_LEVELS[0];
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -176,10 +176,7 @@ const IntroScreen: React.FC<Props> = ({
   const handleMascotClick = () => {
     sound.playCorrect();
     setMascotBounce(true);
-    const emotes = ['⚡', '✨', '🎉', '💖', '⭐', '🌟', '🚀', '🔥'];
-    setPartyEmote(emotes[Math.floor(Math.random() * emotes.length)]);
     setTimeout(() => setMascotBounce(false), 400);
-    setTimeout(() => setPartyEmote(null), 900);
   };
 
   const handleGoogleAuth = async () => {
@@ -276,9 +273,9 @@ const IntroScreen: React.FC<Props> = ({
               sound.playClick();
               setIsAICoachOpen(true);
             }}
-            aria-label="مربی و داور هوشمند دور (Gemini AI)"
+            aria-label={isRTL ? 'مربی و داور هوشمند دور (Gemini AI)' : 'Turn AI Coach & Game Referee (Gemini AI)'}
             className="w-11 h-11 flex items-center justify-center bg-[var(--panel)] hover:bg-slate-100 dark:hover:bg-slate-800 text-amber-500 border border-amber-400/40 rounded-full shadow-xs active:scale-95 transition-all cursor-pointer relative"
-            title="مربی هوشمند و داور بازی دور (Gemini AI)"
+            title={isRTL ? 'مربی هوشمند و داور بازی دور (Gemini AI)' : 'Turn AI Coach & Game Referee (Gemini AI)'}
           >
             <Bot size={20} className="text-amber-500" />
             <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-amber-400" />
@@ -292,12 +289,12 @@ const IntroScreen: React.FC<Props> = ({
                 sound.playClick();
                 setIsAdminMeetupMapOpen(true);
               }}
-              aria-label="نقشه کافه‌ها و قرارهای بازی (Google Maps)"
+              aria-label={isRTL ? 'نقشه کافه‌ها و قرارهای بازی (Google Maps)' : 'Boardgame Cafes & Meetups Map (Google Maps)'}
               className="w-11 h-11 flex items-center justify-center bg-teal-500/15 hover:bg-teal-500/25 text-[var(--turq)] border border-[var(--turq)] rounded-full shadow-xs active:scale-95 transition-all cursor-pointer relative"
-              title="نقشه قرارهای بازی و کافه‌ها با Google Maps (ویژه مدیر)"
+              title={isRTL ? 'نقشه قرارهای بازی و کافه‌ها با Google Maps (ویژه مدیر)' : 'Boardgame Cafes & Meetups Map with Google Maps (Admin)'}
             >
-              <MapPin size={20} className="text-[var(--turq)] animate-pulse" />
-              <span className="absolute -top-1 -right-1 text-[10px]">👑</span>
+              <MapPin size={20} className="text-[var(--turq)]" />
+              <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[var(--turq)] border-2 border-[var(--panel)]" />
             </button>
           )}
 
@@ -334,7 +331,7 @@ const IntroScreen: React.FC<Props> = ({
             </div>
             <div className="min-w-0">
               <div className="text-xs font-black text-[var(--ink)] flex items-center gap-1.5 truncate">
-                <span>{isRTL ? '✨ با ۴ سبک جذاب بازی «دور» آشنا شوید!' : '✨ Discover the 4 exciting game modes!'}</span>
+                <span>{isRTL ? 'با ۴ سبک جذاب بازی «دور» آشنا شوید!' : 'Discover the 4 exciting game modes!'}</span>
               </div>
               <div className="text-[10px] text-[var(--mute)] font-medium truncate">
                 {isRTL ? 'دورهمی تیمی • دوئل دونفره • چالش تک‌نفره • جعبه لایتنر' : 'Team Party • 2P Duel • Single-Player • Leitner Box'}
@@ -343,7 +340,7 @@ const IntroScreen: React.FC<Props> = ({
           </div>
           <div className="flex items-center gap-1 shrink-0">
             <span className="text-[10px] bg-[var(--lapis)] text-white font-black px-2.5 py-1 rounded-lg shadow-2xs group-hover:brightness-110 flex items-center gap-1">
-              <span>{isRTL ? 'راهنما 📖' : 'Guide 📖'}</span>
+              <span>{isRTL ? 'راهنما' : 'Guide'}</span>
             </span>
             <button
               type="button"
@@ -399,7 +396,7 @@ const IntroScreen: React.FC<Props> = ({
           <div className="w-full p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-orange-500/15 to-amber-500/15 border border-amber-500/35 text-start space-y-2 animate-fade-in shadow-xs">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-base">⏳</span>
+                <History size={16} className="text-amber-600 shrink-0" />
                 <span className="text-xs sm:text-sm font-black text-[var(--ink)]">
                   {(t.resumePrevMatch || (isRTL ? 'ادامه بازی قبلی ({round}/{total})' : 'Resume Previous Match ({round}/{total})'))
                     .replace('{round}', String(savedSession.round))
@@ -418,7 +415,7 @@ const IntroScreen: React.FC<Props> = ({
                 className="text-xs font-bold text-[var(--mute)] hover:text-rose-500 p-1.5 min-w-[36px] min-h-[36px] flex items-center justify-center"
                 title={t.startFreshBtn || (isRTL ? 'شروع از نو' : 'Discard')}
               >
-                ✕
+                <X size={15} />
               </button>
             </div>
             <div className="flex items-center gap-2 pt-0.5">
@@ -470,26 +467,8 @@ const IntroScreen: React.FC<Props> = ({
             </span>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
-            <button
-              type="button"
-              id="intro-online-btn"
-              aria-label={t.onlineRoom || (isRTL ? 'اتاق آنلاین' : 'Online Room')}
-              onClick={(e) => {
-                e.stopPropagation();
-                sound.playClick();
-                onOpenOnline();
-              }}
-              className="min-h-[38px] px-2.5 py-1.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--line)] border border-[var(--line)] text-[var(--turq)] text-xs font-bold flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
-              title={t.onlineRoom || (isRTL ? 'اتاق آنلاین' : 'Online Room')}
-            >
-              <Globe size={13} />
-              <span>{t.onlineBadge || (isRTL ? 'آنلاین' : 'Online')}</span>
-            </button>
-
-            <div className="text-[var(--mute)] group-hover:text-[var(--lapis)] transition-colors flex items-center justify-center shrink-0">
-              {isRTL ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
-            </div>
+          <div className="text-[var(--mute)] group-hover:text-[var(--lapis)] transition-colors flex items-center justify-center shrink-0">
+            {isRTL ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
           </div>
         </div>
 
@@ -792,7 +771,7 @@ const IntroScreen: React.FC<Props> = ({
                     </div>
                   </div>
                   <span className="text-xs font-bold bg-[#E0533C] text-white px-2.5 py-1 rounded-xl shadow-[var(--shadow-sm)]">
-                    {isRTL ? 'دوئل ⚔️' : 'Duel ⚔️'}
+                    {isRTL ? 'دوئل' : 'Duel'}
                   </span>
                 </div>
                 <p className="text-[11px] text-[var(--mute)] font-medium leading-relaxed text-start">
@@ -993,7 +972,8 @@ const IntroScreen: React.FC<Props> = ({
         isOpen={isAICoachOpen}
         onClose={() => setIsAICoachOpen(false)}
         learningLanguage={settings?.targetLanguages?.[0] || 'English'}
-        guideLanguage={language === 'fa' ? 'Persian' : 'English'}
+        guideLanguage={language}
+        uiLanguage={language}
         isRTL={isRTL}
       />
     </div>

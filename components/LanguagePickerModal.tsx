@@ -44,12 +44,24 @@ export const LanguagePickerModal: React.FC<LanguagePickerModalProps> = ({
     }
   }, [isOpen]);
 
-  const regionTabs: { id: Exclude<LanguageRegion, 'popular'> | 'all'; labelFa: string; labelEn: string; icon: string }[] = [
-    { id: 'all', labelFa: 'همه زبان‌ها', labelEn: 'All', icon: '🌍' },
-    { id: 'middle_east', labelFa: 'خاورمیانه', labelEn: 'Middle East', icon: '🕌' },
-    { id: 'europe', labelFa: 'اروپا', labelEn: 'Europe', icon: '🏛️' },
-    { id: 'asia', labelFa: 'آسیا', labelEn: 'Asia', icon: '⛩️' },
-    { id: 'americas', labelFa: 'آمریکا', labelEn: 'Americas', icon: '🌎' },
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
+  const regionTabs: { id: Exclude<LanguageRegion, 'popular'> | 'all'; labelFa: string; labelEn: string }[] = [
+    { id: 'all', labelFa: 'همه زبان‌ها', labelEn: 'All' },
+    { id: 'middle_east', labelFa: 'خاورمیانه', labelEn: 'Middle East' },
+    { id: 'europe', labelFa: 'اروپا', labelEn: 'Europe' },
+    { id: 'asia', labelFa: 'آسیا', labelEn: 'Asia' },
+    { id: 'americas', labelFa: 'آمریکا', labelEn: 'Americas' },
   ];
 
   const filteredLanguages = useMemo(() => {
@@ -177,13 +189,12 @@ export const LanguagePickerModal: React.FC<LanguagePickerModalProps> = ({
                     sound.playToggle();
                     setActiveRegion(tab.id);
                   }}
-                  className={`px-3 py-1 rounded-[12px] font-bold text-[11px] whitespace-nowrap transition-all border shrink-0 flex items-center gap-1 active:translate-y-0.5 ${
+                  className={`px-3 py-1.5 rounded-[12px] font-bold text-[11px] whitespace-nowrap transition-all border shrink-0 flex items-center gap-1 active:translate-y-0.5 cursor-pointer ${
                     isActive
-                      ? 'bg-[var(--vermilion)] text-white border-[var(--vermilion)] shadow-[var(--shadow-sm)]'
+                      ? 'bg-[var(--lapis)] text-white border-[var(--lapis)] shadow-[var(--shadow-sm)]'
                       : 'bg-[var(--panel)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--bg)]'
                   }`}
                 >
-                  <span>{tab.icon}</span>
                   <span>{isRTL ? tab.labelFa : tab.labelEn}</span>
                 </button>
               );

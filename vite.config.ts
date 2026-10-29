@@ -3,8 +3,7 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
-export default defineConfig(({ mode }) => {
-    const env = loadEnv(mode, '.', '');
+export default defineConfig(() => {
     return {
       base: './', // Ensures assets load correctly on GitHub Pages (subpaths & custom domains)
       server: {
@@ -75,7 +74,8 @@ export default defineConfig(({ mode }) => {
           },
           workbox: {
             globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2,json}'],
-            maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+            globIgnores: ['**/embeddedAabData*.js', '**/downloads/**', '**/assets/aistudio/**'],
+            maximumFileSizeToCacheInBytes: 50 * 1024 * 1024,
             runtimeCaching: [
               {
                 urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

@@ -31,7 +31,8 @@ import {
   Trophy, 
   Share2, 
   ArrowLeft,
-  Crown
+  Crown,
+  Pause
 } from 'lucide-react';
 
 interface Props {
@@ -39,13 +40,19 @@ interface Props {
   myPlayerId: number;
   language: Language;
   onExit: () => void;
+  onExitHome?: () => void;
+  onExitSetup?: () => void;
+  onOpenHelp?: () => void;
 }
 
 export const OnlineGameplayScreen: React.FC<Props> = ({
   initialRoom,
   myPlayerId,
   language,
-  onExit
+  onExit,
+  onExitHome,
+  onExitSetup,
+  onOpenHelp
 }) => {
   const t = tUI(language);
   const isRTL = isRtlLang(language);
@@ -220,7 +227,7 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
           <span>{language === 'fa' ? `راند ${room.currentRound} از ${room.settings.roundsCount || 3}` : `Round ${room.currentRound} of ${room.settings.roundsCount || 3}`}</span>
         </div>
 
-        {/* Room Code & Exit Button */}
+        {/* Room Code & Stop Game Button */}
         <div className="flex items-center gap-1.5">
           <div className="bg-[var(--panel)] text-[var(--ink)] px-2.5 py-1.5 rounded-[12px] text-[11px] font-mono font-bold border border-[var(--line)] shadow-[var(--shadow-sm)]">
             #{room.code}
@@ -231,10 +238,12 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
               sound.playClick();
               setShowExitConfirm(true);
             }}
-            className="w-8 h-8 rounded-xl bg-[var(--panel)] border border-[var(--line)] text-rose-500 hover:bg-rose-500/10 flex items-center justify-center cursor-pointer transition-colors"
-            title={language === 'fa' ? 'خروج از بازی' : 'Exit Game'}
+            className="h-8 px-2.5 rounded-xl bg-[var(--panel)] border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--lapis-soft)] flex items-center justify-center gap-1 cursor-pointer transition-colors font-extrabold text-xs"
+            title={language === 'fa' ? 'توقف بازی' : 'Pause Game'}
+            aria-label={language === 'fa' ? 'توقف بازی' : 'Pause Game'}
           >
-            <ArrowLeft size={16} className={isRTL ? 'rotate-180' : ''} />
+            <Pause size={14} className="text-[var(--lapis)] shrink-0" />
+            <span>{language === 'fa' ? 'توقف بازی' : 'Pause'}</span>
           </button>
         </div>
       </div>
@@ -467,18 +476,24 @@ export const OnlineGameplayScreen: React.FC<Props> = ({
         language={language}
       />
 
-      {/* Exit Confirmation Modal */}
+      {/* Stop / Pause Game Modal */}
       {showExitConfirm && (
         <ExitConfirmModal
           isRTL={isRTL}
           onCancel={() => setShowExitConfirm(false)}
+          onOpenHelp={onOpenHelp ? () => {
+            setShowExitConfirm(false);
+            onOpenHelp();
+          } : undefined}
           onExitHome={() => {
             setShowExitConfirm(false);
-            onExit();
+            if (onExitHome) onExitHome();
+            else onExit();
           }}
           onExitSetup={() => {
             setShowExitConfirm(false);
-            onExit();
+            if (onExitSetup) onExitSetup();
+            else onExit();
           }}
         />
       )}

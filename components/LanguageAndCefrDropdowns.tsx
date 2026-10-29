@@ -40,11 +40,11 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
   const targetLangs = settings.targetLanguages && settings.targetLanguages.length > 0
     ? settings.targetLanguages
     : ['nl', 'en-US'];
-  const currentCefr = settings.cefrLevel || 'all';
+  const currentCefr = (settings.cefrLevel && settings.cefrLevel !== 'all') ? settings.cefrLevel : 'A1';
 
   const nativeLangInfo = SUPPORTED_LANGUAGES.find(l => l.code === nativeLang) || SUPPORTED_LANGUAGES[0];
   const appUiLangInfo = SUPPORTED_LANGUAGES.find(l => l.code === appUiLang) || SUPPORTED_LANGUAGES[0];
-  const activeCefrInfo = CEFR_LEVELS.find(l => l.id === currentCefr) || CEFR_LEVELS[CEFR_LEVELS.length - 1];
+  const activeCefrInfo = CEFR_LEVELS.find(l => l.id === currentCefr) || CEFR_LEVELS[0];
 
   // In-place search filtering for languages
   const searchResults = useMemo(() => {
@@ -274,7 +274,7 @@ export const LanguageAndCefrDropdowns: React.FC<Props> = ({
         </button>
 
         {/* Directly visible CEFR Pills */}
-        <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 pt-1">
+        <div className="grid grid-cols-5 gap-1.5 pt-1">
           {CEFR_LEVELS.map(level => {
             const isSelected = currentCefr === level.id;
             const levelName = level.name[settings.language] || level.name.en || level.id;

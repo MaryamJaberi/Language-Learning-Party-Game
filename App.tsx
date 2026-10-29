@@ -73,8 +73,8 @@ const App: React.FC = () => {
   const [singlePlayerSettings, setSinglePlayerSettings] = useState<SinglePlayerSettings>({
     targetLanguage: 'en',
     nativeLanguage: 'fa',
-    cefrLevel: 'all',
-    displayMode: 'text_and_audio',
+    cefrLevel: 'A1',
+    displayMode: 'translate_to_target',
     questionCount: 10,
     timeLimitSeconds: 0,
     autoPlayAudio: true,
@@ -384,7 +384,7 @@ const App: React.FC = () => {
     const pool = buildSessionCardPool(
       activeTargets,
       settings.selectedCategories,
-      settings.cefrLevel || 'all',
+      (settings.cefrLevel && settings.cefrLevel !== 'all') ? settings.cefrLevel : 'A1',
       effectiveNative,
       settings.cardGameMode || 'mixed'
     );
@@ -860,6 +860,15 @@ const App: React.FC = () => {
             setOnlineRoom(null);
             setCurrentScreen('INTRO');
           }}
+          onExitHome={() => {
+            setOnlineRoom(null);
+            setCurrentScreen('INTRO');
+          }}
+          onExitSetup={() => {
+            setOnlineRoom(null);
+            setCurrentScreen('ONLINE_LOBBY');
+          }}
+          onOpenHelp={() => openHelp('rules')}
         />
       )}
 
@@ -893,6 +902,7 @@ const App: React.FC = () => {
           onNext={prepareGameSeating}
           onBack={() => setCurrentScreen('INTRO')}
           onOpenHelp={() => openHelp('rules')}
+          onOpenOnline={() => setCurrentScreen('ONLINE_LOBBY')}
         />
       )}
 
@@ -1027,6 +1037,16 @@ const App: React.FC = () => {
             setOnlineDuelRoom(null);
             setCurrentScreen('INTRO');
           }}
+          onExitHome={() => {
+            setOnlineDuelRoom(null);
+            setCurrentScreen('INTRO');
+          }}
+          onExitSetup={() => {
+            setOnlineDuelRoom(null);
+            setCurrentScreen('INTRO');
+            setIsDuelSetupOpen(true);
+          }}
+          onOpenHelp={() => openHelp('rules')}
           isRTL={isRtlLang(settings.language)}
         />
       )}

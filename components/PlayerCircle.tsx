@@ -59,7 +59,6 @@ const PlayerCircle: React.FC<Props> = ({
           const isActive = i === currentActive;
           const isEliminated = Array.isArray(safeEliminated) && safeEliminated.includes(p.teamId);
           const config = COLORS_MAP[p.teamColor] || { bg: 'bg-slate-500', hex: '#2347C5' };
-          const playerAvatar = p.avatar || '🦊';
 
           return (
             <g key={p.id} className="transition-all duration-300">
@@ -68,7 +67,7 @@ const PlayerCircle: React.FC<Props> = ({
               {isActive && (
                 <circle 
                   cx={x} cy={y} 
-                  r={28} 
+                  r={26} 
                   fill="none" 
                   stroke={config.hex} 
                   strokeWidth="3" 
@@ -76,40 +75,40 @@ const PlayerCircle: React.FC<Props> = ({
                 />
               )}
 
-              {/* Main character head circle with team color ring */}
+              {/* Main seat circle with team color */}
               <circle 
                 cx={x} cy={y} 
-                r={isActive ? 22 : 17} 
-                fill={isEliminated ? '#cbd5e1' : 'var(--panel, #ffffff)'} 
-                stroke={isEliminated ? '#94a3b8' : config.hex}
-                strokeWidth={isActive ? '4' : '3.5'}
+                r={isActive ? 20 : 16} 
+                fill={isEliminated ? '#cbd5e1' : config.hex} 
+                stroke="var(--panel, #ffffff)"
+                strokeWidth={isActive ? '3.5' : '2.5'}
                 className="transition-all"
               />
 
-              {/* Player Unique Avatar inside the team ring */}
+              {/* Seat Number inside the team circle */}
               <text
                 x={x}
                 y={y + 1}
                 textAnchor="middle"
                 dominantBaseline="central"
-                fontSize={isActive ? 18 : 14}
-                className="select-none pointer-events-none"
+                fill="#ffffff"
+                fontSize={isActive ? 13 : 11}
+                className="font-black select-none pointer-events-none"
               >
-                {isEliminated ? '😵' : playerAvatar}
+                #{i + 1}
               </text>
 
-              {/* Player Label Name below the avatar */}
+              {/* Player Label Name below the seat */}
               <text 
-                x={x} y={y + (isActive ? 32 : 24)} 
+                x={x} y={y + (isActive ? 31 : 25)} 
                 textAnchor="middle" 
-                className={`text-[10px] font-bold ${
+                className={`text-[10.5px] font-black ${
                   isActive 
                   ? 'fill-[var(--ink)]' 
                   : 'fill-[var(--mute)]'
                 }`}
-                style={{ fontFamily: 'Vazirmatn, sans-serif' }}
               >
-                {p.name.slice(0, 9)}
+                {p.name.slice(0, 10)}
               </text>
             </g>
           );

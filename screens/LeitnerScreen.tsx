@@ -16,6 +16,7 @@ import {
   Zap, 
   Plus, 
   Volume2, 
+  Volume1,
   Layers, 
   ShieldAlert 
 } from 'lucide-react';
@@ -69,11 +70,11 @@ export const LeitnerScreen: React.FC<Props> = ({
     return generateChallengingReflexOptions(currentDueItem.item.card, pool, leitnerState.targetLanguage);
   }, [currentDueItem?.item?.cardId, leitnerState.targetLanguage, leitnerState.cards]);
 
-  // Compartment card counts (3 Boxes: 1 day, 3 days, 7 days)
+  // Compartment card counts (5 Boxes: 1, 2, 4, 8, 16 days)
   const boxCounts = useMemo(() => {
-    const counts = [0, 0, 0];
+    const counts = LEITNER_INTERVALS.map(() => 0);
     leitnerState.cards.forEach(c => {
-      const idx = Math.min(Math.max(0, c.boxIndex), 2);
+      const idx = Math.min(Math.max(0, c.boxIndex), LEITNER_INTERVALS.length - 1);
       counts[idx] += 1;
     });
     return counts;
@@ -188,10 +189,10 @@ export const LeitnerScreen: React.FC<Props> = ({
               </div>
               <div>
                 <h1 className="text-sm font-black text-[var(--ink)] leading-none">
-                  {isRTL ? 'جعبه لایتنر ۳ خانه' : '3-Box Leitner Spaced Repetition'}
+                  {isRTL ? 'جعبه لایتنر ۵ خانه' : '5-Box Leitner Spaced Repetition'}
                 </h1>
                 <span className="text-[10px] font-bold text-[var(--mute)]">
-                  {isRTL ? 'مرور هوشمند و ملکه شدن در حافظه' : 'Smart spaced memory review (1, 3, 7 days)'}
+                  {isRTL ? 'مرور هوشمند و ملکه شدن در حافظه' : 'Smart spaced memory review (1, 2, 4, 8, 16 days)'}
                 </span>
               </div>
             </div>
@@ -224,11 +225,11 @@ export const LeitnerScreen: React.FC<Props> = ({
 
         {/* Missed Day Penalty Alert Banner */}
         {leitnerState.missedDayWarningShown && (
-          <div className="p-3 bg-rose-500/15 border-2 border-rose-500/40 rounded-2xl flex items-start gap-2.5 text-xs text-rose-600 animate-fade-in">
+          <div className="p-3 bg-rose-500/15 border border-rose-500/40 rounded-2xl flex items-start gap-2.5 text-xs text-rose-600 animate-fade-in">
             <AlertTriangle size={18} className="shrink-0 mt-0.5" />
             <div>
               <strong className="block font-black">
-                {isRTL ? '⚠️ متأسفانه یک روز غیبت داشتید!' : '⚠️ You missed a day!'}
+                {isRTL ? 'متأسفانه یک روز غیبت داشتید!' : 'You missed a day!'}
               </strong>
               <p className="mt-0.5 leading-relaxed text-[11px] text-rose-500/90">
                 {isRTL 
@@ -239,12 +240,12 @@ export const LeitnerScreen: React.FC<Props> = ({
           </div>
         )}
 
-        {/* 3-Boxes Visual Grid */}
+        {/* 5-Boxes Visual Grid */}
         <div className="bg-[var(--panel)] p-3 rounded-2xl border border-[var(--line)] shadow-xs space-y-2">
           <div className="flex items-center justify-between text-xs font-black">
             <span className="flex items-center gap-1 text-[var(--ink)]">
               <Layers size={14} className="text-[var(--lapis)]" />
-              <span>{isRTL ? 'وضعیت ۳ خانه لایتنر:' : 'Leitner 3-Box Compartments:'}</span>
+              <span>{isRTL ? 'وضعیت ۵ خانه لایتنر:' : 'Leitner 5-Box Compartments:'}</span>
             </span>
             <span className="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
               <Trophy size={13} />
@@ -252,10 +253,10 @@ export const LeitnerScreen: React.FC<Props> = ({
             </span>
           </div>
 
-          <div className="grid grid-cols-3 gap-2 text-center">
+          <div className="grid grid-cols-5 gap-1.5 text-center">
             {LEITNER_INTERVALS.map((interval, idx) => {
               const count = boxCounts[idx] || 0;
-              const isMasterBox = idx === 2;
+              const isMasterBox = idx === LEITNER_INTERVALS.length - 1;
               return (
                 <div 
                   key={`box-${idx}`}
@@ -363,7 +364,7 @@ export const LeitnerScreen: React.FC<Props> = ({
                       className="py-1.5 px-2.5 bg-[var(--bg)] hover:bg-[var(--line)] rounded-full text-[11px] font-bold text-[var(--mute)] hover:text-[var(--ink)] inline-flex items-center gap-1 transition-colors cursor-pointer"
                       title={isRTL ? 'پخش آهسته ۰.۷x برای تفکیک هجاها [کلید S]' : 'Slow audio 0.7x [Key S]'}
                     >
-                      <span>🐢</span>
+                      <Volume1 size={13} className="text-[var(--turq)]" />
                       <span>0.7x</span>
                     </button>
                   </>
@@ -416,14 +417,14 @@ export const LeitnerScreen: React.FC<Props> = ({
                   className="py-3 px-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl font-black text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md active:scale-95"
                 >
                   <Check size={16} />
-                  <span>{isRTL ? 'بلد بودم (صعود به خانه بعد) 🚀' : 'Mastered (Next Box) 🚀'}</span>
+                  <span>{isRTL ? 'بلد بودم (صعود به خانه بعد)' : 'Mastered (Next Box)'}</span>
                 </button>
               </div>
             )}
           </div>
         ) : (
           /* All Daily Cards Completed! */
-          <div className="bg-[var(--panel)] border-2 border-[var(--line)] rounded-[28px] p-6 text-center space-y-4 shadow-xl relative overflow-hidden">
+          <div className="bg-[var(--panel)] border border-[var(--line)] rounded-[28px] p-6 text-center space-y-4 shadow-xl relative overflow-hidden">
             <ConfettiCelebration duration={3500} />
             <div className="w-16 h-16 mx-auto rounded-3xl bg-emerald-500/15 text-emerald-600 flex items-center justify-center shadow-inner">
               <Trophy size={34} className="animate-bounce" />
@@ -431,7 +432,7 @@ export const LeitnerScreen: React.FC<Props> = ({
 
             <div>
               <h3 className="text-lg font-black text-[var(--ink)]">
-                {isRTL ? 'آفرین! کارت‌های امروز لایتنر کامل شد! 🎉' : 'All Due Cards Reviewed for Today! 🎉'}
+                {isRTL ? 'آفرین! کارت‌های امروز لایتنر کامل شد!' : 'All Due Cards Reviewed for Today!'}
               </h3>
               <p className="text-xs text-[var(--mute)] mt-1.5 leading-relaxed">
                 {isRTL 
@@ -479,7 +480,7 @@ export const LeitnerScreen: React.FC<Props> = ({
 
             <div>
               <h3 className="text-base font-black text-[var(--ink)]">
-                {isRTL ? 'یادآوری روزانه جعبه لایتنر 🔔' : 'Daily Leitner Reminder 🔔'}
+                {isRTL ? 'یادآوری روزانه جعبه لایتنر' : 'Daily Leitner Reminder'}
               </h3>
               <p className="text-xs text-[var(--mute)] mt-1.5 leading-relaxed">
                 {isRTL 

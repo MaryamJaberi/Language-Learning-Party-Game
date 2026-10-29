@@ -242,20 +242,14 @@ describe('Comprehensive Usability, Quality, and End-to-End Audit', () => {
       />
     );
 
-    // Verify player names and avatars
+    // Verify player names and number badges (no avatars or shock buttons)
     expect(screen.getByText('سارا')).toBeInTheDocument();
     expect(screen.getByText('علی')).toBeInTheDocument();
-    expect(screen.getByText('🕹️')).toBeInTheDocument();
-    expect(screen.getByText('👾')).toBeInTheDocument();
+    expect(screen.queryByTitle(/شوک سرعت حریف/i)).not.toBeInTheDocument();
 
-    // Verify Sabotage Shock triggers
-    const shockButtons = screen.getAllByTitle(/شوک سرعت حریف/i);
-    expect(shockButtons.length).toBeGreaterThan(0);
-    fireEvent.click(shockButtons[0]);
-
-    // Open Exit Modal in Duel
-    const duelExitBtn = screen.getByTitle(/خروج از بازی/i);
-    fireEvent.click(duelExitBtn);
+    // Open Stop Game Modal in Duel
+    const duelPauseBtn = screen.getByLabelText(/توقف بازی|Pause/i);
+    fireEvent.click(duelPauseBtn);
 
     // Verify ExitConfirmModal renders inside Duel
     expect(screen.getByText(/برگشت به صفحه اول/i)).toBeInTheDocument();
@@ -268,7 +262,7 @@ describe('Comprehensive Usability, Quality, and End-to-End Audit', () => {
   });
 
   /* -------------------------------------------------------------------------
-   * 5. E2E PARTY MATCH FLOW WITH PASS PHONE AND IN-GAME EXIT
+   * 5. E2E PARTY MATCH FLOW WITH PASS PHONE AND IN-GAME STOP MODAL
    * ------------------------------------------------------------------------- */
   test('5. Complete party game flow: Setup -> Seating -> Game -> Exit to Setup', () => {
     render(<App />);
@@ -288,12 +282,12 @@ describe('Comprehensive Usability, Quality, and End-to-End Audit', () => {
     const startRound1Btn = screen.getByRole('button', { name: /شروع دور ۱|آماده‌ایم، شروع بازی!/i });
     fireEvent.click(startRound1Btn);
 
-    // Step 5: Verify in Active Game
-    const exitGameBtn = screen.getByLabelText(/خروج از بازی|Exit Game/i);
-    expect(exitGameBtn).toBeInTheDocument();
-    fireEvent.click(exitGameBtn);
+    // Step 5: Verify in Active Game with unified Stop Game button
+    const pauseGameBtn = screen.getByLabelText(/توقف بازی|Pause/i);
+    expect(pauseGameBtn).toBeInTheDocument();
+    fireEvent.click(pauseGameBtn);
 
-    // Exit modal appears
+    // Stop Game modal appears
     expect(screen.getByText(/برگشت به صفحه تنظیمات/i)).toBeInTheDocument();
 
     // Click Return to Settings

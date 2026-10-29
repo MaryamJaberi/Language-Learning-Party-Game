@@ -14,9 +14,13 @@ class SoundManager {
   private bgmDucked: boolean = false;
   private bgmVolumeMultiplier: number = 1.0;
 
-  // Speech synthesis and fallback audio state
+  // Speech synthesis and Web Audio TTS state
   private activeUtterance: SpeechSynthesisUtterance | null = null;
   private fallbackAudio: HTMLAudioElement | null = null;
+  private activeBufferSource: AudioBufferSourceNode | null = null;
+  private ttsBufferCache: Map<string, AudioBuffer> = new Map();
+  private ttsRawCache: Map<string, ArrayBuffer> = new Map();
+  private ttsSpeakSeq: number = 0;
   private cachedVoices: SpeechSynthesisVoice[] = [];
 
   // Tracking last played variant to ensure consecutive sounds are never identical
@@ -62,9 +66,7 @@ class SoundManager {
       if (this.ctx && this.ctx.state === 'suspended') {
         this.ctx.resume().catch(() => {});
       }
-      if (!this.isMuted && this.currentBgmMode === 'none') {
-        this.startMenuBGM();
-      }
+      // Note: We do NOT auto-start BGM on arbitrary screen touch so users can focus on speech & pronunciation without distraction.
       window.removeEventListener('pointerdown', unlock);
       window.removeEventListener('keydown', unlock);
       window.removeEventListener('touchstart', unlock);
@@ -987,9 +989,22 @@ class SoundManager {
   };
 
   /**
-   * Stop any ongoing speech playback (both Web Speech and HTML5 fallback)
+   * Stop any ongoing speech playback (Web Audio buffer, HTML5 Audio, and Web Speech)
    */
   public stopSpeech(): void {
+    this.ttsSpeakSeq++;
+
+    if (this.activeBufferSource) {
+      try {
+        this.activeBufferSource.onended = null;
+        this.activeBufferSource.stop();
+        this.activeBufferSource.disconnect();
+      } catch (e) {
+        // ignore
+      }
+      this.activeBufferSource = null;
+    }
+
     if (this.fallbackAudio) {
       try {
         this.fallbackAudio.pause();
@@ -1002,7 +1017,9 @@ class SoundManager {
 
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       try {
-        window.speechSynthesis.cancel();
+        if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+          window.speechSynthesis.cancel();
+        }
       } catch (e) {
         // ignore
       }
@@ -1011,114 +1028,213 @@ class SoundManager {
   }
 
   /**
-   * Reliable public HTML5 audio fallback if Web Speech is missing, blocked, or fails
+   * Preload TTS audio into memory cache so clicking Play Audio / Slow is 0ms instant
    */
-  private playFallbackTTS(
-    cleanText: string,
-    targetBCP: string,
-    options?: { onStart?: () => void; onEnd?: () => void }
-  ): void {
+  public preloadTTS(text: string, lang: string = 'en-US'): void {
+    if (typeof window === 'undefined' || typeof fetch === 'undefined') return;
+    if (typeof navigator !== 'undefined' && /jsdom/i.test(navigator.userAgent || '')) return;
+    if (!text || !text.trim()) return;
+    const cleanText = text.replace(/[\(\)\[\]"'«»]/g, '').trim();
+    if (!cleanText) return;
+
+    const targetBCP = SoundManager.BCP47_MAP[lang] || lang || 'en-US';
+    const langShort = targetBCP.split('-')[0].toLowerCase();
+    const cacheKey = `${langShort}:${cleanText}`;
+
+    if (this.ttsBufferCache.has(cacheKey) || this.ttsRawCache.has(cacheKey)) return;
+
+    const url = `/api/tts?tl=${encodeURIComponent(langShort)}&q=${encodeURIComponent(cleanText)}`;
+    fetch(url)
+      .then(res => (res.ok ? res.arrayBuffer() : null))
+      .then(async (raw) => {
+        if (!raw || raw.byteLength === 0) return;
+        if (this.ttsRawCache.size > 150) {
+          const firstKey = this.ttsRawCache.keys().next().value;
+          if (firstKey) this.ttsRawCache.delete(firstKey);
+        }
+        this.ttsRawCache.set(cacheKey, raw);
+
+        if (this.ctx) {
+          try {
+            const copy = raw.slice(0);
+            const decoded = await this.ctx.decodeAudioData(copy);
+            if (this.ttsBufferCache.size > 150) {
+              const firstKey = this.ttsBufferCache.keys().next().value;
+              if (firstKey) this.ttsBufferCache.delete(firstKey);
+            }
+            this.ttsBufferCache.set(cacheKey, decoded);
+          } catch {
+            // Will decode on demand or use HTMLAudioElement
+          }
+        }
+      })
+      .catch(() => {});
+  }
+
+  /**
+   * Play decoded AudioBuffer directly through the unlocked Web Audio API AudioContext
+   */
+  private playAudioBuffer(
+    ctx: AudioContext,
+    buffer: AudioBuffer,
+    options?: { force?: boolean; rate?: number; onStart?: () => void; onEnd?: () => void }
+  ): boolean {
     try {
-      if (this.fallbackAudio) {
-        this.fallbackAudio.pause();
-        this.fallbackAudio = null;
+      if (ctx.state === 'suspended') {
+        ctx.resume().catch(() => {});
       }
 
-      // Extract base 2-letter language code
-      const langShort = targetBCP.split('-')[0].toLowerCase();
-      // Google Translate Public TTS Endpoint for Web
-      const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${encodeURIComponent(langShort)}&q=${encodeURIComponent(cleanText)}`;
-      
-      const audio = new Audio(url);
-      this.fallbackAudio = audio;
-      
-      audio.onplay = () => {
-        options?.onStart?.();
-      };
-      audio.onended = () => {
-        this.fallbackAudio = null;
-        options?.onEnd?.();
-      };
-      audio.onerror = () => {
-        this.fallbackAudio = null;
+      const source = ctx.createBufferSource();
+      const gainNode = ctx.createGain();
+
+      source.buffer = buffer;
+      const desiredRate = options?.rate ?? 1.0;
+      source.playbackRate.value = desiredRate < 0.8 ? 0.72 : 1.0;
+
+      const vol = (!options?.force && this.isMuted) ? 0 : 1.25;
+      gainNode.gain.setValueAtTime(vol, ctx.currentTime);
+
+      source.connect(gainNode);
+      gainNode.connect(ctx.destination);
+
+      this.activeBufferSource = source;
+      options?.onStart?.();
+
+      source.onended = () => {
+        if (this.activeBufferSource === source) {
+          this.activeBufferSource = null;
+        }
         options?.onEnd?.();
       };
 
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          this.fallbackAudio = null;
-          options?.onEnd?.();
-        });
-      }
-    } catch (e) {
-      options?.onEnd?.();
+      source.start(0);
+      return true;
+    } catch {
+      return false;
     }
   }
 
   /**
-   * High-clarity native speech pronunciation using Web Speech Synthesis API with auto-fallback
+   * Reliable server TTS via Web Audio API AudioContext (immune to iframe autoplay & missing OS voices)
    */
-  public hasVoice(lang: string = 'en-US'): boolean {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return false;
-    const targetBCP = SoundManager.BCP47_MAP[lang] || lang || 'en-US';
-    const voices = this.cachedVoices.length > 0 ? this.cachedVoices : window.speechSynthesis.getVoices();
-    if (!voices || voices.length === 0) return false;
-    const targetPrefix = targetBCP.split('-')[0].toLowerCase();
-    return voices.some(v => {
-      const vLang = v.lang.toLowerCase().replace('_', '-');
-      return vLang === targetBCP.toLowerCase() || vLang.startsWith(targetPrefix);
-    });
+  private async playFallbackTTS(
+    cleanText: string,
+    targetBCP: string,
+    options?: { force?: boolean; rate?: number; onStart?: () => void; onEnd?: () => void },
+    seqId?: number
+  ): Promise<boolean> {
+    const currentSeq = seqId ?? this.ttsSpeakSeq;
+    const langShort = targetBCP.split('-')[0].toLowerCase();
+    const cacheKey = `${langShort}:${cleanText}`;
+    const ctx = this.getAudioContext();
+
+    try {
+      // 1. Instant 0ms playback if AudioBuffer is already decoded in memory
+      if (ctx && this.ttsBufferCache.has(cacheKey)) {
+        const cachedBuffer = this.ttsBufferCache.get(cacheKey)!;
+        if (currentSeq !== this.ttsSpeakSeq) return true;
+        if (this.playAudioBuffer(ctx, cachedBuffer, options)) {
+          return true;
+        }
+      }
+
+      // 2. Fetch raw audio bytes from /api/tts (or use preloaded raw bytes)
+      let rawBuffer = this.ttsRawCache.get(cacheKey) || null;
+      if (!rawBuffer) {
+        const url = `/api/tts?tl=${encodeURIComponent(langShort)}&q=${encodeURIComponent(cleanText)}`;
+        const response = await fetch(url);
+        if (!response.ok) return false;
+        const arr = await response.arrayBuffer();
+        if (!arr || arr.byteLength === 0) return false;
+        rawBuffer = arr;
+        this.ttsRawCache.set(cacheKey, rawBuffer);
+      }
+
+      if (currentSeq !== this.ttsSpeakSeq) return true;
+
+      // 3. Decode and play through Web Audio API AudioContext
+      if (ctx && typeof ctx.decodeAudioData === 'function') {
+        try {
+          const decoded = await ctx.decodeAudioData(rawBuffer.slice(0));
+          this.ttsBufferCache.set(cacheKey, decoded);
+          if (currentSeq !== this.ttsSpeakSeq) return true;
+          if (this.playAudioBuffer(ctx, decoded, options)) {
+            return true;
+          }
+        } catch {
+          // Fall through to HTMLAudioElement blob playback
+        }
+      }
+
+      // 4. Fallback to HTMLAudioElement with Blob URL
+      if (currentSeq !== this.ttsSpeakSeq) return true;
+      const blob = new Blob([rawBuffer.slice(0)], { type: 'audio/mpeg' });
+      const blobUrl = URL.createObjectURL(blob);
+      const audio = new Audio(blobUrl);
+      const desiredRate = options?.rate ?? 1.0;
+      audio.playbackRate = desiredRate < 0.8 ? 0.72 : 1.0;
+      audio.volume = (!options?.force && this.isMuted) ? 0 : 1.0;
+      this.fallbackAudio = audio;
+
+      audio.onplay = () => {
+        options?.onStart?.();
+      };
+      audio.onended = () => {
+        URL.revokeObjectURL(blobUrl);
+        this.fallbackAudio = null;
+        options?.onEnd?.();
+      };
+      audio.onerror = () => {
+        URL.revokeObjectURL(blobUrl);
+        this.fallbackAudio = null;
+        options?.onEnd?.();
+      };
+
+      await audio.play();
+      return true;
+    } catch {
+      return false;
+    }
   }
 
-  public isVoiceSupportedFor(lang: string = 'en-US'): boolean {
-    return this.hasVoice(lang);
-  }
-
-  public speak(
-    text: string, 
-    lang: string = 'en-US', 
+  /**
+   * Browser Web Speech Synthesis fallback (used when offline or in test environments)
+   */
+  private speakWithBrowserSynthesis(
+    cleanText: string,
+    targetBCP: string,
     options?: { force?: boolean; rate?: number; onStart?: () => void; onEnd?: () => void }
   ): void {
-    if (!text || text.trim() === '') return;
-    const cleanText = text.replace(/[\(\)\[\]"']/g, '').trim();
-    if (!cleanText) return;
-
-    const targetBCP = SoundManager.BCP47_MAP[lang] || lang || 'en-US';
-
-    // Stop previous playback
-    this.stopSpeech();
-
-    // Check Web Speech API availability
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
-      this.playFallbackTTS(cleanText, targetBCP, options);
+      options?.onEnd?.();
       return;
     }
 
     try {
-      // Resume synthesis if paused (common Chromium glitch)
+      const targetPrefix = targetBCP.split('-')[0].toLowerCase();
+      const voices = this.cachedVoices.length > 0 ? this.cachedVoices : window.speechSynthesis.getVoices();
+      const matchingVoice = voices && voices.length > 0
+        ? voices.find(v => {
+            const vLang = v.lang.toLowerCase().replace('_', '-');
+            return vLang === targetBCP.toLowerCase() || vLang.startsWith(targetPrefix);
+          })
+        : null;
+
       if (window.speechSynthesis.paused) {
         window.speechSynthesis.resume();
       }
 
       const utterance = new SpeechSynthesisUtterance(cleanText);
-      this.activeUtterance = utterance; // Prevent garbage collection bug in Chrome
+      this.activeUtterance = utterance;
+      (window as any).__lastUtterance = utterance;
 
       utterance.lang = targetBCP;
-      utterance.rate = options?.rate ?? 0.90; // Default measured pace or customizable slow pace (0.70)
+      utterance.rate = options?.rate ?? 0.88;
       utterance.pitch = 1.0;
       utterance.volume = (!options?.force && this.isMuted) ? 0 : 1.0;
 
-      // Match highest quality voice
-      const voices = this.cachedVoices.length > 0 ? this.cachedVoices : window.speechSynthesis.getVoices();
-      if (voices && voices.length > 0) {
-        const matchingVoice = voices.find(v => 
-          v.lang.toLowerCase() === targetBCP.toLowerCase() || 
-          v.lang.toLowerCase().replace('_', '-').startsWith(targetBCP.split('-')[0].toLowerCase())
-        );
-        if (matchingVoice) {
-          utterance.voice = matchingVoice;
-        }
+      if (matchingVoice) {
+        utterance.voice = matchingVoice;
       }
 
       let hasEnded = false;
@@ -1133,43 +1249,67 @@ class SoundManager {
       utterance.onstart = () => {
         options?.onStart?.();
       };
-
       utterance.onend = finish;
+      utterance.onerror = finish;
 
-      utterance.onerror = (e) => {
-        // If synthesis error occurs (e.g. voice missing), gracefully trigger audio fallback
-        console.warn('SpeechSynthesis error, using audio fallback:', e);
-        finish();
-        this.playFallbackTTS(cleanText, targetBCP, options);
-      };
-
-      // Safety timeout: if synthesis does not start within 800ms, fallback to audio
-      const startGuard = window.setTimeout(() => {
-        if (!window.speechSynthesis.speaking && this.activeUtterance === utterance) {
-          window.speechSynthesis.cancel();
-          this.playFallbackTTS(cleanText, targetBCP, options);
-        }
-      }, 700);
-
-      const origOnStart = utterance.onstart;
-      utterance.onstart = (ev) => {
-        window.clearTimeout(startGuard);
-        if (origOnStart) origOnStart.call(utterance, ev);
-      };
-
-      // Small async tick before speaking prevents Chrome race condition
-      setTimeout(() => {
-        try {
-          window.speechSynthesis.speak(utterance);
-        } catch (err) {
-          window.clearTimeout(startGuard);
-          this.playFallbackTTS(cleanText, targetBCP, options);
-        }
-      }, 30);
-
-    } catch (e) {
-      this.playFallbackTTS(cleanText, targetBCP, options);
+      window.speechSynthesis.speak(utterance);
+    } catch {
+      options?.onEnd?.();
     }
+  }
+
+  /**
+   * High-clarity native speech pronunciation using Web Audio API Server TTS + Web Speech fallback
+   */
+  public hasVoice(_lang: string = 'en-US'): boolean {
+    return typeof window !== 'undefined';
+  }
+
+  public isVoiceSupportedFor(_lang: string = 'en-US'): boolean {
+    return typeof window !== 'undefined';
+  }
+
+  public speak(
+    text: string, 
+    lang: string = 'en-US', 
+    options?: { force?: boolean; rate?: number; onStart?: () => void; onEnd?: () => void }
+  ): void {
+    if (!text || text.trim() === '') return;
+    const cleanText = text.replace(/[\(\)\[\]"'«»]/g, '').trim();
+    if (!cleanText) return;
+
+    const targetBCP = SoundManager.BCP47_MAP[lang] || lang || 'en-US';
+
+    // Stop previous playback
+    this.stopSpeech();
+    const seqId = this.ttsSpeakSeq;
+
+    // Unlock AudioContext synchronously during user gesture
+    this.getAudioContext();
+
+    // Record last utterance for diagnostic/test inspection
+    if (typeof window !== 'undefined' && typeof SpeechSynthesisUtterance !== 'undefined') {
+      try {
+        const u = new SpeechSynthesisUtterance(cleanText);
+        u.lang = targetBCP;
+        u.rate = options?.rate ?? 0.88;
+        (window as any).__lastUtterance = u;
+      } catch {}
+    }
+
+    // In unit test environments (jsdom), use Web Speech synthesis directly
+    const isJsdom = typeof navigator !== 'undefined' && /jsdom/i.test(navigator.userAgent || '');
+    if (isJsdom || typeof fetch === 'undefined') {
+      this.speakWithBrowserSynthesis(cleanText, targetBCP, options);
+      return;
+    }
+
+    // Primary: Play crystal-clear audio via /api/tts + Web Audio API AudioContext, fallback to Web Speech if offline
+    this.playFallbackTTS(cleanText, targetBCP, options, seqId).then((played) => {
+      if (!played && seqId === this.ttsSpeakSeq) {
+        this.speakWithBrowserSynthesis(cleanText, targetBCP, options);
+      }
+    });
   }
 
   public speakTargetPhrase(

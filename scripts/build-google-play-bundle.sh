@@ -55,8 +55,8 @@ android {
         applicationId "com.solonovate.dour"
         minSdk 24
         targetSdk 36
-        versionCode 10012
-        versionName "1.1.2"
+        versionCode 10013
+        versionName "1.1.3"
     }
 
     signingConfigs {

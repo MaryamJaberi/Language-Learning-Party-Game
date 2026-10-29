@@ -11,10 +11,11 @@ import { LanguageCard, SinglePlayerSettings, SinglePlayerSessionReport, GameSett
 describe('User Feedback: 3 Buttons Side-by-Side, Localized Results, and Online Matchmaking in Duel', () => {
   beforeEach(() => {
     localStorage.clear();
+    localStorage.setItem('dor_practice_tour_seen', 'true');
     vi.clearAllMocks();
   });
 
-  test('1. Three buttons (نوشتن، رد کردن، لمس برای صحبت) are present side by side in SinglePlayerScreen', () => {
+  test('1. Three buttons (بررسی پاسخ، رد کردن، صحبت) are present side by side in SinglePlayerScreen and hide after correct answer, with unified توقف بازی modal', () => {
     const mockCards: LanguageCard[] = [
       {
         id: 'card-1',
@@ -43,6 +44,7 @@ describe('User Feedback: 3 Buttons Side-by-Side, Localized Results, and Online M
       selectedCategories: ['CAT_TRAVEL']
     };
 
+    const onOpenHelp = vi.fn();
     render(
       <SinglePlayerScreen
         initialCards={mockCards}
@@ -50,28 +52,45 @@ describe('User Feedback: 3 Buttons Side-by-Side, Localized Results, and Online M
         uiLanguage="fa"
         onFinish={vi.fn()}
         onExit={vi.fn()}
+        onOpenHelp={onOpenHelp}
       />
     );
 
-    // Verify button 1: نوشتن (Type mode)
-    const writeBtn = screen.getByRole('button', { name: /نوشتن/i });
-    expect(writeBtn).toBeInTheDocument();
+    // Verify unified Stop Game button in header
+    const stopBtn = screen.getByRole('button', { name: /توقف بازی|Stop Game/i });
+    expect(stopBtn).toBeInTheDocument();
+
+    // Verify button 1: بررسی پاسخ (Check Answer)
+    const checkBtn = screen.getByRole('button', { name: /بررسی پاسخ|Check/i });
+    expect(checkBtn).toBeInTheDocument();
 
     // Verify button 2: رد کردن (Skip card)
-    const skipBtn = screen.getByRole('button', { name: /رد کردن/i });
+    const skipBtn = screen.getByRole('button', { name: /رد کردن|Skip/i });
     expect(skipBtn).toBeInTheDocument();
 
-    // Verify button 3: لمس برای صحبت (Touch to Speak)
-    const speakBtn = screen.getByRole('button', { name: /لمس برای صحبت/i });
+    // Verify button 3: صحبت (Speak / Voice to Text)
+    const speakBtn = screen.getByRole('button', { name: /تبدیل صوت به متن|پاسخ صوتی|صحبت|لمس برای صحبت|Speak|Voice to Text/i });
     expect(speakBtn).toBeInTheDocument();
 
+    // Ensure duplicate submit buttons (ثبت ضبط / ثبت گفتار) do NOT exist
+    expect(screen.queryByText(/ثبت ضبط/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/ثبت گفتار/i)).not.toBeInTheDocument();
+
     // Verify they are within a 3-column grid container
-    const parentGrid = writeBtn.parentElement;
+    const parentGrid = checkBtn.parentElement;
     expect(parentGrid).toBeInTheDocument();
     expect(parentGrid?.className).toContain('grid-cols-3');
-    expect(parentGrid?.contains(writeBtn)).toBe(true);
+    expect(parentGrid?.contains(checkBtn)).toBe(true);
     expect(parentGrid?.contains(skipBtn)).toBe(true);
     expect(parentGrid?.contains(speakBtn)).toBe(true);
+
+    // Submit correct answer and verify bottom input + 3 buttons disappear
+    const textInput = screen.getByPlaceholderText(/جمله را اینجا تایپ کنید/i);
+    fireEvent.change(textInput, { target: { value: 'de fiets' } });
+    fireEvent.click(checkBtn);
+
+    expect(screen.queryByPlaceholderText(/جمله را اینجا تایپ کنید/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /بررسی پاسخ|Check/i })).not.toBeInTheDocument();
   });
 
   test('2. SinglePlayerReportScreen renders completely in Persian when UI language is fa', () => {
@@ -259,6 +278,64 @@ describe('User Feedback: 3 Buttons Side-by-Side, Localized Results, and Online M
     );
 
     expect(screen.getByTestId('team-progress-BLUE').className).toContain('animate-team-score');
+  });
+
+  test('6. SetupScreen does not mix Persian into English/German UI (shows EN for en-US and localized CEFR levels)', async () => {
+    const SetupScreen = (await import('../screens/SetupScreen')).default;
+
+    const enSettings: GameSettings = {
+      playerCount: 4,
+      roundsCount: 3,
+      roundDuration: 60,
+      difficulty: 'easy',
+      cefrLevel: 'C1',
+      nativeLanguage: 'en-US',
+      targetLanguages: ['de'],
+      cardGameMode: 'mixed',
+      autoPronounceOnCorrect: true,
+      selectedCategories: ['CAT_EVERYDAY'],
+      playerNames: ['P1', 'P2', 'P3', 'P4'],
+      language: 'en-US',
+      passPhoneScreenEnabled: false,
+      soundEnabled: true,
+      powerCardsEnabled: true
+    };
+
+    const { unmount } = render(
+      <SetupScreen
+        settings={enSettings}
+        onSave={vi.fn()}
+        onNext={vi.fn()}
+        onBack={vi.fn()}
+      />
+    );
+
+    // Must show Advanced (English), NOT پیشرفته (Persian)
+    expect(screen.getAllByText('Advanced').length).toBeGreaterThan(0);
+    expect(screen.queryByText('پیشرفته')).not.toBeInTheDocument();
+    expect(screen.queryByText('مبتدی')).not.toBeInTheDocument();
+
+    unmount();
+
+    // Also verify German UI
+    const deSettings: GameSettings = {
+      ...enSettings,
+      language: 'de',
+      nativeLanguage: 'de',
+      targetLanguages: ['en']
+    };
+
+    render(
+      <SetupScreen
+        settings={deSettings}
+        onSave={vi.fn()}
+        onNext={vi.fn()}
+        onBack={vi.fn()}
+      />
+    );
+
+    expect(screen.getAllByText('Fortgeschritten').length).toBeGreaterThan(0);
+    expect(screen.queryByText('پیشرفته')).not.toBeInTheDocument();
   });
 });
 
