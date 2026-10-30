@@ -1,0 +1,3602 @@
+[
+  {
+    "createdTime": "2026-10-26T18:13:01.668Z",
+    "id": "1Kp7En-FN4rNzRd9fWXyx5WCYcxfNEAF8",
+    "mimeType": "application/zip",
+    "modifiedTime": "2026-10-26T18:13:01.668Z",
+    "name": "lang_level_files.zip",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "4756503",
+    "webViewLink": "https://drive.google.com/file/d/1Kp7En-FN4rNzRd9fWXyx5WCYcxfNEAF8/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-10-26T18:11:20.586Z",
+    "id": "1iEoE7MDn-uxyVrC0uM4sgmA9S6_Q1E8t",
+    "mimeType": "text/csv",
+    "modifiedTime": "2026-10-26T18:11:20.586Z",
+    "name": "vocab_A0plus.csv",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "3374",
+    "webViewLink": "https://drive.google.com/file/d/1iEoE7MDn-uxyVrC0uM4sgmA9S6_Q1E8t/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-10-26T18:11:19.986Z",
+    "id": "1Yb3bPPSrvYF7p51t4G7MFwOSbCCvDVtc",
+    "mimeType": "text/csv",
+    "modifiedTime": "2026-10-26T18:11:19.986Z",
+    "name": "vocab_A0.csv",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "1746",
+    "webViewLink": "https://drive.google.com/file/d/1Yb3bPPSrvYF7p51t4G7MFwOSbCCvDVtc/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-10-26T18:10:04.279Z",
+    "id": "1JTeyRwrnn5XJCZcIzAj8DtvWwCr_MP99",
+    "mimeType": "text/csv",
+    "modifiedTime": "2026-10-26T18:10:04.279Z",
+    "name": "vocab_A0plus.csv",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "91",
+    "webViewLink": "https://drive.google.com/file/d/1JTeyRwrnn5XJCZcIzAj8DtvWwCr_MP99/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-10-26T18:10:04.242Z",
+    "id": "1gZrDZiMf1N1plyBVYUJD-SM0uv-WPNUD",
+    "mimeType": "text/csv",
+    "modifiedTime": "2026-10-26T18:10:04.242Z",
+    "name": "vocab_A0.csv",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "91",
+    "webViewLink": "https://drive.google.com/file/d/1gZrDZiMf1N1plyBVYUJD-SM0uv-WPNUD/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-10-26T18:09:33.387Z",
+    "id": "1J8A5e6b8C4GBDnxtkEcd6uXREvq4y73P",
+    "mimeType": "text/csv",
+    "modifiedTime": "2026-10-26T18:09:33.387Z",
+    "name": "vocab_A1.csv",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "132124",
+    "webViewLink": "https://drive.google.com/file/d/1J8A5e6b8C4GBDnxtkEcd6uXREvq4y73P/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-10-26T17:47:28.127Z",
+    "id": "1PRY5Ic1GlyaYgvY5EinRqyBWOpi0ACpe",
+    "mimeType": "text/csv",
+    "modifiedTime": "2026-10-26T17:47:28.127Z",
+    "name": "Dour_DB_Optimized.csv",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "11598071",
+    "webViewLink": "https://drive.google.com/file/d/1PRY5Ic1GlyaYgvY5EinRqyBWOpi0ACpe/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-10-26T17:45:55.752Z",
+    "id": "1XARlHIHVYnfXCHstbj2okHZT3MZJltad",
+    "mimeType": "text/csv",
+    "modifiedTime": "2026-10-26T17:45:55.752Z",
+    "name": "Dour_DB_UltraLight.csv",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "3315506",
+    "webViewLink": "https://drive.google.com/file/d/1XARlHIHVYnfXCHstbj2okHZT3MZJltad/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-10-26T16:50:18.184Z",
+    "id": "1wpK1k5g0Ypaj3QfKcs9beLjb2wpPDKh1",
+    "mimeType": "text/csv",
+    "modifiedTime": "2026-10-26T16:51:35.838Z",
+    "name": "Dour_Language_DB_Light.csv",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "writer",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "7890572",
+    "webViewLink": "https://drive.google.com/file/d/1wpK1k5g0Ypaj3QfKcs9beLjb2wpPDKh1/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-10-26T16:50:18.179Z",
+    "id": "1Uwzk-WblwZri0zhuZcTjCTsgxRqdMNBn",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-26T16:50:18.179Z",
+    "name": "Dour_Language_DB_Light.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "2388813",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1Uwzk-WblwZri0zhuZcTjCTsgxRqdMNBn/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-20T14:20:17.161Z",
+    "id": "1f-W8RL52QCL0m4kl7JKFapq5R9FLfVPM",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-20T14:20:17.161Z",
+    "name": "Master_Learning_Items_COMPLETE_FINAL.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "3247973",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1f-W8RL52QCL0m4kl7JKFapq5R9FLfVPM/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-20T14:16:49.277Z",
+    "id": "1HP3rVnw5fpcvXtpISq3Pf8dxWHZRrLYF",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-20T14:16:49.277Z",
+    "name": "Master_Learning_Items_COMPLETE_v4.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "3232639",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1HP3rVnw5fpcvXtpISq3Pf8dxWHZRrLYF/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-20T13:44:04.976Z",
+    "id": "1GH2HL8P_bUp_WM5cFnTSH94PpEu9c5bo",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-20T13:44:04.976Z",
+    "name": "Master_Learning_Items_COMPLETE_v3.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "3230315",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1GH2HL8P_bUp_WM5cFnTSH94PpEu9c5bo/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-20T13:37:31.656Z",
+    "id": "1Vi126R62uZkCBgNB0_bDz14ysIcNGJV1",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-20T13:37:31.656Z",
+    "name": "Master_Learning_Items_COMPLETE_v2.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "3220716",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1Vi126R62uZkCBgNB0_bDz14ysIcNGJV1/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-20T13:31:26.349Z",
+    "id": "1K8XsyzU_D_9Ex2U8XiDRR0UddQFyISgE",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-20T13:31:26.349Z",
+    "name": "Master_Learning_Items_COMPLETE.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "1612427",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1K8XsyzU_D_9Ex2U8XiDRR0UddQFyISgE/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-20T13:29:30.755Z",
+    "id": "1Vi2jxE86EYry5d3bPIeKC0C1OCk2Ca4y",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-20T13:29:30.755Z",
+    "name": "Master_Learning_Items_v3.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "160805",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1Vi2jxE86EYry5d3bPIeKC0C1OCk2Ca4y/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-20T13:27:21.968Z",
+    "id": "1IC7ZxaJnTKcUAFH-WauR7hd64UclmDOW",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-20T13:27:21.968Z",
+    "name": "Master_Learning_Items_v2.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "160421",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1IC7ZxaJnTKcUAFH-WauR7hd64UclmDOW/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-20T13:25:41.079Z",
+    "id": "1Y-dU8fED-jhsHNvXwyq1UF8RV_YjvSwz",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-20T13:25:41.079Z",
+    "name": "Master_Learning_Items_v1.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "11728",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1Y-dU8fED-jhsHNvXwyq1UF8RV_YjvSwz/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-20T13:20:48.829Z",
+    "id": "1A1lgqs55iWixSqKDSSh8pBCbOGGZHbrx",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-20T13:20:48.829Z",
+    "name": "Collocations_Extracted.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "9306",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1A1lgqs55iWixSqKDSSh8pBCbOGGZHbrx/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-20T13:14:37.720Z",
+    "id": "1BBUaP4IHOco6FpI_Z6NO1Xgsz1sCWgA-",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-20T13:14:37.720Z",
+    "name": "C2+_Multilingual_Phrases.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "66051",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1BBUaP4IHOco6FpI_Z6NO1Xgsz1sCWgA-/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-20T13:14:37.156Z",
+    "id": "11gChL1NGX9QlJifuy0cG1tYQsApmNHgB",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-20T13:14:37.156Z",
+    "name": "C1+_Multilingual_Phrases.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "685673",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/11gChL1NGX9QlJifuy0cG1tYQsApmNHgB/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-20T13:14:33.311Z",
+    "id": "1eVTaMFxiAHfw7X6P3xVhfxIMdJTSwoDz",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-20T13:14:33.311Z",
+    "name": "B2+_Multilingual_Phrases.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "132679",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1eVTaMFxiAHfw7X6P3xVhfxIMdJTSwoDz/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-20T13:14:32.426Z",
+    "id": "13XMZNk5i1jMU5WP89-KOHs2DIWmMP0m-",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-20T13:14:32.426Z",
+    "name": "B1+_Multilingual_Phrases.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "32729",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/13XMZNk5i1jMU5WP89-KOHs2DIWmMP0m-/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-20T13:14:31.617Z",
+    "id": "11Dnsz4qCx_-Tv1hgTWz0ucdqSaMhbcof",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-20T13:14:31.617Z",
+    "name": "A2+_Multilingual_Phrases.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "43247",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/11Dnsz4qCx_-Tv1hgTWz0ucdqSaMhbcof/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-20T13:14:31.034Z",
+    "id": "1ffac1UsEi9GsAgZNHPuk4kNG2Vri4Ffo",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-20T13:14:31.034Z",
+    "name": "A1+_Multilingual_Phrases.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "16779",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1ffac1UsEi9GsAgZNHPuk4kNG2Vri4Ffo/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-20T13:10:09.301Z",
+    "id": "1ObdeDRki3QsyFL-z_7kLPLFUuH_5fI67",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-20T13:10:09.301Z",
+    "name": "A1_Multilingual_Phrases_FINAL.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "109073",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1ObdeDRki3QsyFL-z_7kLPLFUuH_5fI67/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-20T12:13:49.810Z",
+    "id": "11tHAsPs4vYkTF6HfFGTmRfGbDuMzGKaH",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-20T12:13:49.810Z",
+    "name": "A2_Multilingual_Phrases_FINAL.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "301306",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/11tHAsPs4vYkTF6HfFGTmRfGbDuMzGKaH/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-20T12:10:09.232Z",
+    "id": "1d0GZO9NsZPlIAqNyP9ExwViws7baxCiI",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-20T12:10:09.232Z",
+    "name": "B1_Multilingual_Phrases_FINAL.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "342526",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1d0GZO9NsZPlIAqNyP9ExwViws7baxCiI/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-18T15:48:24.767Z",
+    "id": "1NwTejSy-wSF0twXtD-D-jpDul1WRA4dz",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-18T15:48:24.767Z",
+    "name": "B2_Multilingual_Phrases_FINAL.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "658918",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1NwTejSy-wSF0twXtD-D-jpDul1WRA4dz/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-17T10:56:51.179Z",
+    "id": "1qmXnOLG-pWZ85Wq9-gBbAgqczk8243j1",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-17T10:56:51.179Z",
+    "name": "C1_Multilingual_Phrases_FINAL.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "1807371",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1qmXnOLG-pWZ85Wq9-gBbAgqczk8243j1/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-17T10:51:57.948Z",
+    "id": "14cJxGx9KwMUmxFlUAQWMkylonStiXJa8",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-17T10:51:57.948Z",
+    "name": "C2_Multilingual_Phrases_FINAL.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "151941",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/14cJxGx9KwMUmxFlUAQWMkylonStiXJa8/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-17T10:51:57.205Z",
+    "id": "1DJ_6llnX1_kzcjSzn7uGWTVSHP4qUGc7",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-17T10:51:57.205Z",
+    "name": "C2_Multilingual_Phrases_FINAL.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "151941",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1DJ_6llnX1_kzcjSzn7uGWTVSHP4qUGc7/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-17T10:50:56.416Z",
+    "id": "1c6aEzl98ojvFt9g6ter0F8ADlzQlKCOK",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-17T10:50:56.416Z",
+    "name": "C2_Multilingual_Phrases_FINAL.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "151941",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1c6aEzl98ojvFt9g6ter0F8ADlzQlKCOK/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-16T07:14:14.864Z",
+    "id": "1Zo3NCexfxh7L4OCEBqqxq_mblu0fp5zT",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-16T07:14:14.864Z",
+    "name": "C2_Multilingual_Phrases.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "199847",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1Zo3NCexfxh7L4OCEBqqxq_mblu0fp5zT/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-15T07:16:09.130Z",
+    "id": "1HvwryQM37LokYqJrmpkzcYt2hBk7W-H4",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-15T07:16:09.130Z",
+    "name": "C2_Multilingual_Phrases.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "185279",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1HvwryQM37LokYqJrmpkzcYt2hBk7W-H4/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-14T07:13:47.274Z",
+    "id": "1PRm5fMhYPBNtsiw4K9eXclMJjatjKiCl",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-14T07:13:47.274Z",
+    "name": "C2_Multilingual_Phrases.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "145672",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1PRm5fMhYPBNtsiw4K9eXclMJjatjKiCl/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-13T07:15:32.058Z",
+    "id": "1pfUQaGfAYdW4LnEdd6qhhEl2E2zSGfhy",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-13T07:15:32.058Z",
+    "name": "C2_Multilingual_Phrases.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "116072",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1pfUQaGfAYdW4LnEdd6qhhEl2E2zSGfhy/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-12T07:16:14.919Z",
+    "id": "1bLUeiTkysvwG9U6xWFAMxmtFiVcNCu7U",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-12T07:16:14.919Z",
+    "name": "C2_Multilingual_Phrases.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "89980",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1bLUeiTkysvwG9U6xWFAMxmtFiVcNCu7U/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-11T07:15:44.817Z",
+    "id": "1sVBF5V6f_gRHh-ztrRih8x_MGxBW5C_Y",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-11T07:15:44.817Z",
+    "name": "C2_Multilingual_Phrases.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "66312",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1sVBF5V6f_gRHh-ztrRih8x_MGxBW5C_Y/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-10T07:13:45.483Z",
+    "id": "19N_J3Ha4-r7NqOU4JmNBTr_6ZENHUOSj",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-10T07:13:45.483Z",
+    "name": "C2_Multilingual_Phrases.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "38906",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/19N_J3Ha4-r7NqOU4JmNBTr_6ZENHUOSj/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-09T07:15:24.035Z",
+    "id": "1djjr_bpFZl0GH1comIegDOicDILzjqnU",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-09T07:15:24.035Z",
+    "name": "C2_Multilingual_Phrases.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "32120",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1djjr_bpFZl0GH1comIegDOicDILzjqnU/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-08T13:37:47.124Z",
+    "id": "1CzbyQvQJpATabI3zagdhl-GynLZmPmXa",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-08T13:37:47.124Z",
+    "name": "A2_Multilingual_Phrases.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "412392",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1CzbyQvQJpATabI3zagdhl-GynLZmPmXa/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-08T13:37:41.703Z",
+    "id": "1fsR3L43C0NYdynv5-fltQuu7kA1gcrqF",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-08T13:37:41.703Z",
+    "name": "C1_Multilingual_Phrases.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "2246528",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1fsR3L43C0NYdynv5-fltQuu7kA1gcrqF/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-08T13:37:41.120Z",
+    "id": "1aNVyMCg0S-X7EtknWn0pQZhE8wWWS3pH",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-08T13:37:41.120Z",
+    "name": "B2_Multilingual_Phrases.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "961730",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1aNVyMCg0S-X7EtknWn0pQZhE8wWWS3pH/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-08T13:37:40.230Z",
+    "id": "1lYyny0PZQJd3Z6qr4TE0K6rdzkFz1a2m",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-08T13:37:40.230Z",
+    "name": "B1_Multilingual_Phrases.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "475240",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1lYyny0PZQJd3Z6qr4TE0K6rdzkFz1a2m/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-08T11:19:49.595Z",
+    "id": "1tAFLO9kw-GrDrfMTRYu1HcziTb3qiCKMvkl021loBK0",
+    "mimeType": "application/vnd.google-apps.spreadsheet",
+    "modifiedTime": "2026-10-08T11:19:52.080Z",
+    "name": "C1_Multilingual_Phrases (3)",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "1134957",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1tAFLO9kw-GrDrfMTRYu1HcziTb3qiCKMvkl021loBK0/edit?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-09-03T13:36:46.635Z",
+    "id": "10nBjuORU6py_sD7d_QCMZOKLSyJojvNa7Q0ZCJqcFQw",
+    "mimeType": "application/vnd.google-apps.spreadsheet",
+    "modifiedTime": "2026-10-08T10:58:31.427Z",
+    "name": "A1_A2_Multilingual_Level_Check",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "1109147",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/10nBjuORU6py_sD7d_QCMZOKLSyJojvNa7Q0ZCJqcFQw/edit?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-10-08T10:40:28.280Z",
+    "id": "1wLOmRe2aVB1b9mLBl3B5Lw9By91Y7dt4h9zTUKLPjzQ",
+    "mimeType": "application/vnd.google-apps.spreadsheet",
+    "modifiedTime": "2026-10-08T10:40:29.669Z",
+    "name": "dour_complete_language_dataset_part2",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "48522",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1wLOmRe2aVB1b9mLBl3B5Lw9By91Y7dt4h9zTUKLPjzQ/edit?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-10-08T11:20:49.708Z",
+    "id": "1H48xFXLgaTj5OxMFiSpToxUr09twhsjF",
+    "mimeType": "text/plain",
+    "modifiedTime": "2026-10-06T12:23:14.022Z",
+    "name": "ai_studio_code.txt",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "49",
+    "webViewLink": "https://drive.google.com/file/d/1H48xFXLgaTj5OxMFiSpToxUr09twhsjF/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-10-08T11:20:53.050Z",
+    "id": "17Td7Ja3lzaOSX1COi7mQ869fb_uufIYT",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-06T12:20:53.265Z",
+    "name": "C1_Multilingual_Phrases (3).xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "1420889",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/17Td7Ja3lzaOSX1COi7mQ869fb_uufIYT/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-08T11:20:50.387Z",
+    "id": "1awVVf0j0-PXr4WoD7tQ5PYUzI9DD8c6w",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-06T12:19:55.513Z",
+    "name": "B1_Multilingual_Phrases (1) (1).xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "475240",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1awVVf0j0-PXr4WoD7tQ5PYUzI9DD8c6w/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-06T12:18:12.009Z",
+    "id": "1RX6HCRfebXH7fYGJWRLuKDEljuzKDfb6gl4MhPk4i8M",
+    "mimeType": "application/vnd.google-apps.spreadsheet",
+    "modifiedTime": "2026-10-06T12:18:14.272Z",
+    "name": "dour_complete_language_dataset",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "43714",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1RX6HCRfebXH7fYGJWRLuKDEljuzKDfb6gl4MhPk4i8M/edit?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-10-08T11:09:06.755Z",
+    "id": "1qcdenQtDvp-q4ZsuDIXN5xJB29zzo6jf",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-06T11:23:45.032Z",
+    "name": "dour_complete_language_dataset_part2.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "75066",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1qcdenQtDvp-q4ZsuDIXN5xJB29zzo6jf/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-08T11:20:50.380Z",
+    "id": "170uBBNQV0ywOoDqv2drbVIJmNxZXCJLn",
+    "mimeType": "text/csv",
+    "modifiedTime": "2026-10-06T09:59:15.044Z",
+    "name": "dour_complete_language_dataset.csv",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "104711",
+    "webViewLink": "https://drive.google.com/file/d/170uBBNQV0ywOoDqv2drbVIJmNxZXCJLn/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-10-08T11:20:50.248Z",
+    "id": "18w-0NUrEgUOoi6DLrLY4sBTY7mMWmnKh",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-06T09:48:10.339Z",
+    "name": "A2_Multilingual_Phrases (1).xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "412392",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/18w-0NUrEgUOoi6DLrLY4sBTY7mMWmnKh/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-08T11:20:50.185Z",
+    "id": "1MRprcsQqbSTG9w5dQYihNCRo0Em9pKu0",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-10-06T09:48:04.752Z",
+    "name": "A1_A2_Multilingual_Level_Check (1) (1).xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "199364",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1MRprcsQqbSTG9w5dQYihNCRo0Em9pKu0/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-08T11:09:06.685Z",
+    "id": "10QU6bDFjLBKJNncFblZen8TP3qHhAS8n",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-09-28T20:08:51.381Z",
+    "name": "S089848_FTR_POP_EIND__3_343528.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "58417",
+    "webViewLink": "https://drive.google.com/file/d/10QU6bDFjLBKJNncFblZen8TP3qHhAS8n/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-10-08T11:23:14.839Z",
+    "id": "1vY6njxFcz_g4QGOgfW9j3P4BQ_n-6_dv",
+    "mimeType": "text/csv",
+    "modifiedTime": "2026-09-16T10:52:23.730Z",
+    "name": "C1_Multilingual_Phrases.csv",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "4605700",
+    "webViewLink": "https://drive.google.com/file/d/1vY6njxFcz_g4QGOgfW9j3P4BQ_n-6_dv/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-09-16T10:32:48.646Z",
+    "id": "1qHhDMeowSSYEbA3x2A9Palniy4ygmOMa",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-09-16T10:32:48.646Z",
+    "name": "C1_Multilingual_Phrases.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "1059614",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1qHhDMeowSSYEbA3x2A9Palniy4ygmOMa/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-08T11:24:59.416Z",
+    "id": "16tVl22zfRvu7Ko0qM-FylCHqw1zMqoQ1",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-09-14T13:59:12.651Z",
+    "name": "C1_Multilingual_Phrases (2).xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "1420889",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/16tVl22zfRvu7Ko0qM-FylCHqw1zMqoQ1/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-08T11:25:03.055Z",
+    "id": "13P1tUouOPAkNxXcwV0Y5FUNgy35vQRks",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-09-14T13:52:22.548Z",
+    "name": "C1_Multilingual_Phrases (1).xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "1420889",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/13P1tUouOPAkNxXcwV0Y5FUNgy35vQRks/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-08T11:25:21.518Z",
+    "id": "1nON2SVpDihPtbQoGsI4fa9OAkmHRvbHM",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-09-12T08:34:17.985Z",
+    "name": "C1_Multilingual_Phrases (4).xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "1420889",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1nON2SVpDihPtbQoGsI4fa9OAkmHRvbHM/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-08T11:22:21.157Z",
+    "id": "1M7bjXycV1gP8vqoRK1Gz0_U6Q-Nv-xVw",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-09-04T09:11:40.436Z",
+    "name": "A1_A2_Multilingual_Level_Check (1).xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "199364",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1M7bjXycV1gP8vqoRK1Gz0_U6Q-Nv-xVw/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-08T11:22:21.154Z",
+    "id": "1T6TXc-R5oSTTI-qY9OMo7Z2Bd2t9xzXK",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-09-04T09:11:00.970Z",
+    "name": "B1_Multilingual_Phrases (1).xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "475240",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1T6TXc-R5oSTTI-qY9OMo7Z2Bd2t9xzXK/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-08T11:22:22.457Z",
+    "id": "16HEKa5QXgbeIjfQHPiVeEQr_u8hFD7E3",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-09-04T09:10:54.929Z",
+    "name": "A2_Multilingual_Phrases (2).xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "412392",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/16HEKa5QXgbeIjfQHPiVeEQr_u8hFD7E3/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-08T11:22:21.253Z",
+    "id": "1_p44eKdndAFlp4jMfdVPPuyU6FQr-EE_",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-09-04T09:10:37.941Z",
+    "name": "B1_Multilingual_Phrases.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "389218",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1_p44eKdndAFlp4jMfdVPPuyU6FQr-EE_/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-10-08T11:22:21.282Z",
+    "id": "1P8a4yCyy_PfQv9OuD6h2hMC1-Cw1IyRN",
+    "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "modifiedTime": "2026-09-03T13:36:06.940Z",
+    "name": "A1_A2_Multilingual_Level_Check.xlsx",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "199364",
+    "webViewLink": "https://docs.google.com/spreadsheets/d/1P8a4yCyy_PfQv9OuD6h2hMC1-Cw1IyRN/edit?usp=drivesdk&ouid=116963148844572911096&rtpof=true&sd=true"
+  },
+  {
+    "createdTime": "2026-08-18T13:43:21.349Z",
+    "id": "1hNuY4SzDA1FM88LYAp2qACtlr-rT9kPaQQMEcdKPYoE",
+    "mimeType": "application/vnd.google-apps.document",
+    "modifiedTime": "2026-08-18T14:17:08.082Z",
+    "name": "wandelingmetmentor.md",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "11522",
+    "webViewLink": "https://docs.google.com/document/d/1hNuY4SzDA1FM88LYAp2qACtlr-rT9kPaQQMEcdKPYoE/edit?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:44:50.750Z",
+    "id": "1Klt8tlP5PoBuj_YcbtOIBTwuKNryMN7I",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:51:36.000Z",
+    "name": "Taalthuis.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "1061514",
+    "webViewLink": "https://drive.google.com/file/d/1Klt8tlP5PoBuj_YcbtOIBTwuKNryMN7I/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:41.027Z",
+    "id": "1y3mXXSZm8lwMVYOe6ITKA7xQgjw1r-Xs",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:51:22.000Z",
+    "name": "e-book-1000-words.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "291964",
+    "webViewLink": "https://drive.google.com/file/d/1y3mXXSZm8lwMVYOe6ITKA7xQgjw1r-Xs/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:42.733Z",
+    "id": "1IVGQh5RiqWX0D9TbhfekHLW61JV-3JFi",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:51:17.000Z",
+    "name": "pdf_wordlists_nld-Page014.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "496773",
+    "webViewLink": "https://drive.google.com/file/d/1IVGQh5RiqWX0D9TbhfekHLW61JV-3JFi/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:42.770Z",
+    "id": "19JJprV45G7w1t_AAwS1cOrt7a4bX2KBc",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:51:13.000Z",
+    "name": "pdf_wordlists_nld-Page013.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "494608",
+    "webViewLink": "https://drive.google.com/file/d/19JJprV45G7w1t_AAwS1cOrt7a4bX2KBc/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:42.675Z",
+    "id": "1b4uh_qlStzxkYr1QHKZvLtWPYOxW4Joh",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:51:09.000Z",
+    "name": "pdf_wordlists_nld-Page012.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "494775",
+    "webViewLink": "https://drive.google.com/file/d/1b4uh_qlStzxkYr1QHKZvLtWPYOxW4Joh/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:42.773Z",
+    "id": "1bYkBzkmNfrKD90-4msC7GCOn2cDz9GTh",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:51:05.000Z",
+    "name": "pdf_wordlists_nld-Page011.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "496483",
+    "webViewLink": "https://drive.google.com/file/d/1bYkBzkmNfrKD90-4msC7GCOn2cDz9GTh/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:41.905Z",
+    "id": "1ogd9U4Q1aV6cgqIDuq6RlqKEbEzXAglt",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:51:01.000Z",
+    "name": "pdf_wordlists_nld-Page010.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "495159",
+    "webViewLink": "https://drive.google.com/file/d/1ogd9U4Q1aV6cgqIDuq6RlqKEbEzXAglt/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:41.953Z",
+    "id": "1tz52CslDFatz7TqXv5vwHbPDd9SnDGQ-",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:50:57.000Z",
+    "name": "pdf_wordlists_nld-Page009.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "493187",
+    "webViewLink": "https://drive.google.com/file/d/1tz52CslDFatz7TqXv5vwHbPDd9SnDGQ-/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:41.972Z",
+    "id": "1cVtq_A-KggGxxYjlSdtBNZprs179OW-s",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:50:53.000Z",
+    "name": "pdf_wordlists_nld-Page008.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "492075",
+    "webViewLink": "https://drive.google.com/file/d/1cVtq_A-KggGxxYjlSdtBNZprs179OW-s/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:41.805Z",
+    "id": "1kionu0u3k4sXe7DQDn2DXiJfJEFXvJ7n",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:50:49.000Z",
+    "name": "pdf_wordlists_nld-Page007.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "492653",
+    "webViewLink": "https://drive.google.com/file/d/1kionu0u3k4sXe7DQDn2DXiJfJEFXvJ7n/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:41.983Z",
+    "id": "1OPP978x-QOtiqqy_wgFmHJHkoWsxmTWv",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:50:46.000Z",
+    "name": "pdf_wordlists_nld-Page006.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "493468",
+    "webViewLink": "https://drive.google.com/file/d/1OPP978x-QOtiqqy_wgFmHJHkoWsxmTWv/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:41.802Z",
+    "id": "1NAdQKPQUIo7rWUsZ5jsIZ5vK2AEFSYxN",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:50:42.000Z",
+    "name": "pdf_wordlists_nld-Page005.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "494396",
+    "webViewLink": "https://drive.google.com/file/d/1NAdQKPQUIo7rWUsZ5jsIZ5vK2AEFSYxN/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:42.015Z",
+    "id": "1C11SPaSjr1d7MXrCOhSyrStyTK-P9qmo",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:50:38.000Z",
+    "name": "pdf_wordlists_nld-Page004.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "494073",
+    "webViewLink": "https://drive.google.com/file/d/1C11SPaSjr1d7MXrCOhSyrStyTK-P9qmo/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:41.823Z",
+    "id": "1fseO3GfEhIJLwZuHAfeRwOg_94RoJy41",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:50:34.000Z",
+    "name": "pdf_wordlists_nld-Page003.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "494029",
+    "webViewLink": "https://drive.google.com/file/d/1fseO3GfEhIJLwZuHAfeRwOg_94RoJy41/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:41.073Z",
+    "id": "19UtgUS610Zhyn8QIDJGeHjRkys5YB5p6",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:50:12.000Z",
+    "name": "pdf_wordlists_nld-Page002.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "494788",
+    "webViewLink": "https://drive.google.com/file/d/19UtgUS610Zhyn8QIDJGeHjRkys5YB5p6/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:40.907Z",
+    "id": "1ehPCAnt1XCV_1-5P6DYGxie0AKEthTOe",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:50:02.000Z",
+    "name": "pdf_wordlists_nld-Page001.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "494839",
+    "webViewLink": "https://drive.google.com/file/d/1ehPCAnt1XCV_1-5P6DYGxie0AKEthTOe/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:42.827Z",
+    "id": "1uIhwl-tnYbmC5uLw82M8ZUIQKE3mfTGL",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:49:56.000Z",
+    "name": "pdf_wordlists_nld.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "672428",
+    "webViewLink": "https://drive.google.com/file/d/1uIhwl-tnYbmC5uLw82M8ZUIQKE3mfTGL/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:41.018Z",
+    "id": "1LwQLEru2rStSnpV_s1cJNR9dnNX32sQQ",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:49:39.000Z",
+    "name": "100-Essential-Dutch-Words-for-Beginners-With-Articles-1.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "536778",
+    "webViewLink": "https://drive.google.com/file/d/1LwQLEru2rStSnpV_s1cJNR9dnNX32sQQ/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:40.788Z",
+    "id": "1l7vRUUOwBf9wnt616f9zow1AALzyqNs0",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:49:35.000Z",
+    "name": "74540-alphabetical-vocabulary-list-for-2013-papers.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "203353",
+    "webViewLink": "https://drive.google.com/file/d/1l7vRUUOwBf9wnt616f9zow1AALzyqNs0/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:40.935Z",
+    "id": "1EDWWf6u704q8pD4TPXHpptyv9ttrgSYs",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:49:29.000Z",
+    "name": "e-book-lesson-1-20-1000DutchWords.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "533165",
+    "webViewLink": "https://drive.google.com/file/d/1EDWWf6u704q8pD4TPXHpptyv9ttrgSYs/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:44:38.381Z",
+    "id": "118JucB402Zymg0WH8We7faxlOAbtgKcK",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:48:41.000Z",
+    "name": "Dutch-Essential-Grammar.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "2610002",
+    "webViewLink": "https://drive.google.com/file/d/118JucB402Zymg0WH8We7faxlOAbtgKcK/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:40.891Z",
+    "id": "1-QLXyic1bBn0Ww50NQl4Ciwe9iktYm89",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:48:17.000Z",
+    "name": "8689402.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "396967",
+    "webViewLink": "https://drive.google.com/file/d/1-QLXyic1bBn0Ww50NQl4Ciwe9iktYm89/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:42.805Z",
+    "id": "1l5t9NJE2j6w6gT990x7CS_7je4HPxjEG",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:47:10.000Z",
+    "name": "The_Oxford_3000.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "124825",
+    "webViewLink": "https://drive.google.com/file/d/1l5t9NJE2j6w6gT990x7CS_7je4HPxjEG/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:44:32.216Z",
+    "id": "1SBhgxGqiW6eAWnk4qheXT4_up5fxtMQg",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:46:42.000Z",
+    "name": "29.01.30 Cambridge Essential English Dictionary (2e, 2011).pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "10747221",
+    "webViewLink": "https://drive.google.com/file/d/1SBhgxGqiW6eAWnk4qheXT4_up5fxtMQg/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:44:47.008Z",
+    "id": "1Ossi3DBUjvWGtVSnDA1f1T-6yLXCo6-e",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:46:13.000Z",
+    "name": "Practical-English-Usage by Michael swan.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "20690917",
+    "webViewLink": "https://drive.google.com/file/d/1Ossi3DBUjvWGtVSnDA1f1T-6yLXCo6-e/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:44:44.089Z",
+    "id": "1eKo0vk5H8PQEXct4yfq2uzqSErANGtFt",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:45:57.000Z",
+    "name": "MUCLecture_2022_5217521.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "6147712",
+    "webViewLink": "https://drive.google.com/file/d/1eKo0vk5H8PQEXct4yfq2uzqSErANGtFt/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:44:48.960Z",
+    "id": "1P8Kz6amdS6kLGnkeJQlVX8I-RQqgBaim",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:45:27.000Z",
+    "name": "pro-ee-tonygreenplenaryppt-en.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "4681711",
+    "webViewLink": "https://drive.google.com/file/d/1P8Kz6amdS6kLGnkeJQlVX8I-RQqgBaim/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:43:40.851Z",
+    "id": "1Qz0BOLmiou1MZ0lc5EazdgD88FYzzaZi",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:45:04.000Z",
+    "name": "0521816939WS.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "420719",
+    "webViewLink": "https://drive.google.com/file/d/1Qz0BOLmiou1MZ0lc5EazdgD88FYzzaZi/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:44:36.422Z",
+    "id": "1w2EGD1FYCHyiWsRU6-S_hqLz95-54dRB",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:43:49.000Z",
+    "name": "Cambridge Grammar of English_ A Comprehensive Guide. Spoken and Written English Grammar and Usage ( PDFDrive.com ).pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "43850658",
+    "webViewLink": "https://drive.google.com/file/d/1w2EGD1FYCHyiWsRU6-S_hqLz95-54dRB/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-08-25T15:44:40.305Z",
+    "id": "1TSQwk1zwfQdpHgUvNmak1Prv-r_B0k3N",
+    "mimeType": "application/pdf",
+    "modifiedTime": "2026-06-29T12:42:27.000Z",
+    "name": "Forum2007_ Report_EN.doc.pdf",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "1611226",
+    "webViewLink": "https://drive.google.com/file/d/1TSQwk1zwfQdpHgUvNmak1Prv-r_B0k3N/view?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-06-16T20:51:23.729Z",
+    "id": "1-pHdxImAm8wlZTarwq8s_erSG3sgrTsqXb0rwMZuXeA",
+    "mimeType": "application/vnd.google-apps.document",
+    "modifiedTime": "2026-06-16T21:20:50.383Z",
+    "name": "Answer sheet",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "2088",
+    "webViewLink": "https://docs.google.com/document/d/1-pHdxImAm8wlZTarwq8s_erSG3sgrTsqXb0rwMZuXeA/edit?usp=drivesdk"
+  },
+  {
+    "createdTime": "2026-06-16T16:09:08.401Z",
+    "id": "1iw-1C3GM2iy_zZZB5r_3ULErawGLZA11q7YT0AcVIoA",
+    "mimeType": "application/vnd.google-apps.document",
+    "modifiedTime": "2026-06-16T16:09:10.150Z",
+    "name": "Cheatsheet",
+    "owners": [
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "kind": "drive#user",
+        "me": true,
+        "permissionId": "01376964601385629820",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64"
+      }
+    ],
+    "permissions": [
+      {
+        "id": "anyoneWithLink",
+        "kind": "drive#permission",
+        "role": "reader",
+        "type": "anyone"
+      },
+      {
+        "displayName": "Maryam Jaberi",
+        "emailAddress": "m.jaberi1212@gmail.com",
+        "id": "01376964601385629820",
+        "kind": "drive#permission",
+        "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocJ7Ogg9W5ZIF40no-labxnfmORXDqTt0evwtHK671t-glJgrGuZ=s64",
+        "role": "owner",
+        "type": "user"
+      }
+    ],
+    "size": "6812",
+    "webViewLink": "https://docs.google.com/document/d/1iw-1C3GM2iy_zZZB5r_3ULErawGLZA11q7YT0AcVIoA/edit?usp=drivesdk"
+  }
+]
