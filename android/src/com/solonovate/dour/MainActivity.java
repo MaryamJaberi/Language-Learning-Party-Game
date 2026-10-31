@@ -1,6 +1,7 @@
 package com.solonovate.dour;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -16,6 +17,7 @@ import android.content.pm.PackageManager;
 
 public class MainActivity extends Activity {
     private WebView webView;
+    private Dialog currentPopupDialog;
     private static final int PERMISSION_REQUEST_CODE = 101;
 
     @Override
@@ -42,10 +44,21 @@ public class MainActivity extends Activity {
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
 
+        // Enable popup and multi-window support for Google Sign-In & Auth handlers
+        settings.setSupportMultipleWindows(true);
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);
+
+        // Strip WebView flags (; wv and Version/X.X) so Google OAuth allows login without disallowed_useragent
+        String origUa = settings.getUserAgentString();
+        if (origUa != null) {
+            String cleanUa = origUa.replace("; wv", "").replaceAll("Version/[0-9.]+\\s?", "");
+            settings.setUserAgentString(cleanUa);
+        }
+
         // Cache configuration for smooth offline gameplay
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
 
-        // Chrome client handles microphone permission for pronunciation practice
+        // Chrome client handles microphone permission and Google Sign-in popups
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onPermissionRequest(final PermissionRequest request) {
@@ -55,6 +68,49 @@ public class MainActivity extends Activity {
                         request.grant(request.getResources());
                     }
                 });
+            }
+
+            @Override
+            public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, android.os.Message resultMsg) {
+                final Dialog dialog = new Dialog(MainActivity.this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+                currentPopupDialog = dialog;
+
+                WebView popupWebView = new WebView(MainActivity.this);
+                WebSettings popupSettings = popupWebView.getSettings();
+                popupSettings.setJavaScriptEnabled(true);
+                popupSettings.setDomStorageEnabled(true);
+                popupSettings.setDatabaseEnabled(true);
+                popupSettings.setAllowFileAccess(true);
+                popupSettings.setSupportMultipleWindows(false);
+                if (settings.getUserAgentString() != null) {
+                    popupSettings.setUserAgentString(settings.getUserAgentString());
+                }
+
+                popupWebView.setWebChromeClient(new WebChromeClient() {
+                    @Override
+                    public void onCloseWindow(WebView window) {
+                        if (currentPopupDialog != null && currentPopupDialog.isShowing()) {
+                            currentPopupDialog.dismiss();
+                            currentPopupDialog = null;
+                        }
+                        window.destroy();
+                    }
+                });
+
+                popupWebView.setWebViewClient(new WebViewClient() {
+                    @Override
+                    public boolean shouldOverrideUrlLoading(WebView v, String url) {
+                        return false;
+                    }
+                });
+
+                dialog.setContentView(popupWebView);
+                dialog.show();
+
+                WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
+                transport.setWebView(popupWebView);
+                resultMsg.sendToTarget();
+                return true;
             }
         });
 
@@ -82,6 +138,11 @@ public class MainActivity extends Activity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (currentPopupDialog != null && currentPopupDialog.isShowing()) {
+                currentPopupDialog.dismiss();
+                currentPopupDialog = null;
+                return true;
+            }
             if (webView.canGoBack()) {
                 webView.goBack();
                 return true;
@@ -108,6 +169,10 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        if (currentPopupDialog != null && currentPopupDialog.isShowing()) {
+            currentPopupDialog.dismiss();
+            currentPopupDialog = null;
+        }
         if (webView != null) {
             webView.destroy();
         }

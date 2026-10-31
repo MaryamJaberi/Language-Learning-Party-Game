@@ -1,6 +1,7 @@
 {
   "name": "Dour: Language Party Game",
   "short_name": "Dour Game",
+  "version": "1.1.4",
   "description": "Multiplayer party game for learning languages with friends and family passing one phone.",
   "start_url": "./",
   "display": "standalone",

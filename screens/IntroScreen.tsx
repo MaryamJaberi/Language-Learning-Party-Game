@@ -451,7 +451,7 @@ const IntroScreen: React.FC<Props> = ({
           id="intro-party-btn"
           role="button"
           tabIndex={0}
-          aria-label={t.startNewGame || (isRTL ? 'شروع بازی دورهمی' : 'Start New Game')}
+          aria-label={t.startNewGame || (isRTL ? 'شروع بازی گروهی' : 'Start Party Game')}
           onClick={() => {
             sound.playStartGame();
             onNext();
@@ -463,7 +463,7 @@ const IntroScreen: React.FC<Props> = ({
               <Users size={22} />
             </div>
             <span className="text-base sm:text-lg font-black text-[var(--ink)] leading-tight truncate">
-              {t.startNewGame || (isRTL ? 'شروع بازی دورهمی' : 'Start New Game')}
+              {t.startNewGame || (isRTL ? 'شروع بازی گروهی' : 'Start Party Game')}
             </span>
           </div>
 

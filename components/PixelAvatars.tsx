@@ -472,7 +472,12 @@ export const PixelAvatar: React.FC<AvatarProps> = ({
 
     default:
       return (
-        <circle cx="50" cy="50" r="30" fill="#FFE600" stroke="#241442" strokeWidth="4" />
+        <svg viewBox="0 0 100 100" className={className} xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="34" fill="#FFE600" stroke="#241442" strokeWidth="4" />
+          <circle cx="40" cy="46" r="4.5" fill="#241442" />
+          <circle cx="60" cy="46" r="4.5" fill="#241442" />
+          <path d="M42,62 Q50,70 58,62" stroke="#241442" strokeWidth="3" fill="none" strokeLinecap="round" />
+        </svg>
       );
   }
 };

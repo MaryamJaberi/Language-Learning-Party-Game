@@ -115,7 +115,8 @@ export async function chatWithGemini(
 
 export async function transcribeAudioBlob(
   audioBlob: Blob,
-  targetLanguage?: string
+  targetLanguage?: string,
+  expectedHint?: string
 ): Promise<string> {
   // Convert blob to base64
   const arrayBuffer = await audioBlob.arrayBuffer();
@@ -131,7 +132,7 @@ export async function transcribeAudioBlob(
   const res = await fetch('/api/ai/transcribe', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...authHeaders },
-    body: JSON.stringify({ audioBase64, mimeType, targetLanguage }),
+    body: JSON.stringify({ audioBase64, mimeType, targetLanguage, expectedHint }),
   });
 
   const data = await res.json();

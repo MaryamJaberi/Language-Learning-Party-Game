@@ -24,6 +24,8 @@ import { getPronunciationHint } from '../pronunciationService';
 import { 
   Mic, 
   MicOff, 
+  Square,
+  Loader2,
   Volume2, 
   Volume1,
   VolumeX, 
@@ -201,10 +203,12 @@ const SinglePlayerScreen: React.FC<Props> = ({
   resultsRef.current = results;
   const isFinishedRef = useRef<boolean>(false);
 
-  // Smart Voice Input & Audio Transcription State (Gemini & WebSpeech unified)
+  // Smart Voice Input & Audio Transcription State (Manual start & stop for clear voice-to-text)
   const [isTranscribingWithGemini, setIsTranscribingWithGemini] = useState(false);
   const [isGeminiRecording, setIsGeminiRecording] = useState(false);
+  const [recordingSeconds, setRecordingSeconds] = useState<number>(0);
   const geminiRecorderRef = useRef<AudioRecorder | null>(null);
+  const recordingTimerRef = useRef<number | null>(null);
 
   // Untimed relaxed study for cards (user has unlimited time per card in single-player card mode)
   const startTimeRef = useRef<number>(Date.now());
@@ -327,6 +331,19 @@ const SinglePlayerScreen: React.FC<Props> = ({
   useEffect(() => {
     if (!currentCard) return;
 
+    if (geminiRecorderRef.current) {
+      geminiRecorderRef.current.cancel();
+      geminiRecorderRef.current = null;
+    }
+    if (recordingTimerRef.current) {
+      clearInterval(recordingTimerRef.current);
+      recordingTimerRef.current = null;
+    }
+    setRecordingSeconds(0);
+    setIsListening(false);
+    setIsGeminiRecording(false);
+    setIsTranscribingWithGemini(false);
+
     setUserInput('');
     setEvaluation(null);
     setAttempts(1);
@@ -391,10 +408,15 @@ const SinglePlayerScreen: React.FC<Props> = ({
   }, [isTimedMatch]);
 
   const stopMicAndTranscribeToInput = async (shouldSubmitAfter = false) => {
-    const existingSpeechText = (liveTranscriptRef.current || userInput).trim();
+    if (recordingTimerRef.current) {
+      clearInterval(recordingTimerRef.current);
+      recordingTimerRef.current = null;
+    }
+    setRecordingSeconds(0);
     isUserSpeakingRef.current = false;
     setIsListening(false);
     setIsGeminiRecording(false);
+
     try {
       recognitionRef.current?.stop();
     } catch {
@@ -405,71 +427,43 @@ const SinglePlayerScreen: React.FC<Props> = ({
       const recorder = geminiRecorderRef.current;
       geminiRecorderRef.current = null;
 
-      // If Web Speech API already captured words/sentence live in the input box, use it directly
-      if (existingSpeechText) {
-        recorder.cancel();
-        setUserInput(existingSpeechText);
-        setActionableError(null);
-        if (shouldSubmitAfter) {
-          submitAnswer(existingSpeechText);
-        }
-        return;
-      }
-
       setIsTranscribingWithGemini(true);
       try {
         const audioBlob = await recorder.stop();
         if (audioBlob && audioBlob.size > 50) {
-          const targetLang = settings.displayMode === 'translate_to_native'
+          const isReverseToNative = settings.displayMode === 'translate_to_native';
+          const targetLang = isReverseToNative
             ? (currentCard?.nativeLanguage || settings.nativeLanguage || (isRTL ? 'fa' : 'en'))
             : (currentCard?.targetLanguage || settings.targetLanguage || 'en');
-          const transcribed = await transcribeAudioBlob(audioBlob, targetLang);
+          const contextHint = isReverseToNative ? currentCard?.translation : currentCard?.targetText;
+
+          const transcribed = await transcribeAudioBlob(audioBlob, targetLang, contextHint);
           if (transcribed && transcribed.trim()) {
             const cleanText = transcribed.trim();
             liveTranscriptRef.current = cleanText;
             setUserInput(cleanText);
             setActionableError(null);
+            sound.playClick();
             if (shouldSubmitAfter) {
               submitAnswer(cleanText);
             }
             return;
           }
         }
-        const fallbackText = (liveTranscriptRef.current || userInput).trim();
-        if (fallbackText) {
-          setUserInput(fallbackText);
-          if (shouldSubmitAfter) {
-            submitAnswer(fallbackText);
-          }
-          return;
-        }
         setActionableError(
           isRTL
-            ? 'صدایی تشخیص داده نشد. لطفاً نزدیک میکروفون صحبت کنید یا پاسخ را تایپ نمایید.'
-            : 'No speech was detected. Please speak clearly into the microphone or type your answer.'
+            ? 'صدایی در فایل ضبط‌شده تشخیص داده نشد. لطفاً نزدیک‌تر به میکروفون صحبت کرده و دوباره «پایان ضبط» را بزنید، یا پاسخ را تایپ نمایید.'
+            : 'No clear speech detected in recorded audio. Please speak closer to the microphone and tap Stop Recording again, or type your answer.'
         );
       } catch (err: any) {
         console.warn('Gemini audio transcribe fallback:', err);
-        const fallbackText = (liveTranscriptRef.current || userInput).trim();
-        if (fallbackText) {
-          setUserInput(fallbackText);
-          if (shouldSubmitAfter) {
-            submitAnswer(fallbackText);
-          }
-        } else {
-          setActionableError(
-            isRTL
-              ? 'خطا در تبدیل صدا به متن. لطفاً دوباره روی دکمه صحبت بزنید یا پاسخ را تایپ کنید.'
-              : 'Could not transcribe speech. Please tap Speak again or type your answer.'
-          );
-        }
+        setActionableError(
+          isRTL
+            ? 'خطا در تبدیل فایل صوتی به متن. لطفاً دوباره روی «شروع ضبط» بزنید یا پاسخ را تایپ کنید.'
+            : 'Error transcribing audio. Please tap Start Recording again or type your answer.'
+        );
       } finally {
         setIsTranscribingWithGemini(false);
-      }
-    } else if (existingSpeechText) {
-      setUserInput(existingSpeechText);
-      if (shouldSubmitAfter) {
-        submitAnswer(existingSpeechText);
       }
     }
   };
@@ -478,39 +472,19 @@ const SinglePlayerScreen: React.FC<Props> = ({
     sound.playClick();
 
     if (isListening || isGeminiRecording || isUserSpeakingRef.current) {
+      // User manually stopped recording: transcribe the captured audio file
       await stopMicAndTranscribeToInput(false);
     } else {
-      // User starts speaking: convert speech to text in the input box
+      // User manually starts recording: records continuously until user taps "پایان ضبط"
       liveTranscriptRef.current = '';
       setUserInput('');
       setActionableError(null);
-
-      const isReverseToNative = settings.displayMode === 'translate_to_native';
-      const nativeCode = currentCard?.nativeLanguage || settings.nativeLanguage || (isRTL ? 'fa' : 'en');
-      const nativeInfo = SUPPORTED_LANGUAGES.find(l => l.code === nativeCode);
-      const targetLang = currentCard?.targetLanguage || settings.targetLanguage || 'en';
-      const langInfo = SUPPORTED_LANGUAGES.find(l => l.code === targetLang);
-
-      const langCode = isReverseToNative
-        ? (nativeInfo?.speechCode || SPEECH_LANG_MAP[nativeCode] || (nativeCode === 'fa' ? 'fa-IR' : 'en-US'))
-        : (langInfo?.speechCode || SPEECH_LANG_MAP[targetLang] || 'en-US');
-
-      // 1. Start Google / Browser SpeechRecognition (webkitSpeechRecognition) so words & sentences appear live in the input box
-      let speechStarted = false;
-      if (speechSupported && recognitionRef.current) {
-        try {
-          recognitionRef.current.lang = langCode;
-          recognitionRef.current.start();
-          speechStarted = true;
-          isUserSpeakingRef.current = true;
-          setIsListening(true);
-        } catch (e: any) {
-          console.warn('Speech recognition start notice:', e);
-        }
+      setRecordingSeconds(0);
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current);
+        recordingTimerRef.current = null;
       }
 
-      // 2. Also start AudioRecorder with automatic Voice Activity / Silence Detection (VAD)
-      // so speech is automatically converted into text in userInput when the user finishes speaking
       let recorderStarted = false;
       let caughtErrorName = '';
       try {
@@ -518,9 +492,8 @@ const SinglePlayerScreen: React.FC<Props> = ({
           geminiRecorderRef.current.cancel();
         }
         const recorder = new AudioRecorder();
-        await recorder.start(undefined, () => {
-          void stopMicAndTranscribeToInput(false);
-        });
+        // Start recording WITHOUT automatic silence detection cutoff so user controls when to stop
+        await recorder.start();
         geminiRecorderRef.current = recorder;
         recorderStarted = true;
         isUserSpeakingRef.current = true;
@@ -528,16 +501,25 @@ const SinglePlayerScreen: React.FC<Props> = ({
         setIsListening(true);
         setActionableError(null);
         setMicErrorReason(null);
+
+        // Start elapsed duration timer
+        recordingTimerRef.current = window.setInterval(() => {
+          setRecordingSeconds(prev => prev + 1);
+        }, 1000);
       } catch (err: any) {
-        console.warn('Gemini recorder mic fallback:', err);
+        console.warn('Audio recorder mic start error:', err);
         caughtErrorName = `${err?.name || ''} ${err?.message || ''}`;
         geminiRecorderRef.current = null;
       }
 
-      if (!recorderStarted && !speechStarted) {
+      if (!recorderStarted) {
         isUserSpeakingRef.current = false;
         setIsListening(false);
         setIsGeminiRecording(false);
+        if (recordingTimerRef.current) {
+          clearInterval(recordingTimerRef.current);
+          recordingTimerRef.current = null;
+        }
 
         const inIframe = typeof window !== 'undefined' && window.self !== window.top;
 
@@ -592,10 +574,15 @@ const SinglePlayerScreen: React.FC<Props> = ({
         geminiRecorderRef.current.cancel();
       }
       const recorder = new AudioRecorder();
-      await recorder.start(stream, () => {
-        void stopMicAndTranscribeToInput(false);
-      });
+      await recorder.start(stream);
       geminiRecorderRef.current = recorder;
+      setRecordingSeconds(0);
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current);
+      }
+      recordingTimerRef.current = window.setInterval(() => {
+        setRecordingSeconds(prev => prev + 1);
+      }, 1000);
 
       if (speechSupported && recognitionRef.current) {
         try {
@@ -1062,6 +1049,14 @@ const SinglePlayerScreen: React.FC<Props> = ({
   }
 
   const isAudioOnly = settings.displayMode === 'audio_only';
+  const isReverseToNative = settings.displayMode === 'translate_to_native';
+  const expectedAnswerLangCode = isReverseToNative
+    ? (currentCard?.nativeLanguage || settings.nativeLanguage || (isRTL ? 'fa' : 'en'))
+    : (currentCard?.targetLanguage || settings.targetLanguage || 'en');
+  const expectedLangInfo = SUPPORTED_LANGUAGES.find(l => l.code === expectedAnswerLangCode);
+  const expectedAnswerLangLabel = isRTL
+    ? (expectedLangInfo?.persianName || expectedLangInfo?.name || expectedAnswerLangCode)
+    : (expectedLangInfo?.name || expectedAnswerLangCode);
 
   return (
     <div 
@@ -1594,6 +1589,35 @@ const SinglePlayerScreen: React.FC<Props> = ({
         {/* Compact Input and 3 Action Buttons Row (Only active during live card guessing, hidden when answered correctly or during skipped review) */}
         {!skippedCardInfo && !evaluation?.isCorrect && (
           <div className="space-y-1.5">
+            {/* Active Voice Recording Status Banner (Manual start & stop) */}
+            {(isListening || isGeminiRecording) && (
+              <div className="flex items-center justify-between px-3 py-1.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs font-bold animate-pulse">
+                <div className="flex items-center gap-2 truncate">
+                  <span className="w-2 h-2 rounded-full bg-rose-600 animate-ping shrink-0" />
+                  <span className="truncate">
+                    {isRTL
+                      ? `در حال ضبط صدا به زبان ${expectedAnswerLangLabel}... پس از گفتن پاسخ، روی «پایان ضبط» بزنید.`
+                      : `Recording in ${expectedAnswerLangLabel}... Tap 'Stop Recording' when done.`}
+                  </span>
+                </div>
+                <span className="font-timer font-black text-xs shrink-0 tabular-nums px-2 py-0.5 rounded-md bg-rose-500/20" dir="ltr">
+                  {Math.floor(recordingSeconds / 60)}:{String(recordingSeconds % 60).padStart(2, '0')}
+                </span>
+              </div>
+            )}
+
+            {/* Converting Voice-to-Text Banner */}
+            {isTranscribingWithGemini && (
+              <div className="flex items-center justify-center gap-2 px-3 py-1.5 rounded-xl bg-teal-500/10 border border-teal-500/30 text-teal-700 dark:text-teal-300 text-xs font-bold animate-pulse">
+                <Loader2 size={13} className="animate-spin shrink-0" />
+                <span>
+                  {isRTL
+                    ? `در حال تبدیل فایل صوتی به متن (${expectedAnswerLangLabel})...`
+                    : `Transcribing audio into ${expectedAnswerLangLabel}...`}
+                </span>
+              </div>
+            )}
+
             {/* Slim Text Input */}
             <div className="relative w-full flex items-center">
               <input
@@ -1601,7 +1625,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
                 type="text"
                 dir={
                   userInput.trim()
-                    ? (isRtlLang(settings.displayMode === 'translate_to_native' ? (currentCard?.nativeLanguage || settings.nativeLanguage || (isRTL ? 'fa' : 'en')) : (currentCard?.targetLanguage || settings.targetLanguage || 'en')) ? 'rtl' : 'ltr')
+                    ? (isRtlLang(expectedAnswerLangCode) ? 'rtl' : 'ltr')
                     : (isRTL ? 'rtl' : 'ltr')
                 }
                 value={userInput}
@@ -1614,15 +1638,17 @@ const SinglePlayerScreen: React.FC<Props> = ({
                 }}
                 placeholder={
                   isTranscribingWithGemini
-                    ? (isRTL ? 'در حال تبدیل صدا به کلمه و جمله...' : 'Converting voice to text...')
+                    ? (isRTL ? `در حال تبدیل صدا به متن (${expectedAnswerLangLabel})...` : `Converting audio to text (${expectedAnswerLangLabel})...`)
                     : (isListening || isGeminiRecording)
-                      ? (isRTL ? 'در حال شنیدن... صحبت کنید تا به متن تبدیل شود' : 'Listening... Speak to convert to text')
-                      : (t.enterAnswerPlaceholder || (isRTL ? 'پاسخ را تایپ کنید یا با میکروفون بگویید...' : 'Type or speak your answer...'))
+                      ? (isRTL ? `در حال ضبط صدا به زبان ${expectedAnswerLangLabel}... صحبت کنید` : `Recording in ${expectedAnswerLangLabel}... Speak now`)
+                      : (t.enterAnswerPlaceholder || (isRTL ? `پاسخ را به زبان ${expectedAnswerLangLabel} تایپ کنید یا بگویید...` : `Type or speak answer in ${expectedAnswerLangLabel}...`))
                 }
                 className={`w-full bg-[var(--panel)] text-[var(--ink)] px-3 py-1.5 h-9 rounded-xl border text-xs font-bold focus:outline-none transition-colors shadow-2xs ${
                   isListening || isGeminiRecording
-                    ? 'border-[var(--turq)] ring-2 ring-[var(--turq)]/20'
-                    : 'border-[var(--line)] focus:border-[var(--lapis)]'
+                    ? 'border-rose-500 ring-2 ring-rose-500/20'
+                    : isTranscribingWithGemini
+                      ? 'border-teal-500 ring-2 ring-teal-500/20'
+                      : 'border-[var(--line)] focus:border-[var(--lapis)]'
                 }`}
               />
             </div>
@@ -1648,18 +1674,28 @@ const SinglePlayerScreen: React.FC<Props> = ({
                   isTranscribingWithGemini
                     ? 'bg-teal-500/15 border-teal-500/40 text-[var(--turq)] animate-pulse'
                     : isListening || isGeminiRecording
-                      ? 'bg-[var(--turq)] border-[var(--turq)] text-white animate-pulse'
+                      ? 'bg-rose-600 hover:bg-rose-700 border-rose-600 text-white animate-pulse ring-2 ring-rose-400/40 shadow-sm'
                       : 'bg-[var(--lapis-soft)] border-[var(--lapis)]/30 text-[var(--lapis)] hover:brightness-95'
                 }`}
-                aria-label={t.touchToSpeakBtn || (isRTL ? 'تبدیل صوت به متن (میکروفون)' : 'Voice to Text')}
+                aria-label={
+                  isListening || isGeminiRecording
+                    ? (isRTL ? 'پایان ضبط و تبدیل به متن' : 'Stop Recording')
+                    : (isRTL ? 'شروع ضبط گفتار (صحبت)' : 'Start Voice Recording (Speak)')
+                }
               >
-                {isListening || isGeminiRecording ? <MicOff size={14} className="shrink-0" /> : <Mic size={14} className="shrink-0" />}
+                {isTranscribingWithGemini ? (
+                  <Loader2 size={14} className="animate-spin shrink-0" />
+                ) : isListening || isGeminiRecording ? (
+                  <Square size={12} className="fill-white shrink-0" />
+                ) : (
+                  <Mic size={14} className="shrink-0" />
+                )}
                 <span className="truncate">
                   {isTranscribingWithGemini
-                    ? (isRTL ? 'در حال تبدیل...' : 'Converting...')
+                    ? (isRTL ? 'تبدیل...' : 'Converting...')
                     : isListening || isGeminiRecording
-                      ? (isRTL ? 'در حال شنیدن...' : 'Listening...')
-                      : (isRTL ? 'صحبت' : 'Speak')}
+                      ? (isRTL ? 'پایان ضبط' : 'Stop Recording')
+                      : (isRTL ? 'شروع ضبط' : 'Start Voice')}
                 </span>
               </button>
 

@@ -87,8 +87,8 @@ cat << 'EOF' > android/AndroidManifest.xml
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.solonovate.dour"
-    android:versionCode="10012"
-    android:versionName="1.1.2">
+    android:versionCode="10014"
+    android:versionName="1.1.4">
 
     <uses-sdk
         android:minSdkVersion="24"

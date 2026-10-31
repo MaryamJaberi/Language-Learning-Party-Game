@@ -332,14 +332,32 @@ CRITICAL LANGUAGE RULE: Always write your explanations, greetings, and referee d
         sv: 'Swedish',
         pl: 'Polish',
         uk: 'Ukrainian',
+        ku: 'Kurdish',
+        az: 'Azerbaijani',
+        he: 'Hebrew',
+        hy: 'Armenian',
+        ka: 'Georgian',
+        no: 'Norwegian',
+        da: 'Danish',
+        fi: 'Finnish',
+        el: 'Greek',
+        cs: 'Czech',
+        ro: 'Romanian',
+        hu: 'Hungarian',
+        ur: 'Urdu',
+        bn: 'Bengali',
+        id: 'Indonesian',
+        ms: 'Malay',
+        vi: 'Vietnamese',
+        tl: 'Tagalog',
       };
       const cleanMime = String(mimeType || 'audio/webm').split(';')[0].trim() || 'audio/webm';
       const langLabel = targetLanguage ? (langNameMap[targetLanguage] || targetLanguage) : '';
-      const contextHint = expectedHint ? ` (The speaker is answering a language card in ${langLabel || 'the target language'}.)` : '';
+      const contextHint = expectedHint ? ` Expected answer / context: "${expectedHint}".` : '';
 
       const promptText = langLabel
-        ? `Transcribe the spoken words in this audio accurately in ${langLabel}.${contextHint} Output ONLY the exact spoken words or sentence without quotes, markdown, or extra explanation. If the audio is completely silent, return an empty string.`
-        : `Transcribe the spoken words in this audio accurately. Output ONLY the exact spoken words or sentence without quotes or explanations.`;
+        ? `You are an expert speech-to-text transcriber for language learning. The speaker is saying a word or sentence in ${langLabel}.${contextHint} Transcribe the spoken audio accurately into ${langLabel}. Output ONLY the transcribed words or sentence without quotation marks, markdown, or conversational explanations. If the audio is silent or unintelligible noise, output an empty string.`
+        : `Transcribe the spoken audio accurately. Output ONLY the exact spoken words or sentence without quotation marks or explanations.`;
 
       const audioPart = {
         inlineData: {

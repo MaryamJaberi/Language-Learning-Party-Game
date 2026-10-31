@@ -14,6 +14,7 @@ import {
   isInAppBrowser,
   getLocalPlayerProfile,
   saveLocalPlayerProfile,
+  getFriendlyAuthErrorMessage,
   LocalPlayerProfile 
 } from '../firebase';
 import { AvatarPickerModal } from './AvatarPickerModal';
@@ -214,32 +215,8 @@ export const UserProfileModal: React.FC<Props> = ({
       }
     } catch (err: any) {
       console.error('Login error:', err);
-      const code = err?.code;
-      if (code === 'auth/popup-blocked') {
-        setLoginError(
-          isRTL 
-            ? 'پنجره ورود توسط مرورگر مسدود شد. لطفاً از دکمه «ورود مستقیم بدون پاپ‌آپ (ویژه سامسونگ و موبایل)» در زیر استفاده کنید.' 
-            : 'Popup blocked by browser. Please tap the "Direct Login (No Popup)" button below.'
-        );
-      } else if (code === 'auth/network-request-failed') {
-        setLoginError(
-          isRTL 
-            ? 'ارتباط با سرور احراز هویت گوگل برقرار نشد. لطفاً وضعیت اینترنت یا فیلترشکن خود را بررسی نمایید.'
-            : 'Could not connect to Google. Please check your internet or VPN.'
-        );
-      } else if (code === 'auth/unauthorized-domain') {
-        setLoginError(
-          isRTL 
-            ? 'دامنه فعلی هنوز در لیست مجاز کنسول گوگل تعریف نشده است.'
-            : 'Current domain is not authorized in Google OAuth.'
-        );
-      } else {
-        setLoginError(
-          isRTL 
-            ? (err?.message || 'خطا در فرآیند ورود. لطفاً از روش «ورود مستقیم» امتحان کنید.')
-            : (err?.message || 'Authentication error. Please try Direct Login.')
-        );
-      }
+      const friendlyMsg = getFriendlyAuthErrorMessage(err, isRTL);
+      setLoginError(friendlyMsg);
     } finally {
       setIsSigningIn(false);
       setIsDirectSigningIn(false);
@@ -462,22 +439,49 @@ export const UserProfileModal: React.FC<Props> = ({
 
           {/* Actionable Error Banner if login fails */}
           {loginError && (
-            <div className="mt-3 p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start justify-between gap-2 animate-fade-in">
-              <div className="flex items-start gap-2 flex-1">
-                <AlertCircle size={16} className="text-rose-600 shrink-0 mt-0.5" />
-                <div className="text-start leading-relaxed font-semibold">
-                  {loginError}
+            <div className="mt-3 p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/40 text-rose-800 dark:text-rose-200 text-xs space-y-2 animate-fade-in">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-start gap-2 flex-1">
+                  <AlertCircle size={16} className="text-rose-600 shrink-0 mt-0.5" />
+                  <div className="text-start leading-relaxed font-semibold">
+                    {loginError}
+                  </div>
                 </div>
+                <button
+                  type="button"
+                  onClick={() => setLoginError(null)}
+                  className="text-rose-600 hover:text-rose-800 p-0.5 cursor-pointer"
+                  aria-label={isRTL ? 'رد کردن' : 'Dismiss'}
+                  title={isRTL ? 'رد کردن' : 'Dismiss'}
+                >
+                  <X size={14} />
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => setLoginError(null)}
-                className="text-rose-600 hover:text-rose-800 p-0.5"
-                aria-label={isRTL ? 'رد کردن' : 'Dismiss'}
-                title={isRTL ? 'رد کردن' : 'Dismiss'}
-              >
-                <X size={14} />
-              </button>
+
+              {/* Action Buttons to Unblock Tester Immediately */}
+              <div className="flex items-center gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playClick();
+                    setLoginError(null);
+                    onClose();
+                  }}
+                  className="flex-1 h-8 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                >
+                  <CheckCircle2 size={13} />
+                  <span>{isRTL ? 'ادامه بازی در حالت مهمان (بدون نیاز به لاگین)' : 'Play as Guest (No Login Needed)'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleGoogleLogin('redirect')}
+                  disabled={isDirectSigningIn}
+                  className="h-8 px-3 rounded-full bg-[var(--panel)] hover:bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] font-bold text-[11px] flex items-center justify-center gap-1 cursor-pointer"
+                >
+                  <RefreshCw size={12} className={isDirectSigningIn ? 'animate-spin' : ''} />
+                  <span>{isRTL ? 'تلاش مجدد' : 'Retry'}</span>
+                </button>
+              </div>
             </div>
           )}
 
@@ -532,13 +536,29 @@ export const UserProfileModal: React.FC<Props> = ({
                   </div>
                 )}
 
-                {/* Clear Guest vs Cloud Explanation Pill */}
-                <div className="px-3 py-1.5 rounded-xl bg-[var(--bg)] border border-[var(--line)] text-[11px] text-[var(--mute)] text-start leading-relaxed flex items-center justify-between gap-2">
-                  <span>
-                    {isRTL
-                      ? 'حالت مهمان فعال است (ذخیره آفلاین رکوردها و لایتنر روی گوشی). برای پشتیبان‌گیری ابری و ثبت امتیاز در لیدربرد جهانی، وارد حساب گوگل شوید.'
-                      : 'Guest mode is active (records & Leitner saved locally). Sign in with Google for cloud backup & global leaderboard.'}
-                  </span>
+                {/* Clear Guest vs Cloud Explanation Pill with One-Click Guest Continue */}
+                <div className="px-3 py-2 rounded-xl bg-[var(--bg)] border border-[var(--line)] text-[11px] text-[var(--mute)] text-start leading-relaxed flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="flex-1">
+                    <div className="font-bold text-[var(--ink)] flex items-center gap-1.5">
+                      <ShieldCheck size={13} className="text-emerald-500" />
+                      <span>{isRTL ? 'حالت مهمان فعال است (آماده بازی بدون نیاز به اینترنت):' : 'Guest Mode Active (Offline Ready):'}</span>
+                    </div>
+                    <span>
+                      {isRTL
+                        ? 'همه قابلیت‌ها، تمرینات، تلفظ، لایتنر و کارت‌ها روی گوشی ذخیره می‌شود. ورود با گوگل فقط برای ثبت امتیاز در لیدربرد ابری است.'
+                        : 'All game features, voice test, Leitner box & stats are saved locally on your phone. Google Sign-in is only needed for cloud sync.'}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      sound.playClick();
+                      onClose();
+                    }}
+                    className="self-start sm:self-center shrink-0 h-7 px-3 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] transition-all cursor-pointer shadow-xs"
+                  >
+                    {isRTL ? 'ادامه بازی 🎮' : 'Play Now 🎮'}
+                  </button>
                 </div>
 
                 {/* Login Action Buttons Grid */}
@@ -588,7 +608,7 @@ export const UserProfileModal: React.FC<Props> = ({
                     className="text-[11px] text-[var(--mute)] hover:text-[var(--lapis)] flex items-center gap-1 font-semibold cursor-pointer"
                   >
                     <HelpCircle size={13} />
-                    <span>{isRTL ? 'مشکل در ورود با گوشی سامسونگ یا وب‌ویو دارید؟' : 'Having login issues on your phone?'}</span>
+                    <span>{isRTL ? 'راهنمای تسترهای گوگل پلی و کاربران سامسونگ/شیائومی' : 'Google Play testers & mobile sign-in guide'}</span>
                     {showMobileHelp ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
                   </button>
                   <div className="flex items-center gap-1 text-[11px] text-[var(--mute)]">
@@ -602,17 +622,20 @@ export const UserProfileModal: React.FC<Props> = ({
                   <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-[var(--line)] text-[11px] text-[var(--mute)] space-y-1.5 leading-relaxed animate-fade-in text-start">
                     <div className="font-bold text-[var(--ink)] flex items-center gap-1.5">
                       <Smartphone size={14} className="text-[var(--lapis)]" />
-                      <span>{isRTL ? 'راهنمای ورود در گوشی‌های سامسونگ (S23+ و سری گلکسی) و شیائومی:' : 'Mobile Phone Sign-in Guide:'}</span>
+                      <span>{isRTL ? 'نکات مهم برای تسترهای گوگل پلی و کاربران گوشی:' : 'Important notes for Google Play testers & mobile users:'}</span>
                     </div>
                     <ul className="list-disc list-inside space-y-1 ps-1">
                       <li>
-                        <strong className="text-[var(--ink)]">{isRTL ? 'مرورگر Samsung Internet:' : 'Samsung Internet Browser:'}</strong> {isRTL ? 'این مرورگر به طور پیش‌فرض پاپ‌آپ‌ها را مسدود می‌کند. دکمه «ورود مستقیم (مخصوص سامسونگ)» بدون نیاز به پاپ‌آپ عمل می‌کند و مشکل را ۱۰۰٪ حل می‌کند.' : 'Blocks popups by default. Tap "Direct Mobile Login" to sign in without popups.'}
+                        <strong className="text-[var(--ink)]">{isRTL ? 'تسترهای گوگل پلی (Google Play Testers):' : 'Google Play Testers:'}</strong> {isRTL ? 'حتی در صورت عدم ورود، تمام مراحل بازی، آزمون هوشمند صوت، سطوح A0 تا C2 و جعبه لایتنر به صورت ۱۰۰٪ آفلاین قابل استفاده و تست هستند.' : 'All game features, CEFR levels & Leitner box work 100% offline without signing in.'}
                       </li>
                       <li>
-                        <strong className="text-[var(--ink)]">{isRTL ? 'ورود از پیام‌رسان‌ها:' : 'Telegram / Instagram:'}</strong> {isRTL ? 'اگر لینک بازی را از تلگرام یا اینستاگرام باز کرده‌اید، از سه‌نقطه بالای صفحه گزینه «باز کردن در مرورگر اصلی (Chrome / Samsung)» را بزنید.' : 'Tap the 3 dots menu and select "Open in Browser".'}
+                        <strong className="text-[var(--ink)]">{isRTL ? 'خطای عدم اتصال به اینترنت:' : 'Network error:'}</strong> {isRTL ? 'سرورهای احراز هویت گوگل (Identity Toolkit) به دلیل تحریم یا اختلال در برخی اپراتورهای ایران نیاز به اینترنت آزاد/وی‌پی‌ان دارند. اگر در لاگین با پیام اینترنت مواجه شدید، وی‌پی‌ان خود را روشن کنید یا بدون لاگین بازی کنید.' : 'Google Auth servers require unrestricted network access or VPN.'}
                       </li>
                       <li>
-                        <strong className="text-[var(--ink)]">{isRTL ? 'بازی بدون حساب گوگل:' : 'Play without Google:'}</strong> {isRTL ? 'نیازی به ورود اجباری نیست! می‌توانید با کلیک روی آواتار بالا نام و تصویر خود را شخصی‌سازی کنید؛ تمام بازی‌ها و رکوردهای شما روی گوشی ذخیره می‌ماند.' : 'Google login is optional. All stats save locally on your phone.'}
+                        <strong className="text-[var(--ink)]">{isRTL ? 'مرورگر Samsung Internet:' : 'Samsung Internet Browser:'}</strong> {isRTL ? 'این مرورگر پاپ‌آپ‌ها را می‌بندد؛ دکمه «ورود مستقیم (مخصوص سامسونگ)» مشکل را حل می‌کند.' : 'Blocks popups by default. Tap "Direct Mobile Login" to sign in without popups.'}
+                      </li>
+                      <li>
+                        <strong className="text-[var(--ink)]">{isRTL ? 'شخصی‌سازی بدون گوگل:' : 'Profile Customization:'}</strong> {isRTL ? 'با کلیک روی آیکون ویرایش آواتار بالا، نام و تصویر کاراکتر خود را آزادانه تغییر دهید.' : 'Tap edit avatar to set your name and icon freely.'}
                       </li>
                     </ul>
                   </div>

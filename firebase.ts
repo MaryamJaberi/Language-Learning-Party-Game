@@ -59,6 +59,15 @@ export const isStandalonePWA = (): boolean => {
     Boolean((navigator as any)?.standalone);
 };
 
+export const isAndroidAppOrWebView = (): boolean => {
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') return false;
+  const ua = navigator.userAgent || '';
+  const isAndroidUA = /Android/i.test(ua);
+  const hasWv = /; wv|Version\/[0-9.]+/i.test(ua);
+  const isFileProto = window.location.protocol === 'file:';
+  return isAndroidUA && (hasWv || isFileProto);
+};
+
 export const isInAppBrowser = (): boolean => {
   if (typeof navigator === 'undefined') return false;
   const ua = (navigator.userAgent || '').toLowerCase();
@@ -72,6 +81,32 @@ export const isInIframe = (): boolean => {
   } catch {
     return true;
   }
+};
+
+// Friendly Persian / English Auth Error Resolver
+export const getFriendlyAuthErrorMessage = (error: any, isRTL: boolean = true): string => {
+  const code = error?.code || '';
+  if (code === 'auth/network-request-failed') {
+    return isRTL
+      ? 'ارتباط با سرورهای احراز هویت گوگل برقرار نشد. اگر در ایران هستید، سرورهای احراز هویت گوگل ممکن است فیلتر باشند یا نیاز به فیلترشکن/اینترنت آزاد داشته باشند. همچنین می‌توانید بدون نیاز به لاگین، به عنوان مهمان به تمام امکانات بازی و لایتنر دسترسی داشته باشید.'
+      : 'Could not connect to Google Auth servers. Please check your internet connection or VPN. You can also continue playing as a Guest with full local features.';
+  }
+  if (code === 'auth/popup-blocked') {
+    return isRTL
+      ? 'پنجره ورود توسط مرورگر مسدود شد. لطفاً از دکمه «ورود مستقیم بدون پاپ‌آپ» استفاده کنید یا تنظیمات مرورگر را بررسی فرمایید.'
+      : 'Popup blocked by browser. Please use the Direct Mobile Login button.';
+  }
+  if (code === 'auth/unauthorized-domain') {
+    return isRTL
+      ? 'دامنه یا آدرس این برنامه در لیست دامنه‌های مجاز فایربیس گوگل ثبت نشده است.'
+      : 'Current domain is not authorized in Firebase Auth settings.';
+  }
+  if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') {
+    return isRTL ? 'فرآیند ورود لغو شد.' : 'Sign-in was cancelled.';
+  }
+  return isRTL
+    ? (error?.message || 'خطا در فرآیند ورود. لطفاً از روش ورود مستقیم استفاده کنید یا در حالت مهمان بازی کنید.')
+    : (error?.message || 'Authentication error. Please try again or continue as Guest.');
 };
 
 // Safe Firestore profile sync
@@ -119,17 +154,19 @@ export interface SignInOptions {
   mode?: 'auto' | 'popup' | 'redirect';
 }
 
-// Sign In with Google - Supports both Desktop Popup & Mobile/Samsung Redirect Flow
+// Sign In with Google - Supports Desktop Popup, Mobile/Samsung Redirect Flow & Android WebView
 export const signInWithGoogle = async (options: SignInOptions = {}): Promise<User | null> => {
   const mode = options.mode || 'auto';
   const inIframe = isInIframe();
   const mobile = isMobileDevice();
   const samsung = isSamsungBrowser();
   const standalone = isStandalonePWA();
+  const isWebView = isAndroidAppOrWebView();
 
-  // Redirect mode is preferred on Samsung Internet, standalone PWAs, or when explicitly requested,
-  // provided we are not trapped inside a sandboxed iframe.
-  const preferRedirect = (mode === 'redirect') || (mode === 'auto' && (standalone || (samsung && !inIframe) || (mobile && !inIframe)));
+  // If in an Android WebView loaded from file:/// or local assets, signInWithRedirect navigates out of the local scheme
+  // and cannot safely redirect back to file:///. So in Android WebView, prefer popup first.
+  const preferRedirect = (mode === 'redirect') || 
+    (mode === 'auto' && !isWebView && (standalone || (samsung && !inIframe) || (mobile && !inIframe)));
 
   if (preferRedirect && !inIframe) {
     try {
@@ -139,7 +176,7 @@ export const signInWithGoogle = async (options: SignInOptions = {}): Promise<Use
     return null; // Browser will navigate to accounts.google.com
   }
 
-  // Otherwise, attempt standard popup flow
+  // Attempt popup flow
   try {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
@@ -150,10 +187,9 @@ export const signInWithGoogle = async (options: SignInOptions = {}): Promise<Use
   } catch (error: any) {
     console.warn('signInWithPopup error:', error?.code, error?.message);
 
-    // If popup was blocked or closed on mobile, seamlessly fallback to redirect (if not in iframe)
+    // If popup was blocked on mobile (and not in iframe), attempt fallback to redirect
     const isPopupIssue = error?.code === 'auth/popup-blocked' || 
-                         error?.code === 'auth/cancelled-popup-request' ||
-                         error?.code === 'auth/popup-closed-by-user';
+                         error?.code === 'auth/cancelled-popup-request';
 
     if (isPopupIssue && !inIframe) {
       console.info('Falling back to signInWithRedirect for mobile device...');

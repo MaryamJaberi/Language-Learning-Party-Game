@@ -1367,7 +1367,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
         <button 
           type="button"
           className="start-btn disabled:opacity-50 disabled:cursor-not-allowed"
-          aria-label={t.nextStartGame || (isRTL ? 'مرحله بعد: شروع بازی' : 'Next: Start Game')}
+          aria-label={t.nextStartGame || (isRTL ? 'مرحله بعد: شروع بازی گروهی' : 'Next: Start Party Game')}
           onClick={() => {
             if (isPoolEmpty) {
               sound.playBuzzer();
@@ -1385,7 +1385,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
           }}
           disabled={!settings.targetLanguages || settings.targetLanguages.length === 0 || isPoolEmpty}
         >
-          <span className="whitespace-nowrap">{t.nextStartGame || (isRTL ? 'مرحله بعد: شروع بازی' : 'Next: Start Game')}</span>
+          <span className="whitespace-nowrap">{t.nextStartGame || (isRTL ? 'مرحله بعد: شروع بازی گروهی' : 'Next: Start Party Game')}</span>
           {isRTL ? <ArrowLeft size={20} className="shrink-0" /> : <ArrowRight size={20} className="shrink-0" />}
         </button>
       </div>
