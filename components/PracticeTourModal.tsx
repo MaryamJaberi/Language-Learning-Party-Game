@@ -264,7 +264,7 @@ export const PracticeTourModal: React.FC<Props> = ({
               onClick={handleComplete}
               className="px-3 py-2 text-xs font-bold text-[var(--mute)] hover:text-[var(--ink)] transition-colors cursor-pointer"
             >
-              {isRTL ? 'رد شدن (Skip)' : 'Skip'}
+              {isRTL ? 'بستن راهنما' : 'Dismiss'}
             </button>
 
             {currentStep > 0 && (

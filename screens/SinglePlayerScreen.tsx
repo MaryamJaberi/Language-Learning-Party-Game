@@ -643,10 +643,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
     if (!currentCard) return;
     sound.playClick();
     setIsPlayingAudio(true);
-    sound.speakNative(currentCard.targetText, currentCard.targetLanguage, {
-      onEnd: () => setIsPlayingAudio(false)
-    });
-    // Fallback timer to reset playing state
+    sound.speakNative(currentCard.targetText, currentCard.targetLanguage);
     window.setTimeout(() => setIsPlayingAudio(false), 3000);
   };
 
@@ -654,10 +651,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
     if (!currentCard) return;
     sound.playClick();
     setIsPlayingAudio(true);
-    sound.speakSlow(currentCard.targetText, currentCard.targetLanguage, {
-      onEnd: () => setIsPlayingAudio(false)
-    });
-    // Fallback timer to reset playing state
+    sound.speakSlow(currentCard.targetText, currentCard.targetLanguage);
     window.setTimeout(() => setIsPlayingAudio(false), 4500);
   };
 
@@ -855,13 +849,12 @@ const SinglePlayerScreen: React.FC<Props> = ({
         // Show the first word(s) and mask the rest of the expected answer
         const revealCount = Math.max(1, Math.ceil(words.length / 2));
         const revealedPart = words.slice(0, revealCount).join(' ');
-        const hiddenPart = words.slice(revealCount).map(w => '___').join(' ');
-        const label = isRTL ? 'شروع پاسخ:' : 'Answer starts with:';
-        hintsPool.push(`${label} «${revealedPart} ${hiddenPart}»`);
+        const label = isRTL ? 'الگوی جمله:' : 'Sentence frame:';
+        hintsPool.push(`${label} «${revealedPart} [______]»`);
       } else if (words.length === 1 && words[0].length > 2) {
         const cleanWord = words[0];
         const firstTwo = cleanWord.slice(0, Math.min(2, cleanWord.length - 1));
-        const label = isRTL ? 'حروف اول پاسخ:' : 'First letters:';
+        const label = isRTL ? 'الگوی کلمه:' : 'Word pattern:';
         hintsPool.push(`${label} «${firstTwo}...» (${cleanWord.length} ${isRTL ? 'حرف' : 'letters'})`);
       }
     }
@@ -1360,10 +1353,10 @@ const SinglePlayerScreen: React.FC<Props> = ({
                   type="button"
                   onClick={handlePlaySlowAudio}
                   className="btn-ghost !min-h-[34px] !h-8.5 !px-2.5 !py-1 !text-xs !rounded-xl flex items-center gap-1 cursor-pointer"
-                  aria-label={t.slowAudioLabel || (isRTL ? 'پخش شمرده' : 'Slow Audio')}
+                  aria-label={t.slowAudioLabel || (isRTL ? 'تلفظ آرام ۰.۷x' : 'Slow Audio 0.7x')}
                 >
                   <Volume1 size={14} className="text-[var(--turq)]" />
-                  <span>{isRTL ? 'شمرده' : 'Slow'}</span>
+                  <span>{isRTL ? 'تلفظ آرام ۰.۷x' : 'Slow 0.7x'}</span>
                 </button>
               </div>
             </div>
@@ -1402,10 +1395,10 @@ const SinglePlayerScreen: React.FC<Props> = ({
                   type="button"
                   onClick={handlePlaySlowAudio}
                   className="btn-ghost !min-h-[34px] !h-8.5 !px-2.5 !py-1 !text-xs !rounded-xl flex items-center gap-1 cursor-pointer"
-                  aria-label={t.slowAudioLabel || (isRTL ? 'پخش شمرده' : 'Slow Audio')}
+                  aria-label={t.slowAudioLabel || (isRTL ? 'تلفظ آرام ۰.۷x' : 'Slow Audio 0.7x')}
                 >
                   <Volume1 size={14} className="text-[var(--turq)]" />
-                  <span>{isRTL ? 'شمرده' : 'Slow'}</span>
+                  <span>{isRTL ? 'تلفظ آرام ۰.۷x' : 'Slow 0.7x'}</span>
                 </button>
               </div>
             </div>
@@ -1450,10 +1443,10 @@ const SinglePlayerScreen: React.FC<Props> = ({
                   type="button"
                   onClick={handlePlaySlowAudio}
                   className="btn-ghost !min-h-[34px] !h-8.5 !px-2.5 !py-1 !text-xs !rounded-xl flex items-center gap-1 cursor-pointer"
-                  aria-label={t.slowAudioLabel || (isRTL ? 'پخش شمرده' : 'Slow Audio')}
+                  aria-label={t.slowAudioLabel || (isRTL ? 'تلفظ آرام ۰.۷x' : 'Slow Audio 0.7x')}
                 >
                   <Volume1 size={14} className="text-[var(--turq)]" />
-                  <span>{isRTL ? 'شمرده' : 'Slow'}</span>
+                  <span>{isRTL ? 'تلفظ آرام ۰.۷x' : 'Slow 0.7x'}</span>
                 </button>
               </div>
             </div>
@@ -1496,10 +1489,10 @@ const SinglePlayerScreen: React.FC<Props> = ({
                   type="button"
                   onClick={handlePlaySlowAudio}
                   className="btn-ghost !min-h-[34px] !h-8.5 !px-2.5 !py-1 !text-xs !rounded-xl flex items-center gap-1 cursor-pointer"
-                  aria-label={t.slowAudioLabel || (isRTL ? 'پخش شمرده' : 'Slow Audio')}
+                  aria-label={t.slowAudioLabel || (isRTL ? 'تلفظ آرام ۰.۷x' : 'Slow Audio 0.7x')}
                 >
                   <Volume1 size={14} className="text-[var(--turq)]" />
-                  <span>{isRTL ? 'شمرده' : 'Slow'}</span>
+                  <span>{isRTL ? 'تلفظ آرام ۰.۷x' : 'Slow 0.7x'}</span>
                 </button>
               </div>
             </div>

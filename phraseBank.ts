@@ -1,4 +1,5 @@
 import phrasesData from './phrases.json';
+import CARDS_FOCUS_DATA from './cardsFocusData.json';
 import { Language, CEFRLevel, LanguageCard, ContentType, LearningMode, CardGameMode } from './types';
 
 interface BankPhrase {
@@ -155,6 +156,7 @@ export function cardsFromPhraseBank(
         points: pointsFor(p.difficulty),
         isReverse: reverse,
         isCreative,
+        focus: (CARDS_FOCUS_DATA as any)[`${p.id}_${target}`] || (CARDS_FOCUS_DATA as any)[p.id],
       });
     });
   });

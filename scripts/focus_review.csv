@@ -1,0 +1,57 @@
+cardId,cefrLevel,targetLanguage,lengthClass,units,readSec,targetText,focusPhrase,status
+EN_US_A1_REST_02,A1,en-US,long,7,5.83,"Can I get this to-go, please?","I get this",ACCEPTED
+EN_A1_REST_01,A1,en,long,8,6.67,"Could I have a glass of water, please?","have a glass",ACCEPTED
+EN_A1_EVERYDAY_01,A1,en,long,8,6.67,"Nice to meet you, I live in Amsterdam.","meet you, I",ACCEPTED
+FR_A1_REST_01,A1,fr,long,8,6.67,"Un croissant et un café, s'il vous plaît.","et un café,",ACCEPTED
+EN_CREATIVE_01,A2,en-US,long,10,6.67,"Can I get an iced latte with oat milk, please?","an iced latte",ACCEPTED
+NL_CREATIVE_02,A2,nl,long,10,6.67,"Mag ik een cappuccino met havermelk om mee te nemen?","cappuccino met havermelk",ACCEPTED
+C1_1739_nl,C1,nl,long,23,10,"Ik tel de veiligheidsrij mee in de aansluiting; een venster van veertig minuten dat bij de gate begint is een wens, geen plan.","van veertig minuten",false,ACCEPTED
+C1_1726_nl,C1,nl,long,28,12.17,"Ik boek de eerdere aansluiting als de geadverteerde overstap twintig minuten door een tweede security is; een strakke glimlach op een kaart is geen tas die ik terugzie.","een tweede security",false,ACCEPTED
+C1_132_nl,C1,nl,long,27,11.74,"Een portaal dat me midden in de upload uitlogt behandel ik als een indiening die ik niet deed; een draaiend wiel na een kick is geen ontvangstbewijs.","een indiening die",false,ACCEPTED
+C1_553_nl,C1,nl,long,29,12.61,"Ik zit de viva alleen als de schriftelijke commentaren achtenveertig uur eerder binnen zijn; koud binnenlopen bij een commissie die me gelezen heeft laat een verdediging een gok worden.","zijn; koud binnenlopen",false,ACCEPTED
+C1_691_nl,C1,nl,long,32,13.91,"Ik sla de setlunch over als ze de soep niet noemen voor ik ga zitten; een bord dat ik vanaf de deur niet lees is geen menu waar ik ja op zeg.","zitten; een bord",false,ACCEPTED
+C1_721_nl,C1,nl,long,25,10.87,"Ik sla het brunchbuffet over als ze niet kunnen zeggen wanneer de eieren van het vuur kwamen; een deksel en een vlam zijn geen tijdstempel.","de eieren van",false,ACCEPTED
+C1_334_nl,C1,nl,long,24,10.43,"Ik houd het zaaknummer in het onderwerp van elke mail; een draad die de referentie verliest maakt van een week bewijs een nieuw ticket.","een draad die",false,ACCEPTED
+C1_1257_nl,C1,nl,long,24,10.43,"Ik houd het rekeninguittreksel tot de winkelnaam klopt met de zaak waar ik binnenging; een rij cijfers is geen winkel die ik kan bevragen.","zaak waar ik",false,ACCEPTED
+C1_1146_nl,C1,nl,long,24,10.43,"Een citaat dat zonder de vraag binnenkomt behandel ik als versiering; een regel die ik niet in het interview kan plaatsen retweet ik niet.","versiering; een regel",false,ACCEPTED
+C1_109_nl,C1,nl,long,26,11.3,"Ik houd de gewaarmerkte kopie tot de lokettist dezelfde pagina twee keer stempelt; een scan die ze later mailen is geen stempel die ik kan zwaaien.","keer stempelt; een",false,ACCEPTED
+C1_1323_nl,C1,nl,long,26,11.3,"Ik beweeg op de fee als de scope-freeze vandaag geparafeerd wordt; een goedkoper cijfer dat de bijlage heropent is geen cijfer dat ik kan bemannen.","een goedkoper cijfer",false,ACCEPTED
+C1_1642_nl,C1,nl,long,27,11.74,"Ik weiger de cloud-sync tot ik weet welke map het huis verlaat; een back-up die het bureaublad kopieert is niet hetzelfde als een gekozen map.","verlaat; een back-up",false,ACCEPTED
+C1_1264_nl,C1,nl,long,33,14.35,"Ik weiger een spaarrente die alleen geldt voor nieuw geld boven een drempel die ik al heb; een teaser voor het volgende pond is niet het tarief op de ponden die ik heb.","al heb; een",false,ACCEPTED
+C1_1270_nl,C1,nl,long,24,10.43,"Een voorgestelde fooi bij afrekenen die ik niet koos behandel ik als een heffing; achttien procent vooraf aangevinkt is geen dankbaarheid die ik bood.","ik als een",false,ACCEPTED
+C1_1271_nl,C1,nl,long,31,13.48,"Een JKP dat de afsluitprovisie in een tweede pdf verstopt behandel ik als het hogere getal; een koprente die een noot nodig heeft is niet het tarief dat ik thuis noem.","hogere getal; een",false,ACCEPTED
+C1_808_nl,C1,nl,long,30,13.04,"Ik wacht tot de kliniek het merk noemt dat ze afleveren, niet alleen het molecule; een substitutie die ik aan de balie tegenkom is geen substitutie die ik gepland had.","het molecule; een",false,ACCEPTED
+C1_1878_nl,C1,nl,long,24,10.43,"Ik vraag of het freelancecontract de gezags-toets nog haalt als ik vier vaste dagen werk; ik ga dat niet gokken van een forum.","ik vier vaste",false,ACCEPTED
+C1_1081_nl,C1,nl,long,23,10,"Dekt het drempelbedrag voor kleine vorderingen deze factuur nog, of hebben ze hem nét over de grens geduwd zodat ik iemand moet inschakelen?","hebben ze hem",false,ACCEPTED
+C1_1093_nl,C1,nl,long,23,10,"Een mediationclausule die geen stad noemt behandel ik als onvolledig; een forum dat ik niet kan bereiken is geen forum dat ik teken.","een forum dat",false,ACCEPTED
+C1_108_nl,C1,nl,long,33,14.35,"Ik vul het formulier in de browser die zij noemden en sla daarna een pdf op; een gebruik-onze-app-banner ná mijn start is geen regel die ik bij de deur miste.","een pdf op;",false,ACCEPTED
+C1_798_nl,C1,nl,long,27,11.74,"Ik houd de scan tot het labportaal hetzelfde accessienummer toont; een verpleegkundige die zegt dat het in het systeem staat, is geen nummer dat ik kan zwaaien.","die zegt dat",false,ACCEPTED
+C1_68_nl,C1,nl,long,25,10.87,"Houden ze de eerste naam vast als het voorgaande slot tien minuten uitloopt, of valt de tweede naam op de minuut terug in de pool?","minuten uitloopt, of",false,ACCEPTED
+C1_46_nl,C1,nl,long,32,13.91,"Ik boek het eerste slot van de week alleen als de voorbereidingstekst de avond ervoor binnen is; een vastenvenster dat in de wachtkamer wordt aangekondigd is geen venster dat ik kan houden.","ervoor binnen is;",false,ACCEPTED
+C1_673_nl,C1,nl,long,24,10.43,"Ik vraag of het vers geperste sap vanochtend uit een pak kwam; een kan en een garnish is geen pers waar ik voor betaal.","pak kwam; een",false,ACCEPTED
+C1_173_nl,C1,nl,long,23,10,"Ik sluit van mijn kant zodra eigenaar en datum op één regel staan; een afscheid dat alleen warmt laat een week leeg beginnen.","één regel staan;",false,ACCEPTED
+C1_1591_nl,C1,nl,long,23,10,"Ik houd het geldpraatje uit de verjaardagsthread; een groep die zingt en daarna de rekening splitst is hoe een feest een audit wordt.","zingt en daarna",false,ACCEPTED
+C1_751_nl,C1,nl,long,25,10.87,"Ik houd de allergiekaart in dezelfde portemonnee als de verzekering; een briefje op de koelkast is geen kaart die ik in een bay kan tonen.","briefje op de",false,ACCEPTED
+C1_1767_nl,C1,nl,long,31,13.48,"Een korte hop die nog een tweede veiligheidscheck nodig heeft behandel ik als een overstap die ik niet kocht; dezelfde terminal die me terug door de röntgen stuurt is geen hop.","overstap die ik",false,ACCEPTED
+C1_1785_nl,C1,nl,long,26,11.3,"Ik weiger een vrijdag-all-hands die als agenda-hold landt zonder pack; een uur slides dat ik niet zag besteed ik aan werk mét pack.","een uur slides",false,ACCEPTED
+C1_812_nl,C1,nl,long,26,11.3,"Ik wacht op het beeldverslag voordat ik het tweede middel start dat ze na één hoge meting noemden; een portaalping in kleine letters is geen titratie.","dat ze na",false,ACCEPTED
+C1_1737_nl,C1,nl,long,28,12.17,"Ik reken de vervangbus alleen als het laatste bemande loket de laatste vertrektijd kan noemen; een poster die ik niet kan bevragen is geen aansluiting die ik risker.","vertrektijd kan noemen;",false,ACCEPTED
+C1_1659_nl,C1,nl,long,31,13.48,"Ik print de back-upcodes voordat ik het oude nummer uitzwaai; een code die alleen op een sim leeft die ik niet meer heb, zo sluit je de volgende login af.","alleen op een",false,ACCEPTED
+C1_1693_nl,C1,nl,long,23,10,"Niet één keer zette het portaal een tijdstempel op de download; ik wil een bewijs, anders heeft het bestand hun server nooit verlaten.","download; ik wil",false,ACCEPTED
+C1_1214_nl,C1,nl,long,24,10.43,"Ik weiger een valutawissel die de koers pas vastzet nadat ik het bedrag bevestig; een verrassing halverwege is niet de koers die ik vergeleek.","ik het bedrag",false,ACCEPTED
+C1_1678_nl,C1,nl,long,25,10.87,"Ik weiger een slimme meter die halfuursverbruik standaard aan een derde verkoopt; een goedkopere kWh die mijn ketel profileert is geen kWh die ik accepteer.","verkoopt; een goedkopere",false,ACCEPTED
+C1_1735_nl,C1,nl,long,27,11.74,"Ik reken de laatste bus na de encore, niet die onder typische eindtijd staat; een gordijntijd is geen vertrek waar ik in de regen naartoe kan rennen.","eindtijd staat; een",false,ACCEPTED
+C1_286_nl,C1,nl,long,23,10,"Ik zet mijn zaken op een rij voor ik de draad open; een half voorbereide chase maakt van een simpele vraag drie mails.","draad open; een",false,ACCEPTED
+C1_296_nl,C1,nl,long,26,11.3,"Ik zet de vraag in het onderwerp en parkeer het verhaal in de body; een onderwerp dat het werkwoord verbergt maakt van een draad een novelle.","in de body;",false,ACCEPTED
+C1_119_nl,C1,nl,long,25,10.87,"Ik print het referentienummer voordat ik de tab sluit; een succes scherm dat je niet twee keer kunt vastleggen maakt van een aanvraag een gerucht.","scherm dat je",false,ACCEPTED
+C1_1844_nl,C1,nl,long,23,10,"Ik neem de waarneming alleen als de extra dag geschreven staat; een cultuur van gaten vullen is geen rooster waarmee ik heb ingestemd.","staat; een cultuur",false,ACCEPTED
+C1_287_nl,C1,nl,long,30,13.04,"Ik houd de vraag op één scherm en bied een belletje als ze meer willen; een herhaling van vier pagina’s van het brief is hoe een vrijdag twee keer sterft.","meer willen; een",false,ACCEPTED
+C1_527_nl,C1,nl,long,27,11.74,"Ik kies de avondles alleen als het gebouw na de laatste bus openblijft; een seminar dat eindigt in een op slot zittende lobby is geen flexibel leren.","openblijft; een seminar",false,ACCEPTED
+C1_1820_nl,C1,nl,long,25,10.87,"Ik weiger een matrixrapportagelijn die een tweede baas toevoegt zonder een tweede salaris; twee bureaus en één loonzak maakt van een gunst een tweede baan.","tweede salaris; twee",false,ACCEPTED
+C1_117_nl,C1,nl,long,24,10.43,"Ik houd het gestempelde briefje tot het loketscherm hetzelfde wachtrijnummer toont; een mondeling jij bent de volgende is geen nummer dat ik kan zwaaien.","toont; een mondeling",false,ACCEPTED
+C1_266_nl,C1,nl,long,27,11.74,"Ik zeg de nee in de eerste zin en het alternatief in de tweede; vriendelijkheid die de weigering verbergt is hoe een vrijdag twee mails extra krijgt.","de tweede; vriendelijkheid",false,ACCEPTED
+C1_1144_nl,C1,nl,long,30,13.04,"Een livestream die het gezicht van de vrager nooit toont behandel ik als een monoloog die ik niet knip; een stem buiten beeld is geen publiek dat ik kan toeschrijven.","een monoloog die",false,ACCEPTED
+C1_1824_nl,C1,nl,long,25,10.87,"Ik weiger een teamchat die me na tienen seint tenzij de piketrooster mij noemt; een cultuur van altijd-aan is geen contract dat ik tekende.","de piketrooster mij",false,ACCEPTED
+C1_1635_nl,C1,nl,long,28,12.17,"Ik weiger een cloudmap die niet exporteert in een formaat dat ik offline open; een bibliotheek die alleen achter hun login leeft is geen archief dat ik vertrouw.","offline open; een",false,ACCEPTED
+C1_638_nl,C1,nl,long,24,10.43,"Ik sorteer karton alleen als de hopper die ochtend wordt geleegd; een volle muil naast een overgeslagen wagen maakt van de parkeerplaats een bak.","geleegd; een volle",false,ACCEPTED
+C1_1582_nl,C1,nl,long,24,10.43,"Ik houd de ex uit de groepsapp die nog de weekenden van de kids plant; een achtergebleven draad maakt van een grens een show.","weekenden van de",false,ACCEPTED

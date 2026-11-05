@@ -43,7 +43,7 @@ export const COLORS_MAP: Record<TeamColor, { bg: string, text: string, hex: stri
   },
 };
 
-export const PLAYER_AVATARS = ['🦊', '🦁', '🐼', '🐨', '🐯', '🐰', '🐸', '🐵'];
+export const PLAYER_AVATARS = ['🦊', '🦁', '🐼', '🐨', '🐯', '🐰', '🐸', '🐵', '🦉'];
 
 export interface ArcadeAvatarMeta {
   emoji: string;
@@ -452,6 +452,59 @@ export const CEFR_LEVELS: CEFRLevelInfo[] = [
     },
     color: '#7B2CBF',
     badge: 'C1'
+  },
+  {
+    id: 'all',
+    code: 'ALL',
+    name: {
+      fa: 'همه سطوح',
+      en: 'All Levels',
+      'en-US': 'All Levels',
+      nl: 'Alle niveaus',
+      de: 'Alle Stufen',
+      fr: 'Tous niveaux',
+      es: 'Todos los niveles',
+      it: 'Tutti i livelli',
+      tr: 'Tüm Seviyeler',
+      ar: 'جميع المستويات',
+      ru: 'Все уровни',
+      pt: 'Todos os níveis',
+      zh: '所有级别',
+      ja: '全レベル',
+      ko: '모든 레벨',
+      hi: 'सभी स्तर',
+      sv: 'Alla nivåer',
+      pl: 'Wszystkie poziomy',
+      uk: 'Всі рівні'
+    },
+    desc: {
+      fa: 'ترکیبی از تمام سطوح (A1 تا C1) برای بازی متنوع و چالش‌برانگیز',
+      en: 'Mix of all levels (A1 to C1) for varied and dynamic gameplay',
+      'en-US': 'Mix of all levels (A1 to C1) for varied and dynamic gameplay',
+      nl: 'Mix van alle niveaus (A1 t/m C1)',
+      de: 'Mischung aller Stufen (A1 bis C1)',
+      fr: 'Mélange de tous les niveaux (A1 à C1)',
+      es: 'Mezcla de todos los niveles (A1 a C1)',
+      it: 'Mix di tutti i livelli (da A1 a C1)',
+      tr: 'Tüm seviyelerin karışımı (A1-C1)',
+      ar: 'مزيج من جميع المستويات (A1 إلى C1)',
+      ru: 'Смесь всех уровней (от A1 до C1)'
+    },
+    example: {
+      fa: 'مثال: از کلمات ساده تا اصطلاحات پیشرفته',
+      en: 'e.g. From basic words to advanced idioms',
+      'en-US': 'e.g. From basic words to advanced idioms',
+      nl: 'bijv. Van basiswoorden tot gevorderde uitdrukkingen',
+      de: 'z. B. Von Grundwörtern bis zu Redewendungen',
+      fr: 'ex. Des mots de base aux expressions avancées',
+      es: 'ej. Desde palabras básicas hasta modismos avanzados',
+      it: 'es. Dalle parole base ai modi di dire avanzati',
+      tr: 'örn. Basit kelimelerden ileri düzey deyimlere',
+      ar: 'مثال: من الكلمات البسيطة إلى التعبيرات المتقدمة',
+      ru: 'напр. От базовых слов до сложных идиом'
+    },
+    color: '#F5B52E',
+    badge: 'ALL'
   }
 ];
 

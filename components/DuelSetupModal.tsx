@@ -119,7 +119,7 @@ export const DuelSetupModal: React.FC<Props> = ({
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-black text-[var(--ink)]">
-                {isRTL ? 'دوئل سرعتی دونفره' : '1v1 Speed Duel'}
+                {isRTL ? 'دوئل سرعتی دونفره ⚔️' : '1v1 Speed Duel ⚔️'}
               </h2>
               <span className="text-[11px] font-bold text-[var(--mute)]">
                 {isRTL ? 'مسابقه سرعتی دونفره (حضوری یا آنلاین اینترنتی)' : 'Head-to-head duel (Local or Online Match)'}
@@ -162,7 +162,7 @@ export const DuelSetupModal: React.FC<Props> = ({
               }`}
             >
               <Globe size={15} />
-              <span>{isRTL ? 'آنلاین (۲ گوشی)' : 'Online (2 Phones)'}</span>
+              <span>{isRTL ? '🌐 آنلاین (۲ گوشی)' : '🌐 Online (2 Phones)'}</span>
             </button>
           </div>
 
@@ -206,7 +206,7 @@ export const DuelSetupModal: React.FC<Props> = ({
                   className="w-full py-2.5 px-3 bg-[var(--lapis)] hover:bg-[#1a38a0] text-white text-xs font-black rounded-xl flex items-center justify-center gap-2 shadow-xs cursor-pointer"
                 >
                   <Wifi size={14} />
-                  <span>{isRTL ? 'ایجاد اتاق دوئل آنلاین (میزبان)' : 'Host Online Duel Room'}</span>
+                  <span>{isRTL ? '👑 ایجاد اتاق دوئل آنلاین (میزبان)' : '👑 Host Online Duel Room'}</span>
                 </button>
 
                 <div className="flex gap-2">

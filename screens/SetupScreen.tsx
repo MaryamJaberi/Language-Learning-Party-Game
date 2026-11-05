@@ -206,8 +206,8 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
   const [searchTarget, setSearchTarget] = useState('');
   const [searchUi, setSearchUi] = useState('');
 
-  // Active CEFR Level (strictly A1-C1)
-  const currentCefr = (settings.cefrLevel && settings.cefrLevel !== 'all') ? settings.cefrLevel : 'A1';
+  // Active CEFR Level (A1-C1 or all)
+  const currentCefr = settings.cefrLevel || 'all';
   const activeCefrInfo = useMemo(() => {
     return CEFR_LEVELS.find(l => l.id === currentCefr) || CEFR_LEVELS[0];
   }, [currentCefr]);
@@ -219,9 +219,11 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
       settings.selectedCategories,
       settings.cefrLevel,
       settings.nativeLanguage,
-      settings.cardGameMode
+      settings.cardGameMode,
+      true,
+      settings.roundDuration || 60
     );
-  }, [settings.targetLanguages, settings.selectedCategories, settings.cefrLevel, settings.nativeLanguage, settings.cardGameMode]);
+  }, [settings.targetLanguages, settings.selectedCategories, settings.cefrLevel, settings.nativeLanguage, settings.cardGameMode, settings.roundDuration]);
 
   const requiredCardCount = useMemo(() => {
     return Math.ceil(settings.playerCount * settings.roundsCount * 1.5);
@@ -840,7 +842,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
           </button>
 
           {/* Column 2: Learning Language */}
-          <div className="space-y-1.5 min-w-0" role="group" aria-label={t.languagesIWantToLearn || (isFa ? 'زبان هدف' : 'Learning Language')}>
+          <div className="space-y-1.5 min-w-0 relative" role="group" aria-label={t.languagesIWantToLearn || (isFa ? 'زبان‌هایی که می‌خوام یاد بگیرم' : 'Learning Language')}>
             <div className="flex items-center justify-between px-0.5">
               <span className="text-[11px] font-bold text-[var(--mute)] truncate">
                 {t.learningLabel || (isFa ? 'زبان یادگیری:' : 'Learning:')}
@@ -870,7 +872,17 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                       {currentTargetLangInfo.short}
                     </span>
                     <span className="text-xs font-extrabold text-[var(--ink)] truncate">
-                      {isFa ? (PERSIAN_LANG_NAMES[currentTargetLangInfo.code] || currentTargetLangInfo.name) : currentTargetLangInfo.name}
+                      {isFa ? `${PERSIAN_LANG_NAMES[currentTargetLangInfo.code] || currentTargetLangInfo.name} (${currentTargetLangInfo.name})` : currentTargetLangInfo.name}
+                    </span>
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      onClick={handleRemoveTargetLang}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleRemoveTargetLang(e); }}
+                      className="w-4 h-4 rounded-full hover:bg-[var(--line)] text-[var(--mute)] hover:text-[var(--ink)] flex items-center justify-center cursor-pointer ml-1 rtl:mr-1 shrink-0"
+                      aria-label="Remove language"
+                    >
+                      <X size={10} />
                     </span>
                   </span>
                 ) : (
@@ -881,6 +893,75 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
               </div>
               <ChevronDown size={15} className={`text-[var(--mute)] transition-transform duration-200 shrink-0 ${isTargetOpen ? 'rotate-180' : ''}`} />
             </button>
+
+            {/* Dropdown Menu for Learning Language inside targetGroup */}
+            <div className={`p-2.5 rounded-xl bg-[var(--panel)] border border-[var(--line)] shadow-sm space-y-2 absolute top-full left-0 right-0 sm:min-w-[260px] z-30 ${isTargetOpen ? 'block animate-fade-in' : 'hidden'}`} id="chips">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchTarget}
+                  onChange={(e) => setSearchTarget(e.target.value)}
+                  placeholder={t.searchLanguages || (isFa ? 'جستجوی زبان یادگیری...' : 'Search learning language...')}
+                  className="w-full h-9 px-3 text-xs rounded-lg bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] placeholder-[var(--mute)] focus:outline-none focus:border-[var(--lapis)] transition-colors pr-8 rtl:pr-8 rtl:pl-3 ltr:pl-8 ltr:pr-3"
+                />
+                <Search size={14} className="absolute top-1/2 -translate-y-1/2 text-[var(--mute)] pointer-events-none rtl:right-2.5 ltr:left-2.5" />
+                {searchTarget && (
+                  <button 
+                    type="button" 
+                    onClick={() => setSearchTarget('')}
+                    className="absolute top-1/2 -translate-y-1/2 text-[var(--mute)] hover:text-[var(--ink)] p-0.5 rtl:left-2 ltr:right-2"
+                  >
+                    <X size={12} />
+                  </button>
+                )}
+              </div>
+
+              <div className="max-h-52 overflow-y-auto space-y-1 no-scrollbar overscroll-contain">
+                {filteredTargetLanguages.length === 0 ? (
+                  <div className="text-xs text-[var(--mute)] py-2 text-center">{t.noLanguagesFound || 'No languages found'}</div>
+                ) : (
+                  filteredTargetLanguages.map(l => {
+                    const isSelected = (normalizedTargetCode === l.code);
+                    const subName = isFa ? PERSIAN_LANG_NAMES[l.code] : l.enName;
+                    return (
+                      <button
+                        key={`target-opt-${l.code}`}
+                        type="button"
+                        aria-pressed={isSelected}
+                        onClick={() => {
+                          selectLearningLang(l.code);
+                          setIsTargetOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between p-2 rounded-lg text-xs font-bold transition-all min-h-[40px] ${
+                          isSelected 
+                            ? 'bg-[var(--lapis)] text-[var(--on-lapis)] shadow-xs' 
+                            : 'hover:bg-[var(--bg)] text-[var(--ink)]'
+                        }`}
+                      >
+                        <span className="flex items-center gap-2 min-w-0">
+                          <span className={`w-5 h-5 rounded font-mono font-black text-[9px] flex items-center justify-center shrink-0 ${
+                            isSelected ? 'bg-white/20 text-white' : 'bg-black/10 dark:bg-white/10 text-[var(--ink)]'
+                          }`}>
+                            {l.short}
+                          </span>
+                          <span className="whitespace-nowrap truncate">{l.name}</span>
+                          {subName && subName !== l.name && (
+                            <span className={`text-[10.5px] whitespace-nowrap truncate ${isSelected ? 'opacity-80' : 'text-[var(--mute)]'}`}>
+                              ({subName})
+                            </span>
+                          )}
+                        </span>
+                        <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
+                          isSelected ? 'bg-white text-[var(--lapis)] border-white' : 'border-[var(--line)] bg-[var(--bg)]'
+                        }`}>
+                          {isSelected && <Check size={12} strokeWidth={3} />}
+                        </div>
+                      </button>
+                    );
+                  })
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -947,74 +1028,6 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
           </div>
         </div>
 
-        {/* Full-Width Dropdown Menu for Learning Language */}
-        <div className={`p-2.5 rounded-xl bg-[var(--panel)] border border-[var(--line)] shadow-sm space-y-2 ${isTargetOpen ? 'block animate-fade-in' : 'hidden'}`} id="chips">
-          <div className="relative">
-            <input
-              type="text"
-              value={searchTarget}
-              onChange={(e) => setSearchTarget(e.target.value)}
-              placeholder={t.searchLanguages || (isFa ? 'جستجوی زبان یادگیری...' : 'Search learning language...')}
-              className="w-full h-9 px-3 text-xs rounded-lg bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] placeholder-[var(--mute)] focus:outline-none focus:border-[var(--lapis)] transition-colors pr-8 rtl:pr-8 rtl:pl-3 ltr:pl-8 ltr:pr-3"
-            />
-            <Search size={14} className="absolute top-1/2 -translate-y-1/2 text-[var(--mute)] pointer-events-none rtl:right-2.5 ltr:left-2.5" />
-            {searchTarget && (
-              <button 
-                type="button" 
-                onClick={() => setSearchTarget('')}
-                className="absolute top-1/2 -translate-y-1/2 text-[var(--mute)] hover:text-[var(--ink)] p-0.5 rtl:left-2 ltr:right-2"
-              >
-                <X size={12} />
-              </button>
-            )}
-          </div>
-
-          <div className="max-h-52 overflow-y-auto space-y-1 no-scrollbar overscroll-contain">
-            {filteredTargetLanguages.length === 0 ? (
-              <div className="text-xs text-[var(--mute)] py-2 text-center">{t.noLanguagesFound || 'No languages found'}</div>
-            ) : (
-              filteredTargetLanguages.map(l => {
-                const isSelected = (normalizedTargetCode === l.code);
-                const subName = isFa ? PERSIAN_LANG_NAMES[l.code] : l.enName;
-                return (
-                  <button
-                    key={`target-opt-${l.code}`}
-                    type="button"
-                    aria-pressed={isSelected}
-                    onClick={() => {
-                      selectLearningLang(l.code);
-                      setIsTargetOpen(false);
-                    }}
-                    className={`w-full flex items-center justify-between p-2 rounded-lg text-xs font-bold transition-all min-h-[40px] ${
-                      isSelected 
-                        ? 'bg-[var(--lapis)] text-[var(--on-lapis)] shadow-xs' 
-                        : 'hover:bg-[var(--bg)] text-[var(--ink)]'
-                    }`}
-                  >
-                    <span className="flex items-center gap-2 min-w-0">
-                      <span className={`w-5 h-5 rounded font-mono font-black text-[9px] flex items-center justify-center shrink-0 ${
-                        isSelected ? 'bg-white/20 text-white' : 'bg-black/10 dark:bg-white/10 text-[var(--ink)]'
-                      }`}>
-                        {l.short}
-                      </span>
-                      <span className="whitespace-nowrap truncate">{l.name}</span>
-                      {subName && subName !== l.name && (
-                        <span className={`text-[10.5px] whitespace-nowrap truncate ${isSelected ? 'opacity-80' : 'text-[var(--mute)]'}`}>
-                          ({subName})
-                        </span>
-                      )}
-                    </span>
-                    <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
-                      isSelected ? 'bg-white text-[var(--lapis)] border-white' : 'border-[var(--line)] bg-[var(--bg)]'
-                    }`}>
-                      {isSelected && <Check size={12} strokeWidth={3} />}
-                    </div>
-                  </button>
-                );
-              })
-            )}
-          </div>
-        </div>
       </section>
 
       {/* PANEL 2: CEFR LEVEL SELECTION (A1, A2, B1, B2, C1, ALL) */}
@@ -1029,9 +1042,9 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
           </span>
         </div>
 
-        {/* Level Pills Responsive Grid (5 real CEFR levels: A1 to C1) */}
+        {/* Level Pills Responsive Grid (A1 to C1 + ALL) */}
         <div 
-          className="grid grid-cols-5 gap-1.5"
+          className="grid grid-cols-3 sm:grid-cols-6 gap-1.5"
           role="radiogroup" 
           aria-label={t.cefrLevel || (isRTL ? 'سطح دشواری' : 'Proficiency Level')}
         >
@@ -1335,6 +1348,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                 }}
               >
                 <span className="whitespace-nowrap" dir="ltr">{d.text}</span>
+                <span className="sr-only">{d.title}</span>
               </button>
             );
           })}

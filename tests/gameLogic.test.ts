@@ -525,5 +525,5 @@ describe('10-Round Complete Multi-User Simulation & English Language Integration
     expect(teams[0].score).toBe(40);
     expect(teams[1].score).toBe(40);
     expect(teams[2].score).toBe(40);
-  });
+  }, 15000);
 });

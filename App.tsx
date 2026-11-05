@@ -386,7 +386,9 @@ const App: React.FC = () => {
       settings.selectedCategories,
       (settings.cefrLevel && settings.cefrLevel !== 'all') ? settings.cefrLevel : 'A1',
       effectiveNative,
-      settings.cardGameMode || 'mixed'
+      settings.cardGameMode || 'mixed',
+      settings.roundDuration || 60,
+      settings.playerCount || 4
     );
     setSessionCardPool(pool);
     setPoolPointer(0);

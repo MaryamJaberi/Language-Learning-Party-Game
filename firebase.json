@@ -4,5 +4,10 @@
     "rules": "firestore.rules",
     "edition": "ENTERPRISE",
     "dataAccessMode": "FIRESTORE_NATIVE"
+  },
+  "emulators": {
+    "firestore": {
+      "port": 8080
+    }
   }
 }

@@ -56,6 +56,13 @@ export interface LanguageCard {
   challengeBonus?: number; // Extra bonus points for answering challenge card
   isCreative?: boolean; // Creative scenario, roleplay, cultural nuance, or witty idiom card
   scenarioRole?: string; // Scenario tag e.g. "در کافه", "فرودگاه", "اصطلاح کوچه بازاری"
+  focus?: Record<string, string>; // Optional 2-5 word core chunk to learn, per language
+  focusReviewed?: boolean; // Editorial review approval flag
+  measured?: {
+    units: number;
+    readSec: number;
+    lengthClass: 'short' | 'medium' | 'long' | 'tooLong';
+  };
 }
 
 export interface Player {

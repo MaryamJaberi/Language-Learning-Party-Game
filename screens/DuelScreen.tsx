@@ -231,139 +231,10 @@ export const DuelScreen: React.FC<Props> = ({
     <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto h-full max-h-[100dvh] min-h-0 flex-1 flex flex-col justify-between overflow-hidden bg-[var(--bg)] text-[var(--ink)] font-ui select-none relative">
       
       {/* ======================================================== */}
-      {/* 1. TOP ZONE: PLAYER 2 (Red) */}
+      {/* 1. BOTTOM ZONE (DOM FIRST): PLAYER 1 (Blue) */}
       {/* ======================================================== */}
       <div 
-        className={`w-full p-2.5 sm:p-3 flex flex-col justify-between transition-transform duration-300 rotate-180 ${
-          isLockedP2 ? 'bg-red-500/10' : ''
-        }`}
-        style={{ height: '43%' }}
-      >
-        {/* P2 Header & Score Bar */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-[#E0533C] text-white text-xs font-black flex items-center justify-center shrink-0 shadow-xs">
-              #{isRTL ? toPersianDigits(2) : 2}
-            </div>
-            <div>
-              <span className="text-xs sm:text-sm font-black text-[#E0533C] flex items-center gap-1">
-                {settings.player2Name}
-                {p2Streak >= 2 && (
-                  <span className="text-[10px] font-black text-amber-500 bg-amber-500/15 px-1.5 py-0.5 rounded-full flex items-center gap-0.5 animate-pulse">
-                    <Flame size={12} /> {isRTL ? toPersianDigits(p2Streak) : p2Streak}x
-                  </span>
-                )}
-              </span>
-              <span className="text-[10px] text-[var(--mute)] font-bold">
-                {isRTL 
-                  ? `امتیاز: ${toPersianDigits(p2Score)} از ${toPersianDigits(settings.winningScore)}` 
-                  : `Score: ${p2Score} / ${settings.winningScore}`}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-1.5">
-            {/* P2 Lockout Indicator */}
-            {isLockedP2 && (
-              <span className="text-[11px] font-black text-rose-500 bg-rose-500/15 px-2 py-0.5 rounded-full flex items-center gap-1 animate-bounce">
-                <Lock size={11} />
-                <span>{isRTL ? 'قفل اشتباه!' : 'Locked!'}</span>
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* P2 4 Reflex Buttons */}
-        <div className="grid grid-cols-2 gap-2 mt-auto">
-          {roundChoices.map((choice, idx) => {
-            const isWinnerChoice = roundWinner === 'p2' && choice.trim().toLowerCase() === currentCard.targetText.trim().toLowerCase();
-            const isChoiceRtl = isRtlLang(currentCard.targetLanguage || settings.targetLanguage);
-            return (
-              <button
-                key={`p2-choice-${idx}-${choice}`}
-                type="button"
-                dir={isChoiceRtl ? 'rtl' : 'ltr'}
-                disabled={isLockedP2 || isRoundResolving}
-                onClick={() => handlePlayerAnswer('p2', choice)}
-                className={`min-h-[46px] py-2 sm:py-2.5 px-2.5 rounded-2xl border text-[11px] sm:text-xs font-extrabold leading-snug transition-all active:scale-95 cursor-pointer shadow-sm text-center flex items-center justify-center line-clamp-2 break-words whitespace-normal ${
-                  isWinnerChoice
-                    ? '!bg-emerald-500 !text-white !border-emerald-600 scale-102 ring-4 ring-emerald-500/30'
-                    : 'bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:border-[#E0533C]'
-                }`}
-              >
-                <span className="line-clamp-2 break-words">{choice}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ======================================================== */}
-      {/* 2. MIDDLE ARENA: Tug-of-War Bar, Question & Stop Game ONLY */}
-      {/* ======================================================== */}
-      <div className="w-full bg-[var(--panel)] border-y-2 border-[var(--line)] p-2 sm:p-2.5 flex flex-col justify-between shadow-md relative z-10" style={{ height: '14%' }}>
-        
-        {/* Dynamic Tug-of-War Gauge */}
-        <div className="w-full h-2 rounded-full bg-[var(--line)] overflow-hidden relative mb-1">
-          <div 
-            className="absolute top-0 bottom-0 bg-gradient-to-r from-[#2347C5] via-[var(--teal)] to-[#E0533C] transition-all duration-500 rounded-full"
-            style={{ 
-              left: 0,
-              width: `${tugOfWarPercent}%`
-            }}
-          />
-          {/* Tug-of-War Marker */}
-          <div 
-            className="absolute top-0 bottom-0 w-2.5 bg-white border border-black/30 rounded-full shadow-md -translate-x-1/2 transition-all duration-500"
-            style={{ left: `${tugOfWarPercent}%` }}
-          />
-        </div>
-
-        {/* Middle Information Plate: ONLY Question + Stop Game Button */}
-        <div className="flex items-center justify-between px-1 gap-2 flex-1">
-          <div className="w-9 shrink-0" />
-
-          {/* Central Prompt Word */}
-          <div className="text-center px-2 min-w-0 flex-1">
-            <h2 className="text-sm sm:text-lg font-black text-[var(--ink)] leading-snug tracking-tight line-clamp-2 break-words">
-              {currentCard.translation}
-            </h2>
-          </div>
-
-          {/* Right Action: Stop Game Only */}
-          <button
-            type="button"
-            onClick={() => {
-              sound.playClick();
-              setShowExitModal(true);
-            }}
-            className="w-9 h-9 rounded-xl bg-[var(--bg)] border border-[var(--line)] hover:bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center transition-colors cursor-pointer shrink-0 shadow-2xs"
-            title={t.pause || (isRTL ? 'توقف بازی' : 'Pause Game')}
-            aria-label={t.pause || (isRTL ? 'توقف بازی' : 'Pause Game')}
-          >
-            <Pause size={16} />
-          </button>
-        </div>
-
-        {/* Reaction Diff Notification Banner */}
-        {roundWinner && reactionDiffMs && (
-          <div className="absolute inset-0 bg-black/80 flex items-center justify-center gap-1.5 text-white text-xs font-black animate-fade-in z-20">
-            <Zap size={14} className="text-[var(--saffron)]" />
-            <span>
-              {roundWinner === 'p1' ? settings.player1Name : settings.player2Name}{' '}
-              {isRTL 
-                ? `در ${toPersianDigits((reactionDiffMs / 1000).toFixed(2))} ثانیه زودتر پاسخ داد!`
-                : `was faster in ${(reactionDiffMs / 1000).toFixed(2)}s!`}
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* ======================================================== */}
-      {/* 3. BOTTOM ZONE: PLAYER 1 (Blue) */}
-      {/* ======================================================== */}
-      <div 
-        className={`w-full p-2.5 sm:p-3 flex flex-col justify-between transition-transform duration-300 ${
+        className={`w-full p-2.5 sm:p-3 flex flex-col justify-between transition-transform duration-300 order-3 ${
           isLockedP1 ? 'bg-blue-500/10' : ''
         }`}
         style={{ height: '43%' }}
@@ -428,6 +299,135 @@ export const DuelScreen: React.FC<Props> = ({
       </div>
 
       {/* ======================================================== */}
+      {/* 2. MIDDLE ARENA: Tug-of-War Bar, Question & Stop Game ONLY */}
+      {/* ======================================================== */}
+      <div className="w-full bg-[var(--panel)] border-y-2 border-[var(--line)] p-2 sm:p-2.5 flex flex-col justify-between shadow-md relative z-10 order-2" style={{ height: '14%' }}>
+        
+        {/* Dynamic Tug-of-War Gauge */}
+        <div className="w-full h-2 rounded-full bg-[var(--line)] overflow-hidden relative mb-1">
+          <div 
+            className="absolute top-0 bottom-0 bg-gradient-to-r from-[#2347C5] via-[var(--teal)] to-[#E0533C] transition-all duration-500 rounded-full"
+            style={{ 
+              left: 0,
+              width: `${tugOfWarPercent}%`
+            }}
+          />
+          {/* Tug-of-War Marker */}
+          <div 
+            className="absolute top-0 bottom-0 w-2.5 bg-white border border-black/30 rounded-full shadow-md -translate-x-1/2 transition-all duration-500"
+            style={{ left: `${tugOfWarPercent}%` }}
+          />
+        </div>
+
+        {/* Middle Information Plate: ONLY Question + Stop Game Button */}
+        <div className="flex items-center justify-between px-1 gap-2 flex-1">
+          <div className="w-9 shrink-0" />
+
+          {/* Central Prompt Word */}
+          <div className="text-center px-2 min-w-0 flex-1">
+            <h2 className="text-sm sm:text-lg font-black text-[var(--ink)] leading-snug tracking-tight line-clamp-2 break-words">
+              {currentCard.translation}
+            </h2>
+          </div>
+
+          {/* Right Action: Stop Game Only */}
+          <button
+            type="button"
+            onClick={() => {
+              sound.playClick();
+              setShowExitModal(true);
+            }}
+            className="w-9 h-9 rounded-xl bg-[var(--bg)] border border-[var(--line)] hover:bg-[var(--lapis-soft)] text-[var(--lapis)] flex items-center justify-center transition-colors cursor-pointer shrink-0 shadow-2xs"
+            title={t.pause || (isRTL ? 'توقف بازی' : 'Pause Game')}
+            aria-label={t.pause || (isRTL ? 'توقف بازی' : 'Pause Game')}
+          >
+            <Pause size={16} />
+          </button>
+        </div>
+
+        {/* Reaction Diff Notification Banner */}
+        {roundWinner && reactionDiffMs && (
+          <div className="absolute inset-0 bg-black/80 flex items-center justify-center gap-1.5 text-white text-xs font-black animate-fade-in z-20">
+            <Zap size={14} className="text-[var(--saffron)]" />
+            <span>
+              {roundWinner === 'p1' ? settings.player1Name : settings.player2Name}{' '}
+              {isRTL 
+                ? `در ${toPersianDigits((reactionDiffMs / 1000).toFixed(2))} ثانیه زودتر پاسخ داد!`
+                : `was faster in ${(reactionDiffMs / 1000).toFixed(2)}s!`}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* ======================================================== */}
+      {/* 3. TOP ZONE: PLAYER 2 (Red) */}
+      {/* ======================================================== */}
+      <div 
+        className={`w-full p-2.5 sm:p-3 flex flex-col justify-between transition-transform duration-300 rotate-180 order-1 ${
+          isLockedP2 ? 'bg-red-500/10' : ''
+        }`}
+        style={{ height: '43%' }}
+      >
+        {/* P2 Header & Score Bar */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-[#E0533C] text-white text-xs font-black flex items-center justify-center shrink-0 shadow-xs">
+              #{isRTL ? toPersianDigits(2) : 2}
+            </div>
+            <div>
+              <span className="text-xs sm:text-sm font-black text-[#E0533C] flex items-center gap-1">
+                {settings.player2Name}
+                {p2Streak >= 2 && (
+                  <span className="text-[10px] font-black text-amber-500 bg-amber-500/15 px-1.5 py-0.5 rounded-full flex items-center gap-0.5 animate-pulse">
+                    <Flame size={12} /> {isRTL ? toPersianDigits(p2Streak) : p2Streak}x
+                  </span>
+                )}
+              </span>
+              <span className="text-[10px] text-[var(--mute)] font-bold">
+                {isRTL 
+                  ? `امتیاز: ${toPersianDigits(p2Score)} از ${toPersianDigits(settings.winningScore)}` 
+                  : `Score: ${p2Score} / ${settings.winningScore}`}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            {/* P2 Lockout Indicator */}
+            {isLockedP2 && (
+              <span className="text-[11px] font-black text-rose-500 bg-rose-500/15 px-2 py-0.5 rounded-full flex items-center gap-1 animate-bounce">
+                <Lock size={11} />
+                <span>{isRTL ? 'قفل اشتباه!' : 'Locked!'}</span>
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* P2 4 Reflex Buttons */}
+        <div className="grid grid-cols-2 gap-2 mt-auto">
+          {roundChoices.map((choice, idx) => {
+            const isWinnerChoice = roundWinner === 'p2' && choice.trim().toLowerCase() === currentCard.targetText.trim().toLowerCase();
+            const isChoiceRtl = isRtlLang(currentCard.targetLanguage || settings.targetLanguage);
+            return (
+              <button
+                key={`p2-choice-${idx}-${choice}`}
+                type="button"
+                dir={isChoiceRtl ? 'rtl' : 'ltr'}
+                disabled={isLockedP2 || isRoundResolving}
+                onClick={() => handlePlayerAnswer('p2', choice)}
+                className={`min-h-[46px] py-2 sm:py-2.5 px-2.5 rounded-2xl border text-[11px] sm:text-xs font-extrabold leading-snug transition-all active:scale-95 cursor-pointer shadow-sm text-center flex items-center justify-center line-clamp-2 break-words whitespace-normal ${
+                  isWinnerChoice
+                    ? '!bg-emerald-500 !text-white !border-emerald-600 scale-102 ring-4 ring-emerald-500/30'
+                    : 'bg-[var(--panel)] hover:bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:border-[#E0533C]'
+                }`}
+              >
+                <span className="line-clamp-2 break-words">{choice}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ======================================================== */}
       {/* 4. MATCH WINNER VICTORY PODIUM MODAL */}
       {/* ======================================================== */}
       {matchWinner && (
@@ -439,7 +439,7 @@ export const DuelScreen: React.FC<Props> = ({
 
             <div>
               <span className="text-xs font-black text-[var(--mute)] uppercase tracking-wider block mb-1">
-                {t.duelChampion || (isRTL ? 'قهرمان دوئل سرعتی!' : 'Speed Duel Champion!')}
+                {isRTL ? 'پیروزی در دوئل سرعتی!' : 'Speed Duel Victory!'}
               </span>
               <h2 className="text-2xl font-black">
                 {matchWinner === 'p1' ? settings.player1Name : settings.player2Name}

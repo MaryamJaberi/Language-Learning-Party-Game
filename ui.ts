@@ -192,7 +192,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     duelChampion: 'قهرمان دوئل سرعتی!',
     rematchBtn: 'مسابقه مجدد',
     backToMenu: 'بازگشت به منو',
-    slowAudioLabel: 'پخش شمرده',
+    slowAudioLabel: 'تلفظ آرام ۰.۷x',
     adminBadge: 'مدیر کل',
     writeBtn: 'نوشتن',
     skipBtn: 'رد کردن',

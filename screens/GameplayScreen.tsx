@@ -41,6 +41,9 @@ import {
   Bot
 } from 'lucide-react';
 import { AICoachChatModal } from '../components/AICoachChatModal';
+import { CardPacingSentence } from '../components/CardPacingSentence';
+import { measureCard, calculateTimeBonus, getRevealDuration, shouldAutoTTS, getFocusPhrase } from '../cardPacing';
+import { recordCardTelemetry } from '../cardTelemetry';
 
 interface UndoSnapshot {
   activePlayerIndex: number;
@@ -157,6 +160,23 @@ const GameplayScreen: React.FC<Props> = ({
     // Reset round quota when currentRound changes
     setTeamChallengesInRound({});
   }, [currentRound]);
+
+  // Card Pacing: Timer Bonus for longer cards (+Ns)
+  useEffect(() => {
+    if (!currentCard) return;
+    setCardStartTime(Date.now());
+    const measurement = currentCard.measured || measureCard(currentCard);
+    const turnDurationSec = settings.roundDuration || 60;
+    const bonusSec = calculateTimeBonus(measurement.readSec, turnDurationSec);
+    if (bonusSec > 0 && gameStatus === GameStatus.ActiveTurn) {
+      setRoundTimer(prev => prev + bonusSec * 1000);
+      setBonusNotification(`+${bonusSec}s`);
+      const timer = setTimeout(() => {
+        setBonusNotification(prev => (prev === `+${bonusSec}s` ? null : prev));
+      }, 1800);
+      return () => clearTimeout(timer);
+    }
+  }, [currentCard?.id]);
 
   // Reset streak on turn end / activePlayer change
   useEffect(() => {
@@ -362,9 +382,13 @@ const GameplayScreen: React.FC<Props> = ({
     sound.playCorrect();
     vibrate(60);
 
-    // Auto Pronounce target phrase in native target accent if setting is active
+    // Auto Pronounce target phrase in native target accent if setting is active (Pacing Rule: focus or sentence if readSec <= 4)
     if (settings.autoPronounceOnCorrect !== false && currentCard?.targetText) {
-      sound.speakTargetPhrase(currentCard.targetText, currentCard.targetLanguage);
+      const measurement = currentCard.measured || measureCard(currentCard);
+      const focus = getFocusPhrase(currentCard, currentCard.targetLanguage);
+      if (shouldAutoTTS(measurement.readSec, !!focus)) {
+        sound.speakTargetPhrase(focus || currentCard.targetText, currentCard.targetLanguage);
+      }
     }
 
     const activePlayer = players[activePlayerIndex];
@@ -378,6 +402,10 @@ const GameplayScreen: React.FC<Props> = ({
 
     // Calculate points & bonuses
     const timeSpent = (Date.now() - cardStartTime) / 1000;
+    if (currentCard) {
+      const measurement = currentCard.measured || measureCard(currentCard);
+      recordCardTelemetry(currentCard.id, timeSpent, false, measurement.readSec);
+    }
     const isSpeedBonus = timeSpent < 6;
     let basePoints = currentCard?.points || 1;
     if (currentCard?.isGolden) basePoints *= 2;
@@ -439,8 +467,9 @@ const GameplayScreen: React.FC<Props> = ({
 
     const nextIndex = getNextActivePlayerIndex(activePlayerIndex);
 
-    // Card Reveal on Correct (default ON, pauses timer, auto-dismiss 2.5s)
+    // Card Reveal on Correct (default ON, pauses timer, auto-dismiss max(2.5s, readSec))
     if (settings.cardRevealEnabled !== false && currentCard) {
+      const revealSec = getRevealDuration(currentCard.measured?.readSec || measureCard(currentCard).readSec);
       setGameStatus(GameStatus.Paused);
       setRevealCard({
         card: currentCard,
@@ -451,7 +480,7 @@ const GameplayScreen: React.FC<Props> = ({
       if (revealTimeoutRef.current) clearTimeout(revealTimeoutRef.current);
       revealTimeoutRef.current = setTimeout(() => {
         dismissRevealCard();
-      }, 2500);
+      }, revealSec * 1000);
       return;
     }
 
@@ -482,6 +511,10 @@ const GameplayScreen: React.FC<Props> = ({
     setStreakCount(0);
 
     if (currentCard) {
+      const timeSpent = (Date.now() - cardStartTime) / 1000;
+      const measurement = currentCard.measured || measureCard(currentCard);
+      recordCardTelemetry(currentCard.id, timeSpent, true, measurement.readSec);
+
       if (isCurrentCardChallenge) {
         if (activeTeamId !== undefined) {
           setTeamChallengesInRound(prev => ({ ...prev, [activeTeamId]: (prev[activeTeamId] || 0) + 1 }));
@@ -515,8 +548,9 @@ const GameplayScreen: React.FC<Props> = ({
 
     const nextIndex = getNextActivePlayerIndex(activePlayerIndex);
 
-    // Card Reveal on Skip (default ON, pauses timer, auto-dismiss 2.5s)
+    // Card Reveal on Skip (default ON, pauses timer, auto-dismiss max(2.5s, readSec))
     if (settings.cardRevealEnabled !== false && currentCard) {
+      const revealSec = getRevealDuration(currentCard.measured?.readSec || measureCard(currentCard).readSec);
       setGameStatus(GameStatus.Paused);
       setRevealCard({
         card: currentCard,
@@ -526,7 +560,7 @@ const GameplayScreen: React.FC<Props> = ({
       if (revealTimeoutRef.current) clearTimeout(revealTimeoutRef.current);
       revealTimeoutRef.current = setTimeout(() => {
         dismissRevealCard();
-      }, 2500);
+      }, revealSec * 1000);
       return;
     }
 
@@ -704,7 +738,7 @@ const GameplayScreen: React.FC<Props> = ({
                 className="flex items-center gap-1 bg-amber-500/15 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-lg border border-amber-300 dark:border-amber-800 text-[11px] font-black"
               >
                 <Flame size={13} className="text-amber-500 fill-amber-500 animate-pulse" />
-                <span>x{streakCount}</span>
+                <span>🔥 x{streakCount}</span>
               </div>
             )}
 
@@ -756,29 +790,12 @@ const GameplayScreen: React.FC<Props> = ({
                   </p>
                 </div>
 
-                {/* Target Foreign Answer (Hero text with dynamic dir) */}
-                <div className="flex items-center justify-center gap-2 pt-0.5 px-2 max-w-full">
-                  <h2 
-                    dir={isRtlLang(currentCard.targetLanguage) ? 'rtl' : 'ltr'} 
-                    className="card-target-word text-xl sm:text-2xl md:text-3xl font-extrabold font-card-word tracking-tight leading-snug text-[var(--ink)] break-words"
-                  >
-                    {currentCard.targetText}
-                  </h2>
-                  
-                  {/* Pronounce Button */}
-                  <button
-                    type="button"
-                    aria-label={isRTL ? "پخش تلفظ صوتی" : "Audio Pronunciation"}
-                    title={isRTL ? "پخش تلفظ صوتی" : "Audio Pronunciation"}
-                    onClick={() => {
-                      sound.playClick();
-                      sound.speakTargetPhrase(currentCard.targetText, currentCard.targetLanguage);
-                    }}
-                    className="p-2 bg-[var(--turq)] hover:brightness-105 text-white rounded-xl shadow-xs transition-all active:scale-95 shrink-0 cursor-pointer"
-                  >
-                    <Volume2 size={16} />
-                  </button>
-                </div>
+                {/* Target Foreign Answer with Pacing Display */}
+                <CardPacingSentence 
+                  card={currentCard} 
+                  isReverse={false} 
+                  className="pt-0.5 px-2"
+                />
               </div>
             ) : (
               /* SCENARIO 2: REGULAR EXPLAIN / SPEAK MODE */
@@ -787,30 +804,16 @@ const GameplayScreen: React.FC<Props> = ({
                 {/* Clean Card Plate */}
                 <div className="w-full max-w-md my-1 p-3 sm:p-4 rounded-2xl bg-[var(--bg)] border border-[var(--line)] flex flex-col items-center justify-center space-y-1.5 shadow-xs">
                   
-                  {/* Hero Target Word / Phrase */}
-                  <div className="flex items-center justify-center gap-2 max-w-full">
-                    <h2 
-                      dir={isRtlLang(currentCard?.targetLanguage || 'en-US') ? 'rtl' : 'ltr'} 
-                      className="card-target-word text-xl sm:text-3xl font-extrabold font-card-word tracking-tight leading-snug text-[var(--ink)] break-words"
-                    >
-                      {currentCard?.targetText || '---'}
-                    </h2>
-                    
-                    {currentCard?.targetText && (
-                      <button
-                        type="button"
-                        aria-label={isRTL ? "پخش تلفظ صوتی" : "Audio Pronunciation"}
-                        title={isRTL ? "پخش تلفظ صوتی" : "Audio Pronunciation"}
-                        onClick={() => {
-                          sound.playClick();
-                          sound.speakTargetPhrase(currentCard.targetText, currentCard.targetLanguage);
-                        }}
-                        className="p-2 bg-[var(--turq)] hover:brightness-105 text-white rounded-xl shadow-xs transition-all active:scale-95 shrink-0 cursor-pointer"
-                      >
-                        <Volume2 size={16} />
-                      </button>
-                    )}
-                  </div>
+                  {/* Hero Target Word / Phrase with Pacing and Focus */}
+                  {currentCard ? (
+                    <CardPacingSentence 
+                      card={currentCard} 
+                      isReverse={false} 
+                      className="text-xl sm:text-2xl md:text-3xl"
+                    />
+                  ) : (
+                    <span className="text-xl font-bold text-[var(--ink)]">---</span>
+                  )}
 
                   {/* Meaning / Translation in High-Contrast Badge */}
                   {currentCard?.translation && (

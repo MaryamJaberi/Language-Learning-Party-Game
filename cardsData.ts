@@ -4,6 +4,8 @@ import { cardsFromPhraseBank } from './phraseBank';
 import { getC1CardsForSession } from './c1SentencesData';
 import { buildCardsFromConcepts, getPromptForCard, UNIVERSAL_CONCEPTS } from './multiLangDictionary';
 import { SUPPORTED_LANGUAGES } from './constants';
+import CARDS_FOCUS_DATA from './cardsFocusData.json';
+import { filterEligibleCards, sequenceCards } from './cardPacing';
 
 // Rich Curated Language Cards Database
 export const CURATED_LANGUAGE_CARDS: LanguageCard[] = [
@@ -1207,6 +1209,14 @@ export const CURATED_LANGUAGE_CARDS: LanguageCard[] = [
   }
 ];
 
+// Attach precomputed focus phrases from focus dataset
+for (const card of CURATED_LANGUAGE_CARDS) {
+  const f = (CARDS_FOCUS_DATA as Record<string, Record<string, string>>)[card.id];
+  if (f) {
+    card.focus = { ...(card.focus || {}), ...f };
+  }
+}
+
 // English translations & prompts for curated cards when nativeLanguage is English (US or UK)
 export const CURATED_EN_TRANSLATIONS: Record<string, { translation: string; prompt?: string; hint?: string }> = {
   // Dutch
@@ -1348,7 +1358,9 @@ export function buildSessionCardPool(
   selectedCategories?: string[],
   cefrLevel: CEFRLevel = 'all',
   nativeLanguage: Language = 'fa',
-  cardGameMode: CardGameMode = 'mixed'
+  cardGameMode: CardGameMode = 'mixed',
+  turnDurationSec: number = 60,
+  playerCount: number = 4
 ): LanguageCard[] {
   const isEnNative = nativeLanguage === 'en' || nativeLanguage === 'en-US';
   let activeTargets = Array.isArray(targetLanguages) && targetLanguages.length > 0 
@@ -1654,11 +1666,14 @@ export function buildSessionCardPool(
     }
 
     const finalCards = interleaved.length > 0 ? interleaved : [...sanitizedPool].sort(() => Math.random() - 0.5);
-    return tagPedagogicalRatio(finalCards, cefrLevel);
+    const eligible = filterEligibleCards(finalCards, turnDurationSec, nativeLanguage, cardGameMode === 'reverse');
+    const tagged = tagPedagogicalRatio(eligible, cefrLevel);
+    return sequenceCards(tagged, playerCount);
   }
 
-  const finalCards = [...sanitizedPool].sort(() => Math.random() - 0.5);
-  return tagPedagogicalRatio(finalCards, cefrLevel);
+  const eligible = filterEligibleCards(sanitizedPool, turnDurationSec, nativeLanguage, cardGameMode === 'reverse');
+  const tagged = tagPedagogicalRatio(eligible, cefrLevel);
+  return sequenceCards(tagged, playerCount);
 }
 
 /**
@@ -1697,6 +1712,7 @@ export function tagPedagogicalRatio(cards: LanguageCard[], targetLevel: CEFRLeve
  * Pre-calculates the exact pool size for a given combination
  * Used by the Pool Size Guard before game initiation!
  * By default realOnly is true to exclude synthetic/fallback cards.
+ * Filters for pacing eligibility BEFORE returning pool count.
  */
 export function getAvailablePoolCount(
   targetLanguages?: Language[],
@@ -1704,9 +1720,10 @@ export function getAvailablePoolCount(
   cefrLevel: CEFRLevel = 'all',
   nativeLanguage: Language = 'fa',
   cardGameMode: CardGameMode = 'mixed',
-  realOnly: boolean = true
+  realOnly: boolean = true,
+  turnDurationSec: number = 60
 ): number {
-  const pool = buildSessionCardPool(targetLanguages, selectedCategories, cefrLevel, nativeLanguage, cardGameMode);
+  const pool = buildSessionCardPool(targetLanguages, selectedCategories, cefrLevel, nativeLanguage, cardGameMode, turnDurationSec);
   if (realOnly) {
     return pool.filter(c => !c.id.startsWith('SYN_')).length;
   }

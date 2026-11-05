@@ -1,4 +1,5 @@
 import { LanguageCard, Language } from './types';
+import { getFocusPhrase } from './cardPacing';
 
 export interface EvaluationResult {
   isCorrect: boolean;
@@ -29,8 +30,8 @@ export function normalizeText(str: string): string {
     .replace(/[ةۀ]/g, 'ه')                  // Teh marbuta & heh with hamza
     .replace(/[؟?!\.,;:\-_—\(\)\[\]\{\}\/\\#\*~]/g, ' ')
     // Unify "می " and "نمی " prefixes so "می تونی" -> "میتونی"
-    .replace(/\bمی\s+/g, 'می')
-    .replace(/\bنمی\s+/g, 'نمی')
+    .replace(/(^|\s)می\s+/g, '$1می')
+    .replace(/(^|\s)نمی\s+/g, '$1نمی')
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -246,7 +247,12 @@ export function evaluateAnswer(
   }
 
   // Generate target variations (contractions, synonyms, spelling variants)
-  const expectedVariations = getSentenceVariations(targetAnswer);
+  // If focus phrase exists, scoring targets the focus phrase as well as the full sentence
+  const focusPhrase = !overrideExpectedText ? getFocusPhrase(card, card.targetLanguage) : undefined;
+  const expectedVariations = [
+    ...(focusPhrase ? getSentenceVariations(focusPhrase) : []),
+    ...getSentenceVariations(targetAnswer)
+  ];
   let bestSimilarity = 0;
   let bestMatch = expectedVariations[0];
   let isExact = false;
