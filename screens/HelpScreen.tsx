@@ -942,8 +942,8 @@ export const HelpScreen: React.FC<Props> = ({
               </div>
               <p className="text-xs font-medium text-[var(--ink)] leading-relaxed bg-[var(--bg)] p-3 border border-[var(--line)] rounded-xl mb-2.5">
                 {isRTL 
-                  ? 'اطلاعات شما با بالاترین استانداردهای امنیتی محافظت می‌شود. هیچ صدای ضبط‌شده‌ای در سرور ذخیره نمی‌شود و پردازش صدا مستقیماً روی دستگاه انجام می‌شود. تشخیص صوت توسط سرویس گفتار مرورگر پردازش می‌شود و به اتصال اینترنت نیاز دارد.' 
-                  : 'Your voice data is processed securely on-device. No recordings are retained or transmitted to external servers. Speech recognition is processed by the browser\'s speech service and needs internet.'}
+                  ? 'اطلاعات شما با بالاترین استانداردهای امنیتی محافظت می‌شود. هیچ صدای ضبط‌شده‌ای در سرور ذخیره نمی‌شود و پردازش صدا مستقیماً روی دستگاه انجام می‌شود.' 
+                  : 'Your voice data is processed securely on-device. No recordings are retained or transmitted to external servers.'}
               </p>
               <a
                 href="./privacy.html"

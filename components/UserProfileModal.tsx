@@ -1170,9 +1170,7 @@ export const UserProfileModal: React.FC<Props> = ({
                     <ShieldCheck size={15} className="text-[var(--turq)] shrink-0 mt-0.5" />
                     <div>
                       <strong className="text-[var(--ink)] block font-semibold">{isRTL ? 'پردازش صوتی محلی (بدون ضبط صدا)' : 'On-Device Audio Only'}</strong>
-                      {isRTL 
-                        ? 'میکروفون تنها برای تشخیص زنده تلفظ روی گوشی استفاده شده و هیچ صدایی در سرور ذخیره نمی‌شود. تشخیص صوت توسط سرویس گفتار مرورگر پردازش می‌شود و به اتصال اینترنت نیاز دارد.' 
-                        : 'Microphone audio is processed in real-time. No audio is recorded or stored on servers. Speech recognition is processed by the browser\'s speech service and needs internet.'}
+                      {isRTL ? 'میکروفون تنها برای تشخیص زنده تلفظ روی گوشی استفاده شده و هیچ صدایی به سرور ارسال نمی‌شود.' : 'Microphone audio is processed strictly on-device in real-time. No audio is recorded or stored.'}
                     </div>
                   </div>
 

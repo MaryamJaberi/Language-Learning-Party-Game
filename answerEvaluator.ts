@@ -27,39 +27,12 @@ export function normalizeText(str: string): string {
     .replace(/\u0643/g, '\u06a9')           // Arabic kaf -> Persian kaf (ك -> ک)
     .replace(/[آأإ]/g, 'ا')                 // Normalize alif with hamza / madda
     .replace(/[ةۀ]/g, 'ه')                  // Teh marbuta & heh with hamza
-    .replace(/[؟?!\.,;:\-_—\(\)\[\]\{\}\/\\#\*~…⋯]/g, ' ')
+    .replace(/[؟?!\.,;:\-_—\(\)\[\]\{\}\/\\#\*~]/g, ' ')
     // Unify "می " and "نمی " prefixes so "می تونی" -> "میتونی"
     .replace(/\bمی\s+/g, 'می')
     .replace(/\bنمی\s+/g, 'نمی')
     .replace(/\s+/g, ' ')
     .trim();
-}
-
-// Common conversational filler words across supported languages
-export const FILLER_WORDS = new Set<string>([
-  // English
-  'um', 'uh', 'er', 'ah', 'like', 'well', 'basically',
-  // Persian
-  'امم', 'ام', 'یعنی', 'خب', 'مثلا', 'مثلاً', 'راستش', 'اه',
-  // Dutch
-  'nou', 'euh', 'eh',
-  // German
-  'äh', 'ähm', 'tja', 'halt',
-  // French
-  'euh', 'bah', 'ben',
-  // Spanish
-  'eh', 'este', 'bueno',
-  // Italian
-  'ehm', 'beh', 'cioè', 'cioe',
-  // Arabic
-  'امم', 'يعني'
-]);
-
-export function stripFillerWords(str: string): string {
-  if (!str) return '';
-  const tokens = str.split(' ').filter(Boolean);
-  const filtered = tokens.filter(tok => !FILLER_WORDS.has(tok.toLowerCase()));
-  return filtered.length > 0 ? filtered.join(' ') : str;
 }
 
 // Remove diacritics / accents for tolerant comparison
@@ -133,6 +106,8 @@ const SYNONYM_GROUPS: string[][] = [
   ['خوبم', 'من خوبم', 'عالی ام', 'عالی هستم', 'الحمدلله'],
   // English common equivalents
   ['can you help me', 'could you help me', 'help me please', 'can you please help me'],
+  ['how do you say in english', 'how do you say this in english', 'how do you say that in english'],
+  ['به انگلیسی چی میشه', 'به انگلیسی چی میگن', 'به انگلیسی این چی میشه'],
   ['thank you', 'thanks', 'thanks a lot', 'thank you very much'],
   ['check please', 'bill please', 'the check please', 'the bill please'],
   ['excuse me', 'pardon me', 'sorry'],
@@ -258,7 +233,7 @@ export function evaluateAnswer(
   overrideExpectedText?: string
 ): EvaluationResult {
   const userNorm = normalizeText(rawUserInput);
-  const userNoFillers = stripFillerWords(userNorm);
+  const userStripped = stripAccents(userNorm);
   const targetAnswer = overrideExpectedText?.trim() ? overrideExpectedText.trim() : card.targetText;
 
   if (!userNorm) {
@@ -283,41 +258,29 @@ export function evaluateAnswer(
       }
     }
   }
-
-  // Generate user candidate forms: raw normalized, filler-stripped, and accent-stripped
-  const userCandidates = Array.from(new Set([
-    userNorm,
-    userNoFillers,
-    stripAccents(userNorm),
-    stripAccents(userNoFillers)
-  ].filter(Boolean)));
-
   let bestSimilarity = 0;
   let bestMatch = expectedVariations[0];
   let isExact = false;
 
   for (const expected of expectedVariations) {
-    for (const u of userCandidates) {
-      if (u === expected) {
-        isExact = true;
-        bestSimilarity = 1.0;
-        bestMatch = expected;
-        break;
-      }
-
-      const maxLen = Math.max(u.length, expected.length);
-      if (maxLen === 0) continue;
-
-      const charSim = 1 - (levenshteinDistance(u, expected) / maxLen);
-      const tokenSim = wordTokenSimilarity(u, expected);
-      const combinedSim = (charSim * 0.45) + (tokenSim * 0.55);
-
-      if (combinedSim > bestSimilarity) {
-        bestSimilarity = combinedSim;
-        bestMatch = expected;
-      }
+    if (userNorm === expected || userStripped === expected) {
+      isExact = true;
+      bestSimilarity = 1.0;
+      bestMatch = expected;
+      break;
     }
-    if (isExact) break;
+
+    const maxLen = Math.max(userNorm.length, expected.length);
+    if (maxLen === 0) continue;
+
+    const charSim = 1 - (levenshteinDistance(userNorm, expected) / maxLen);
+    const tokenSim = wordTokenSimilarity(userNorm, expected);
+    const combinedSim = (charSim * 0.45) + (tokenSim * 0.55);
+
+    if (combinedSim > bestSimilarity) {
+      bestSimilarity = combinedSim;
+      bestMatch = expected;
+    }
   }
 
   // Base points calculation scaled by card CEFR level (A1 -> C1/C2) as requested
@@ -335,12 +298,11 @@ export function evaluateAnswer(
   const speedBonus = Math.round(timeRemainingRatio * 25 * levelMult);
   const totalPoints = basePoints + speedBonus;
 
-  // Full Credit: Exact match or >= 0.85 similarity
-  if (isExact || bestSimilarity >= 0.85) {
+  // Exact Match
+  if (isExact || bestSimilarity >= 0.90) {
     return {
       isCorrect: true,
-      isAlmostCorrect: false,
-      similarity: Math.max(bestSimilarity, 0.90),
+      similarity: Math.max(bestSimilarity, 0.95),
       userAnswerNormalized: userNorm,
       expectedAnswerNormalized: bestMatch,
       matchedAlternative: bestMatch,
@@ -351,8 +313,8 @@ export function evaluateAnswer(
     };
   }
 
-  // Partial Credit: 0.70 to 0.85 similarity ("almost")
-  if (bestSimilarity >= 0.70) {
+  // 80% similarity tolerance (as requested: accept >= 80% similarity, synonymous variations & slight spelling differences)
+  if (bestSimilarity >= 0.80) {
     return {
       isCorrect: true,
       isAlmostCorrect: true,
@@ -361,9 +323,9 @@ export function evaluateAnswer(
       expectedAnswerNormalized: bestMatch,
       matchedAlternative: bestMatch,
       feedbackMessage: uiLanguage === 'fa'
-        ? `✨ نزدیک بود! پاسخ پذیرفته شد (پاسخ دقیق: "${bestMatch}").`
-        : `✨ Almost! Accepted with partial credit (exact match: "${bestMatch}").`,
-      pointsAwarded: Math.round(totalPoints * 0.75)
+        ? `✨ آفرین، صحیح است! (پاسخ معادل و نزدیک: "${bestMatch}")`
+        : `✨ Great job, correct! (Target match: "${bestMatch}")`,
+      pointsAwarded: Math.round(totalPoints * 0.90)
     };
   }
 

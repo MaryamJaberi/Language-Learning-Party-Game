@@ -167,38 +167,6 @@ export const SUPPORTED_LANGUAGES: LanguageInfo[] = [
   { code: 'tl', name: 'Filipino', nativeName: 'Tagalog', persianName: 'فیلیپینی', flag: '🇵🇭', direction: 'ltr', region: 'asia', speechCode: 'fil-PH' }
 ];
 
-// BCP-47 Speech recognition language code mapping for all supported locales
-export const SPEECH_LANG_MAP: Record<string, string> = {
-  'en': 'en-GB',
-  'en-US': 'en-US',
-  'fa': 'fa-IR',
-  'ar': 'ar-SA',
-  'nl': 'nl-NL',
-  'de': 'de-DE',
-  'fr': 'fr-FR',
-  'es': 'es-ES',
-  'it': 'it-IT',
-  'pt': 'pt-PT',
-  'tr': 'tr-TR',
-  'pl': 'pl-PL',
-  'uk': 'uk-UA',
-  'zh': 'zh-CN',
-  'ja': 'ja-JP',
-  'ko': 'ko-KR',
-  'hi': 'hi-IN',
-  'sv': 'sv-SE',
-  'ru': 'ru-RU'
-};
-
-export function getSpeechLanguageCode(langCode: string): string {
-  if (!langCode) return 'en-US';
-  const found = SUPPORTED_LANGUAGES.find(l => l.code === langCode);
-  if (found?.speechCode) return found.speechCode;
-  const mapped = SPEECH_LANG_MAP[langCode];
-  if (mapped) return mapped;
-  return langCode.includes('-') ? langCode : `${langCode}-${langCode.toUpperCase()}`;
-}
-
 export interface CEFRLevelInfo {
   id: CEFRLevel;
   code: string;
