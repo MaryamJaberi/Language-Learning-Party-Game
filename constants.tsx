@@ -1,4 +1,5 @@
 import { TeamColor, Language, CEFRLevel, GameSettings } from './types';
+import { getRandomCharacters } from './characters';
 
 export const COLORS_MAP: Record<TeamColor, { bg: string, text: string, hex: string, surface: string, border: string, glow: string, name: string, faName: string }> = {
   [TeamColor.Blue]: { 
@@ -571,6 +572,69 @@ export const DEFAULT_SETTINGS: GameSettings = {
   powerCardsEnabled: true,
   cardRevealEnabled: true
 };
+ 
+export function isGitHubPagesHost(): boolean {
+  if (typeof window === 'undefined' || !window.location) return false;
+  const host = window.location.hostname || '';
+  return host === 'maryamjaberi.github.io' || host.endsWith('.github.io') || host.includes('github.io');
+}
 
+export function createDefaultSettingsForLanguage(lang: Language | string): GameSettings {
+  if (lang === 'nl') {
+    return {
+      ...DEFAULT_SETTINGS,
+      language: 'nl',
+      nativeLanguage: 'nl',
+      targetLanguages: ['en', 'es'],
+      playerNames: getRandomCharacters('nl', 8),
+    };
+  }
+  if (lang === 'en' || lang === 'en-US') {
+    return {
+      ...DEFAULT_SETTINGS,
+      language: 'en',
+      nativeLanguage: 'en',
+      targetLanguages: ['nl', 'es'],
+      playerNames: getRandomCharacters('en', 8),
+    };
+  }
+  if (lang === 'fa') {
+    return { ...DEFAULT_SETTINGS };
+  }
+  return {
+    ...DEFAULT_SETTINGS,
+    language: lang as Language,
+    nativeLanguage: lang as Language,
+    targetLanguages: ['en', 'es'],
+    playerNames: getRandomCharacters(lang as Language, 8),
+  };
+}
 
+export function resolveInitialGameSettings(): GameSettings {
+  if (typeof window === 'undefined') {
+    return DEFAULT_SETTINGS;
+  }
 
+  // 1. Explicit query parameter override (e.g. ?lang=nl, ?lang=en, ?lang=fa)
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const paramLang = params.get('lang');
+    if (paramLang && ['nl', 'en', 'en-US', 'fa', 'de', 'fr', 'es', 'it', 'ar', 'tr', 'ru', 'zh', 'ja', 'ko'].includes(paramLang)) {
+      return createDefaultSettingsForLanguage(paramLang === 'en-US' ? 'en' : (paramLang as Language));
+    }
+  } catch {}
+
+  // 2. GitHub Pages host detection (maryamjaberi.github.io or any *.github.io)
+  if (isGitHubPagesHost()) {
+    const browserLang = (
+      (typeof navigator !== 'undefined' && (navigator.language || (navigator.languages && navigator.languages[0]))) || ''
+    ).toLowerCase();
+
+    // Default to Dutch if browser locale is Dutch (e.g. nl, nl-NL, nl-BE), otherwise default to English
+    const defaultLang = browserLang.startsWith('nl') ? 'nl' : 'en';
+    return createDefaultSettingsForLanguage(defaultLang);
+  }
+
+  // Default fallback for localhost, local test environment, Android app, etc.
+  return DEFAULT_SETTINGS;
+}

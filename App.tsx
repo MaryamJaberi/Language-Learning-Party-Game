@@ -47,7 +47,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { migrateGuestWeakCardsToCloud } from './contentEngine';
 import { getRandomCharacters } from './characters';
 import { isRtlLang } from './ui';
-import { PLAYER_AVATARS, DEFAULT_SETTINGS } from './constants';
+import { PLAYER_AVATARS, DEFAULT_SETTINGS, resolveInitialGameSettings, isGitHubPagesHost } from './constants';
 
 type ScreenType = 'INTRO' | 'LANGUAGE_SELECT' | 'CATEGORIES' | 'SETUP' | 'PLAYERS' | 'SEATING_CONFIRM' | 'GAME' | 'HISTORY' | 'HELP' | 'ONLINE_LOBBY' | 'ONLINE_GAME' | 'SINGLE_PLAYER' | 'SINGLE_REPORT' | 'DUEL_GAME' | 'ONLINE_DUEL' | 'LEITNER';
 
@@ -55,7 +55,7 @@ const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('INTRO');
   const [prevScreen, setPrevScreen] = useState<ScreenType>('INTRO');
   const [activeHelpSection, setActiveHelpSection] = useState<string>('intro');
-  const [settings, setSettings] = useState<GameSettings>(DEFAULT_SETTINGS);
+  const [settings, setSettings] = useState<GameSettings>(() => resolveInitialGameSettings());
   const [history, setHistory] = useState<GameHistoryEntry[]>([]);
 
   // 2-Player Shared Screen Duel State
@@ -70,15 +70,20 @@ const App: React.FC = () => {
   // Single-Player State
   const [isSingleSetupOpen, setIsSingleSetupOpen] = useState(false);
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
-  const [singlePlayerSettings, setSinglePlayerSettings] = useState<SinglePlayerSettings>({
-    targetLanguage: 'en',
-    nativeLanguage: 'fa',
-    cefrLevel: 'A1',
-    displayMode: 'translate_to_target',
-    questionCount: 10,
-    timeLimitSeconds: 0,
-    autoPlayAudio: true,
-    selectedCategories: DEFAULT_SETTINGS.selectedCategories
+  const [singlePlayerSettings, setSinglePlayerSettings] = useState<SinglePlayerSettings>(() => {
+    const init = resolveInitialGameSettings();
+    const isNl = init.language === 'nl';
+    const isEn = init.language.startsWith('en');
+    return {
+      targetLanguage: isNl ? 'en' : (isEn ? 'nl' : 'en'),
+      nativeLanguage: init.language,
+      cefrLevel: 'A1',
+      displayMode: 'translate_to_target',
+      questionCount: 10,
+      timeLimitSeconds: 0,
+      autoPlayAudio: true,
+      selectedCategories: DEFAULT_SETTINGS.selectedCategories
+    };
   });
   const [singlePlayerCards, setSinglePlayerCards] = useState<LanguageCard[]>([]);
   const [singlePlayerReport, setSinglePlayerReport] = useState<SinglePlayerSessionReport | null>(null);
@@ -148,30 +153,60 @@ const App: React.FC = () => {
   const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
+    let urlLang: string | null = null;
+    if (typeof window !== 'undefined') {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const p = params.get('lang');
+        if (p && ['nl', 'en', 'en-US', 'fa', 'de', 'fr', 'es', 'it', 'ar', 'tr', 'ru', 'zh', 'ja', 'ko'].includes(p)) {
+          urlLang = p === 'en-US' ? 'en' : p;
+        }
+      } catch {}
+    }
+
     const savedSettings = localStorage.getItem('dor_settings');
+    const userExplicitlyChoseLang = typeof localStorage !== 'undefined' && localStorage.getItem('dor_lang_explicitly_chosen') === 'true';
+
     if (savedSettings) {
       try {
         const parsed = JSON.parse(savedSettings);
-        let uiLang = parsed?.language || 'fa';
+        let uiLang = urlLang || parsed?.language || 'fa';
         if (uiLang === 'en-US') uiLang = 'en';
-        const isEnglish = uiLang === 'en' || parsed?.nativeLanguage === 'en' || parsed?.nativeLanguage === 'en-US';
-        const nativeLang = parsed?.nativeLanguage === 'fa' ? 'fa' : (isEnglish ? 'en' : (parsed?.nativeLanguage || uiLang || 'fa'));
+
+        // When visiting on GitHub Pages without an explicit prior user choice or URL override, migrate default away from legacy Persian
+        if (isGitHubPagesHost() && !userExplicitlyChoseLang && !urlLang && parsed?.language === 'fa') {
+          const browserLang = ((typeof navigator !== 'undefined' && (navigator.language || (navigator.languages && navigator.languages[0]))) || '').toLowerCase();
+          uiLang = browserLang.startsWith('nl') ? 'nl' : 'en';
+        }
+
+        const isEnglish = uiLang === 'en';
+        const isDutch = uiLang === 'nl';
+        let nativeLang = parsed?.nativeLanguage || uiLang;
+        if (isGitHubPagesHost() && !userExplicitlyChoseLang && !urlLang && parsed?.language === 'fa') {
+          nativeLang = uiLang;
+        } else if (urlLang) {
+          nativeLang = urlLang;
+        }
         const isEnglishNative = nativeLang === 'en' || nativeLang === 'en-US';
-        
-        // Normalize player names: if native language is English, ensure no leftover Persian names
+        const isDutchNative = nativeLang === 'nl';
+
+        // Normalize player names: if native language is English or Dutch, ensure no leftover Persian names
         let loadedNames: string[] = Array.isArray(parsed?.playerNames) ? parsed.playerNames : [];
         const hasPersianNames = loadedNames.some(name => typeof name === 'string' && /[\u0600-\u06FF]/.test(name));
-        if (isEnglishNative && (hasPersianNames || loadedNames.length === 0)) {
-          loadedNames = getRandomCharacters('en', 8);
+        if ((isEnglishNative || isDutchNative) && (hasPersianNames || loadedNames.length === 0)) {
+          loadedNames = getRandomCharacters(isDutchNative ? 'nl' : 'en', 8);
         }
 
         // Target languages
         let targets = Array.isArray(parsed?.targetLanguages) && parsed.targetLanguages.length > 0 
           ? parsed.targetLanguages 
-          : (isEnglishNative ? ['es', 'nl'] : ['en-US', 'nl']);
-        if (isEnglishNative) {
+          : (isDutchNative ? ['en', 'es'] : (isEnglishNative ? ['nl', 'es'] : ['en-US', 'nl']));
+        if (isDutchNative) {
+          targets = targets.filter((t: string) => t !== 'nl');
+          if (targets.length === 0) targets = ['en', 'es'];
+        } else if (isEnglishNative) {
           targets = targets.filter((t: string) => t !== 'en' && t !== 'en-US');
-          if (targets.length === 0) targets = ['es', 'nl'];
+          if (targets.length === 0) targets = ['nl', 'es'];
         }
 
         // Validate numbers and enums against corrupted or outdated data
@@ -195,7 +230,7 @@ const App: React.FC = () => {
           selectedCategories: Array.isArray(parsed?.selectedCategories) && parsed.selectedCategories.length > 0 
             ? parsed.selectedCategories 
             : (prev.selectedCategories || ["CAT_EVERYDAY", "CAT_RESTAURANT", "CAT_FOOD", "CAT_TRAVEL", "CAT_SHOPPING", "CAT_WORK", "CAT_SMALLTALK"]),
-          playerNames: loadedNames.length >= 8 ? loadedNames : getRandomCharacters(isEnglishNative ? 'en-US' : nativeLang, 8)
+          playerNames: loadedNames.length >= 8 ? loadedNames : getRandomCharacters(isDutchNative ? 'nl' : (isEnglishNative ? 'en' : nativeLang), 8)
         }));
       } catch (e) {
         // Fallback
@@ -262,6 +297,10 @@ const App: React.FC = () => {
   };
 
   const handleGlobalLanguageChange = (newLang: Language) => {
+    try {
+      localStorage.setItem('dor_lang_explicitly_chosen', 'true');
+    } catch {}
+
     const isRTL = isRtlLang(newLang);
     if (typeof document !== 'undefined') {
       document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
@@ -277,7 +316,9 @@ const App: React.FC = () => {
       if (newLang === 'fa' || newLang === 'ar' || newLang === 'tr') {
         targets = ['en', 'de'];
       } else if (newLang === 'en' || newLang === 'en-US') {
-        targets = ['es', 'fr'];
+        targets = ['nl', 'es'];
+      } else if (newLang === 'nl') {
+        targets = ['en', 'es'];
       } else {
         targets = ['en', 'es'];
       }
