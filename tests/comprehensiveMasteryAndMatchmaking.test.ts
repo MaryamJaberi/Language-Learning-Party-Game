@@ -36,8 +36,9 @@ describe('1. Adaptive Difficulty Engine Math & Flow Band', () => {
     // Immediate recall (t = 0) should be 1.0
     expect(retrievability(0, S)).toBe(1.0);
 
-    // Very long delay (e.g. 100 days) decays
-    expect(retrievability(100 * DAY, S)).toBeLessThan(0.45);
+    // Very long delay (e.g. 100 days) with S = 5 days
+    // FSRS: R(100, 5) = (1 + (19/81) * 100 / 5)^(-0.5) = (461/81)^(-0.5) = 9/sqrt(461) ≈ 0.41917
+    expect(retrievability(100 * DAY, S)).toBeCloseTo(0.419, 3);
   });
 
   it('predicts success probability based on ability theta and item difficulty b', () => {

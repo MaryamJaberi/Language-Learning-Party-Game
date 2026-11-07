@@ -99,4 +99,57 @@ describe('Sound System and Audio Synthesizer Verification', () => {
 
     vi.useRealTimers();
   });
+
+  test('isVoiceSupportedFor waits for voiceschanged event when getVoices() is initially empty', async () => {
+    let voicesList: any[] = [];
+    let voicesChangedCallback: (() => void) | null = null;
+
+    const mockSpeechSynthesis = {
+      getVoices: vi.fn(() => voicesList),
+      onvoiceschanged: null as any,
+      addEventListener: vi.fn((event, cb) => {
+        if (event === 'voiceschanged') voicesChangedCallback = cb;
+      }),
+      removeEventListener: vi.fn(),
+      speak: vi.fn(),
+      cancel: vi.fn(),
+      pause: vi.fn(),
+      resume: vi.fn(),
+      speaking: false,
+      paused: false,
+      pending: false
+    };
+
+    const originalSpeech = window.speechSynthesis;
+    (window as any).speechSynthesis = mockSpeechSynthesis;
+
+    try {
+      // Clear cached voices on sound manager
+      (sound as any).cachedVoices = [];
+
+      // Initially empty
+      expect(mockSpeechSynthesis.getVoices().length).toBe(0);
+
+      // Start waiting for voice support check asynchronously
+      const checkPromise = sound.isVoiceSupportedFor('en-US');
+
+      // Simulate asynchronous voices population
+      voicesList = [
+        { name: 'Google US English', lang: 'en-US', default: true }
+      ];
+
+      // Trigger voiceschanged event
+      if (typeof mockSpeechSynthesis.onvoiceschanged === 'function') {
+        mockSpeechSynthesis.onvoiceschanged(new Event('voiceschanged'));
+      }
+      if (voicesChangedCallback) {
+        (voicesChangedCallback as any)();
+      }
+
+      const supported = await checkPromise;
+      expect(supported).toBe(true);
+    } finally {
+      (window as any).speechSynthesis = originalSpeech;
+    }
+  });
 });

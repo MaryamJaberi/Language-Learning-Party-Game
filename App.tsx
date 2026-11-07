@@ -101,10 +101,15 @@ const App: React.FC = () => {
     }
   }, []);
 
-  // Lazy load deck data for current active languages
+  // Lazy load deck data for ALL active languages (native + every target language)
   useEffect(() => {
-    preloadLanguageDecks([settings.targetLanguage || 'en', settings.language || 'fa']).catch(() => {});
-  }, [settings.targetLanguage, settings.language]);
+    const targets = Array.isArray(settings.targetLanguages) && settings.targetLanguages.length > 0
+      ? settings.targetLanguages
+      : [settings.targetLanguage || 'en'];
+    const native = settings.nativeLanguage || settings.language || 'fa';
+    const allLangs = Array.from(new Set([native, ...targets]));
+    preloadLanguageDecks(allLangs).catch(() => {});
+  }, [settings.targetLanguages, settings.targetLanguage, settings.nativeLanguage, settings.language]);
 
   // Sync document root direction and language
   useEffect(() => {

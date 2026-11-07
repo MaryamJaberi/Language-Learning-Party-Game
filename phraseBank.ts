@@ -79,7 +79,19 @@ function getLanguageDeckSync(lang: string): Record<string, DeckTranslationItem> 
  * Lazy loads decks for player-selected languages via HTTP fetch (cached by Service Worker)
  */
 export async function preloadLanguageDecks(languages: string[]): Promise<void> {
-  if (typeof window === 'undefined' || (typeof process !== 'undefined' && process.env?.VITEST)) return;
+  const needed = (languages || []).filter(Boolean);
+  if (needed.length === 0) return;
+
+  // In Node / Vitest test environment, load synchronously into cachedDecks
+  if (typeof process !== 'undefined' && process.env?.VITEST) {
+    getMetaCardsSync();
+    for (const lang of needed) {
+      getLanguageDeckSync(lang);
+    }
+    return;
+  }
+
+  if (typeof window === 'undefined') return;
   const baseUrl = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) || './';
   const cleanBase = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
 
@@ -97,9 +109,9 @@ export async function preloadLanguageDecks(languages: string[]): Promise<void> {
   }
 
   // 2. Load requested languages in parallel
-  const needed = languages.filter((l) => !cachedDecks[l]);
+  const unCached = needed.filter((l) => !cachedDecks[l]);
   await Promise.all(
-    needed.map(async (lang) => {
+    unCached.map(async (lang) => {
       try {
         const res = await fetch(`${cleanBase}data/decks/${lang}.json`);
         if (res.ok) {
@@ -110,6 +122,10 @@ export async function preloadLanguageDecks(languages: string[]): Promise<void> {
       }
     })
   );
+}
+
+export function isLanguageDeckLoaded(lang: string): boolean {
+  return Boolean(cachedDecks[lang]);
 }
 
 export const PHRASE_STATS = {
