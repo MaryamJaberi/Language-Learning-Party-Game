@@ -194,16 +194,28 @@ function itemB(item: AdaptiveItem, stats: ItemStats): number {
 }
 
 export function predict(
-  player: AdaptivePlayer,
+  playerOrTheta: AdaptivePlayer | number,
   item: AdaptiveItem,
   type: ExerciseType,
   stats: ItemStats,
-  now: number,
-  options: { hint?: boolean } = {}
+  nowOrHint: number | boolean = Date.now(),
+  optionsOrNow: { hint?: boolean } | number = {}
 ): number {
-  const b = itemB(item, stats) + TYPE_OFFSET[type] - (options.hint ? DEFAULTS.hintBonus : 0);
+  const player: AdaptivePlayer = typeof playerOrTheta === 'number'
+    ? { theta: playerOrTheta, mem: {}, id: 'temp', n: 0, declaredLevel: 'A1', medianMs: null, rtSamples: [] }
+    : playerOrTheta;
+
+  const hint = typeof nowOrHint === 'boolean'
+    ? nowOrHint
+    : (typeof optionsOrNow === 'object' && optionsOrNow?.hint) || false;
+
+  const now = typeof nowOrHint === 'number'
+    ? nowOrHint
+    : (typeof optionsOrNow === 'number' ? optionsOrNow : Date.now());
+
+  const b = itemB(item, stats) + TYPE_OFFSET[type] - (hint ? DEFAULTS.hintBonus : 0);
   const pAbility = sig(player.theta - b);
-  const m = player.mem[item.id];
+  const m = player?.mem?.[item.id];
   let pMem = 0;
   if (m && m.S) {
     const strength = Math.min(1, m.reps / 3);

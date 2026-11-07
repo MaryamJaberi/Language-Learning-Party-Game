@@ -55,10 +55,25 @@ export const FILLER_WORDS = new Set<string>([
   'امم', 'يعني'
 ]);
 
-export function stripFillerWords(str: string): string {
+// Check if the expected answer is a short answer (<= 4 characters or 1 CJK character)
+export function isShortAnswer(text: string): boolean {
+  if (!text) return false;
+  const noSpace = text.replace(/\s+/g, '');
+  const cjkChars = (noSpace.match(/[\u4e00-\u9fa5\u3040-\u30ff\uac00-\ud7af]/g) || []).length;
+  // Exactly 1 CJK character or total non-space length <= 4
+  return cjkChars === 1 || noSpace.length <= 4;
+}
+
+export function stripFillerWords(str: string, keepWords?: Set<string>): string {
   if (!str) return '';
   const tokens = str.split(' ').filter(Boolean);
-  const filtered = tokens.filter(tok => !FILLER_WORDS.has(tok.toLowerCase()));
+  const filtered = tokens.filter(tok => {
+    const lower = tok.toLowerCase();
+    if (keepWords && keepWords.has(lower)) {
+      return true; // Keep because it appears in the expected answer or alternatives!
+    }
+    return !FILLER_WORDS.has(lower);
+  });
   return filtered.length > 0 ? filtered.join(' ') : str;
 }
 
@@ -258,7 +273,6 @@ export function evaluateAnswer(
   overrideExpectedText?: string
 ): EvaluationResult {
   const userNorm = normalizeText(rawUserInput);
-  const userNoFillers = stripFillerWords(userNorm);
   const targetAnswer = overrideExpectedText?.trim() ? overrideExpectedText.trim() : card.targetText;
 
   if (!userNorm) {
@@ -283,6 +297,16 @@ export function evaluateAnswer(
       }
     }
   }
+
+  // Extract all words from expected variations so legit words (e.g. "I like tea", "well", "یعنی") are never stripped
+  const expectedWords = new Set<string>();
+  for (const v of expectedVariations) {
+    for (const w of v.split(' ')) {
+      if (w) expectedWords.add(w.toLowerCase());
+    }
+  }
+
+  const userNoFillers = stripFillerWords(userNorm, expectedWords);
 
   // Generate user candidate forms: raw normalized, filler-stripped, and accent-stripped
   const userCandidates = Array.from(new Set([
@@ -334,6 +358,22 @@ export function evaluateAnswer(
   const basePoints = Math.round(rawBase * levelMult);
   const speedBonus = Math.round(timeRemainingRatio * 25 * levelMult);
   const totalPoints = basePoints + speedBonus;
+
+  // Short answers rule: if expected answer is <= 4 characters (or 1 CJK character), require an EXACT match after normalization
+  const isShort = isShortAnswer(targetAnswer) || isShortAnswer(bestMatch);
+  if (isShort && !isExact) {
+    return {
+      isCorrect: false,
+      similarity: bestSimilarity,
+      userAnswerNormalized: userNorm,
+      expectedAnswerNormalized: bestMatch,
+      feedbackMessage: uiLanguage === 'fa'
+        ? `❌ برای پاسخ‌های کوتاه، تطابق کامل نیاز است. پاسخ شما: "${userNorm}" — پاسخ مورد انتظار: "${targetAnswer}"`
+        : `❌ Short answers require an exact match. Your answer: "${userNorm}" — Expected: "${targetAnswer}"`,
+      suggestedCorrection: card.targetText,
+      pointsAwarded: 0
+    };
+  }
 
   // Full Credit: Exact match or >= 0.85 similarity
   if (isExact || bestSimilarity >= 0.85) {

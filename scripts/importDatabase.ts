@@ -943,8 +943,25 @@ export function runPipeline() {
   // Ensure reports directory exists
   fs.mkdirSync(path.join('data', 'reports'), { recursive: true });
 
+  const writeSafe = (targetPath: string, data: string) => {
+    for (let attempt = 0; attempt < 5; attempt++) {
+      try {
+        fs.writeFileSync(targetPath, data, 'utf-8');
+        return;
+      } catch (err: any) {
+        if (attempt === 4) {
+          const tmpPath = `${targetPath}.${Date.now()}.tmp`;
+          fs.writeFileSync(tmpPath, data, 'utf-8');
+          try { fs.unlinkSync(targetPath); } catch {}
+          fs.renameSync(tmpPath, targetPath);
+          return;
+        }
+      }
+    }
+  };
+
   // Write curatedDatabase.json
-  fs.writeFileSync(path.join('data', 'curatedDatabase.json'), JSON.stringify(merged_cards, null, 2), 'utf-8');
+  writeSafe(path.join('data', 'curatedDatabase.json'), JSON.stringify(merged_cards, null, 2));
 
   // Write runtime deck database (lean runtime format for mobile bundle performance)
   const runtimeDeckCards = merged_cards.map((c) => ({
@@ -959,7 +976,7 @@ export function runPipeline() {
     is_c1_final_excluded: c.is_c1_final_excluded,
     excluded: c.excluded
   }));
-  fs.writeFileSync(path.join('data', 'curatedDeckDatabase.json'), JSON.stringify(runtimeDeckCards), 'utf-8');
+  writeSafe(path.join('data', 'curatedDeckDatabase.json'), JSON.stringify(runtimeDeckCards));
 
   // Scope C: Write conflict_resolutions.csv
   const resHeader = 'conceptId,lang,chosen,rejected,rule applied,one-line reason\n';

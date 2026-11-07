@@ -112,6 +112,27 @@ export default defineConfig(() => {
           },
         }),
       ],
+      build: {
+        chunkSizeWarningLimit: 25000,
+        rollupOptions: {
+          output: {
+            manualChunks(id) {
+              if (id.includes('curatedDeckDatabase.json')) {
+                return 'curated-deck-data';
+              }
+              if (id.includes('phrases.json')) {
+                return 'legacy-phrases';
+              }
+              if (id.includes('node_modules/firebase')) {
+                return 'firebase-vendor';
+              }
+              if (id.includes('node_modules/lucide-react')) {
+                return 'icons';
+              }
+            }
+          }
+        }
+      },
       test: {
         environment: 'jsdom',
         globals: true,

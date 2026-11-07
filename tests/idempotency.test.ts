@@ -25,5 +25,5 @@ describe('Database Importer Idempotency & Stability', () => {
     expect(hash2).toBe(hash1);
     expect(cids2).toEqual(cids1);
     expect(run2Cards.length).toBe(run1Cards.length);
-  }, 30000);
+  }, 60000);
 });

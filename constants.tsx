@@ -141,7 +141,7 @@ export const SUPPORTED_LANGUAGES: LanguageInfo[] = [
   { code: 'es', name: 'Spanish', nativeName: 'Español', persianName: 'اسپانیایی', flag: '🇪🇸', direction: 'ltr', popular: true, region: 'europe', speechCode: 'es-ES' },
   { code: 'it', name: 'Italian', nativeName: 'Italiano', persianName: 'ایتالیایی', flag: '🇮🇹', direction: 'ltr', popular: true, region: 'europe', speechCode: 'it-IT' },
   { code: 'ru', name: 'Russian (Beta - Limited)', nativeName: 'Русский (Бета)', persianName: 'روسی (بتا — محتوای محدود)', flag: '🇷🇺', direction: 'ltr', popular: false, region: 'europe', speechCode: 'ru-RU' },
-  { code: 'pt', name: 'Portuguese', nativeName: 'Português', persianName: 'پرتغالی', flag: '🇵🇹', direction: 'ltr', region: 'europe', speechCode: 'pt-PT' },
+  { code: 'pt', name: 'Portuguese', nativeName: 'Português', persianName: 'پرتغالی (برزیل)', flag: '🇧🇷', direction: 'ltr', region: 'americas', speechCode: 'pt-BR' },
   { code: 'sv', name: 'Swedish', nativeName: 'Svenska', persianName: 'سوئدی', flag: '🇸🇪', direction: 'ltr', region: 'europe', speechCode: 'sv-SE' },
   { code: 'no', name: 'Norwegian', nativeName: 'Norsk', persianName: 'نروژی', flag: '🇳🇴', direction: 'ltr', region: 'europe', speechCode: 'nb-NO' },
   { code: 'da', name: 'Danish', nativeName: 'Dansk', persianName: 'دانمارکی', flag: '🇩🇰', direction: 'ltr', region: 'europe', speechCode: 'da-DK' },
@@ -167,10 +167,11 @@ export const SUPPORTED_LANGUAGES: LanguageInfo[] = [
   { code: 'tl', name: 'Filipino', nativeName: 'Tagalog', persianName: 'فیلیپینی', flag: '🇵🇭', direction: 'ltr', region: 'asia', speechCode: 'fil-PH' }
 ];
 
-// BCP-47 Speech recognition language code mapping for all supported locales
+// BCP-47 Speech recognition language code mapping for the 18 active locales
 export const SPEECH_LANG_MAP: Record<string, string> = {
   'en': 'en-GB',
   'en-US': 'en-US',
+  'en-GB': 'en-GB',
   'fa': 'fa-IR',
   'ar': 'ar-SA',
   'nl': 'nl-NL',
@@ -178,16 +179,14 @@ export const SPEECH_LANG_MAP: Record<string, string> = {
   'fr': 'fr-FR',
   'es': 'es-ES',
   'it': 'it-IT',
-  'pt': 'pt-PT',
+  'pt': 'pt-BR',
   'tr': 'tr-TR',
   'pl': 'pl-PL',
   'uk': 'uk-UA',
   'zh': 'zh-CN',
   'ja': 'ja-JP',
   'ko': 'ko-KR',
-  'hi': 'hi-IN',
-  'sv': 'sv-SE',
-  'ru': 'ru-RU'
+  'hi': 'hi-IN'
 };
 
 export function getSpeechLanguageCode(langCode: string): string {
