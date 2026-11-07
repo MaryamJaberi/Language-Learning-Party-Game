@@ -902,8 +902,8 @@ export const HelpScreen: React.FC<Props> = ({
                     <span>{ruleData.title}</span>
                   </div>
                   <div className="bg-[var(--bg)] p-3 border border-[var(--line)] rounded-xl space-y-2 text-xs font-medium text-[var(--ink)] leading-relaxed">
-                    <p>{ruleData.challenge}</p>
-                    <p>{ruleData.combo}</p>
+                    <p>⭐ {ruleData.challenge}</p>
+                    <p>🔥 {ruleData.combo}</p>
                   </div>
                 </section>
               );

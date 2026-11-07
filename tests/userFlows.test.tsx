@@ -118,7 +118,7 @@ describe('Complete End-to-End User Flow Tests', () => {
     // Record player 1 guessing correctly
     fireEvent.click(correctBtn);
 
-    const cardDismiss = screen.queryByText(/لمس صفحه|tap anywhere/i);
+    const cardDismiss = screen.queryByText(/لمس صفحه|tap anywhere|ادامه خودکار|ضربه/i);
     if (cardDismiss) fireEvent.click(cardDismiss);
 
     // Floating Undo button appears
@@ -131,7 +131,7 @@ describe('Complete End-to-End User Flow Tests', () => {
 
     // Advance again
     fireEvent.click(correctBtn);
-    const cardDismiss2 = screen.queryByText(/لمس صفحه|tap anywhere/i);
+    const cardDismiss2 = screen.queryByText(/لمس صفحه|tap anywhere|ادامه خودکار|ضربه/i);
     if (cardDismiss2) fireEvent.click(cardDismiss2);
 
     // Test Pause / Stop Game Modal (unified control with Resume, Help, Settings, Exit)
@@ -197,7 +197,7 @@ describe('Complete End-to-End User Flow Tests', () => {
     const pauseBtn = screen.getByLabelText(/توقف بازی|Pause/i);
     fireEvent.click(pauseBtn);
     
-    const exitBtn = screen.getByRole('button', { name: /خروج/i });
+    const exitBtn = screen.getByRole('button', { name: /برگشت به صفحه اول/i });
     fireEvent.click(exitBtn);
 
     // Confirm exit if modal appears
@@ -294,16 +294,16 @@ describe('Complete End-to-End User Flow Tests', () => {
     fireEvent.click(singleBtn!);
 
     // 2. Select level first (required per user request: no default level)
-    const levelBtn = screen.getByText('A1');
+    const levelBtn = screen.getByTestId('single-level-A1');
     fireEvent.click(levelBtn);
 
     // 3. Start Single Player
     const startSingleBtn = screen.getByRole('button', { name: /شروع تمرین/i });
     fireEvent.click(startSingleBtn);
 
-    // 3. We are in SinglePlayerScreen, click exit
-    const exitBtn = screen.getByRole('button', { name: /خروج/i });
-    fireEvent.click(exitBtn);
+    // 3. We are in SinglePlayerScreen, click pause / stop
+    const stopBtn = screen.getByRole('button', { name: /توقف بازی|Pause/i });
+    fireEvent.click(stopBtn);
 
     // 4. Modal opens with option to return to Single-Player Settings
     const setupOption = screen.getByText(/تنظیمات تمرین انفرادی/i);

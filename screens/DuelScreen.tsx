@@ -466,7 +466,7 @@ export const DuelScreen: React.FC<Props> = ({
 
             <div>
               <span className="text-xs font-black text-[var(--mute)] uppercase tracking-wider block mb-1">
-                {t.duelChampion || (isRTL ? 'قهرمان دوئل سرعتی!' : 'Speed Duel Champion!')}
+                {isRTL ? 'پیروزی در دوئل سرعتی! (قهرمان دوئل)' : (t.duelChampion || 'Speed Duel Champion!')}
               </span>
               <h2 className="text-2xl font-black">
                 {matchWinner === 'p1' ? settings.player1Name : settings.player2Name}

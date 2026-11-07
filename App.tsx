@@ -15,6 +15,7 @@ import {
   OnlineDuelRoom
 } from './types';
 import { buildSessionCardPool } from './cardsData';
+import { preloadLanguageDecks } from './phraseBank';
 import { getUniqueCardsForSession } from './contentEngine';
 import IntroScreen from './screens/IntroScreen';
 import LanguageSelectScreen from './screens/LanguageSelectScreen';
@@ -99,6 +100,11 @@ const App: React.FC = () => {
       }
     }
   }, []);
+
+  // Lazy load deck data for current active languages
+  useEffect(() => {
+    preloadLanguageDecks([settings.targetLanguage || 'en', settings.language || 'fa']).catch(() => {});
+  }, [settings.targetLanguage, settings.language]);
 
   // Sync document root direction and language
   useEffect(() => {

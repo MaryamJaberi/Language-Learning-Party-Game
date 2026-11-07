@@ -74,9 +74,23 @@ export default defineConfig(() => {
           },
           workbox: {
             globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2,json}'],
-            globIgnores: ['**/embeddedAabData*.js', '**/downloads/**', '**/assets/aistudio/**'],
+            globIgnores: ['**/embeddedAabData*.js', '**/downloads/**', '**/assets/aistudio/**', '**/data/decks/*.json'],
             maximumFileSizeToCacheInBytes: 50 * 1024 * 1024,
             runtimeCaching: [
+              {
+                urlPattern: /.*\/data\/decks\/.*\.json/i,
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'language-decks-cache',
+                  expiration: {
+                    maxEntries: 40,
+                    maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+                  },
+                  cacheableResponse: {
+                    statuses: [0, 200],
+                  },
+                },
+              },
               {
                 urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
                 handler: 'CacheFirst',
@@ -117,12 +131,7 @@ export default defineConfig(() => {
         rollupOptions: {
           output: {
             manualChunks(id) {
-              if (id.includes('curatedDeckDatabase.json')) {
-                return 'curated-deck-data';
-              }
-              if (id.includes('phrases.json')) {
-                return 'legacy-phrases';
-              }
+              
               if (id.includes('node_modules/firebase')) {
                 return 'firebase-vendor';
               }
@@ -137,6 +146,9 @@ export default defineConfig(() => {
         environment: 'jsdom',
         globals: true,
         setupFiles: './tests/setup.ts',
+        include: ['tests/**/*.{test,spec}.{ts,tsx}'],
+        testTimeout: 25000,
+        hookTimeout: 25000,
       },
       resolve: {
         alias: {

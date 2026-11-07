@@ -711,7 +711,7 @@ const GameplayScreen: React.FC<Props> = ({
                 className="flex items-center gap-1 bg-amber-500/15 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-lg border border-amber-300 dark:border-amber-800 text-[11px] font-black"
               >
                 <Flame size={13} className="text-amber-500 fill-amber-500 animate-pulse" />
-                <span>x{streakCount}</span>
+                <span>🔥 x{streakCount}</span>
               </div>
             )}
 
@@ -834,7 +834,7 @@ const GameplayScreen: React.FC<Props> = ({
                       {currentCard?.targetText || '---'}
                     </h2>
                     
-                    {currentCard?.targetText && (
+                    {currentCard?.targetText && sound.isVoiceSupportedFor(currentCard?.targetLanguage) && (
                       <button
                         type="button"
                         aria-label={isRTL ? "پخش تلفظ صوتی" : "Audio Pronunciation"}

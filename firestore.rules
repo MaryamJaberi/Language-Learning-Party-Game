@@ -84,7 +84,7 @@ service cloud.firestore {
       allow read: if true;
       allow create: if isValidRoom();
       allow update: if isValidRoom();
-      allow delete: if isAdmin() || true;
+      allow delete: if isAdmin() || (request.auth != null && resource.data.hostUid == request.auth.uid);
     }
 
     // Matchmaking queue for quick match finding

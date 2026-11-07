@@ -59,6 +59,7 @@ export const SeatingConfirmScreen: React.FC<Props> = ({
   // Edit Player Modal State (Name only, no avatars)
   const [editingPlayerIndex, setEditingPlayerIndex] = useState<number | null>(null);
   const [editNameInput, setEditNameInput] = useState('');
+  const [editAvatarInput, setEditAvatarInput] = useState('');
 
   const openPlayerEditor = (idx: number) => {
     sound.playClick();
@@ -66,13 +67,14 @@ export const SeatingConfirmScreen: React.FC<Props> = ({
     if (!p) return;
     setEditingPlayerIndex(idx);
     setEditNameInput(p.name);
+    setEditAvatarInput(p.avatar || '🦊');
   };
 
   const handleSavePlayerEdit = () => {
     if (editingPlayerIndex === null) return;
     sound.playPowerUp();
     const trimmed = editNameInput.trim() || (isRTL ? `بازیکن ${editingPlayerIndex + 1}` : `Player ${editingPlayerIndex + 1}`);
-    onUpdatePlayer?.(editingPlayerIndex, trimmed, '');
+    onUpdatePlayer?.(editingPlayerIndex, trimmed, editAvatarInput);
     setEditingPlayerIndex(null);
   };
 
@@ -142,7 +144,7 @@ export const SeatingConfirmScreen: React.FC<Props> = ({
               onRandomizePlayers();
             }}
             className="min-h-[38px] px-2.5 py-1.5 bg-[var(--bg)] hover:bg-[var(--line)] text-[var(--ink)] border border-[var(--line)] rounded-xl text-xs font-black flex items-center gap-1.5 shadow-2xs cursor-pointer active:scale-95 shrink-0"
-            title={t.randomize || (isRTL ? 'اسامی تصادفی' : 'Randomize')}
+            title={isRTL ? 'تغییر تصادفی نام‌ها و آواتارها' : 'Randomize names and avatars'}
           >
             <Shuffle size={13} className="text-[var(--turq)]" />
             <span>{t.randomize || (isRTL ? 'اسامی تصادفی' : 'Randomize')}</span>
@@ -254,7 +256,7 @@ export const SeatingConfirmScreen: React.FC<Props> = ({
                   fill="#ffffff"
                   className="text-xs font-black select-none pointer-events-none"
                 >
-                  #{isRTL ? toPersianDigits(i + 1) : i + 1}
+                  {p.avatar || `#${isRTL ? toPersianDigits(i + 1) : i + 1}`}
                 </text>
 
                 {/* High-Contrast Name Pill Background */}
@@ -366,7 +368,7 @@ export const SeatingConfirmScreen: React.FC<Props> = ({
             <div className="flex items-center justify-between border-b border-[var(--line)] pb-2.5">
               <div>
                 <h3 className="text-sm sm:text-base font-black text-[var(--ink)]">
-                  {isRTL ? `ویرایش نام بازیکن ${toPersianDigits(editingPlayerIndex + 1)}` : `Edit Player ${editingPlayerIndex + 1}`}
+                  {isRTL ? `ویرایش بازیکن ${toPersianDigits(editingPlayerIndex + 1)}` : `Edit Player ${editingPlayerIndex + 1}`}
                 </h3>
               </div>
               <button
@@ -397,6 +399,27 @@ export const SeatingConfirmScreen: React.FC<Props> = ({
               />
             </div>
 
+                        {/* Avatar Picker Grid */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-[var(--mute)] block">
+                {isRTL ? 'انتخاب نماد:' : 'Select Symbol / Avatar:'}
+              </label>
+              <div className="flex flex-wrap gap-2 justify-center py-1">
+                {['🦊', '🦁', '🦉', '🐼', '🐨', '🐯', '🐰', '🐸'].map(av => (
+                  <button
+                    key={av}
+                    type="button"
+                    onClick={() => setEditAvatarInput(av)}
+                    className={`w-10 h-10 rounded-xl text-lg flex items-center justify-center transition-all cursor-pointer ${
+                      editAvatarInput === av ? 'bg-[var(--lapis)] text-white scale-110 shadow-xs' : 'bg-[var(--bg)] border border-[var(--line)] hover:scale-105'
+                    }`}
+                  >
+                    {av}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* Modal Actions */}
             <div className="flex gap-2 pt-1">
               <button
@@ -412,7 +435,7 @@ export const SeatingConfirmScreen: React.FC<Props> = ({
                 className="btn-primary flex-1 !min-h-[44px]"
               >
                 <Check size={15} />
-                <span>{t.saveChanges || (isRTL ? 'ذخیره' : 'Save')}</span>
+                <span>{isRTL ? 'ثبت تغییرات' : (t.saveChanges || 'Save')}</span>
               </button>
             </div>
           </div>

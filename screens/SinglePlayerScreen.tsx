@@ -1493,6 +1493,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
               </p>
 
               {/* Unified Audio Controls */}
+              {sound.isVoiceSupportedFor(currentCard?.targetLanguage) && (
               <div className="flex items-center justify-center gap-2 mt-1">
                 <button
                   type="button"
@@ -1513,6 +1514,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
                   <span>{isRTL ? 'شمرده' : 'Slow'}</span>
                 </button>
               </div>
+              )}
             </div>
           ) : settings.displayMode === 'translate_to_target' ? (
             /* Mode 2: Translate to Target (Native prompt visible, target text hidden until revealed/correct) */
@@ -1542,6 +1544,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
               )}
 
               {/* Unified Audio Controls */}
+              {sound.isVoiceSupportedFor(currentCard?.targetLanguage) && (
               <div className="flex items-center justify-center gap-2 mt-3">
                 <button
                   type="button"
@@ -1563,6 +1566,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
                   <span>{isRTL ? 'شمرده' : 'Slow'}</span>
                 </button>
               </div>
+              )}
             </div>
           ) : settings.displayMode === 'translate_to_native' ? (
             /* Mode 3: Translate to Native (Target text visible, native meaning hidden until revealed/correct) */
@@ -1590,6 +1594,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
               )}
 
               {/* Unified Audio Controls */}
+              {sound.isVoiceSupportedFor(currentCard?.targetLanguage) && (
               <div className="flex items-center justify-center gap-2 mt-3">
                 <button
                   type="button"
@@ -1611,6 +1616,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
                   <span>{isRTL ? 'شمرده' : 'Slow'}</span>
                 </button>
               </div>
+              )}
             </div>
           ) : (
             /* Mode 4: Text & Audio (Reading & Speech - shows target phrase and translation clearly) */
@@ -1636,6 +1642,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
               </div>
 
               {/* Unified Audio Controls */}
+              {sound.isVoiceSupportedFor(currentCard?.targetLanguage) && (
               <div className="flex items-center justify-center gap-2 mt-3">
                 <button
                   type="button"
@@ -1657,6 +1664,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
                   <span>{isRTL ? 'شمرده' : 'Slow'}</span>
                 </button>
               </div>
+              )}
             </div>
           )}
         </div>
@@ -1712,6 +1720,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
                     <span>{isRTL ? 'تلاش مجدد' : 'Try Again'}</span>
                   </button>
 
+                  {sound.isVoiceSupportedFor(currentCard?.targetLanguage) && (
                   <button
                     type="button"
                     onClick={handlePlayAudio}
@@ -1720,6 +1729,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
                     <Volume2 size={14} className="text-[var(--lapis)]" />
                     <span>{isRTL ? 'شنیدن تلفظ' : 'Listen'}</span>
                   </button>
+                  )}
 
                   <button
                     type="button"
@@ -2051,6 +2061,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
       {showExitConfirm && (
         <ExitConfirmModal
           isRTL={isRTL}
+          setupLabel={isRTL ? 'تنظیمات تمرین انفرادی' : 'Practice Settings'}
           onCancel={() => setShowExitConfirm(false)}
           onOpenHelp={() => {
             setShowExitConfirm(false);

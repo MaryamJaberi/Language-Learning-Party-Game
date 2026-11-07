@@ -317,6 +317,7 @@ const SinglePlayerSetupModal: React.FC<Props> = ({
                 return (
                   <button
                     key={lvl.id}
+                    data-testid={`single-level-${lvl.id}`}
                     type="button"
                     onClick={() => {
                       sound.playToggle();

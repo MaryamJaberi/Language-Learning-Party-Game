@@ -844,6 +844,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
             <div className="flex items-center justify-between px-0.5">
               <span className="text-[11px] font-bold text-[var(--mute)] truncate">
                 {t.learningLabel || (isFa ? 'زبان یادگیری:' : 'Learning:')}
+                <span className="sr-only">زبان‌هایی که می‌خوام یاد بگیرم</span>
               </span>
             </div>
 
@@ -870,7 +871,19 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                       {currentTargetLangInfo.short}
                     </span>
                     <span className="text-xs font-extrabold text-[var(--ink)] truncate">
-                      {isFa ? (PERSIAN_LANG_NAMES[currentTargetLangInfo.code] || currentTargetLangInfo.name) : currentTargetLangInfo.name}
+                      {currentTargetLangInfo.name} {isFa ? (PERSIAN_LANG_NAMES[currentTargetLangInfo.code] || '') : ''}
+                    </span>
+                    <span
+                      role="button"
+                      aria-label="Remove language"
+                      tabIndex={0}
+                      className="w-4 h-4 rounded-full hover:bg-[var(--line)] flex items-center justify-center text-[var(--mute)] hover:text-[var(--ink)] cursor-pointer text-xs leading-none"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemoveTargetLang(e);
+                      }}
+                    >
+                      ✕
                     </span>
                   </span>
                 ) : (
@@ -881,73 +894,9 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
               </div>
               <ChevronDown size={15} className={`text-[var(--mute)] transition-transform duration-200 shrink-0 ${isTargetOpen ? 'rotate-180' : ''}`} />
             </button>
-          </div>
-        </div>
+          
 
-        {/* Full-Width Dropdown Menu for Native Language */}
-        <div className={`p-2.5 rounded-xl bg-[var(--panel)] border border-[var(--line)] shadow-sm space-y-2 ${isNativeOpen ? 'block animate-fade-in' : 'hidden'}`}>
-          <div className="relative">
-            <input
-              type="text"
-              value={searchNative}
-              onChange={(e) => setSearchNative(e.target.value)}
-              placeholder={t.searchLanguages || (isFa ? 'جستجوی زبان من...' : 'Search native language...')}
-              className="w-full h-9 px-3 text-xs rounded-lg bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] placeholder-[var(--mute)] focus:outline-none focus:border-[var(--lapis)] transition-colors pr-8 rtl:pr-8 rtl:pl-3 ltr:pl-8 ltr:pr-3"
-            />
-            <Search size={14} className="absolute top-1/2 -translate-y-1/2 text-[var(--mute)] pointer-events-none rtl:right-2.5 ltr:left-2.5" />
-            {searchNative && (
-              <button 
-                type="button" 
-                onClick={() => setSearchNative('')}
-                className="absolute top-1/2 -translate-y-1/2 text-[var(--mute)] hover:text-[var(--ink)] p-0.5 rtl:left-2 ltr:right-2"
-              >
-                <X size={12} />
-              </button>
-            )}
-          </div>
-
-          <div className="max-h-48 overflow-y-auto space-y-1 no-scrollbar overscroll-contain">
-            {filteredNativeLanguages.length === 0 ? (
-              <div className="text-xs text-[var(--mute)] py-2 text-center">{t.noLanguagesFound || 'No languages found'}</div>
-            ) : (
-              filteredNativeLanguages.map(l => {
-                const isCurrent = normalizedNativeCode === l.code;
-                const subName = isFa ? PERSIAN_LANG_NAMES[l.code] : l.enName;
-                return (
-                  <button
-                    key={`native-opt-${l.code}`}
-                    type="button"
-                    role="radio"
-                    aria-checked={isCurrent}
-                    onClick={() => handleNativeChange(l.code)}
-                    className={`w-full flex items-center justify-between p-2 rounded-lg text-xs font-bold transition-all min-h-[40px] ${
-                      isCurrent 
-                        ? 'bg-[var(--ink)] text-[var(--bg)]' 
-                        : 'hover:bg-[var(--bg)] text-[var(--ink)]'
-                    }`}
-                  >
-                    <span className="flex items-center gap-2 min-w-0">
-                      <span className={`w-5 h-5 rounded font-mono font-black text-[9px] flex items-center justify-center shrink-0 ${
-                        isCurrent ? 'bg-white/20 text-white' : 'bg-black/10 dark:bg-white/10 text-[var(--ink)]'
-                      }`}>
-                        {l.short}
-                      </span>
-                      <span className="whitespace-nowrap truncate">{l.name}</span>
-                      {subName && subName !== l.name && (
-                        <span className={`text-[10.5px] whitespace-nowrap truncate ${isCurrent ? 'opacity-80' : 'text-[var(--mute)]'}`}>
-                          ({subName})
-                        </span>
-                      )}
-                    </span>
-                    {isCurrent && <Check size={14} className="shrink-0 text-white" />}
-                  </button>
-                );
-              })
-            )}
-          </div>
-        </div>
-
-        {/* Full-Width Dropdown Menu for Learning Language */}
+            {/* Full-Width Dropdown Menu for Learning Language */}
         <div className={`p-2.5 rounded-xl bg-[var(--panel)] border border-[var(--line)] shadow-sm space-y-2 ${isTargetOpen ? 'block animate-fade-in' : 'hidden'}`} id="chips">
           <div className="relative">
             <input
@@ -1015,7 +964,73 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
             )}
           </div>
         </div>
-      </section>
+          </div>
+        </div>
+
+        {/* Full-Width Dropdown Menu for Native Language */}
+        <div className={`p-2.5 rounded-xl bg-[var(--panel)] border border-[var(--line)] shadow-sm space-y-2 ${isNativeOpen ? 'block animate-fade-in' : 'hidden'}`}>
+          <div className="relative">
+            <input
+              type="text"
+              value={searchNative}
+              onChange={(e) => setSearchNative(e.target.value)}
+              placeholder={t.searchLanguages || (isFa ? 'جستجوی زبان من...' : 'Search native language...')}
+              className="w-full h-9 px-3 text-xs rounded-lg bg-[var(--bg)] border border-[var(--line)] text-[var(--ink)] placeholder-[var(--mute)] focus:outline-none focus:border-[var(--lapis)] transition-colors pr-8 rtl:pr-8 rtl:pl-3 ltr:pl-8 ltr:pr-3"
+            />
+            <Search size={14} className="absolute top-1/2 -translate-y-1/2 text-[var(--mute)] pointer-events-none rtl:right-2.5 ltr:left-2.5" />
+            {searchNative && (
+              <button 
+                type="button" 
+                onClick={() => setSearchNative('')}
+                className="absolute top-1/2 -translate-y-1/2 text-[var(--mute)] hover:text-[var(--ink)] p-0.5 rtl:left-2 ltr:right-2"
+              >
+                <X size={12} />
+              </button>
+            )}
+          </div>
+
+          <div className="max-h-48 overflow-y-auto space-y-1 no-scrollbar overscroll-contain">
+            {filteredNativeLanguages.length === 0 ? (
+              <div className="text-xs text-[var(--mute)] py-2 text-center">{t.noLanguagesFound || 'No languages found'}</div>
+            ) : (
+              filteredNativeLanguages.map(l => {
+                const isCurrent = normalizedNativeCode === l.code;
+                const subName = isFa ? PERSIAN_LANG_NAMES[l.code] : l.enName;
+                return (
+                  <button
+                    key={`native-opt-${l.code}`}
+                    type="button"
+                    role="radio"
+                    aria-checked={isCurrent}
+                    onClick={() => handleNativeChange(l.code)}
+                    className={`w-full flex items-center justify-between p-2 rounded-lg text-xs font-bold transition-all min-h-[40px] ${
+                      isCurrent 
+                        ? 'bg-[var(--ink)] text-[var(--bg)]' 
+                        : 'hover:bg-[var(--bg)] text-[var(--ink)]'
+                    }`}
+                  >
+                    <span className="flex items-center gap-2 min-w-0">
+                      <span className={`w-5 h-5 rounded font-mono font-black text-[9px] flex items-center justify-center shrink-0 ${
+                        isCurrent ? 'bg-white/20 text-white' : 'bg-black/10 dark:bg-white/10 text-[var(--ink)]'
+                      }`}>
+                        {l.short}
+                      </span>
+                      <span className="whitespace-nowrap truncate">{l.name}</span>
+                      {subName && subName !== l.name && (
+                        <span className={`text-[10.5px] whitespace-nowrap truncate ${isCurrent ? 'opacity-80' : 'text-[var(--mute)]'}`}>
+                          ({subName})
+                        </span>
+                      )}
+                    </span>
+                    {isCurrent && <Check size={14} className="shrink-0 text-white" />}
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
+
+        </section>
 
       {/* PANEL 2: CEFR LEVEL SELECTION (A1, A2, B1, B2, C1, ALL) */}
       <section className="panel" aria-label={t.cefrLevel || (isRTL ? 'سطح تسلط و دشواری (CEFR)' : 'Proficiency Level (CEFR)')}>
@@ -1035,6 +1050,26 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
           role="radiogroup" 
           aria-label={t.cefrLevel || (isRTL ? 'سطح دشواری' : 'Proficiency Level')}
         >
+          {/* ALL Levels Button */}
+          <button
+            key="all"
+            type="button"
+            role="radio"
+            aria-checked={settings.cefrLevel === 'all'}
+            aria-label={isRTL ? 'همه سطوح - ALL' : 'ALL - All Levels'}
+            onClick={() => {
+              sound.playToggle();
+              updateSettings('cefrLevel', 'all');
+            }}
+            className={`py-2 px-1 rounded-xl border flex flex-col items-center justify-center transition-all touch-manipulation active:scale-95 cursor-pointer min-h-[44px] ${
+              settings.cefrLevel === 'all'
+                ? 'bg-[var(--lapis)] text-[var(--on-lapis)] border-[var(--lapis)] shadow-xs -translate-y-0.5 font-bold'
+                : 'bg-[var(--bg)] hover:bg-[var(--panel)] text-[var(--ink)] border-[var(--line)] font-medium'
+            }`}
+          >
+            <span className="font-black text-xs leading-none mb-0.5">ALL</span>
+            <span className="text-[9.5px] leading-tight truncate max-w-[95%] opacity-90">{isRTL ? 'همه' : 'All'}</span>
+          </button>
           {CEFR_LEVELS.map(level => {
             const isSelected = currentCefr === level.id;
             const levelName = getCefrText(level.name, settings.language) || level.id;
@@ -1335,6 +1370,7 @@ const SetupScreen: React.FC<Props> = ({ settings, onSave, onNext, onBack, onOpen
                 }}
               >
                 <span className="whitespace-nowrap" dir="ltr">{d.text}</span>
+                <span className="sr-only">{d.title}</span>
               </button>
             );
           })}

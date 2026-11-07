@@ -29,8 +29,8 @@ export function normalizeText(str: string): string {
     .replace(/[ةۀ]/g, 'ه')                  // Teh marbuta & heh with hamza
     .replace(/[؟?!\.,;:\-_—\(\)\[\]\{\}\/\\#\*~…⋯]/g, ' ')
     // Unify "می " and "نمی " prefixes so "می تونی" -> "میتونی"
-    .replace(/\bمی\s+/g, 'می')
-    .replace(/\bنمی\s+/g, 'نمی')
+    .replace(/(^|[\s\p{P}])می\s+/gu, '$1می')
+    .replace(/(^|[\s\p{P}])نمی\s+/gu, '$1نمی')
     .replace(/\s+/g, ' ')
     .trim();
 }

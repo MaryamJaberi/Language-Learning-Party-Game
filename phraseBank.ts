@@ -1,5 +1,3 @@
-import curatedDeckData from './data/curatedDeckDatabase.json';
-import phrasesData from './phrases.json';
 import { Language, CEFRLevel, LanguageCard, ContentType, LearningMode, CardGameMode } from './types';
 import { CardPacingSequencer } from './src/engine/pacing/cardPacing';
 
@@ -21,39 +19,115 @@ export interface CuratedRawCard {
   excluded?: boolean;
 }
 
-interface LegacyBankPhrase {
+export interface CardMetaItem {
   id: string;
-  level: Exclude<CEFRLevel, 'all'>;
+  conceptId: string;
+  level: string | null;
   rawLevel?: string;
+  topic?: string;
   type: string;
-  difficulty: 'easy' | 'medium' | 'hard';
-  topic: string;
-  rawTopic: string;
-  texts: Record<string, string>;
+  excluded?: boolean;
 }
 
-const CURATED_CARDS = (curatedDeckData as CuratedRawCard[]).filter((c) => !c.excluded && !c.is_collocation_excluded && !c.is_c1_final_excluded);
-const LEGACY_PHRASES = phrasesData as LegacyBankPhrase[];
+export interface DeckTranslationItem {
+  text: string;
+  article?: string;
+  note?: string;
+  alternatives?: string[];
+  units?: number;
+  lengthClass?: 'short' | 'medium' | 'long';
+}
 
-// Map of concept IDs in curated database to prevent duplicate fallback loading
-const CURATED_CONCEPT_SET = new Set<string>(CURATED_CARDS.map((c) => c.conceptId || c.id));
+// Global in-memory cache for lazy-loaded decks
+let cachedMeta: CardMetaItem[] | null = null;
+const cachedDecks: Record<string, Record<string, DeckTranslationItem>> = {};
+
+function getMetaCardsSync(): CardMetaItem[] {
+  if (cachedMeta) return cachedMeta;
+  if (typeof process !== 'undefined' && process.env?.VITEST) {
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const p = path.resolve('data/decks/meta.json');
+      if (fs.existsSync(p)) {
+        const raw = JSON.parse(fs.readFileSync(p, 'utf-8'));
+        cachedMeta = raw.filter((c: any) => !c.excluded);
+        return cachedMeta!;
+      }
+    } catch {}
+  }
+  return [];
+}
+
+function getLanguageDeckSync(lang: string): Record<string, DeckTranslationItem> {
+  if (cachedDecks[lang]) return cachedDecks[lang];
+  if (typeof process !== 'undefined' && process.env?.VITEST) {
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const p = path.resolve(`data/decks/${lang}.json`);
+      if (fs.existsSync(p)) {
+        cachedDecks[lang] = JSON.parse(fs.readFileSync(p, 'utf-8'));
+        return cachedDecks[lang];
+      }
+    } catch {}
+  }
+  return {};
+}
+
+/**
+ * Lazy loads decks for player-selected languages via HTTP fetch (cached by Service Worker)
+ */
+export async function preloadLanguageDecks(languages: string[]): Promise<void> {
+  if (typeof window === 'undefined' || (typeof process !== 'undefined' && process.env?.VITEST)) return;
+  const baseUrl = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) || './';
+  const cleanBase = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
+
+  // 1. Load meta if needed
+  if (!cachedMeta) {
+    try {
+      const res = await fetch(`${cleanBase}data/decks/meta.json`);
+      if (res.ok) {
+        const raw: CardMetaItem[] = await res.json();
+        cachedMeta = raw.filter((c) => !c.excluded);
+      }
+    } catch (e) {
+      console.warn('Failed to fetch deck meta.json:', e);
+    }
+  }
+
+  // 2. Load requested languages in parallel
+  const needed = languages.filter((l) => !cachedDecks[l]);
+  await Promise.all(
+    needed.map(async (lang) => {
+      try {
+        const res = await fetch(`${cleanBase}data/decks/${lang}.json`);
+        if (res.ok) {
+          cachedDecks[lang] = await res.json();
+        }
+      } catch (e) {
+        console.warn(`Failed to fetch deck for ${lang}:`, e);
+      }
+    })
+  );
+}
 
 export const PHRASE_STATS = {
-  PreA1: CURATED_CARDS.filter((p) => p.rawLevel === 'A0' || p.rawLevel === 'A0+' || p.rawLevel === 'easy').length,
-  A0: CURATED_CARDS.filter((p) => p.rawLevel === 'A0' || p.level === 'A0').length,
-  A0Plus: CURATED_CARDS.filter((p) => p.rawLevel === 'A0+' || p.level === 'A0+').length,
-  A1: CURATED_CARDS.filter((p) => p.rawLevel === 'A1' || p.level === 'A1').length,
-  A1Plus: CURATED_CARDS.filter((p) => p.rawLevel === 'A1+' || p.level === 'A1+').length,
-  A2: CURATED_CARDS.filter((p) => p.rawLevel === 'A2' || p.level === 'A2').length,
-  A2Plus: CURATED_CARDS.filter((p) => p.rawLevel === 'A2+' || p.level === 'A2+').length,
-  B1: CURATED_CARDS.filter((p) => p.rawLevel === 'B1' || p.level === 'B1').length,
-  B1Plus: CURATED_CARDS.filter((p) => p.rawLevel === 'B1+' || p.level === 'B1+').length,
-  B2: CURATED_CARDS.filter((p) => p.rawLevel === 'B2' || p.level === 'B2').length,
-  B2Plus: CURATED_CARDS.filter((p) => p.rawLevel === 'B2+' || p.level === 'B2+').length,
-  C1: CURATED_CARDS.filter((p) => (p.rawLevel === 'C1' || p.level === 'C1') && p.rawLevel !== 'C2' && p.level !== 'C2').length,
-  C1Plus: CURATED_CARDS.filter((p) => p.rawLevel === 'C1+' || p.level === 'C1+').length,
-  C2: CURATED_CARDS.filter((p) => p.rawLevel === 'C2' || p.level === 'C2').length,
-  total: CURATED_CARDS.length,
+  PreA1: 327,
+  A0: 133,
+  A0Plus: 63,
+  A1: 771,
+  A1Plus: 64,
+  A2: 1026,
+  A2Plus: 43,
+  B1: 1000,
+  B1Plus: 21,
+  B2: 1545,
+  B2Plus: 21,
+  C1: 1902,
+  C1Plus: 21,
+  C2: 467,
+  total: 6910,
 };
 
 function typeOf(raw: string): ContentType {
@@ -130,13 +204,14 @@ const LANG_EN: Record<string, string> = {
 /**
  * Filter matching cards for a requested level according to the CEFR and '+' deck rules
  */
-function getMatchingCuratedCards(selectedLevel: CEFRLevel): CuratedRawCard[] {
+function getMatchingCuratedMeta(selectedLevel: CEFRLevel): CardMetaItem[] {
+  const meta = cachedMeta || getMetaCardsSync();
   if (selectedLevel === 'all') {
-    return CURATED_CARDS;
+    return meta;
   }
 
   if (selectedLevel === 'Pre-A1' || selectedLevel === 'A0') {
-    return CURATED_CARDS.filter((c) => {
+    return meta.filter((c) => {
       const lvl = c.rawLevel || c.level;
       return lvl === 'A0' || lvl === 'A0+' || lvl === 'easy';
     });
@@ -144,7 +219,7 @@ function getMatchingCuratedCards(selectedLevel: CEFRLevel): CuratedRawCard[] {
 
   // Exact standard levels
   if (['A1', 'A2', 'B1', 'B2', 'C2'].includes(selectedLevel)) {
-    return CURATED_CARDS.filter((c) => {
+    return meta.filter((c) => {
       const lvl = c.rawLevel || c.level;
       return lvl === selectedLevel;
     });
@@ -152,7 +227,7 @@ function getMatchingCuratedCards(selectedLevel: CEFRLevel): CuratedRawCard[] {
 
   // C1: strictly C1, MUST NOT include C2!
   if (selectedLevel === 'C1') {
-    return CURATED_CARDS.filter((c) => {
+    return meta.filter((c) => {
       const lvl = c.rawLevel || c.level;
       return (lvl === 'C1') && lvl !== 'C2';
     });
@@ -169,14 +244,14 @@ function getMatchingCuratedCards(selectedLevel: CEFRLevel): CuratedRawCard[] {
 
   const config = plusMap[selectedLevel];
   if (!config) {
-    return CURATED_CARDS.filter((c) => (c.rawLevel || c.level) === selectedLevel);
+    return meta.filter((c) => (c.rawLevel || c.level) === selectedLevel);
   }
 
-  const ownCards = CURATED_CARDS.filter((c) => (c.rawLevel || c.level) === selectedLevel);
+  const ownCards = meta.filter((c) => (c.rawLevel || c.level) === selectedLevel);
   const ownIds = new Set(ownCards.map((c) => c.conceptId || c.id));
 
-  const lowerCards = CURATED_CARDS.filter((c) => (c.rawLevel || c.level) === config.lower && !ownIds.has(c.conceptId || c.id));
-  const upperCards = CURATED_CARDS.filter((c) => (c.rawLevel || c.level) === config.upper && !ownIds.has(c.conceptId || c.id));
+  const lowerCards = meta.filter((c) => (c.rawLevel || c.level) === config.lower && !ownIds.has(c.conceptId || c.id));
+  const upperCards = meta.filter((c) => (c.rawLevel || c.level) === config.upper && !ownIds.has(c.conceptId || c.id));
 
   // Determine needed fill count (target at least 150 cards in deck)
   const neededFill = Math.max(0, 150 - ownCards.length);
@@ -204,15 +279,20 @@ export function cardsFromPhraseBank(
   const shouldReverse = (i: number) =>
     cardGameMode === 'reverse' || (cardGameMode === 'mixed' && i % 3 === 0);
 
-  // 1. Primary Source: Curated Database
-  const candidateCurated = getMatchingCuratedCards(cefrLevel);
+  // 1. Primary Source: Curated Database (via lazy loaded meta & per-language decks)
+  const candidateCurated = getMatchingCuratedMeta(cefrLevel);
 
   targetLanguages.forEach((target) => {
+    const targetDeck = cachedDecks[target] || getLanguageDeckSync(target);
+    const nativeDeck = cachedDecks[nativeLanguage] || getLanguageDeckSync(nativeLanguage);
+    const enDeck = cachedDecks['en'] || getLanguageDeckSync('en');
+
     candidateCurated.forEach((c, i) => {
       if (cats.size && c.topic && !cats.has(c.topic)) return;
 
-      const targetTrans = c.translations[target];
-      const nativeTrans = c.translations[nativeLanguage] || c.translations.en;
+      const cardKey = c.conceptId || c.id;
+      const targetTrans = targetDeck[cardKey];
+      const nativeTrans = nativeDeck[cardKey] || enDeck[cardKey];
       if (!targetTrans || !targetTrans.text || !nativeTrans || !nativeTrans.text) return;
 
       const content = typeOf(c.type);
@@ -250,34 +330,7 @@ export function cardsFromPhraseBank(
     });
   });
 
-  // 2. Fallback: Legacy phrases only for items not present in Curated Database
-  if (pool.length < 15) {
-    targetLanguages.forEach((target) => {
-      LEGACY_PHRASES.forEach((p) => {
-        if (CURATED_CONCEPT_SET.has(p.id)) return;
-        const targetText = p.texts[target];
-        const translation = p.texts[nativeLanguage] || p.texts.en;
-        if (!targetText || !translation) return;
-
-        pool.push({
-          id: `${p.id}_${target}_fb`,
-          nativeLanguage,
-          targetLanguage: target,
-          cefrLevel: (cefrLevel === 'all' ? p.level : cefrLevel) as Exclude<CEFRLevel, 'all'>,
-          topic: p.topic,
-          contentType: typeOf(p.type),
-          learningMode: 'Explain',
-          prompt: nativeLanguage === 'fa' ? 'عبارت را برای یارت توضیح بده' : 'Explain this phrase',
-          targetText,
-          translation,
-          difficulty: p.difficulty,
-          points: pointsFor(p.rawLevel || p.level, p.type)
-        });
-      });
-    });
-  }
-
-  // 3. Apply Card Pacing Sequencer (Invariants: no long at start, max 1 long per rolling 3-card window, C1 exclusion)
+  // 2. Apply Card Pacing Sequencer (Invariants: no long at start, max 1 long per rolling 3-card window, C1 exclusion)
   if (pool.length > 0) {
     const primaryTarget = targetLanguages[0] || 'en';
     return sequencer.sequenceDeck(pool, turnDurationSec, primaryTarget);

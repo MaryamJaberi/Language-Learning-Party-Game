@@ -27,7 +27,7 @@ function gauss(rng: () => number) {
 function makeBank(rng: () => number, n = 660) {
   const bank = [];
   for (let i = 0; i < n; i++) {
-    const cefr = CEFR_ORDER[Math.min(5, Math.floor(rng() * 5))];
+    const cefr = CEFR_ORDER[Math.floor(rng() * CEFR_ORDER.length)];
     bank.push({ id: 'w' + i, cefr, trueOffset: gauss(rng) * 0.5 });
   }
   return bank;

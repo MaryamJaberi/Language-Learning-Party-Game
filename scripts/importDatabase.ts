@@ -503,7 +503,9 @@ export function runPipeline() {
 
         // C2 Shift Case 2: C2_Multilingual_Phrases_FINAL.xlsx where Arabic was skipped and columns shifted left
         if (s_name.includes('C2_Multilingual_Phrases') && /[\u4E00-\u9FFF]/.test(fa_val)) {
-          c2_shift_fixes.push({
+          const alreadyFix = c2_shift_fixes.some((f) => f.sentence_en.toLowerCase().trim() === base_en.toLowerCase().trim());
+          if (!alreadyFix) {
+            c2_shift_fixes.push({
             row_id,
             row_index: r_idx,
             before_level_col: raw_lvl,
@@ -511,7 +513,8 @@ export function runPipeline() {
             fixed_level: 'C2',
             arabic_text_recovered: '',
             persian_text_recovered: ar_col_idx !== undefined && ar_col_idx < r.length ? String(r[ar_col_idx] || '').trim() : ''
-          });
+            });
+          }
 
           const trans: Record<string, { text: string; article?: string; alternatives?: string[] }> = {
             en: parseSlashVariants(normalizeUnicode(base_en)),
@@ -977,6 +980,46 @@ export function runPipeline() {
     excluded: c.excluded
   }));
   writeSafe(path.join('data', 'curatedDeckDatabase.json'), JSON.stringify(runtimeDeckCards));
+
+  // Generate split decks for per-language runtime lazy loading
+  const decksDir = path.join('data', 'decks');
+  const publicDecksDir = path.join('public', 'data', 'decks');
+  if (!fs.existsSync(decksDir)) fs.mkdirSync(decksDir, { recursive: true });
+  if (!fs.existsSync(publicDecksDir)) fs.mkdirSync(publicDecksDir, { recursive: true });
+
+  const metaDeck = merged_cards.map((c) => ({
+    id: c.id,
+    conceptId: c.conceptId,
+    level: c.level,
+    rawLevel: c.rawLevel,
+    topic: c.topic,
+    type: c.type,
+    excluded: c.excluded || c.is_collocation_excluded || c.is_c1_final_excluded ? true : undefined
+  }));
+  const metaStr = JSON.stringify(metaDeck);
+  writeSafe(path.join(decksDir, 'meta.json'), metaStr);
+  writeSafe(path.join(publicDecksDir, 'meta.json'), metaStr);
+
+  const allDeckLocales = ['en', 'en-GB', 'en-US', 'fa', 'ar', 'nl', 'de', 'fr', 'es', 'it', 'tr', 'pl', 'uk', 'ru', 'zh', 'ja', 'ko', 'hi', 'pt'];
+  for (const lk of allDeckLocales) {
+    const langDeck: Record<string, { text: string; article?: string; note?: string; alternatives?: string[]; units?: number; lengthClass?: string }> = {};
+    merged_cards.forEach((c) => {
+      const t = c.translations && c.translations[lk];
+      if (t && t.text) {
+        langDeck[c.conceptId || c.id] = {
+          text: t.text,
+          article: t.article || undefined,
+          note: t.note || undefined,
+          alternatives: t.alternatives && t.alternatives.length ? t.alternatives : undefined,
+          units: c.measured && c.measured[lk] ? c.measured[lk].units : undefined,
+          lengthClass: c.measured && c.measured[lk] ? c.measured[lk].lengthClass : undefined
+        };
+      }
+    });
+    const langStr = JSON.stringify(langDeck);
+    writeSafe(path.join(decksDir, lk + '.json'), langStr);
+    writeSafe(path.join(publicDecksDir, lk + '.json'), langStr);
+  }
 
   // Scope C: Write conflict_resolutions.csv
   const resHeader = 'conceptId,lang,chosen,rejected,rule applied,one-line reason\n';

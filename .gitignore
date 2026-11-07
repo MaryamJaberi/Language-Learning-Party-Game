@@ -34,3 +34,6 @@ scripts/__pycache__/
 scripts/scratch_*.json
 data/curatedDatabase_python.json
 
+
+__pycache__/
+*.pyc

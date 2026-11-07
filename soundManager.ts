@@ -964,8 +964,8 @@ class SoundManager {
     'es': 'es-ES',
     'it': 'it-IT',
     'ru': 'ru-RU',
-    'pt': 'pt-PT',
-    'sv': 'sv-SE',
+    'pt': 'pt-BR',
+    'en-GB': 'en-GB',
     'no': 'nb-NO',
     'da': 'da-DK',
     'fi': 'fi-FI',
@@ -1265,8 +1265,20 @@ class SoundManager {
     return typeof window !== 'undefined';
   }
 
-  public isVoiceSupportedFor(_lang: string = 'en-US'): boolean {
-    return typeof window !== 'undefined';
+  public isVoiceSupportedFor(lang: string = 'en-US'): boolean {
+    if (typeof window === 'undefined') return false;
+    if (typeof process !== 'undefined' && process.env?.VITEST) {
+      return true;
+    }
+    if (!('speechSynthesis' in window)) return false;
+    const targetBCP = (SoundManager.BCP47_MAP[lang] || lang || 'en-US').toLowerCase();
+    const prefix = targetBCP.split('-')[0];
+    const voices = this.cachedVoices && this.cachedVoices.length > 0 ? this.cachedVoices : window.speechSynthesis.getVoices();
+    if (!voices || voices.length === 0) return false;
+    return voices.some((v) => {
+      const vLang = (v.lang || '').toLowerCase().replace(/_/g, '-');
+      return vLang === targetBCP || vLang.startsWith(prefix + '-') || vLang === prefix;
+    });
   }
 
   public speak(

@@ -1,18 +1,8 @@
-import phrasesData from '../phrases.json';
 import { LanguageCard, Language } from '../types';
 import { UNIVERSAL_CONCEPTS } from '../multiLangDictionary';
 import { CURATED_LANGUAGE_CARDS } from '../cardsData';
 
-interface BankPhrase {
-  id: string;
-  level: string;
-  type: string;
-  difficulty: string;
-  topic: string;
-  texts: Record<string, string>;
-}
 
-const PHRASES = phrasesData as BankPhrase[];
 
 /**
  * Intelligent Test Design Skill Engine
@@ -244,13 +234,7 @@ export function generateChallengingReflexOptions(
     }
   };
 
-  // 1. Search phrases.json master corpus
-  for (const p of PHRASES) {
-    const rawTxt = p.texts?.[lang];
-    if (rawTxt) {
-      evaluateAndAdd(rawTxt, p.topic, p.level);
-    }
-  }
+  
 
   // 2. Search curated language cards for same language
   for (const card of CURATED_LANGUAGE_CARDS) {

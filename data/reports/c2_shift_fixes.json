@@ -142,59 +142,5 @@
     "fixed_level": "C2",
     "arabic_text_recovered": "",
     "persian_text_recovered": "باید یه وقتی ببینیم هم رو؛ «یه وقتی» همان اسلاتی است که الان بین جلسه‌های موجود قرار دارد"
-  },
-  {
-    "row_id": "C2-0005",
-    "row_index": 6,
-    "before_level_col": "C2",
-    "sentence_en": "The form asked for the same number three times and accepted only the fourth version.",
-    "fixed_level": "C2",
-    "arabic_text_recovered": "",
-    "persian_text_recovered": "فرم همان عدد را سه بار خواست و فقط نسخهٔ چهارم را پذیرفت."
-  },
-  {
-    "row_id": "C2-0040",
-    "row_index": 41,
-    "before_level_col": "C2",
-    "sentence_en": "Seasonal on the menu means the kitchen has decided the season is still last month.",
-    "fixed_level": "C2",
-    "arabic_text_recovered": "",
-    "persian_text_recovered": "فصلی روی منو یعنی آشپزخانه تصمیم گرفته فصل هنوز ماه گذشته است."
-  },
-  {
-    "row_id": "C2-0078",
-    "row_index": 79,
-    "before_level_col": "C2",
-    "sentence_en": "The viewing called it character; the surveyor called it a load-bearing problem.",
-    "fixed_level": "C2",
-    "arabic_text_recovered": "",
-    "persian_text_recovered": "بازدید آن را شخصیت خانه نامید؛ مهندس آن را مشکل باربر خواند."
-  },
-  {
-    "row_id": "C2-0109",
-    "row_index": 110,
-    "before_level_col": "C2",
-    "sentence_en": "We agreed to keep it light, which is how the serious part arrived unannounced.",
-    "fixed_level": "C2",
-    "arabic_text_recovered": "",
-    "persian_text_recovered": "قرار گذاشتیم سبک نگه داریم؛ همین شد که بخش جدی بدون اطلاع رسید."
-  },
-  {
-    "row_id": "C2-0123",
-    "row_index": 124,
-    "before_level_col": "C2",
-    "sentence_en": "We have exhausted the weather and are now politely circling the fact that neither of us is going to the same place.",
-    "fixed_level": "C2",
-    "arabic_text_recovered": "",
-    "persian_text_recovered": "هوا را تمام کردیم و حالا با ادب دور این واقعیت می‌چرخیم که هیچ‌کدام‌مان به یک جا نمی‌رویم."
-  },
-  {
-    "row_id": "C2-0155",
-    "row_index": 156,
-    "before_level_col": "C2",
-    "sentence_en": "The update fixed the thing we reported and broke the thing we had stopped noticing.",
-    "fixed_level": "C2",
-    "arabic_text_recovered": "",
-    "persian_text_recovered": "به‌روزرسانی چیزی را که گزارش داده بودیم درست کرد و چیزی را که دیگر به آن توجه نمی‌کردیم خراب کرد."
   }
 ]
