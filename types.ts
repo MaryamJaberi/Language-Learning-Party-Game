@@ -12,6 +12,7 @@ export type Language =
   | 'ku' | 'he' | 'ms' | 'tl' | 'hy' | 'ka' | 'az' | 'bn';
 
 export type CEFRLevel = 
+  | 'Pre-A1'
   | 'A0' 
   | 'A0+' 
   | 'A1' 
@@ -70,6 +71,9 @@ export interface LanguageCard {
   challengeBonus?: number; // Extra bonus points for answering challenge card
   isCreative?: boolean; // Creative scenario, roleplay, cultural nuance, or witty idiom card
   scenarioRole?: string; // Scenario tag e.g. "در کافه", "فرودگاه", "اصطلاح کوچه بازاری"
+  article?: string; // Grammatical article for vocabulary cards (e.g., "het", "de", "der", "die", "das")
+  note?: string; // Additional linguistic note or explanation (extracted from parenthetical glosses)
+  alternatives?: string[]; // Valid alternative answers
 }
 
 export interface Player {

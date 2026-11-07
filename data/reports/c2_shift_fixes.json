@@ -1,0 +1,200 @@
+[
+  {
+    "row_id": "26",
+    "row_index": 27,
+    "before_level_col": "المعاينة سمّته طابعاً؛ المهندس سمّاه مشكلة إنشائية.",
+    "sentence_en": "The viewing called it character; the surveyor called it a load-bearing problem.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "المعاينة سمّته طابعاً؛ المهندس سمّاه مشكلة إنشائية.",
+    "persian_text_recovered": "بازدید آن را شخصیت خانه نامید؛ مهندس آن را مشکل باربر خواند."
+  },
+  {
+    "row_id": "27",
+    "row_index": 28,
+    "before_level_col": "الطلب طلب الرقم نفسه ثلاث مرات ولم يقبل إلا النسخة الرابعة.",
+    "sentence_en": "The form asked for the same number three times and accepted only the fourth version.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "الطلب طلب الرقم نفسه ثلاث مرات ولم يقبل إلا النسخة الرابعة.",
+    "persian_text_recovered": "فرم همان عدد را سه بار خواست و فقط نسخهٔ چهارم را پذیرفت."
+  },
+  {
+    "row_id": "28",
+    "row_index": 29,
+    "before_level_col": "موسمي على القائمة يعني أن المطبخ قرر أن الموسم لا يزال الشهر الماضي.",
+    "sentence_en": "Seasonal on the menu means the kitchen has decided the season is still last month.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "موسمي على القائمة يعني أن المطبخ قرر أن الموسم لا يزال الشهر الماضي.",
+    "persian_text_recovered": "فصلی روی منو یعنی آشپزخانه تصمیم گرفته فصل هنوز ماه گذشته است."
+  },
+  {
+    "row_id": "29",
+    "row_index": 30,
+    "before_level_col": "التحديث أصلح ما أبلغنا عنه وكسر ما كنا قد توقفنا عن ملاحظته.",
+    "sentence_en": "The update fixed the thing we reported and broke the thing we had stopped noticing.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "التحديث أصلح ما أبلغنا عنه وكسر ما كنا قد توقفنا عن ملاحظته.",
+    "persian_text_recovered": "به‌روزرسانی چیزی را که گزارش داده بودیم درست کرد و چیزی را که دیگر به آن توجه نمی‌کردیم خراب کرد."
+  },
+  {
+    "row_id": "30",
+    "row_index": 31,
+    "before_level_col": "اتفقنا أن نبقي الأمر خفيفاً، وهكذا وصل الجزء الجاد دون إعلان.",
+    "sentence_en": "We agreed to keep it light, which is how the serious part arrived unannounced.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "اتفقنا أن نبقي الأمر خفيفاً، وهكذا وصل الجزء الجاد دون إعلان.",
+    "persian_text_recovered": "قرار گذاشتیم سبک نگه داریم؛ همین شد که بخش جدی بدون اطلاع رسید."
+  },
+  {
+    "row_id": "31",
+    "row_index": 32,
+    "before_level_col": "انتهينا من الطقس ونحن الآن ندور بلباقة حول حقيقة أن أياً منا لا يذهب إلى المكان نفسه.",
+    "sentence_en": "We have exhausted the weather and are now politely circling the fact that neither of us is going to the same place.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "انتهينا من الطقس ونحن الآن ندور بلباقة حول حقيقة أن أياً منا لا يذهب إلى المكان نفسه.",
+    "persian_text_recovered": "هوا را تمام کردیم و حالا با ادب دور این واقعیت می‌چرخیم که هیچ‌کدام‌مان به یک جا نمی‌رویم."
+  },
+  {
+    "row_id": "297",
+    "row_index": 298,
+    "before_level_col": "C2",
+    "sentence_en": "The promotion came with a title; the title is the part that fits on the email signature.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "",
+    "persian_text_recovered": "ترفیع با عنوان آمد؛ عنوان همان بخشی است که در امضای ایمیل جا می‌شود"
+  },
+  {
+    "row_id": "298",
+    "row_index": 299,
+    "before_level_col": "C2",
+    "sentence_en": "The flight was on time; the queue at immigration is where the schedule stops applying.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "",
+    "persian_text_recovered": "پرواز به‌موقع بود؛ صف مهاجرت جایی است که برنامه دیگر اعمال نمی‌شود"
+  },
+  {
+    "row_id": "299",
+    "row_index": 300,
+    "before_level_col": "C2",
+    "sentence_en": "I've seen the projections; the projections assume the variables remain as cooperative as they appear in the spreadsheet.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "",
+    "persian_text_recovered": "پیش‌بینی‌ها را دیده‌ام؛ پیش‌بینی‌ها فرض می‌کنند متغیرها همان‌قدر همکاری‌کننده بمانند که در صفحه گسترده به نظر می‌رسند"
+  },
+  {
+    "row_id": "300",
+    "row_index": 301,
+    "before_level_col": "C2",
+    "sentence_en": "The diagnosis was reassuring; the list of things to monitor is the part that arrived later.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "",
+    "persian_text_recovered": "تشخیص اطمینان‌بخش بود؛ فهرست چیزهایی که باید زیر نظر باشند همان بخشی است که بعداً رسید"
+  },
+  {
+    "row_id": "301",
+    "row_index": 302,
+    "before_level_col": "C2",
+    "sentence_en": "It's a lovely apartment; the landlord's definition of fully furnished is the detail that clarifies the photographs.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "",
+    "persian_text_recovered": "آپارتمان قشنگیه؛ تعریف صاحب‌خانه از «کاملاً مبله» همان جزئیاتی است که عکس‌ها را روشن می‌کند"
+  },
+  {
+    "row_id": "302",
+    "row_index": 303,
+    "before_level_col": "C2",
+    "sentence_en": "The match was competitive; the final score is what the other side will remember.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "",
+    "persian_text_recovered": "مسابقه رقابتی بود؛ امتیاز نهایی همان چیزی است که طرف مقابل به یاد خواهد سپرد"
+  },
+  {
+    "row_id": "303",
+    "row_index": 304,
+    "before_level_col": "C2",
+    "sentence_en": "How's the project going? The project is going; the timeline is the element that has become interpretive.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "",
+    "persian_text_recovered": "پروژه چطور پیش می‌رود؟ پروژه پیش می‌رود؛ جدول زمانی همان عنصری است که تفسیری شده"
+  },
+  {
+    "row_id": "304",
+    "row_index": 305,
+    "before_level_col": "C2",
+    "sentence_en": "The invoice has been processed; processing is the stage that precedes the stage where the money appears.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "",
+    "persian_text_recovered": "فاکتور پردازش شده؛ پردازش مرحله‌ای است که قبل از مرحله‌ای می‌آید که پول ظاهر می‌شود"
+  },
+  {
+    "row_id": "305",
+    "row_index": 306,
+    "before_level_col": "C2",
+    "sentence_en": "The app updated overnight; the update is the reason the button that used to work now requires a tutorial.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "",
+    "persian_text_recovered": "اپ شبانه به‌روزرسانی شد؛ به‌روزرسانی همان دلیلی است که دکمهٔ قبلاً کارکننده حالا به آموزش نیاز دارد"
+  },
+  {
+    "row_id": "306",
+    "row_index": 307,
+    "before_level_col": "C2",
+    "sentence_en": "We should catch up sometime; sometime is the slot that currently sits between the meetings that already exist.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "",
+    "persian_text_recovered": "باید یه وقتی ببینیم هم رو؛ «یه وقتی» همان اسلاتی است که الان بین جلسه‌های موجود قرار دارد"
+  },
+  {
+    "row_id": "C2-0005",
+    "row_index": 6,
+    "before_level_col": "C2",
+    "sentence_en": "The form asked for the same number three times and accepted only the fourth version.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "",
+    "persian_text_recovered": "فرم همان عدد را سه بار خواست و فقط نسخهٔ چهارم را پذیرفت."
+  },
+  {
+    "row_id": "C2-0040",
+    "row_index": 41,
+    "before_level_col": "C2",
+    "sentence_en": "Seasonal on the menu means the kitchen has decided the season is still last month.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "",
+    "persian_text_recovered": "فصلی روی منو یعنی آشپزخانه تصمیم گرفته فصل هنوز ماه گذشته است."
+  },
+  {
+    "row_id": "C2-0078",
+    "row_index": 79,
+    "before_level_col": "C2",
+    "sentence_en": "The viewing called it character; the surveyor called it a load-bearing problem.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "",
+    "persian_text_recovered": "بازدید آن را شخصیت خانه نامید؛ مهندس آن را مشکل باربر خواند."
+  },
+  {
+    "row_id": "C2-0109",
+    "row_index": 110,
+    "before_level_col": "C2",
+    "sentence_en": "We agreed to keep it light, which is how the serious part arrived unannounced.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "",
+    "persian_text_recovered": "قرار گذاشتیم سبک نگه داریم؛ همین شد که بخش جدی بدون اطلاع رسید."
+  },
+  {
+    "row_id": "C2-0123",
+    "row_index": 124,
+    "before_level_col": "C2",
+    "sentence_en": "We have exhausted the weather and are now politely circling the fact that neither of us is going to the same place.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "",
+    "persian_text_recovered": "هوا را تمام کردیم و حالا با ادب دور این واقعیت می‌چرخیم که هیچ‌کدام‌مان به یک جا نمی‌رویم."
+  },
+  {
+    "row_id": "C2-0155",
+    "row_index": 156,
+    "before_level_col": "C2",
+    "sentence_en": "The update fixed the thing we reported and broke the thing we had stopped noticing.",
+    "fixed_level": "C2",
+    "arabic_text_recovered": "",
+    "persian_text_recovered": "به‌روزرسانی چیزی را که گزارش داده بودیم درست کرد و چیزی را که دیگر به آن توجه نمی‌کردیم خراب کرد."
+  }
+]

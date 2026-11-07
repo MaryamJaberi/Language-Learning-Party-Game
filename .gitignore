@@ -28,3 +28,9 @@ dist-ssr
 grok_extracted.txt
 dev-dist/
 vitest_full_run.txt
+
+# Scratch and temporary files
+scripts/__pycache__/
+scripts/scratch_*.json
+data/curatedDatabase_python.json
+

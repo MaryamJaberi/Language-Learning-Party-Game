@@ -106,6 +106,8 @@ const SYNONYM_GROUPS: string[][] = [
   ['خوبم', 'من خوبم', 'عالی ام', 'عالی هستم', 'الحمدلله'],
   // English common equivalents
   ['can you help me', 'could you help me', 'help me please', 'can you please help me'],
+  ['how do you say in english', 'how do you say this in english', 'how do you say that in english'],
+  ['به انگلیسی چی میشه', 'به انگلیسی چی میگن', 'به انگلیسی این چی میشه'],
   ['thank you', 'thanks', 'thanks a lot', 'thank you very much'],
   ['check please', 'bill please', 'the check please', 'the bill please'],
   ['excuse me', 'pardon me', 'sorry'],
@@ -245,8 +247,17 @@ export function evaluateAnswer(
     };
   }
 
-  // Generate target variations (contractions, synonyms, spelling variants)
+  // Generate target variations (contractions, synonyms, spelling variants, and card alternatives)
   const expectedVariations = getSentenceVariations(targetAnswer);
+  if ((card as any)?.alternatives && Array.isArray((card as any).alternatives)) {
+    for (const alt of (card as any).alternatives) {
+      for (const v of getSentenceVariations(alt)) {
+        if (!expectedVariations.includes(v)) {
+          expectedVariations.push(v);
+        }
+      }
+    }
+  }
   let bestSimilarity = 0;
   let bestMatch = expectedVariations[0];
   let isExact = false;

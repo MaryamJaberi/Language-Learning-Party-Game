@@ -56,6 +56,15 @@ def run():
     if res.returncode != 0:
         print("ERROR compiling dataset:", res.stderr)
         return False
+
+    # 3. Merge with unified previous database to keep all 9,038 items intact
+    print("\n=== Unifying with full historical dataset & collocations ===")
+    merge_script = os.path.join(ROOT_DIR, "scripts", "build_ultimate_merged_database.py")
+    res_merge = subprocess.run([py_path, merge_script], capture_output=True, text=True)
+    print(res_merge.stdout)
+    if res_merge.returncode != 0:
+        print("ERROR merging unified dataset:", res_merge.stderr)
+        return False
         
     print("=== [DAILY DRIVE SYNC] Synchronization and Compilation Successfully Completed! ===")
     return True

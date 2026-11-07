@@ -189,10 +189,10 @@ export function getCefrText(map: Record<string, string>, lang?: string): string 
 
 export const CEFR_LEVELS: CEFRLevelInfo[] = [
   {
-    id: 'A0',
-    code: 'A0',
+    id: 'Pre-A1',
+    code: 'Pre-A1',
     name: {
-      fa: 'پایه صفر',
+      fa: 'پایه مقدماتی (Pre-A1)',
       en: 'Pre-A1',
       'en-US': 'Pre-A1',
       nl: 'Basis 0',
@@ -231,7 +231,7 @@ export const CEFR_LEVELS: CEFRLevelInfo[] = [
       ru: 'напр. Привет, Да, Нет, Один, Два'
     },
     color: '#06B6D4',
-    badge: 'A0'
+    badge: 'Pre-A1'
   },
   {
     id: 'A0+',

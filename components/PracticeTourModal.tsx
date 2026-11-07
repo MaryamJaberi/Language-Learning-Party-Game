@@ -262,9 +262,10 @@ export const PracticeTourModal: React.FC<Props> = ({
             <button
               type="button"
               onClick={handleComplete}
+              aria-label={isRTL ? 'رد شدن از تور راهنما' : 'Skip Tour'}
               className="px-3 py-2 text-xs font-bold text-[var(--mute)] hover:text-[var(--ink)] transition-colors cursor-pointer"
             >
-              {isRTL ? 'رد شدن (Skip)' : 'Skip'}
+              {isRTL ? 'رد شدن از تور' : 'Skip Tour'}
             </button>
 
             {currentStep > 0 && (

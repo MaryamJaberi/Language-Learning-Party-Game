@@ -1,0 +1,1484 @@
+[
+  {
+    "filename": "A0+_Multilingual_Phrases.xlsx",
+    "path": "data\\google_drive_sync\\A0+_Multilingual_Phrases.xlsx",
+    "size": 33232,
+    "mtime": "2026-10-30 12:13:03",
+    "format": ".xlsx",
+    "sheets": {
+      "Instructions": {
+        "row_count": 0,
+        "columns": [
+          "A0+ Multilingual Phrase Bank — Dour Level Check / Party Game\n\nSlightly expanded basic phrases for pre-A1. Natural native translations."
+        ],
+        "levels": []
+      },
+      "A0+_Items": {
+        "row_count": 77,
+        "columns": [
+          "ID",
+          "English (Base)",
+          "English British",
+          "English American",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "Arabic",
+          "Persian",
+          "Chinese",
+          "Japanese",
+          "Korean",
+          "French",
+          "Hindi",
+          "Dutch",
+          "German",
+          "Ukrainian",
+          "Turkish",
+          "Polish",
+          "Portuguese",
+          "Spanish",
+          "Italian"
+        ],
+        "levels": [
+          "A0+"
+        ]
+      }
+    }
+  },
+  {
+    "filename": "A0_Multilingual_Phrases.xlsx",
+    "path": "data\\google_drive_sync\\A0_Multilingual_Phrases.xlsx",
+    "size": 47386,
+    "mtime": "2026-10-30 12:13:01",
+    "format": ".xlsx",
+    "sheets": {
+      "Instructions": {
+        "row_count": 0,
+        "columns": [
+          "A0 Multilingual Phrase Bank — Dour Level Check / Party Game\n\nVery basic phrases for absolute beginners. Natural native translations. Difficulty within A0 level."
+        ],
+        "levels": []
+      },
+      "A0_Items": {
+        "row_count": 141,
+        "columns": [
+          "ID",
+          "English (Base)",
+          "English British",
+          "English American",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "Arabic",
+          "Persian",
+          "Chinese",
+          "Japanese",
+          "Korean",
+          "French",
+          "Hindi",
+          "Dutch",
+          "German",
+          "Ukrainian",
+          "Turkish",
+          "Polish",
+          "Portuguese",
+          "Spanish",
+          "Italian"
+        ],
+        "levels": [
+          "A0"
+        ]
+      }
+    }
+  },
+  {
+    "filename": "A1+_Multilingual_Phrases.xlsx",
+    "path": "data\\google_drive_sync\\A1+_Multilingual_Phrases.xlsx",
+    "size": 38499,
+    "mtime": "2026-10-30 12:13:06",
+    "format": ".xlsx",
+    "sheets": {
+      "Instructions": {
+        "row_count": 0,
+        "columns": [
+          "A1+ Multilingual Phrase Bank — Dour Level Check / Party Game\n\nExpanded A1 level phrases with more everyday situations. Natural native translations."
+        ],
+        "levels": []
+      },
+      "A1+_Items": {
+        "row_count": 68,
+        "columns": [
+          "ID",
+          "English (Base)",
+          "English British",
+          "English American",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "Arabic",
+          "Persian",
+          "Chinese",
+          "Japanese",
+          "Korean",
+          "French",
+          "Hindi",
+          "Dutch",
+          "German",
+          "Ukrainian",
+          "Turkish",
+          "Polish",
+          "Portuguese",
+          "Spanish",
+          "Italian"
+        ],
+        "levels": [
+          "A1+"
+        ]
+      }
+    }
+  },
+  {
+    "filename": "A1_Multilingual_Phrases.xlsx",
+    "path": "data\\google_drive_sync\\A1_Multilingual_Phrases.xlsx",
+    "size": 63911,
+    "mtime": "2026-10-30 12:13:04",
+    "format": ".xlsx",
+    "sheets": {
+      "Instructions": {
+        "row_count": 5,
+        "columns": [
+          "A1 Multilingual Phrase Bank — Dour Level Check / Party Game"
+        ],
+        "levels": []
+      },
+      "A1_Items": {
+        "row_count": 147,
+        "columns": [
+          "ID",
+          "English (Base)",
+          "English British",
+          "English American",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "Arabic",
+          "Persian",
+          "Chinese",
+          "Japanese",
+          "Korean",
+          "French",
+          "Hindi",
+          "Dutch",
+          "German",
+          "Ukrainian",
+          "Turkish",
+          "Polish",
+          "Portuguese",
+          "Spanish",
+          "Italian"
+        ],
+        "levels": [
+          "A1"
+        ]
+      }
+    }
+  },
+  {
+    "filename": "A2+_Multilingual_Phrases.xlsx",
+    "path": "data\\google_drive_sync\\A2+_Multilingual_Phrases.xlsx",
+    "size": 28351,
+    "mtime": "2026-10-30 12:13:10",
+    "format": ".xlsx",
+    "sheets": {
+      "Instructions": {
+        "row_count": 0,
+        "columns": [
+          "A2+ Multilingual Phrase Bank — Dour Level Check / Party Game\n\nHigher A2 phrases covering more complex everyday situations. Natural native translations."
+        ],
+        "levels": []
+      },
+      "A2+_Items": {
+        "row_count": 44,
+        "columns": [
+          "ID",
+          "English (Base)",
+          "English British",
+          "English American",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "Arabic",
+          "Persian",
+          "Chinese",
+          "Japanese",
+          "Korean",
+          "French",
+          "Hindi",
+          "Dutch",
+          "German",
+          "Ukrainian",
+          "Turkish",
+          "Polish",
+          "Portuguese",
+          "Spanish",
+          "Italian"
+        ],
+        "levels": [
+          "A2+"
+        ]
+      }
+    }
+  },
+  {
+    "filename": "A2_Multilingual_Phrases.xlsx",
+    "path": "data\\google_drive_sync\\A2_Multilingual_Phrases.xlsx",
+    "size": 424252,
+    "mtime": "2026-10-30 12:13:08",
+    "format": ".xlsx",
+    "sheets": {
+      "Instructions": {
+        "row_count": 5,
+        "columns": [
+          "A2 Multilingual Phrases & Vocabulary - Dedicated File"
+        ],
+        "levels": []
+      },
+      "A2_Items": {
+        "row_count": 1023,
+        "columns": [
+          "ID",
+          "English (Base)",
+          "British English",
+          "American English",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "Arabic",
+          "Persian",
+          "Chinese",
+          "Japanese",
+          "Korean",
+          "French",
+          "Hindi",
+          "Dutch",
+          "German",
+          "Ukrainian",
+          "Turkish",
+          "Polish",
+          "Portuguese",
+          "Spanish",
+          "Italian"
+        ],
+        "levels": [
+          "A2"
+        ]
+      }
+    }
+  },
+  {
+    "filename": "B1+_Multilingual_Phrases.xlsx",
+    "path": "data\\google_drive_sync\\B1+_Multilingual_Phrases.xlsx",
+    "size": 18048,
+    "mtime": "2026-10-30 12:13:14",
+    "format": ".xlsx",
+    "sheets": {
+      "Instructions": {
+        "row_count": 0,
+        "columns": [
+          "B1+ Multilingual Phrase Bank — Dour Level Check / Party Game\n\nHigher intermediate phrases for B1+. Natural native translations."
+        ],
+        "levels": []
+      },
+      "B1+_Items": {
+        "row_count": 22,
+        "columns": [
+          "ID",
+          "English (Base)",
+          "English British",
+          "English American",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "Arabic",
+          "Persian",
+          "Chinese",
+          "Japanese",
+          "Korean",
+          "French",
+          "Hindi",
+          "Dutch",
+          "German",
+          "Ukrainian",
+          "Turkish",
+          "Polish",
+          "Portuguese",
+          "Spanish",
+          "Italian"
+        ],
+        "levels": [
+          "B1+"
+        ]
+      }
+    }
+  },
+  {
+    "filename": "B1_Multilingual_Phrases.xlsx",
+    "path": "data\\google_drive_sync\\B1_Multilingual_Phrases.xlsx",
+    "size": 509005,
+    "mtime": "2026-10-30 12:13:12",
+    "format": ".xlsx",
+    "sheets": {
+      "B1_Items": {
+        "row_count": 1062,
+        "columns": [
+          "ID",
+          "English (Base)",
+          "English British",
+          "English American",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "Arabic",
+          "Persian",
+          "Chinese",
+          "Japanese",
+          "Korean",
+          "French",
+          "Hindi",
+          "Dutch",
+          "German",
+          "Ukrainian",
+          "Turkish",
+          "Polish",
+          "Portuguese",
+          "Spanish",
+          "Italian"
+        ],
+        "levels": [
+          "B1"
+        ]
+      },
+      "Instructions": {
+        "row_count": 5,
+        "columns": [
+          "B1 Multilingual Phrase Bank — Dour Level Check / Party Game"
+        ],
+        "levels": []
+      }
+    }
+  },
+  {
+    "filename": "B2+_Multilingual_Phrases.xlsx",
+    "path": "data\\google_drive_sync\\B2+_Multilingual_Phrases.xlsx",
+    "size": 18235,
+    "mtime": "2026-10-30 12:13:18",
+    "format": ".xlsx",
+    "sheets": {
+      "Instructions": {
+        "row_count": 0,
+        "columns": [
+          "B2+ Multilingual Phrase Bank — Dour Level Check / Party Game\n\nUpper-intermediate phrases and idioms for B2+. Natural native translations."
+        ],
+        "levels": []
+      },
+      "B2+_Items": {
+        "row_count": 21,
+        "columns": [
+          "ID",
+          "English (Base)",
+          "English British",
+          "English American",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "Arabic",
+          "Persian",
+          "Chinese",
+          "Japanese",
+          "Korean",
+          "French",
+          "Hindi",
+          "Dutch",
+          "German",
+          "Ukrainian",
+          "Turkish",
+          "Polish",
+          "Portuguese",
+          "Spanish",
+          "Italian"
+        ],
+        "levels": [
+          "B2+"
+        ]
+      }
+    }
+  },
+  {
+    "filename": "B2_Multilingual_Phrases.xlsx",
+    "path": "data\\google_drive_sync\\B2_Multilingual_Phrases.xlsx",
+    "size": 973940,
+    "mtime": "2026-10-30 12:13:16",
+    "format": ".xlsx",
+    "sheets": {
+      "Instructions": {
+        "row_count": 5,
+        "columns": [
+          "B2 Multilingual Phrase Bank — Dour Level Check / Party Game"
+        ],
+        "levels": []
+      },
+      "B2_Items": {
+        "row_count": 1517,
+        "columns": [
+          "ID",
+          "English (Base)",
+          "English British",
+          "English American",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "Arabic",
+          "Persian",
+          "Chinese",
+          "Japanese",
+          "Korean",
+          "French",
+          "Hindi",
+          "Dutch",
+          "German",
+          "Ukrainian",
+          "Turkish",
+          "Polish",
+          "Portuguese",
+          "Spanish",
+          "Italian"
+        ],
+        "levels": [
+          "B2"
+        ]
+      }
+    }
+  },
+  {
+    "filename": "C1+_Multilingual_Phrases.xlsx",
+    "path": "data\\google_drive_sync\\C1+_Multilingual_Phrases.xlsx",
+    "size": 19113,
+    "mtime": "2026-10-30 12:13:23",
+    "format": ".xlsx",
+    "sheets": {
+      "Instructions": {
+        "row_count": 0,
+        "columns": [
+          "C1+ Multilingual Phrase Bank — Dour Level Check / Party Game\n\nAdvanced phrases, idioms and nuanced expressions for C1+. Natural native translations."
+        ],
+        "levels": []
+      },
+      "C1+_Items": {
+        "row_count": 21,
+        "columns": [
+          "ID",
+          "English (Base)",
+          "English British",
+          "English American",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "Arabic",
+          "Persian",
+          "Chinese",
+          "Japanese",
+          "Korean",
+          "French",
+          "Hindi",
+          "Dutch",
+          "German",
+          "Ukrainian",
+          "Turkish",
+          "Polish",
+          "Portuguese",
+          "Spanish",
+          "Italian"
+        ],
+        "levels": [
+          "C1+"
+        ]
+      }
+    }
+  },
+  {
+    "filename": "C1_Multilingual_Phrases.xlsx",
+    "path": "data\\google_drive_sync\\C1_Multilingual_Phrases.xlsx",
+    "size": 2264621,
+    "mtime": "2026-10-30 12:13:22",
+    "format": ".xlsx",
+    "sheets": {
+      "Instructions": {
+        "row_count": 5,
+        "columns": [
+          "C1 Multilingual Phrase Bank — Dour Level Check / Party Game"
+        ],
+        "levels": []
+      },
+      "C1_Items": {
+        "row_count": 1862,
+        "columns": [
+          "ID",
+          "English (Base)",
+          "English British",
+          "English American",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "Arabic",
+          "Persian",
+          "Chinese",
+          "Japanese",
+          "Korean",
+          "French",
+          "Hindi",
+          "Dutch",
+          "German",
+          "Ukrainian",
+          "Turkish",
+          "Polish",
+          "Portuguese",
+          "Spanish",
+          "Italian"
+        ],
+        "levels": [
+          "C1"
+        ]
+      }
+    }
+  },
+  {
+    "filename": "C2_Multilingual_Phrases.xlsx",
+    "path": "data\\google_drive_sync\\C2_Multilingual_Phrases.xlsx",
+    "size": 539541,
+    "mtime": "2026-10-30 12:13:25",
+    "format": ".xlsx",
+    "sheets": {
+      "Instructions": {
+        "row_count": 5,
+        "columns": [
+          "C2 Multilingual Phrase Bank — Dour Level Check / Party Game"
+        ],
+        "levels": []
+      },
+      "C2_Items": {
+        "row_count": 473,
+        "columns": [
+          "ID",
+          "English (Base)",
+          "English British",
+          "English American",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "Arabic",
+          "Persian",
+          "Chinese",
+          "Japanese",
+          "Korean",
+          "French",
+          "Hindi",
+          "Dutch",
+          "German",
+          "Ukrainian",
+          "Turkish",
+          "Polish",
+          "Portuguese",
+          "Spanish",
+          "Italian"
+        ],
+        "levels": [
+          "C2",
+          "اتفقنا أن نبقي الأمر خفيفاً، وهكذا وصل الجزء الجاد دون إعلان.",
+          "التحديث أصلح ما أبلغنا عنه وكسر ما كنا قد توقفنا عن ملاحظته.",
+          "الطلب طلب الرقم نفسه ثلاث مرات ولم يقبل إلا النسخة الرابعة.",
+          "المعاينة سمّته طابعاً؛ المهندس سمّاه مشكلة إنشائية.",
+          "انتهينا من الطقس ونحن الآن ندور بلباقة حول حقيقة أن أياً منا لا يذهب إلى المكان نفسه.",
+          "موسمي على القائمة يعني أن المطبخ قرر أن الموسم لا يزال الشهر الماضي."
+        ]
+      }
+    }
+  },
+  {
+    "filename": "A1_A2_Multilingual_Level_Check.xlsx",
+    "path": "data\\previous_folder_download\\A1_A2_Multilingual_Level_Check.xlsx",
+    "size": 199364,
+    "mtime": "2026-10-30 08:05:24",
+    "format": ".xlsx",
+    "sheets": {
+      "A1_Items": {
+        "row_count": 500,
+        "columns": [
+          "ID",
+          "English (Base)",
+          "British English",
+          "American English",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "Arabic (عربي)",
+          "Persian (فارسی)",
+          "Chinese (中文)",
+          "Japanese (日本語)",
+          "Korean (한국어)",
+          "French (Français)",
+          "Hindi (हिन्दी)",
+          "Dutch (Nederlands)",
+          "German (Deutsch)",
+          "Ukrainian (Українська)",
+          "Turkish (Türkçe)",
+          "Polish (Polski)",
+          "Portuguese (Português)",
+          "Spanish (Español)",
+          "Italian (Italiano)"
+        ],
+        "levels": [
+          "A1"
+        ]
+      },
+      "Instructions & Notes": {
+        "row_count": 20,
+        "columns": [
+          "A1 + A2 Multilingual Level Check Vocabulary & Phrases - Expanded Edition"
+        ],
+        "levels": []
+      },
+      "A2_Items": {
+        "row_count": 170,
+        "columns": [
+          "ID",
+          "English (Base)",
+          "British English",
+          "American English",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "Arabic (عربي)",
+          "Persian (فارسی)",
+          "Chinese (中文)",
+          "Japanese (日本語)",
+          "Korean (한국어)",
+          "French (Français)",
+          "Hindi (हिन्दी)",
+          "Dutch (Nederlands)",
+          "German (Deutsch)",
+          "Ukrainian (Українська)",
+          "Turkish (Türkçe)",
+          "Polish (Polski)",
+          "Portuguese (Português)",
+          "Spanish (Español)",
+          "Italian (Italiano)"
+        ],
+        "levels": [
+          "A2"
+        ]
+      }
+    }
+  },
+  {
+    "filename": "A1_Multilingual_Phrases_FINAL.xlsx",
+    "path": "data\\previous_folder_download\\A1_Multilingual_Phrases_FINAL.xlsx",
+    "size": 109073,
+    "mtime": "2026-10-30 08:05:34",
+    "format": ".xlsx",
+    "sheets": {
+      "A1_Items": {
+        "row_count": 468,
+        "columns": [
+          "ID",
+          "English (Base)",
+          "English British",
+          "English American",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "Arabic",
+          "Persian",
+          "Chinese",
+          "Japanese",
+          "Korean",
+          "French",
+          "Hindi",
+          "Dutch",
+          "German",
+          "Ukrainian",
+          "Turkish",
+          "Polish",
+          "Portuguese",
+          "Spanish",
+          "Italian",
+          "Source"
+        ],
+        "levels": [
+          "A1"
+        ]
+      }
+    }
+  },
+  {
+    "filename": "A2_Multilingual_Phrases_FINAL.xlsx",
+    "path": "data\\previous_folder_download\\A2_Multilingual_Phrases_FINAL.xlsx",
+    "size": 301306,
+    "mtime": "2026-10-30 08:05:32",
+    "format": ".xlsx",
+    "sheets": {
+      "A2_Items": {
+        "row_count": 984,
+        "columns": [
+          "ID",
+          "English (Base)",
+          "English British",
+          "English American",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "Arabic",
+          "Persian",
+          "Chinese",
+          "Japanese",
+          "Korean",
+          "French",
+          "Hindi",
+          "Dutch",
+          "German",
+          "Ukrainian",
+          "Turkish",
+          "Polish",
+          "Portuguese",
+          "Spanish",
+          "Italian",
+          "Source"
+        ],
+        "levels": [
+          "A2"
+        ]
+      }
+    }
+  },
+  {
+    "filename": "B1_Multilingual_Phrases_FINAL.xlsx",
+    "path": "data\\previous_folder_download\\B1_Multilingual_Phrases_FINAL.xlsx",
+    "size": 342526,
+    "mtime": "2026-10-30 08:05:31",
+    "format": ".xlsx",
+    "sheets": {
+      "B1_Items": {
+        "row_count": 999,
+        "columns": [
+          "ID",
+          "English (Base)",
+          "English British",
+          "English American",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "Arabic",
+          "Persian",
+          "Chinese",
+          "Japanese",
+          "Korean",
+          "French",
+          "Hindi",
+          "Dutch",
+          "German",
+          "Ukrainian",
+          "Turkish",
+          "Polish",
+          "Portuguese",
+          "Spanish",
+          "Italian",
+          "Source",
+          "diff_sort"
+        ],
+        "levels": [
+          "B1"
+        ]
+      }
+    }
+  },
+  {
+    "filename": "B2_Multilingual_Phrases_FINAL.xlsx",
+    "path": "data\\previous_folder_download\\B2_Multilingual_Phrases_FINAL.xlsx",
+    "size": 658918,
+    "mtime": "2026-10-30 08:05:30",
+    "format": ".xlsx",
+    "sheets": {
+      "B2_Items": {
+        "row_count": 1513,
+        "columns": [
+          "ID",
+          "English (Base)",
+          "English British",
+          "English American",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "Arabic",
+          "Persian",
+          "Chinese",
+          "Japanese",
+          "Korean",
+          "French",
+          "Hindi",
+          "Dutch",
+          "German",
+          "Ukrainian",
+          "Turkish",
+          "Polish",
+          "Portuguese",
+          "Spanish",
+          "Italian",
+          "Source",
+          "diff_sort"
+        ],
+        "levels": [
+          "B2"
+        ]
+      }
+    }
+  },
+  {
+    "filename": "C1_Multilingual_Phrases_FINAL.xlsx",
+    "path": "data\\previous_folder_download\\C1_Multilingual_Phrases_FINAL.xlsx",
+    "size": 1807371,
+    "mtime": "2026-10-30 08:05:28",
+    "format": ".xlsx",
+    "sheets": {
+      "C1_Items": {
+        "row_count": 3838,
+        "columns": [
+          "ID",
+          "EN base",
+          "EN-GB",
+          "EN-US",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "AR",
+          "FA",
+          "ZH",
+          "JA",
+          "KO",
+          "FR",
+          "HI",
+          "NL",
+          "DE",
+          "UK",
+          "TR",
+          "PL",
+          "PT",
+          "ES",
+          "IT",
+          "Source"
+        ],
+        "levels": [
+          "C1"
+        ]
+      }
+    }
+  },
+  {
+    "filename": "C2_Multilingual_Phrases_FINAL.xlsx",
+    "path": "data\\previous_folder_download\\C2_Multilingual_Phrases_FINAL.xlsx",
+    "size": 151941,
+    "mtime": "2026-10-30 08:05:25",
+    "format": ".xlsx",
+    "sheets": {
+      "C2_Items": {
+        "row_count": 191,
+        "columns": [
+          "ID",
+          "English (Base)",
+          "English British",
+          "English American",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "Arabic",
+          "Persian",
+          "Chinese",
+          "Japanese",
+          "Korean",
+          "French",
+          "Hindi",
+          "Dutch",
+          "German",
+          "Ukrainian",
+          "Turkish",
+          "Polish",
+          "Portuguese",
+          "Spanish",
+          "Italian",
+          "Source"
+        ],
+        "levels": [
+          "C2"
+        ]
+      }
+    }
+  },
+  {
+    "filename": "Collocations_Extracted.xlsx",
+    "path": "data\\previous_folder_download\\Collocations_Extracted.xlsx",
+    "size": 9306,
+    "mtime": "2026-10-30 08:05:22",
+    "format": ".xlsx",
+    "sheets": {
+      "Sheet1": {
+        "row_count": 47,
+        "columns": [
+          "ID",
+          "Collocation",
+          "Example",
+          "Persian",
+          "Category"
+        ],
+        "levels": []
+      }
+    }
+  },
+  {
+    "filename": "Dour_DB_Optimized.csv",
+    "path": "data\\previous_folder_download\\Dour_DB_Optimized.csv",
+    "size": 11598071,
+    "mtime": "2026-10-30 08:05:18",
+    "format": ".csv",
+    "csv": {
+      "row_count": 7997,
+      "columns": [
+        "﻿EN",
+        "EN-US",
+        "EN-GB",
+        "Level",
+        "Type",
+        "Difficulty",
+        "Topic",
+        "NL",
+        "DE",
+        "FA",
+        "FR",
+        "ES",
+        "IT",
+        "AR",
+        "TR",
+        "PL",
+        "UK",
+        "PT",
+        "ZH",
+        "JA",
+        "KO",
+        "HI"
+      ],
+      "levels": [
+        "A1",
+        "A2",
+        "A2-B1",
+        "B1",
+        "B2",
+        "C1",
+        "C2"
+      ]
+    }
+  },
+  {
+    "filename": "Dour_Language_DB_Light.csv",
+    "path": "data\\previous_folder_download\\Dour_Language_DB_Light.csv",
+    "size": 7890572,
+    "mtime": "2026-10-30 08:05:21",
+    "format": ".csv",
+    "csv": {
+      "row_count": 7997,
+      "columns": [
+        "﻿EN",
+        "EN-US",
+        "Level",
+        "Type",
+        "Difficulty",
+        "Topic",
+        "NL",
+        "DE",
+        "FA",
+        "FR",
+        "ES",
+        "IT",
+        "AR",
+        "TR",
+        "ZH",
+        "JA",
+        "KO"
+      ],
+      "levels": [
+        "A1",
+        "A2",
+        "A2-B1",
+        "B1",
+        "B2",
+        "C1",
+        "C2"
+      ]
+    }
+  },
+  {
+    "filename": "Master_Learning_Items_COMPLETE_FINAL.xlsx",
+    "path": "data\\previous_folder_download\\Master_Learning_Items_COMPLETE_FINAL.xlsx",
+    "size": 3247973,
+    "mtime": "2026-10-30 08:04:04",
+    "format": ".xlsx",
+    "sheets": {
+      "Sheet1": {
+        "row_count": 7997,
+        "columns": [
+          "EN",
+          "EN-GB",
+          "EN-US",
+          "NL",
+          "DE",
+          "FA",
+          "FR",
+          "ES",
+          "IT",
+          "AR",
+          "TR",
+          "PL",
+          "UK",
+          "PT",
+          "ZH",
+          "JA",
+          "KO",
+          "HI",
+          "Type",
+          "Difficulty",
+          "Topic",
+          "Level",
+          "Source",
+          "Collocation",
+          "Category"
+        ],
+        "levels": [
+          "A1",
+          "A2",
+          "B1",
+          "B2",
+          "C1",
+          "C2",
+          "Dutch",
+          "Dutch learning",
+          "Dutch writing",
+          "Speaking",
+          "address an issue",
+          "apologize for",
+          "beat competitors",
+          "believe in",
+          "bus route",
+          "catch a cold",
+          "collect feedback",
+          "commute by train",
+          "consist of",
+          "continuous improvement",
+          "depend on",
+          "due to",
+          "end up",
+          "fall behind",
+          "fare",
+          "focus on",
+          "get used to",
+          "have breakfast",
+          "heavy traffic",
+          "keep track of",
+          "launch a product",
+          "light traffic",
+          "make a decision",
+          "make a mistake",
+          "make progress",
+          "manage to",
+          "meet deadlines",
+          "move forward",
+          "on the right track",
+          "one-way ticket",
+          "pay attention",
+          "play a key role",
+          "provide access to",
+          "raise a concern",
+          "return ticket",
+          "rush hour",
+          "save money",
+          "set priorities",
+          "succeed in",
+          "take a break",
+          "take action",
+          "take public transport",
+          "take responsibility",
+          "tend to",
+          "ticket office",
+          "track performance",
+          "work out"
+        ]
+      }
+    }
+  },
+  {
+    "filename": "lang_level_files.zip",
+    "path": "data\\previous_folder_download\\lang_level_files.zip",
+    "size": 4756503,
+    "mtime": "2026-10-30 08:03:58",
+    "format": ".zip",
+    "zip_contents": [
+      "AR_A0+.csv",
+      "AR_A0.csv",
+      "AR_A1.csv",
+      "AR_A2-B1.csv",
+      "AR_A2.csv",
+      "AR_B1.csv",
+      "AR_B2.csv",
+      "AR_C1.csv",
+      "AR_C2.csv",
+      "DE_A0+.csv",
+      "DE_A0.csv",
+      "DE_A1.csv",
+      "DE_A2-B1.csv",
+      "DE_A2.csv",
+      "DE_B1.csv",
+      "DE_B2.csv",
+      "DE_C1.csv",
+      "DE_C2.csv",
+      "ES_A0+.csv",
+      "ES_A0.csv",
+      "ES_A1.csv",
+      "ES_A2-B1.csv",
+      "ES_A2.csv",
+      "ES_B1.csv",
+      "ES_B2.csv",
+      "ES_C1.csv",
+      "ES_C2.csv",
+      "FA_A0+.csv",
+      "FA_A0.csv",
+      "FA_A1.csv",
+      "FA_A2-B1.csv",
+      "FA_A2.csv",
+      "FA_B1.csv",
+      "FA_B2.csv",
+      "FA_C1.csv",
+      "FA_C2.csv",
+      "FR_A0+.csv",
+      "FR_A0.csv",
+      "FR_A1.csv",
+      "FR_A2-B1.csv",
+      "FR_A2.csv",
+      "FR_B1.csv",
+      "FR_B2.csv",
+      "FR_C1.csv",
+      "FR_C2.csv",
+      "HI_A0+.csv",
+      "HI_A0.csv",
+      "HI_A1.csv",
+      "HI_A2-B1.csv",
+      "HI_A2.csv",
+      "HI_B1.csv",
+      "HI_B2.csv",
+      "HI_C1.csv",
+      "HI_C2.csv",
+      "IT_A0+.csv",
+      "IT_A0.csv",
+      "IT_A1.csv",
+      "IT_A2-B1.csv",
+      "IT_A2.csv",
+      "IT_B1.csv",
+      "IT_B2.csv",
+      "IT_C1.csv",
+      "IT_C2.csv",
+      "JA_A0+.csv",
+      "JA_A0.csv",
+      "JA_A1.csv",
+      "JA_A2-B1.csv",
+      "JA_A2.csv",
+      "JA_B1.csv",
+      "JA_B2.csv",
+      "JA_C1.csv",
+      "JA_C2.csv",
+      "KO_A0+.csv",
+      "KO_A0.csv",
+      "KO_A1.csv",
+      "KO_A2-B1.csv",
+      "KO_A2.csv",
+      "KO_B1.csv",
+      "KO_B2.csv",
+      "KO_C1.csv",
+      "KO_C2.csv",
+      "NL_A0+.csv",
+      "NL_A0.csv",
+      "NL_A1.csv",
+      "NL_A2-B1.csv",
+      "NL_A2.csv",
+      "NL_B1.csv",
+      "NL_B2.csv",
+      "NL_C1.csv",
+      "NL_C2.csv",
+      "PL_A0+.csv",
+      "PL_A0.csv",
+      "PL_A1.csv",
+      "PL_A2-B1.csv",
+      "PL_A2.csv",
+      "PL_B1.csv",
+      "PL_B2.csv",
+      "PL_C1.csv",
+      "PL_C2.csv",
+      "PT_A0+.csv",
+      "PT_A0.csv",
+      "PT_A1.csv",
+      "PT_A2-B1.csv",
+      "PT_A2.csv",
+      "PT_B1.csv",
+      "PT_B2.csv",
+      "PT_C1.csv",
+      "PT_C2.csv",
+      "TR_A0+.csv",
+      "TR_A0.csv",
+      "TR_A1.csv",
+      "TR_A2-B1.csv",
+      "TR_A2.csv",
+      "TR_B1.csv",
+      "TR_B2.csv",
+      "TR_C1.csv",
+      "TR_C2.csv",
+      "UK_A0+.csv",
+      "UK_A0.csv",
+      "UK_A1.csv",
+      "UK_A2-B1.csv",
+      "UK_A2.csv",
+      "UK_B1.csv",
+      "UK_B2.csv",
+      "UK_C1.csv",
+      "UK_C2.csv",
+      "ZH_A0+.csv",
+      "ZH_A0.csv",
+      "ZH_A1.csv",
+      "ZH_A2-B1.csv",
+      "ZH_A2.csv",
+      "ZH_B1.csv",
+      "ZH_B2.csv",
+      "ZH_C1.csv",
+      "ZH_C2.csv"
+    ]
+  },
+  {
+    "filename": "dor-zaban-google-play-package.zip",
+    "path": "public\\downloads\\dor-zaban-google-play-package.zip",
+    "size": 48064,
+    "mtime": "2026-10-30 08:07:28",
+    "format": ".zip",
+    "zip_contents": [
+      "app/",
+      "google_play_metadata/",
+      "build.gradle",
+      "dor-zaban-v1.0.aab",
+      "dor-zaban-v1.0.apk",
+      "GOOGLE_PLAY_UPLOAD_GUIDE.md",
+      "gradle.properties",
+      "gradlew",
+      "release.keystore",
+      "settings.gradle",
+      "app/src/",
+      "app/build.gradle",
+      "app/proguard-rules.pro",
+      "app/src/main/",
+      "app/src/main/java/",
+      "app/src/main/res/",
+      "app/src/main/AndroidManifest.xml",
+      "app/src/main/java/com/",
+      "app/src/main/java/com/solonovate/",
+      "app/src/main/java/com/solonovate/dour/",
+      "app/src/main/java/com/solonovate/dour/MainActivity.java",
+      "app/src/main/res/mipmap-hdpi/",
+      "app/src/main/res/mipmap-mdpi/",
+      "app/src/main/res/mipmap-xhdpi/",
+      "app/src/main/res/mipmap-xxhdpi/",
+      "app/src/main/res/mipmap-xxxhdpi/",
+      "app/src/main/res/values/",
+      "app/src/main/res/values-fa/",
+      "app/src/main/res/mipmap-hdpi/ic_launcher.png",
+      "app/src/main/res/mipmap-mdpi/ic_launcher.png",
+      "app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+      "app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+      "app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+      "app/src/main/res/values/strings.xml",
+      "app/src/main/res/values/styles.xml",
+      "app/src/main/res/values-fa/strings.xml",
+      "google_play_metadata/app_icon_512x512.png",
+      "google_play_metadata/KEYSTORE_CREDENTIALS.txt",
+      "google_play_metadata/STORE_LISTING_EN.txt",
+      "google_play_metadata/STORE_LISTING_FA.txt"
+    ]
+  },
+  {
+    "filename": "dor-zaban-google-play.aab",
+    "path": "public\\downloads\\dor-zaban-google-play.aab",
+    "size": 27900,
+    "mtime": "2026-10-30 08:07:26",
+    "format": ".aab"
+  },
+  {
+    "filename": "dor-zaban-v1.0.aab",
+    "path": "public\\downloads\\dor-zaban-v1.0.aab",
+    "size": 27900,
+    "mtime": "2026-10-30 08:07:26",
+    "format": ".aab"
+  },
+  {
+    "filename": "dor-zaban-v1.0.apk",
+    "path": "public\\downloads\\dor-zaban-v1.0.apk",
+    "size": 26937,
+    "mtime": "2026-10-30 08:07:27",
+    "format": ".apk"
+  },
+  {
+    "filename": "dor-zaban-v1.0.apk.idsig",
+    "path": "public\\downloads\\dor-zaban-v1.0.apk.idsig",
+    "size": 54804,
+    "mtime": "2026-10-29 08:12:20",
+    "format": ".idsig"
+  },
+  {
+    "filename": "dour_28_languages_complete_dataset.csv",
+    "path": "public\\downloads\\dour_28_languages_complete_dataset.csv",
+    "size": 27131,
+    "mtime": "2026-10-29 08:12:20",
+    "format": ".csv",
+    "csv": {
+      "row_count": 26,
+      "columns": [
+        "﻿\"Row_ID\"",
+        "Item_ID",
+        "Category_Topic",
+        "CEFR_Level",
+        "Content_Type",
+        "Grammar_Point",
+        "Hint_FA",
+        "Persian_(fa)",
+        "English_(en)",
+        "Dutch_(nl)",
+        "German_(de)",
+        "French_(fr)",
+        "Spanish_(es)",
+        "Italian_(it)",
+        "Arabic_(ar)",
+        "Turkish_(tr)",
+        "Kurdish_(ku)",
+        "Azerbaijani_(az)",
+        "Russian_(ru)",
+        "Portuguese_(pt)",
+        "Swedish_(sv)",
+        "Norwegian_(no)",
+        "Danish_(da)",
+        "Finnish_(fi)",
+        "Polish_(pl)",
+        "Ukrainian_(uk)",
+        "Greek_(el)",
+        "Czech_(cs)",
+        "Romanian_(ro)",
+        "Hungarian_(hu)",
+        "Chinese_(zh)",
+        "Japanese_(ja)",
+        "Korean_(ko)",
+        "Hindi_(hi)",
+        "Urdu_(ur)"
+      ],
+      "levels": []
+    }
+  },
+  {
+    "filename": "dour_28_languages_complete_dataset.json",
+    "path": "public\\downloads\\dour_28_languages_complete_dataset.json",
+    "size": 44084,
+    "mtime": "2026-10-29 08:12:20",
+    "format": ".json"
+  },
+  {
+    "filename": "dour_complete_language_dataset.csv",
+    "path": "public\\downloads\\dour_complete_language_dataset.csv",
+    "size": 12264991,
+    "mtime": "2026-10-30 12:13:38",
+    "format": ".csv",
+    "csv": {
+      "row_count": 9038,
+      "columns": [
+        "﻿ID",
+        "Level",
+        "RawLevel",
+        "Type",
+        "Difficulty",
+        "Topic",
+        "RawTopic",
+        "EN",
+        "EN-US",
+        "NL",
+        "DE",
+        "FA",
+        "FR",
+        "ES",
+        "IT",
+        "AR",
+        "TR",
+        "PL",
+        "UK",
+        "PT",
+        "ZH",
+        "JA",
+        "KO",
+        "HI"
+      ],
+      "levels": [
+        "A0",
+        "A0+",
+        "A1",
+        "A1+",
+        "A2",
+        "A2+",
+        "B1",
+        "B1+",
+        "B2",
+        "B2+",
+        "C1",
+        "C1+",
+        "C2",
+        "اتفقنا أن نبقي الأمر خفيفاً، وهكذا وصل الجزء الجاد دون إعلان.",
+        "التحديث أصلح ما أبلغنا عنه وكسر ما كنا قد توقفنا عن ملاحظته.",
+        "الطلب طلب الرقم نفسه ثلاث مرات ولم يقبل إلا النسخة الرابعة.",
+        "المعاينة سمّته طابعاً؛ المهندس سمّاه مشكلة إنشائية.",
+        "انتهينا من الطقس ونحن الآن ندور بلباقة حول حقيقة أن أياً منا لا يذهب إلى المكان نفسه.",
+        "موسمي على القائمة يعني أن المطبخ قرر أن الموسم لا يزال الشهر الماضي."
+      ]
+    }
+  },
+  {
+    "filename": "dour_complete_language_dataset.json",
+    "path": "public\\downloads\\dour_complete_language_dataset.json",
+    "size": 16109936,
+    "mtime": "2026-10-30 12:13:37",
+    "format": ".json"
+  }
+]

@@ -110,7 +110,8 @@ const SPEECH_LANG_MAP: Record<string, string> = {
   'zh': 'zh-CN',
   'ja': 'ja-JP',
   'ko': 'ko-KR',
-  'hi': 'hi-IN'
+  'hi': 'hi-IN',
+  'sv': 'sv-SE'
 };
 
 // Convert numbers to Persian digits if in RTL/Persian
@@ -321,82 +322,12 @@ const SinglePlayerScreen: React.FC<Props> = ({
     return all;
   }, [currentCard, cards, settings.displayMode, settings.nativeLanguage, settings.targetLanguage, isRTL, currentExerciseType]);
 
-  // Initialize Speech Recognition
+  // Check Speech Recognition capability
   useEffect(() => {
-    const SpeechRecognitionClass = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognitionClass) {
-      setSpeechSupported(false);
-      return;
-    }
-
-    try {
-      const recognition = new SpeechRecognitionClass();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.maxAlternatives = 3;
-
-      const isReverseToNative = settings.displayMode === 'translate_to_native';
-      const nativeCode = currentCard?.nativeLanguage || settings.nativeLanguage || (isRTL ? 'fa' : 'en');
-      const nativeInfo = SUPPORTED_LANGUAGES.find(l => l.code === nativeCode);
-      const targetLang = currentCard?.targetLanguage || settings.targetLanguage || 'en';
-      const langInfo = SUPPORTED_LANGUAGES.find(l => l.code === targetLang);
-
-      const langCode = isReverseToNative
-        ? (nativeInfo?.speechCode || SPEECH_LANG_MAP[nativeCode] || (nativeCode === 'fa' ? 'fa-IR' : 'en-US'))
-        : (langInfo?.speechCode || SPEECH_LANG_MAP[targetLang] || 'en-US');
-      recognition.lang = langCode;
-
-      recognition.onstart = () => {
-        setIsListening(true);
-        setActionableError(null);
-      };
-
-      recognition.onresult = (event: any) => {
-        let transcript = '';
-        for (let i = 0; i < event.results.length; i++) {
-          transcript += event.results[i][0].transcript;
-        }
-        const clean = transcript.trim();
-        if (clean) {
-          liveTranscriptRef.current = clean;
-          setUserInput(clean);
-          setActionableError(null);
-        }
-      };
-
-      recognition.onerror = (event: any) => {
-        console.warn('Speech recognition error:', event.error);
-        // Never overwrite AudioRecorder (getUserMedia) or show false iframe errors if MediaDevices is available
-        if (geminiRecorderRef.current?.isRecording() || (typeof navigator !== 'undefined' && !!navigator.mediaDevices?.getUserMedia)) {
-          return;
-        }
-        if (event.error === 'not-allowed' || event.error === 'permission-denied') {
-          setIsListening(false);
-          isUserSpeakingRef.current = false;
-          const inIframe = typeof window !== 'undefined' && window.self !== window.top;
-          setMicErrorReason(inIframe ? 'iframe_blocked' : 'denied');
-          setActionableError(
-            isRTL
-              ? 'دسترسی به میکروفون مسدود است. از آیکون کنار آدرس مرورگر، میکروفون را Allow کنید و صفحه را رفرش نمایید.'
-              : 'Microphone access is blocked. Allow microphone in your browser address bar and reload.'
-          );
-        }
-      };
-
-      recognition.onend = () => {
-        // Keep listening state active if AudioRecorder is still recording
-        if (geminiRecorderRef.current?.isRecording()) {
-          return;
-        }
-        setIsListening(false);
-        isUserSpeakingRef.current = false;
-      };
-
-      recognitionRef.current = recognition;
-    } catch (e) {
-      console.warn('Could not start speech recognition:', e);
-      setSpeechSupported(false);
-    }
+    const SpeechRecognitionClass = typeof window !== 'undefined'
+      ? ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition)
+      : null;
+    setSpeechSupported(!!SpeechRecognitionClass || (typeof navigator !== 'undefined' && !!navigator.mediaDevices?.getUserMedia));
 
     return () => {
       if (recognitionRef.current) {
@@ -405,9 +336,16 @@ const SinglePlayerScreen: React.FC<Props> = ({
         } catch {
           // ignore
         }
+        recognitionRef.current = null;
+      }
+      if (geminiRecorderRef.current) {
+        try {
+          geminiRecorderRef.current.cancel();
+        } catch {}
+        geminiRecorderRef.current = null;
       }
     };
-  }, [currentCard?.targetLanguage, settings.targetLanguage]);
+  }, []);
 
   // Handle Card Setup & Audio (Cards are untimed in single-player card mode)
   useEffect(() => {
@@ -430,6 +368,24 @@ const SinglePlayerScreen: React.FC<Props> = ({
     startTimeRef.current = Date.now();
 
     // In single-player card game, cards are relaxed and untimed (no countdown expiring cards)
+
+    // Clean up any active speech recognition from previous card
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.abort();
+      } catch {}
+      recognitionRef.current = null;
+    }
+    if (geminiRecorderRef.current) {
+      try {
+        geminiRecorderRef.current.cancel();
+      } catch {}
+      geminiRecorderRef.current = null;
+    }
+    setIsListening(false);
+    setIsGeminiRecording(false);
+    isUserSpeakingRef.current = false;
+    liveTranscriptRef.current = '';
 
     // Preload card audio into memory cache so clicking Play Audio / Slow is instant
     sound.preloadTTS(currentCard.targetText, currentCard.targetLanguage);
@@ -476,7 +432,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
     return () => clearInterval(interval);
   }, [isTimedMatch]);
 
-  const stopMicAndTranscribeToInput = async (shouldSubmitAfter = false) => {
+  const stopMicAndTranscribeToInput = async (shouldSubmitAfter = true) => {
     const existingSpeechText = (liveTranscriptRef.current || userInput).trim();
     isUserSpeakingRef.current = false;
     setIsListening(false);
@@ -486,6 +442,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
     } catch {
       // ignore
     }
+    recognitionRef.current = null;
 
     if (geminiRecorderRef.current) {
       const recorder = geminiRecorderRef.current;
@@ -564,98 +521,155 @@ const SinglePlayerScreen: React.FC<Props> = ({
     sound.playClick();
 
     if (isListening || isGeminiRecording || isUserSpeakingRef.current) {
-      await stopMicAndTranscribeToInput(false);
-    } else {
-      // User starts speaking: convert speech to text in the input box
-      liveTranscriptRef.current = '';
-      setUserInput('');
-      setActionableError(null);
+      await stopMicAndTranscribeToInput(true);
+      return;
+    }
 
-      const isReverseToNative = settings.displayMode === 'translate_to_native';
-      const nativeCode = currentCard?.nativeLanguage || settings.nativeLanguage || (isRTL ? 'fa' : 'en');
-      const nativeInfo = SUPPORTED_LANGUAGES.find(l => l.code === nativeCode);
-      const targetLang = currentCard?.targetLanguage || settings.targetLanguage || 'en';
-      const langInfo = SUPPORTED_LANGUAGES.find(l => l.code === targetLang);
+    // User starts speaking: convert speech to text in the input box
+    liveTranscriptRef.current = '';
+    setUserInput('');
+    setActionableError(null);
+    setMicErrorReason(null);
 
-      const langCode = isReverseToNative
-        ? (nativeInfo?.speechCode || SPEECH_LANG_MAP[nativeCode] || (nativeCode === 'fa' ? 'fa-IR' : 'en-US'))
-        : (langInfo?.speechCode || SPEECH_LANG_MAP[targetLang] || 'en-US');
+    const isReverseToNative = settings.displayMode === 'translate_to_native';
+    const nativeCode = currentCard?.nativeLanguage || settings.nativeLanguage || (isRTL ? 'fa' : 'en');
+    const nativeInfo = SUPPORTED_LANGUAGES.find(l => l.code === nativeCode);
+    const targetLang = currentCard?.targetLanguage || settings.targetLanguage || 'en';
+    const langInfo = SUPPORTED_LANGUAGES.find(l => l.code === targetLang);
 
-      // 1. Start Google / Browser SpeechRecognition (webkitSpeechRecognition) so words & sentences appear live in the input box
-      let speechStarted = false;
-      if (speechSupported && recognitionRef.current) {
-        try {
-          recognitionRef.current.lang = langCode;
-          recognitionRef.current.start();
-          speechStarted = true;
-          isUserSpeakingRef.current = true;
-          setIsListening(true);
-        } catch (e: any) {
-          console.warn('Speech recognition start notice:', e);
-        }
-      }
+    const langCode = isReverseToNative
+      ? (nativeInfo?.speechCode || SPEECH_LANG_MAP[nativeCode] || (nativeCode === 'fa' ? 'fa-IR' : 'en-US'))
+      : (langInfo?.speechCode || SPEECH_LANG_MAP[targetLang] || 'en-US');
 
-      // 2. Also start AudioRecorder with automatic Voice Activity / Silence Detection (VAD)
-      // so speech is automatically converted into text in userInput when the user finishes speaking
-      let recorderStarted = false;
-      let caughtErrorName = '';
+    const SpeechRecognitionClass = typeof window !== 'undefined'
+      ? ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition)
+      : null;
+
+    // 1. Primary Engine: Browser Web Speech API
+    if (SpeechRecognitionClass) {
       try {
-        if (geminiRecorderRef.current) {
-          geminiRecorderRef.current.cancel();
-        }
-        const recorder = new AudioRecorder();
-        await recorder.start(undefined, () => {
-          void stopMicAndTranscribeToInput(false);
-        });
-        geminiRecorderRef.current = recorder;
-        recorderStarted = true;
-        isUserSpeakingRef.current = true;
-        setIsGeminiRecording(true);
+        const recognition = new SpeechRecognitionClass();
+        recognition.lang = langCode;
+        // continuous = false allows browser to automatically detect end of utterance
+        recognition.continuous = false;
+        recognition.interimResults = true;
+        recognition.maxAlternatives = 3;
+
+        recognition.onstart = () => {
+          setIsListening(true);
+          isUserSpeakingRef.current = true;
+          setActionableError(null);
+        };
+
+        recognition.onresult = (event: any) => {
+          let transcript = '';
+          for (let i = 0; i < event.results.length; i++) {
+            transcript += event.results[i][0].transcript;
+          }
+          const clean = transcript.trim();
+          if (clean) {
+            liveTranscriptRef.current = clean;
+            setUserInput(clean);
+            setActionableError(null);
+          }
+        };
+
+        recognition.onerror = (event: any) => {
+          console.warn('Speech recognition notice:', event.error);
+          setIsListening(false);
+          isUserSpeakingRef.current = false;
+          recognitionRef.current = null;
+
+          if (event.error === 'not-allowed' || event.error === 'permission-denied') {
+            const inIframe = typeof window !== 'undefined' && window.self !== window.top;
+            setMicErrorReason(inIframe ? 'iframe_blocked' : 'denied');
+            setActionableError(
+              isRTL
+                ? 'دسترسی به میکروفون مسدود است. لطفاً در آیکون کنار آدرس مرورگر میکروفون را Allow کنید و صفحه را رفرش نمایید.'
+                : 'Microphone access is blocked. Allow microphone in your browser address bar and reload.'
+            );
+          } else if (event.error === 'network') {
+            setActionableError(
+              isRTL
+                ? 'خطای اتصال در تشخیص صوت مرورگر. لطفاً پاسخ را تایپ نمایید.'
+                : 'Speech recognition network error. Please type your answer.'
+            );
+          }
+        };
+
+        recognition.onend = () => {
+          setIsListening(false);
+          isUserSpeakingRef.current = false;
+          recognitionRef.current = null;
+
+          // Auto-submit recognized speech answer so user can answer by voice!
+          const finalSpoken = (liveTranscriptRef.current || userInput).trim();
+          if (finalSpoken) {
+            submitAnswer(finalSpoken);
+          }
+        };
+
+        recognition.start();
+        recognitionRef.current = recognition;
         setIsListening(true);
-        setActionableError(null);
-        setMicErrorReason(null);
+        isUserSpeakingRef.current = true;
+        return;
       } catch (err: any) {
-        console.warn('Gemini recorder mic fallback:', err);
-        caughtErrorName = `${err?.name || ''} ${err?.message || ''}`;
-        geminiRecorderRef.current = null;
+        console.warn('Speech recognition start failed, trying fallback:', err);
       }
+    }
 
-      if (!recorderStarted && !speechStarted) {
-        isUserSpeakingRef.current = false;
-        setIsListening(false);
-        setIsGeminiRecording(false);
+    // 2. Fallback Engine: AudioRecorder with VAD (only if Web Speech API is unavailable or throws)
+    try {
+      if (geminiRecorderRef.current) {
+        geminiRecorderRef.current.cancel();
+      }
+      const recorder = new AudioRecorder();
+      await recorder.start(undefined, () => {
+        void stopMicAndTranscribeToInput(true);
+      });
+      geminiRecorderRef.current = recorder;
+      isUserSpeakingRef.current = true;
+      setIsGeminiRecording(true);
+      setIsListening(true);
+      setActionableError(null);
+      setMicErrorReason(null);
+    } catch (err: any) {
+      console.warn('Microphone fallback access error:', err);
+      setIsListening(false);
+      setIsGeminiRecording(false);
+      isUserSpeakingRef.current = false;
+      const inIframe = typeof window !== 'undefined' && window.self !== window.top;
+      const caughtErrorName = `${err?.name || ''} ${err?.message || ''}`;
 
-        const inIframe = typeof window !== 'undefined' && window.self !== window.top;
-
-        if (caughtErrorName.includes('NotFound') || caughtErrorName.includes('DevicesNotFound')) {
-          setMicErrorReason('no_device');
-          setActionableError(
-            isRTL
-              ? 'هیچ میکروفونی روی دستگاه شما شناسایی نشد. میکروفون یا هندزفری را متصل کنید یا پاسخ را تایپ نمایید.'
-              : 'No microphone was detected on your device. Connect a microphone or type your answer.'
-          );
-        } else if (caughtErrorName.includes('NotReadable') || caughtErrorName.includes('TrackStart')) {
-          setMicErrorReason('in_use');
-          setActionableError(
-            isRTL
-              ? 'میکروفون در حال حاضر توسط برنامه یا تب دیگری اشغال شده است. برنامه‌های دیگر را ببندید و دوباره تست کنید.'
-              : 'Your microphone is currently busy in another app or tab. Close other apps and retry.'
-          );
-        } else if (inIframe) {
-          setMicErrorReason('iframe_blocked');
-          setActionableError(
-            isRTL
-              ? 'پس از روشن کردن میکروفون در مرورگر، یک‌بار روی «بارگذاری مجدد پیش‌نمایش» بزنید یا بازی را با آیکون 🔗 (بالای پیش‌نمایش) در تب جدید باز کنید.'
-              : 'After enabling Microphone in Chrome, reload the preview frame or open the app in a new tab via the 🔗 icon above the preview.'
-          );
-        } else {
-          setMicErrorReason('denied');
-          setActionableError(
-            isRTL
-              ? 'دسترسی به میکروفون مسدود است. پس از روشن کردن Microphone در آیکون کنار آدرس مرورگر، یک‌بار صفحه را رفرش کنید.'
-              : 'Microphone access is blocked. After enabling Microphone in the browser address bar, reload the page.'
-          );
-        }
+      if (caughtErrorName.includes('NotFound') || caughtErrorName.includes('DevicesNotFound')) {
+        setMicErrorReason('no_device');
+        setActionableError(
+          isRTL
+            ? 'هیچ میکروفونی روی دستگاه شما شناسایی نشد. میکروفون یا هندزفری را متصل کنید یا پاسخ را تایپ نمایید.'
+            : 'No microphone was detected on your device. Connect a microphone or type your answer.'
+        );
+      } else if (caughtErrorName.includes('NotReadable') || caughtErrorName.includes('TrackStart')) {
+        setMicErrorReason('in_use');
+        setActionableError(
+          isRTL
+            ? 'میکروفون در حال حاضر توسط برنامه یا تب دیگری اشغال شده است. برنامه‌های دیگر را ببندید و دوباره تست کنید.'
+            : 'Your microphone is currently busy in another app or tab. Close other apps and retry.'
+        );
+      } else if (inIframe) {
+        setMicErrorReason('iframe_blocked');
+        setActionableError(
+          isRTL
+            ? 'پس از روشن کردن میکروفون در مرورگر، یک‌بار روی «بارگذاری مجدد پیش‌نمایش» بزنید یا بازی را با آیکون 🔗 (بالای پیش‌نمایش) در تب جدید باز کنید.'
+            : 'After enabling Microphone in Chrome, reload the preview frame or open the app in a new tab via the 🔗 icon above the preview.'
+        );
+      } else {
+        setMicErrorReason('denied');
+        setActionableError(
+          isRTL
+            ? 'دسترسی به میکروفون مسدود است. پس از روشن کردن Microphone در آیکون کنار آدرس مرورگر، یک‌بار صفحه را رفرش کنید.'
+            : 'Microphone access is blocked. After enabling Microphone in the browser address bar, reload the page.'
+        );
       }
     }
   };
@@ -742,9 +756,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
     if (!currentCard) return;
     sound.playClick();
     setIsPlayingAudio(true);
-    sound.speakNative(currentCard.targetText, currentCard.targetLanguage, {
-      onEnd: () => setIsPlayingAudio(false)
-    });
+    sound.speakNative(currentCard.targetText, currentCard.targetLanguage);
     // Fallback timer to reset playing state
     window.setTimeout(() => setIsPlayingAudio(false), 3000);
   };
@@ -753,9 +765,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
     if (!currentCard) return;
     sound.playClick();
     setIsPlayingAudio(true);
-    sound.speakSlow(currentCard.targetText, currentCard.targetLanguage, {
-      onEnd: () => setIsPlayingAudio(false)
-    });
+    sound.speakSlow(currentCard.targetText, currentCard.targetLanguage);
     // Fallback timer to reset playing state
     window.setTimeout(() => setIsPlayingAudio(false), 4500);
   };
@@ -1018,8 +1028,8 @@ const SinglePlayerScreen: React.FC<Props> = ({
         // Show the first word(s) and mask the rest of the expected answer
         const revealCount = Math.max(1, Math.ceil(words.length / 2));
         const revealedPart = words.slice(0, revealCount).join(' ');
-        const hiddenPart = words.slice(revealCount).map(w => '___').join(' ');
-        const label = isRTL ? 'شروع پاسخ:' : 'Answer starts with:';
+        const hiddenPart = words.slice(revealCount).map(() => '[______]').join(' ');
+        const label = isRTL ? 'الگوی جمله:' : 'Sentence clue:';
         hintsPool.push(`${label} «${revealedPart} ${hiddenPart}»`);
       } else if (words.length === 1 && words[0].length > 2) {
         const cleanWord = words[0];
@@ -1027,6 +1037,18 @@ const SinglePlayerScreen: React.FC<Props> = ({
         const label = isRTL ? 'حروف اول پاسخ:' : 'First letters:';
         hintsPool.push(`${label} «${firstTwo}...» (${cleanWord.length} ${isRTL ? 'حرف' : 'letters'})`);
       }
+    }
+
+    // Add grammatical article hint if present on card
+    if (currentCard.article) {
+      const artLabel = isRTL ? 'حرف تعریف:' : 'Article:';
+      hintsPool.push(`${artLabel} ${currentCard.article}`);
+    }
+
+    // Add note hint if present on card
+    if (currentCard.note) {
+      const noteLabel = isRTL ? 'نکته:' : 'Note:';
+      hintsPool.push(`${noteLabel} ${currentCard.note}`);
     }
 
     // Add phonetic pronunciation hint when user needs to say/type targetText
@@ -1541,7 +1563,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
                     window.setTimeout(() => setIsPlayingAudio(false), 4500);
                   }}
                   className="btn-ghost !min-h-[34px] !h-8.5 !px-2.5 !py-1 !text-xs !rounded-xl flex items-center gap-1 cursor-pointer"
-                  aria-label={t.slowAudioLabel || (isRTL ? 'پخش شمرده' : 'Slow Audio')}
+                  aria-label={t.slowAudioLabel || (isRTL ? 'پخش شمرده (تلفظ آرام ۰.۷x)' : 'Slow Audio (0.7x)')}
                 >
                   <Volume1 size={14} className="text-[var(--turq)]" />
                   <span>{isRTL ? 'شمرده' : 'Slow'}</span>
@@ -1583,7 +1605,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
                   type="button"
                   onClick={handlePlaySlowAudio}
                   className="btn-ghost !min-h-[34px] !h-8.5 !px-2.5 !py-1 !text-xs !rounded-xl flex items-center gap-1 cursor-pointer"
-                  aria-label={t.slowAudioLabel || (isRTL ? 'پخش شمرده' : 'Slow Audio')}
+                  aria-label={t.slowAudioLabel || (isRTL ? 'پخش شمرده (تلفظ آرام ۰.۷x)' : 'Slow Audio (0.7x)')}
                 >
                   <Volume1 size={14} className="text-[var(--turq)]" />
                   <span>{isRTL ? 'شمرده' : 'Slow'}</span>
@@ -1599,6 +1621,14 @@ const SinglePlayerScreen: React.FC<Props> = ({
               >
                 {currentCard.translation}
               </div>
+
+              {currentCard.article && (
+                <div className="mt-1 flex items-center justify-center">
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                    {isRTL ? 'حرف تعریف:' : 'Article:'} {currentCard.article}
+                  </span>
+                </div>
+              )}
 
               {(isRevealed || evaluation?.isCorrect) && (
                 <div 
@@ -1625,7 +1655,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
                   type="button"
                   onClick={handlePlaySlowAudio}
                   className="btn-ghost !min-h-[34px] !h-8.5 !px-2.5 !py-1 !text-xs !rounded-xl flex items-center gap-1 cursor-pointer"
-                  aria-label={t.slowAudioLabel || (isRTL ? 'پخش شمرده' : 'Slow Audio')}
+                  aria-label={t.slowAudioLabel || (isRTL ? 'پخش شمرده (تلفظ آرام ۰.۷x)' : 'Slow Audio (0.7x)')}
                 >
                   <Volume1 size={14} className="text-[var(--turq)]" />
                   <span>{isRTL ? 'شمرده' : 'Slow'}</span>
@@ -1673,7 +1703,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
                   type="button"
                   onClick={handlePlaySlowAudio}
                   className="btn-ghost !min-h-[34px] !h-8.5 !px-2.5 !py-1 !text-xs !rounded-xl flex items-center gap-1 cursor-pointer"
-                  aria-label={t.slowAudioLabel || (isRTL ? 'پخش شمرده' : 'Slow Audio')}
+                  aria-label={t.slowAudioLabel || (isRTL ? 'پخش شمرده (تلفظ آرام ۰.۷x)' : 'Slow Audio (0.7x)')}
                 >
                   <Volume1 size={14} className="text-[var(--turq)]" />
                   <span>{isRTL ? 'شمرده' : 'Slow'}</span>
@@ -1719,7 +1749,7 @@ const SinglePlayerScreen: React.FC<Props> = ({
                   type="button"
                   onClick={handlePlaySlowAudio}
                   className="btn-ghost !min-h-[34px] !h-8.5 !px-2.5 !py-1 !text-xs !rounded-xl flex items-center gap-1 cursor-pointer"
-                  aria-label={t.slowAudioLabel || (isRTL ? 'پخش شمرده' : 'Slow Audio')}
+                  aria-label={t.slowAudioLabel || (isRTL ? 'پخش شمرده (تلفظ آرام ۰.۷x)' : 'Slow Audio (0.7x)')}
                 >
                   <Volume1 size={14} className="text-[var(--turq)]" />
                   <span>{isRTL ? 'شمرده' : 'Slow'}</span>
